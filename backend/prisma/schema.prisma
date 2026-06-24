@@ -1,0 +1,56 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @db.Text
+  createdAt    DateTime @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime @updatedAt @db.Timestamp(6)
+
+  resumes Resume[]
+
+  @@map("users")
+}
+
+model Resume {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @db.Uuid
+  title            String   @db.VarChar(255)
+  originalFileName String   @db.Text
+  mimeType         String   @db.VarChar(100)
+  fileSize         Int
+  pdfUrl           String   @db.Text
+  rawText          String   @db.Text
+  structuredResume Json     @db.JsonB
+  createdAt        DateTime @default(now()) @db.Timestamp(6)
+  updatedAt        DateTime @updatedAt @db.Timestamp(6)
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  analyses  Analysis[]
+
+  @@index([userId])
+  @@map("resumes")
+}
+
+model Analysis {
+  id             String   @id @default(uuid()) @db.Uuid
+  resumeId       String   @db.Uuid
+  jobDescription String   @db.Text
+  parsedJob      Json     @db.JsonB
+  resumeSnapshot Json     @db.JsonB
+  analysisResult Json     @db.JsonB
+  createdAt      DateTime @default(now()) @db.Timestamp(6)
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@index([createdAt(sort: Desc)])
+  @@map("analyses")
+}

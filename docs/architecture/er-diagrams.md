@@ -70,7 +70,6 @@ erDiagram
 
 ## Ownership
 
-
 ```
 
 User
