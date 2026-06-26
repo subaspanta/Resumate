@@ -111,19 +111,13 @@ Landing Page ➔ Create Account ➔ Verify Email ➔ Dashboard ➔ Upload Resume
 
 ## 9. Functional Requirements
 
-The system shall:
+i) User Authentication & ManagementThe system shall authenticate users via JWT (JSON Web Tokens).The system shall securely hash user passwords using bcrypt.The system shall maintain user session states across frontend and backend.
 
-- Accept PDF resumes.
-- Reject unsupported file types.
-- Reject files larger than 5 MB.
-- Display upload progress.
-- Notify users of parsing failures.
-- Accept pasted job descriptions.
-- Extract text from uploaded documents.
-- Calculate a compatibility score.
-- Highlight missing keywords.
-- Generate improvement suggestions.
-- Store previous analyses.
+ii) Document & Job Description IngestionThe system shall accept PDF resume uploads up to 5 MB using multer.The system shall reject unsupported file formats with descriptive error messages.The system shall parse and extract raw string data from PDF files using pdf-parse.The system shall accept text-based job descriptions pasted via a multi-line input field.
+
+iii) Core AI Analysis Engine (MVP)The system shall pass structured prompts containing parsed resume text and job descriptions to the AI API.The system shall enforce strict JSON output format from the AI using JSON schemas.The system shall calculate an aggregate compatibility score from 0 to 100.The system shall extract a list of missing technical and soft keywords.The system shall provide structured improvement suggestions categorized by Education, Experience, and Skills.
+
+iv) Data Storage & HistoryThe system shall store raw parsed text, metadata, and uploaded file paths in PostgreSQL.The system shall save analysis results, including compatibility scores, in JSONB format for flexible querying.The system shall fetch and display a historical log of past analyses on the user dashboard.
 
 ---
 
@@ -162,29 +156,17 @@ The system shall:
 
 ## 12. MVP Scope
 
-For now:
-
-- Authentication
-- Resume upload
-- Job description upload
-- Resume parsing
-- Match score
-- Missing keywords
-- AI suggestions
-- Resume history
+To get this live quickly and break your job gap, focus strictly on these core database-backed tasks:Backend: Setup Express server with Postgres (pg-pool) integration and JWT auth routes.File Processing: Implement file upload endpoint, file size validation, and text extraction logic.AI Layer: Connect a secure Node.js route to your chosen AI API using schema-driven JSON outputs.Database Optimization: Design the schema using Postgres native JSONB fields for missing_keywords and suggestions to ensure painless future migration to pgvector columns.Frontend: Build a responsive React layout featuring a dashboard, drag-and-drop file upload, a pasting interface for job requirements, and clean data cards for scores and missing keyword badges.
 
 ---
 
 ## 13. Future Scope
 
-Everything intentionally postponed. Examples:
+i) AI-Driven Context & Feature AutomationBuild URL Scraping Ingestion Agent: Create a backend pipeline using Puppeteer or Cheerio to extract messy HTML from job boards and use a lightweight LLM to parse it into structured JSON data.Develop STAR Method Optimizer: Build an API endpoint that analyzes passive user bullet points and rewrites them into metrics-driven statements following the Situation, Task, Action, and Result framework.Integrate Multimodal Vision Parsing: Deploy a Vision LLM workflow to process complex, multi-column Canva PDF layouts that break standard text-based parsers.
 
-- Cover letters
-- Portfolio builder
-- Job recommendations
-- Interview preparation
-- Mock interviews
-- Career roadmap
+ii) Advanced Vector ArchitectureImplement pgvector Semantic Matching: Migrate from standard keyword matching to database-level vector operations, storing resume and job description embeddings directly in PostgreSQL using pgvector.Deploy RAG-Based Interactive Coach: Build a Retrieval-Augmented Generation chat system that chunks, embeds, and fetches contextual resume data to answer user-specific career queries.
+
+iii) Platform Monetization & InfrastructureIntegrate Server-Side PDF Generator: Create an automated Node.js service using pdfkit or puppeteer to let users download their polished, optimized resume data back into a clean PDF format.Implement Usage Metering SaaS Infrastructure: Add a credit-based middleware layer in Express to track API usage per user and gate premium AI features behind local and global payment gateways.
 
 ---
 

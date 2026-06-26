@@ -6,6 +6,7 @@ import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 import { AppError } from "./types/app-error.js";
 import { StatusCodes } from "http-status-codes";
+import authRoutes from "./modules/auth/auth.routes.js";
 
 const API_PREFIX = "/api/v1";
 const app = express();
@@ -39,7 +40,7 @@ app.get(`${API_PREFIX}/health`, (req: Request, res: Response) => {
 });
 
 // API routes
-// app.use(API_PREFIX, routes);
+app.use(`${API_PREFIX}/auth`, authRoutes);
 
 // 404 handler
 app.use((req: Request, res: Response) => {
