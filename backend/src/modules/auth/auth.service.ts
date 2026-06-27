@@ -3,7 +3,7 @@ import { ERROR_CODES } from "../../types/error-codes.js";
 import { AuthRepository } from "./auth.repository.js";
 import { LoginUserInput, RegisterUserInput } from "./auth.schema.js";
 import bcrypt from "bcrypt";
-import { AuthResponse } from "./auth.types.js";
+import { AuthResponse, SafeUser } from "./auth.types.js";
 import { env } from "../../config/env.js";
 import { generateAccessToken } from "../../utils/tokens.js";
 
@@ -57,7 +57,6 @@ export class AuthService {
       this.throwInvalidCredentials();
     }
     const { passwordHash, ...safeUser } = user;
-    console.log("Safe User:", safeUser); // Log the safe user object for debugging
 
     const accessToken = generateAccessToken({
       sub: user.id,
@@ -68,5 +67,14 @@ export class AuthService {
       user: safeUser,
       accessToken,
     };
+  }
+  async getCurrentUser(userId: string): Promise<SafeUser> {
+    const user = await this.authRepository.findSafeUserById(userId);
+
+    if (!user) {
+      throw new AppError(404, ERROR_CODES.USER_NOT_FOUND, "User not found");
+    }
+
+    return user;
   }
 }

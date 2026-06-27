@@ -1,10 +1,5 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { env } from "../config/env.js";
-
-type JwtPayload = {
-  sub: string;
-  email: string;
-};
 
 const JWT_SECRET = env.JWT_SECRET;
 
@@ -16,7 +11,18 @@ export function generateAccessToken(payload: JwtPayload): string {
 
 export function verifyAccessToken(token: string): JwtPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const payload = jwt.verify(token, JWT_SECRET);
+
+    if (
+      typeof payload === "object" &&
+      payload !== null &&
+      "sub" in payload &&
+      "email" in payload
+    ) {
+      return payload as JwtPayload;
+    }
+
+    return null;
   } catch {
     return null;
   }

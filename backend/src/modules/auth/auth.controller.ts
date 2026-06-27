@@ -42,11 +42,27 @@ export class AuthController {
   };
   logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.clearCookie("accessToken");
+      res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: env.NODE_ENV === "production",
+        sameSite: "strict" as const,
+      });
 
       res.status(200).json({
         success: true,
         message: "Logged out successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  me = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user!.sub;
+      const currentUser = await this.authService.getCurrentUser(userId);
+      res.status(200).json({
+        success: true,
+        data: currentUser,
       });
     } catch (error) {
       next(error);

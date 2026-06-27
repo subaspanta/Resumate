@@ -7,6 +7,7 @@ import { logger } from "./config/logger.js";
 import { AppError } from "./types/app-error.js";
 import { StatusCodes } from "http-status-codes";
 import authRoutes from "./modules/auth/auth.routes.js";
+import cookieParser from "cookie-parser";
 
 const API_PREFIX = "/api/v1";
 const app = express();
@@ -26,6 +27,8 @@ if (env.isDevelopment) {
 // Body parsing middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+app.use(cookieParser());
 
 // Health check endpoint
 app.get(`${API_PREFIX}/health`, (req: Request, res: Response) => {
