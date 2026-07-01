@@ -1,18 +1,27 @@
-# ER Diagrams
+# ResumeForge ER Diagrams
 
-This document contains both the logical and physical Entity Relationship Diagrams for the Resume Analyzer SaaS.
+This document defines both the logical and physical Entity Relationship Diagrams for ResumeForge MVP.
+
+Current scope supports:
+
+* Authentication
+* Resume Upload
+* Resume Parsing
+* Resume Analysis
+* Section-wise AI Suggestions
+* Resume Export
+
+Job Title and Job Description support will be introduced in **Phase 2** and are intentionally excluded from this model.
 
 ---
 
-## 1. Logical ER Diagram (Business Domain View)
-
-This diagram focuses on business entities, ownership, and cardinality without database implementation details.
+# 1. Logical ER Diagram (Business Domain)
 
 ```mermaid
 erDiagram
 
     USER ||--o{ RESUME : owns
-    RESUME ||--o{ ANALYSIS : "can be analyzed many times"
+    RESUME ||--o{ ANALYSIS : "analyzed many times"
 
     USER {
         string id
@@ -26,6 +35,8 @@ erDiagram
     RESUME {
         string id
         string userId
+        int version
+        string status
         string title
         string originalFileName
         string mimeType
@@ -40,10 +51,12 @@ erDiagram
     ANALYSIS {
         string id
         string resumeId
-        string jobDescriptionText
-        object parsedJob
+        int overallScore
+        object sectionScores
         object resumeSnapshot
         object analysisResult
+        object aiSuggestions
+        string status
         datetime createdAt
         datetime updatedAt
     }
@@ -51,60 +64,109 @@ erDiagram
 
 ---
 
-## Business Relationships
+# Business Relationships
 
 ## User → Resume
 
-- One User owns many Resumes.
-- Every Resume belongs to exactly one User.
+* One User owns many Resumes.
+* Every Resume belongs to exactly one User.
 
 ---
 
 ## Resume → Analysis
 
-- One Resume can have many Analyses.
-- Every Analysis belongs to exactly one Resume.
-- Each Analysis represents a comparison between one Resume and one Job Description.
+* One Resume may have multiple Analyses.
+* Every Analysis belongs to exactly one Resume.
+* Each Analysis represents one immutable resume evaluation.
 
 ---
 
-## Ownership
+# Ownership
 
-```
-
+```text
 User
 │
 └── Resume
       │
       ├── Uploaded PDF
       ├── Extracted Text
-      ├── Structured Resume
+      ├── Structured Resume (Resume JSON)
       │
       └── Analysis
-            ├── Parsed Job
             ├── Resume Snapshot
-            └── Analysis Result
+            ├── Section Scores
+            ├── Analysis Result
+            └── AI Suggestions
+```
+
+---
+
+# Resume Status
+
+Resume lifecycle.
+
+```text
+UPLOADED
+
+↓
+
+PARSING
+
+↓
+
+PARSED
+
+↓
+
+ANALYZED
+
+↓
+
+FAILED
+```
+
+---
+
+# Analysis Status
+
+Analysis lifecycle.
+
+```text
+PENDING
+
+↓
+
+RUNNING
+
+↓
+
+COMPLETED
+
+↓
+
+FAILED
 ```
 
 ---
 
 # Cascade Delete Rules
 
-Deleting a User deletes:
+Deleting User deletes
 
-- All Resumes
-- All Analyses
-- Uploaded resume files (handled by the application)
+* All Resumes
+* All Analyses
+* Uploaded Files
 
-Deleting a Resume deletes:
+Deleting Resume deletes
 
-- All Analyses created from that Resume
+* All Analyses
+* Generated exports
+
+Storage cleanup handled by application.
 
 ---
 
-# 2. Physical ER Diagram (Database View)
-
-This diagram represents the PostgreSQL implementation.
+# 2. Physical ER Diagram (PostgreSQL)
 
 ```mermaid
 erDiagram
@@ -124,6 +186,8 @@ erDiagram
     RESUMES {
         UUID id PK
         UUID userId FK
+        INTEGER version
+        VARCHAR_30 status
         VARCHAR_255 title NULL
         TEXT originalFileName
         VARCHAR_100 mimeType
@@ -138,10 +202,12 @@ erDiagram
     ANALYSES {
         UUID id PK
         UUID resumeId FK
-        TEXT jobDescriptionText
-        JSONB parsedJob
+        INTEGER overallScore
+        JSONB sectionScores
         JSONB resumeSnapshot
         JSONB analysisResult
+        JSONB aiSuggestions
+        VARCHAR_30 status
         TIMESTAMPTZ createdAt
         TIMESTAMPTZ updatedAt
     }
@@ -149,39 +215,47 @@ erDiagram
 
 ---
 
-# Database Constraints
+# Primary Keys
 
-## Primary Keys
-
-- users.id
-- resumes.id
-- analyses.id
+* users.id
+* resumes.id
+* analyses.id
 
 ---
 
-## Foreign Keys
+# Foreign Keys
 
-- resumes.userId → users.id
-- analyses.resumeId → resumes.id
+* resumes.userId → users.id
+* analyses.resumeId → resumes.id
 
-Both relationships use **ON DELETE CASCADE**.
+Both use:
+
+```sql
+ON DELETE CASCADE
+```
 
 ---
 
-## Indexes
+# Indexes
 
-### users
+## users
 
-- UNIQUE(email)
+* UNIQUE(email)
 
-### resumes
+---
 
-- INDEX(userId)
+## resumes
 
-### analyses
+* INDEX(userId)
+* INDEX(status)
 
-- INDEX(resumeId)
-- INDEX(createdAt DESC)
+---
+
+## analyses
+
+* INDEX(resumeId)
+* INDEX(status)
+* INDEX(createdAt DESC)
 
 ---
 
@@ -191,40 +265,122 @@ Both relationships use **ON DELETE CASCADE**.
 
 ### structuredResume
 
-Stores the normalized representation of the uploaded resume generated by the Parsing Module.
+Stores canonical Resume JSON generated by Parsing Module.
+
+Example sections
+
+* Contact
+* Summary
+* Experience
+* Education
+* Skills
+* Projects
+* Certifications
+
+Every backend module consumes this object.
+
+Raw PDFs are never used after parsing.
 
 ---
 
 ## Analysis
 
-### parsedJob
+### sectionScores
 
-Stores the normalized representation of the job description.
+Stores per-section scores.
+
+Example
+
+```json
+{
+  "contact": 100,
+  "summary": 78,
+  "experience": 92,
+  "education": 96,
+  "skills": 64,
+  "projects": 81
+}
+```
+
+---
 
 ### resumeSnapshot
 
-Stores a snapshot of the parsed resume at the time the analysis was created.
+Immutable snapshot of Resume JSON at analysis time.
 
-This ensures historical accuracy if the user uploads a new version of their resume later.
+Prevents historical analyses from changing after resume edits.
+
+---
 
 ### analysisResult
 
-Stores the output produced by:
+Stores deterministic output from Resume Analysis Engine.
 
-- Rule Engine
-- AI Suggestion Engine
+Examples
 
-The schema of these JSON objects is documented separately in:
+* ATS score
+* Formatting checks
+* Resume health
+* Missing metrics
+* Readability
+* Validation results
 
-```
-docs/contracts/json-schemas.md
-```
+---
+
+### aiSuggestions
+
+Stores AI-generated recommendations.
+
+Examples
+
+* Summary rewrite
+* Experience improvements
+* Skills recommendations
+* Education suggestions
+* Contact improvements
+
+AI suggestions remain separate from business analysis.
 
 ---
 
 # Design Principles
 
-- Business entities are modeled relationally.
-- Complex AI-generated structures are stored as JSONB.
-- Analysis records are immutable historical snapshots.
-- The database is optimized for simplicity while remaining extensible for future versions.
+* Business entities modeled relationally.
+* Complex resume structures stored as JSONB.
+* Resume JSON is canonical domain model.
+* Analyses are immutable historical snapshots.
+* AI suggestions separated from deterministic analysis.
+* Database optimized for simplicity and future scalability.
+
+---
+
+# Phase 2 Evolution
+
+Future versions introduce Target-based optimization.
+
+New entities
+
+```text
+Resume
+
+↓
+
+Target
+
+(Job Title / Job Description)
+
+↓
+
+Comparison
+
+↓
+
+Analysis
+```
+
+Future tables
+
+* TARGETS
+* TARGET_PROFILES
+
+Current MVP intentionally excludes these tables to keep schema focused on General Resume Analysis.

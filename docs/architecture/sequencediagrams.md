@@ -1,10 +1,23 @@
-# Resume Analyzer SaaS — Sequence Diagrams
+# ResumeForge — Sequence Diagrams
 
 ## Purpose
 
-This document describes the interaction between system components during the application's core business workflows.
+This document describes interaction between system components during ResumeForge's core business workflows.
 
-The diagrams focus on message flow rather than implementation details.
+Focus is on message flow and component responsibilities rather than implementation details.
+
+Current document represents **Phase 1 (MVP)**.
+
+Supported features:
+
+* Upload Resume
+* Resume Parsing
+* Resume Analysis
+* Resume Editor Editing
+* AI Suggestions
+* Export PDF
+
+Job Title and Job Description workflows will be introduced in **Phase 2**.
 
 ---
 
@@ -12,7 +25,7 @@ The diagrams focus on message flow rather than implementation details.
 
 ## Goal
 
-Upload a PDF resume and generate a structured resume profile.
+Upload resume and generate Resume JSON.
 
 ```text
 User
@@ -29,7 +42,7 @@ Backend API
  ▼
 Resume Module
  │
- │ Store PDF
+ │ Upload PDF
  ▼
 Storage Module
  │
@@ -37,13 +50,14 @@ Storage Module
  ▼
 Resume Module
  │
- │ Extract Text
+ │ Parse Resume
  ▼
 Parsing Module
  │
- │ Parse Resume
+ ├── Extract Text
+ ├── Detect Sections
+ └── Generate Resume JSON
  │
- │ Generate Structured Resume
  ▼
 Resume Module
  │
@@ -61,10 +75,10 @@ User
 
 ### Result
 
-- Resume created
-- PDF stored
-- Raw text extracted
-- Structured resume generated
+* Resume created
+* PDF stored
+* Resume JSON generated
+* Resume ready for analysis
 
 ---
 
@@ -72,12 +86,12 @@ User
 
 ## Goal
 
-Compare a resume against a job description.
+Generate general resume analysis.
 
 ```text
 User
  │
- │ Paste Job Description
+ │ Analyze Resume
  ▼
 Frontend
  │
@@ -86,43 +100,40 @@ Frontend
 Backend API
  │
  ▼
-Analysis Module
+Analysis Orchestrator
  │
- │ Load Resume
+ │ Load Resume JSON
  ▼
 Database
  │
- │ Structured Resume
+ │ Resume JSON
  ▼
-Analysis Module
+Analysis Orchestrator
  │
- │ Parse Job Description
  ▼
-Parsing Module
+Resume Analysis Engine
  │
- │ Parsed Job
- ▼
-Rule Engine
- │
- │
- ├── Extract Keywords
- ├── Compare Skills
- ├── Calculate Match Score
- ├── Calculate ATS Score
- └── Detect Missing Keywords
+ ├── Validate Contact
+ ├── Analyze Summary
+ ├── Analyze Experience
+ ├── Analyze Skills
+ ├── Analyze Education
+ ├── Resume Health
+ ├── ATS Score
+ └── Section Scores
  │
  ▼
 AI Module
  │
  │ Generate Suggestions
  ▼
-Analysis Module
+Analysis Orchestrator
  │
  │ Save Analysis
  ▼
 Database
  │
- │ Analysis Result
+ │ Analysis Complete
  ▼
 Frontend
  │
@@ -132,12 +143,12 @@ User
 
 ### Result
 
-- Match Score
-- ATS Score
-- Missing Keywords
-- Matching Keywords
-- AI Suggestions
-- Analysis stored
+* Overall Score
+* ATS Score
+* Resume Health
+* Section Scores
+* AI Suggestions
+* Analysis stored
 
 ---
 
@@ -145,7 +156,7 @@ User
 
 ## Goal
 
-Display a previously completed analysis.
+Display previously completed analysis.
 
 ```text
 User
@@ -159,14 +170,14 @@ Frontend
 Backend API
  │
  ▼
-Analysis Module
+Analysis Orchestrator
  │
  ▼
 Database
  │
  │ Analysis Data
  ▼
-Analysis Module
+Analysis Orchestrator
  │
  ▼
 Frontend
@@ -177,7 +188,7 @@ User
 
 ### Result
 
-Existing analysis is displayed without recalculation.
+Existing analysis displayed without recalculation.
 
 ---
 
@@ -185,12 +196,12 @@ Existing analysis is displayed without recalculation.
 
 ## Goal
 
-Replace an existing resume with a newer PDF.
+Replace resume with newer version.
 
 ```text
 User
  │
- │ Upload New PDF
+ │ Upload New Resume
  ▼
 Frontend
  │
@@ -201,18 +212,20 @@ Backend API
  ▼
 Resume Module
  │
- │ Replace File
+ │ Replace PDF
  ▼
 Storage Module
  │
  ▼
 Resume Module
  │
- │ Extract Text
  ▼
 Parsing Module
  │
- │ Parse Resume
+ ├── Extract Text
+ ├── Parse Resume
+ └── Generate Resume JSON
+ │
  ▼
 Resume Module
  │
@@ -220,6 +233,7 @@ Resume Module
  ▼
 Database
  │
+ │ Invalidate Previous Analysis
  ▼
 Frontend
  │
@@ -229,8 +243,9 @@ User
 
 ### Result
 
-- Previous PDF replaced
-- Structured resume regenerated
+* Resume updated
+* Resume JSON regenerated
+* Previous analysis invalidated
 
 ---
 
@@ -238,7 +253,7 @@ User
 
 ## Goal
 
-Delete a resume and its associated analyses.
+Delete resume and related resources.
 
 ```text
 User
@@ -254,16 +269,16 @@ Backend API
  ▼
 Resume Module
  │
- │ Delete Resume
- │
- │ Delete Analyses
+ ├── Delete Resume
+ ├── Delete Analyses
+ └── Delete Export Metadata
  ▼
 Database
  │
- │ Delete PDF
  ▼
 Storage Module
  │
+ │ Delete PDF
  ▼
 Frontend
  │
@@ -273,6 +288,204 @@ User
 
 ### Result
 
-- Resume removed
-- Associated analyses removed
-- PDF removed from storage
+* Resume deleted
+* Analysis deleted
+* Uploaded files deleted
+
+---
+
+# SD-006 Edit Resume Section
+
+## Goal
+
+Edit one resume section inside Resume Editor.
+
+```text
+User
+ │
+ │ Select Summary
+ ▼
+Frontend
+ │
+ │ GET Resume Section
+ ▼
+Backend API
+ │
+ ▼
+Resume Module
+ │
+ ▼
+Database
+ │
+ │ Summary
+ ▼
+Frontend
+ │
+ ▼
+User
+ │
+ │ Edit Summary
+ ▼
+Frontend
+ │
+ │ PATCH /resume/summary
+ ▼
+Backend API
+ │
+ ▼
+Resume Module
+ │
+ │ Update Resume JSON
+ ▼
+Database
+ │
+ │ Saved
+ ▼
+Frontend
+ │
+ ▼
+User
+```
+
+### Result
+
+* Resume section updated
+* Resume JSON updated
+* Changes persisted immediately
+
+---
+
+# SD-007 Apply AI Suggestion
+
+## Goal
+
+Apply AI-generated improvement to one section.
+
+```text
+User
+ │
+ │ Improve Summary
+ ▼
+Frontend
+ │
+ │ POST /ai/summary
+ ▼
+Backend API
+ │
+ ▼
+AI Module
+ │
+ │ Generate Improved Summary
+ ▼
+Backend API
+ │
+ ▼
+Resume Module
+ │
+ │ Update Resume JSON
+ ▼
+Database
+ │
+ │ Saved
+ ▼
+Frontend
+ │
+ ▼
+User
+```
+
+### Result
+
+* AI rewrite generated
+* Resume JSON updated
+* Resume Editor refreshed
+
+---
+
+# SD-008 Export Resume
+
+## Goal
+
+Generate downloadable PDF.
+
+```text
+User
+ │
+ │ Export PDF
+ ▼
+Frontend
+ │
+ │ POST /export
+ ▼
+Backend API
+ │
+ ▼
+Export Module
+ │
+ │ Generate PDF
+ ▼
+Storage Module
+ │
+ │ Store Generated File
+ ▼
+Export Module
+ │
+ │ Return Download URL
+ ▼
+Frontend
+ │
+ ▼
+User
+```
+
+### Result
+
+* PDF generated
+* Download available
+* Resume preserved
+
+---
+
+# Phase 2 (Future)
+
+Future workflow introduces Target-based optimization.
+
+```text
+User
+
+↓
+
+Choose Target
+
+↓
+
+Job Title
+or
+Job Description
+
+↓
+
+Target Module
+
+↓
+
+Target Profile
+
+↓
+
+Comparison Engine
+
+↓
+
+AI Module
+
+↓
+
+Tailored Resume
+
+↓
+
+Export
+```
+
+This workflow intentionally remains outside current MVP.

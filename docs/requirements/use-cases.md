@@ -1,22 +1,22 @@
-# Resume Analyzer SaaS — Use Cases
+# ResumeForge — Use Cases
 
 ## Purpose
 
-This document defines all user interactions supported by the MVP.
+This document defines all user interactions supported by ResumeForge MVP.
 
-Each use case describes a business capability of the system without specifying implementation details.
+Each use case describes a business capability without specifying implementation details.
 
 ---
 
-## Actors
+# Actors
 
 ## Primary Actor
 
-- User
+* User
 
 ---
 
-## Authentication
+# Authentication
 
 ## UC-001 Register
 
@@ -26,7 +26,7 @@ Create a new account.
 
 ### Preconditions
 
-- User is not authenticated.
+* User is not authenticated.
 
 ### Main Flow
 
@@ -34,23 +34,23 @@ Create a new account.
 2. System validates input.
 3. Account is created.
 4. User is authenticated.
-5. User is redirected to the dashboard.
+5. Dashboard is displayed.
 
 ### Postconditions
 
-- User account exists.
+* User account exists.
 
 ---
 
 ## UC-002 Login
 
-## Goal
+### Goal
 
-Authenticate into the application.
+Authenticate user.
 
-## Preconditions
+### Preconditions
 
-- User account exists.
+* User account exists.
 
 ### Main Flow
 
@@ -61,7 +61,7 @@ Authenticate into the application.
 
 ### Postconditions
 
-- User is authenticated.
+* User is authenticated.
 
 ---
 
@@ -69,17 +69,17 @@ Authenticate into the application.
 
 ### Goal
 
-End the current session.
+End current session.
 
 ### Preconditions
 
-- User is authenticated.
+* User is authenticated.
 
 ### Main Flow
 
 1. User clicks Logout.
 2. Session is destroyed.
-3. User returns to Landing Page.
+3. Landing page is displayed.
 
 ---
 
@@ -89,193 +89,308 @@ End the current session.
 
 ### Goal
 
-Upload a resume for future analysis.
+Upload resume for analysis.
 
 ### Preconditions
 
-- User is authenticated.
-- PDF file selected.
+* User is authenticated.
+* PDF selected.
 
 ### Main Flow
 
 1. User uploads PDF.
 2. System validates file.
 3. PDF is stored.
-4. Text is extracted.
-5. Resume is parsed.
-6. Structured resume is generated.
-7. Resume is saved.
+4. Resume is parsed.
+5. Resume JSON is generated.
+6. Resume is saved.
 
 ### Alternative Flows
 
-- Invalid file format
-- File exceeds size limit
-- Parsing fails
+* Invalid file format
+* File too large
+* Parsing failed
 
 ### Postconditions
 
-- Resume is available for analysis.
+* Resume ready for analysis.
 
 ---
 
-## UC-005 View Resume
+## UC-005 Analyze Resume
 
 ### Goal
 
-View uploaded resume information.
+Generate general resume analysis.
 
 ### Preconditions
 
-- Resume exists.
+* Resume exists.
 
 ### Main Flow
 
-1. User selects resume.
-2. System displays resume details.
-
----
-
-## UC-006 Replace Resume
-
-### Goal
-
-Replace an existing resume with a newer version.
-
-### Preconditions
-
-- Resume exists.
-
-### Main Flow
-
-1. User uploads a new PDF.
-2. Old PDF is replaced.
-3. Resume is re-parsed.
-4. Structured data is updated.
-
-### Postconditions
-
-- Resume contains latest version.
-
----
-
-## UC-007 Delete Resume
-
-### Goal
-
-Delete a resume.
-
-### Preconditions
-
-- Resume exists.
-
-### Main Flow
-
-1. User selects Delete.
-2. System requests confirmation.
-3. Resume is deleted.
-4. Associated analyses are deleted.
-
-### Postconditions
-
-- Resume no longer exists.
-
----
-
-# Resume Analysis
-
-## UC-008 Analyze Resume
-
-### Goal
-
-Analyze a resume against a job description.
-
-### Preconditions
-
-- Resume exists.
-- User provides job description.
-
-### Main Flow
-
-1. User pastes job description.
-2. Job description is parsed.
-3. Rule Engine performs analysis.
-4. AI generates recommendations.
+1. User clicks **Analyze Resume**.
+2. Resume JSON is loaded.
+3. Resume Analysis Engine evaluates resume.
+4. AI Module generates recommendations.
 5. Analysis is stored.
-6. Results are displayed.
-
-### Alternative Flows
-
-- Empty job description
-- AI unavailable
-- Analysis fails
+6. Dashboard updates.
 
 ### Postconditions
 
-- Analysis history contains a new record.
+* Analysis completed.
+* Resume Health generated.
+* ATS Score generated.
+* Section Scores generated.
 
 ---
 
-## UC-009 View Analysis
+## UC-006 Open Resume Resume Editor
 
 ### Goal
 
-View a previously completed analysis.
+Open interactive editing Resume Editor.
 
 ### Preconditions
 
-- Analysis exists.
+* Resume analyzed.
 
 ### Main Flow
 
-1. User selects an analysis.
-2. System displays:
-   - Match Score
-   - ATS Score
-   - Missing Keywords
-   - Matching Keywords
-   - AI Suggestions
+1. User selects Resume Resume Editor.
+2. System loads Resume JSON.
+3. Latest analysis is loaded.
+4. Resume Editor is displayed.
+
+### Postconditions
+
+* Resume ready for editing.
 
 ---
 
-## UC-010 View Analysis History
+# Resume Editing
+
+## UC-007 Edit Summary
 
 ### Goal
 
-Browse previous analyses.
+Modify summary section.
 
 ### Preconditions
 
-- User has completed at least one analysis.
+* Resume exists.
 
 ### Main Flow
 
-1. User opens History.
-2. System lists previous analyses.
-3. User selects one.
+1. User selects Summary.
+2. Summary becomes editable.
+3. User updates content.
+4. Changes are saved.
+
+### Postconditions
+
+* Resume JSON updated.
 
 ---
 
-## UC-011 Delete Analysis
+## UC-008 Edit Experience
 
 ### Goal
 
-Remove an analysis from history.
+Modify experience section.
 
 ### Preconditions
 
-- Analysis exists.
+* Resume exists.
 
 ### Main Flow
 
-1. User selects Delete.
-2. Confirmation is shown.
-3. Analysis is deleted.
+1. User selects Experience.
+2. Experience becomes editable.
+3. User updates entries.
+4. Changes are saved.
+
+### Postconditions
+
+* Resume JSON updated.
+
+---
+
+## UC-009 Edit Skills
+
+### Goal
+
+Modify skills section.
+
+### Preconditions
+
+* Resume exists.
+
+### Main Flow
+
+1. User selects Skills.
+2. Skills become editable.
+3. User updates skills.
+4. Changes are saved.
+
+### Postconditions
+
+* Resume JSON updated.
+
+---
+
+## UC-010 Edit Education
+
+### Goal
+
+Modify education section.
+
+### Preconditions
+
+* Resume exists.
+
+### Main Flow
+
+1. User selects Education.
+2. User edits information.
+3. Changes are saved.
+
+### Postconditions
+
+* Resume JSON updated.
+
+---
+
+## UC-011 Edit Contact Information
+
+### Goal
+
+Modify contact section.
+
+### Preconditions
+
+* Resume exists.
+
+### Main Flow
+
+1. User selects Contact.
+2. User edits information.
+3. Changes are saved.
+
+### Postconditions
+
+* Resume JSON updated.
+
+---
+
+# AI Assistance
+
+## UC-012 Apply AI Suggestion
+
+### Goal
+
+Improve selected resume section.
+
+### Preconditions
+
+* Resume exists.
+* Analysis completed.
+
+### Main Flow
+
+1. User selects AI Improve.
+2. AI generates improved version.
+3. User reviews suggestion.
+4. User accepts suggestion.
+5. Resume JSON is updated.
+
+### Alternative Flows
+
+* AI unavailable
+* User rejects suggestion
+
+### Postconditions
+
+* Resume updated.
+
+---
+
+# Resume Export
+
+## UC-013 Export Resume
+
+### Goal
+
+Generate downloadable PDF.
+
+### Preconditions
+
+* Resume exists.
+
+### Main Flow
+
+1. User clicks Export PDF.
+2. System generates PDF.
+3. Download begins.
+
+### Postconditions
+
+* Resume exported successfully.
+
+---
+
+# Resume Management
+
+## UC-014 Replace Resume
+
+### Goal
+
+Replace uploaded resume.
+
+### Preconditions
+
+* Resume exists.
+
+### Main Flow
+
+1. User uploads newer PDF.
+2. Resume is parsed again.
+3. Resume JSON regenerated.
+4. Previous analysis invalidated.
+
+### Postconditions
+
+* Latest resume stored.
+
+---
+
+## UC-015 Delete Resume
+
+### Goal
+
+Delete resume.
+
+### Preconditions
+
+* Resume exists.
+
+### Main Flow
+
+1. User clicks Delete.
+2. Confirmation displayed.
+3. Resume removed.
+4. Analyses removed.
+5. Files removed.
+
+### Postconditions
+
+* Resume permanently deleted.
 
 ---
 
 # Profile
 
-## UC-012 View Profile
+## UC-016 View Profile
 
 ### Goal
 
@@ -283,49 +398,62 @@ View account information.
 
 ### Preconditions
 
-- User is authenticated.
+* User authenticated.
 
 ### Main Flow
 
 1. User opens Profile.
-2. System displays account details.
+2. Profile displayed.
 
 ---
 
-## UC-013 Update Profile
+## UC-017 Update Profile
 
 ### Goal
 
-Update profile information.
+Update account information.
 
 ### Preconditions
 
-- User is authenticated.
+* User authenticated.
 
-## Main Flow
+### Main Flow
 
 1. User edits profile.
 2. System validates changes.
-3. Profile is updated.
+3. Profile updated.
 
 ---
 
-## MVP Summary
+# MVP Summary
 
-The MVP supports the following capabilities:
+ResumeForge MVP supports:
 
-- User authentication
-- Resume management
-- Resume analysis
-- Analysis history
-- Profile management
+* User Authentication
+* Resume Upload
+* Resume Parsing
+* Resume Health Analysis
+* ATS Score
+* Section Scores
+* Resume Resume Editor
+* Section-wise Editing
+* AI Suggestions
+* Resume Export
+* Resume Management
+* Profile Management
 
-Features intentionally excluded from the MVP include:
+---
 
-- Resume version history
-- Cover letter generation
-- Resume builder
-- Job recommendations
-- Portfolio builder
-- Interview preparation
-- Team collaboration
+# Features Excluded From MVP
+
+* Job Title Optimization
+* Job Description Optimization
+* Comparison Engine
+* Missing Keyword Analysis
+* Resume Version History
+* Cover Letter Generation
+* LinkedIn Optimization
+* Portfolio Builder
+* Interview Preparation
+* Job Tracker
+* Team Collaboration

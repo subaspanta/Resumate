@@ -1,231 +1,487 @@
-# Resume Analyzer SaaS — Component Architecture
+# ResumeForge Backend Component Architecture
 
 ## Purpose
 
-This document defines the internal backend components of the application, their responsibilities, ownership, and dependencies.
+This document defines backend modules, responsibilities, ownership and dependencies.
 
-The goal is to ensure every component has a single responsibility and communicates through well-defined boundaries.
+Architecture follows:
 
----
-
-# Component Overview
-
-```text
-                   Backend
-
-        ┌────────────────────┐
-        │   Auth Module       │
-        └────────────────────┘
-
-        ┌────────────────────┐
-        │   User Module       │
-        └────────────────────┘
-
-        ┌────────────────────┐
-        │ Resume Module       │
-        └─────────┬───────────┘
-                  │
-                  ▼
-        ┌────────────────────┐
-        │ Parsing Module      │
-        └────────────────────┘
-
-        ┌────────────────────┐
-        │ Analysis Module     │
-        └──────┬────────┬─────┘
-               │        │
-               ▼        ▼
-        Analysis Engine   AI Module
-
-        ┌────────────────────┐
-        │ Storage Module      │
-        └────────────────────┘
-```
+* Modular Monolith
+* Single Responsibility Principle (SRP)
+* Low Coupling
+* High Cohesion
+* Future Microservice Extraction
 
 ---
 
-# Component Responsibilities
+## High-Level Architecture
+
+                    Backend
+
+           ┌────────────────────┐
+           │    Auth Module     │
+           └────────────────────┘
+
+           ┌────────────────────┐
+           │    User Module     │
+           └────────────────────┘
+
+           ┌────────────────────┐
+           │   Resume Module    │
+           └─────────┬──────────┘
+                     │
+                     ▼
+           ┌────────────────────┐
+           │   Parsing Module   │
+           └─────────┬──────────┘
+                     │
+                     ▼
+           ┌────────────────────┐
+           │   Resume JSON      │
+           └─────────┬──────────┘
+                     │
+                     ▼
+           ┌────────────────────┐
+           │ Analysis           │
+           │ Orchestrator       │
+           └──────┬───────┬─────┘
+                  │       │
+                  ▼       ▼
+      Resume Analysis   AI Module
+          Engine
+
+           ┌────────────────────┐
+           │ Export Module      │
+           └────────────────────┘
+
+           ┌────────────────────┐
+           │ Storage Module     │
+           └────────────────────┘
+
+---
+
+## Component Responsibilities
 
 ## Auth Module
 
-**Purpose**
+ Purpose: Manage authentication and authorization.
 
-Manage authentication and user sessions.
+## Responsibilities
 
-**Responsibilities**
+* Register users
+* Login
+* Logout
+* Refresh tokens
+* Password reset
+* Session management
 
-- Register users
-- Authenticate users
-- Manage sessions
+## Dependencies
 
-**Dependencies**
+* Database
+
+---
+
+# User Module
+
+## Purpose
+
+Manage user profile and preferences.
+
+## Responsibilities
+
+* View profile
+* Update profile
+* Manage preferences
+* Subscription information
+* Usage statistics
+
+## Dependencies
+
+* Database
+
+---
+
+# Resume Module
+
+## Purpose
+
+Manage lifecycle of resumes.
+
+## Responsibilities
+
+* Upload resume
+* Retrieve resume
+* Update resume
+* Delete resume
+* Resume metadata
+* Resume versions
+
+## Dependencies
+
+* Parsing Module
+* Storage Module
+* Database
+
+---
+
+# Parsing Module
+
+## Purpose
+
+Convert uploaded documents into structured data.
+
+## Responsibilities
+
+* Extract PDF text
+* Extract DOCX text
+* Detect resume sections
+* Normalize content
+* Generate structured Resume JSON
+
+## Input
+
+Resume document
+
+## Output
+
+Resume JSON
+
+## Dependencies
 
 None
 
 ---
 
-## User Module
+# Resume JSON
 
-**Purpose**
+## Purpose
 
-Manage user account information.
+Canonical representation of resume.
 
-**Responsibilities**
+Example
 
-- View profile
-- Update profile
+```json
+{
+  "contact": {},
+  "summary": "",
+  "experience": [],
+  "education": [],
+  "skills": [],
+  "projects": [],
+  "certifications": []
+}
+```
 
-**Dependencies**
+Every backend component consumes Resume JSON.
 
-Database
-
----
-
-## Resume Module
-
-**Purpose**
-
-Manage the lifecycle of resumes.
-
-**Responsibilities**
-
-- Upload resume
-- Update resume
-- Delete resume
-- Retrieve resume
-
-**Dependencies**
-
-- Parsing Module
-- Storage Module
-- Database
+Never consumes raw PDF.
 
 ---
 
-## Parsing Module
+# Analysis Orchestrator
 
-**Purpose**
+## Purpose
 
-Convert uploaded documents into structured resume data.
+Coordinate complete resume analysis workflow.
 
-**Responsibilities**
+Does not perform analysis itself.
 
-- Extract text
-- Parse resume
-- Produce structured resume
+## Responsibilities
 
-**Dependencies**
+* Load Resume JSON
+* Invoke Resume Analysis Engine
+* Invoke AI Module
+* Merge results
+* Persist analysis
+* Return analysis response
 
-None
+## Dependencies
 
----
-
-## Analysis Module
-
-**Purpose**
-
-Coordinate the complete resume analysis workflow.
-
-**Responsibilities**
-
-- Load resume
-- Parse job description
-- Invoke Rule Engine
-- Invoke AI Module
-- Store analysis
-
-**Dependencies**
-
-- Parsing Module
-- Rule Engine
-- AI Module
-- Database
+* Resume Analysis Engine
+* AI Module
+* Database
 
 ---
 
-## Rule Engine
+# Resume Analysis Engine
 
-**Purpose**
+## Purpose
 
 Perform deterministic resume analysis.
 
-**Responsibilities**
+Contains business rules.
 
-- Match keywords
-- Compare skills
-- Calculate Match Score
-- Calculate ATS Score
-- Detect missing keywords
+No AI.
 
-**Dependencies**
+## Responsibilities
+
+### Resume Health
+
+* Resume completeness
+* Section validation
+* Contact validation
+
+### ATS Analysis
+
+* ATS score
+* Formatting score
+* Readability score
+
+### Experience Analysis
+
+* Action verbs
+* Quantified achievements
+* Date consistency
+
+### Skills Analysis
+
+* Categorization
+* Duplicate detection
+* Missing categories
+
+### Summary Analysis
+
+* Length
+* Generic wording
+* First-person detection
+
+### Education Analysis
+
+* Degree validation
+* Graduation validation
+* Ordering
+
+### Formatting
+
+* ATS compatibility
+* Layout consistency
+
+## Dependencies
 
 None
 
 ---
 
-## AI Module
+# AI Module
 
-**Purpose**
+## Purpose
 
 Generate intelligent recommendations.
 
-**Responsibilities**
+Never calculates business scores.
 
-- Suggest improvements
-- Explain gaps
-- Generate feedback
+## Responsibilities
 
-**Dependencies**
+* Rewrite summary
+* Improve experience bullets
+* Improve skills wording
+* Improve education wording
+* Explain recommendations
+* Generate section suggestions
+* Compare revisions
 
-AI Provider
+## Dependencies
+
+* AI Provider
 
 ---
 
-## Storage Module
+# Export Module
 
-**Purpose**
+## Purpose
 
-Manage PDF storage.
+Generate downloadable resume files.
 
-**Responsibilities**
+## Responsibilities
 
-- Upload files
-- Delete files
-- Retrieve files
+* Export PDF
+* Export DOCX (Future)
+* Print formatting
+* Export metadata
 
-**Dependencies**
+## Dependencies
 
-Object Storage
+* Resume Module
+
+---
+
+# Storage Module
+
+## Purpose
+
+Store uploaded and generated files.
+
+## Responsibilities
+
+* Upload files
+* Retrieve files
+* Delete files
+* Store exported documents
+
+## Dependencies
+
+* Object Storage
+
+---
+
+# Module Dependencies
+
+```text
+Resume Module
+        │
+        ▼
+Parsing Module
+        │
+        ▼
+Resume JSON
+        │
+        ▼
+Analysis Orchestrator
+      │          │
+      ▼          ▼
+Resume Analysis  AI Module
+Engine
+```
 
 ---
 
 # Dependency Rules
 
-- Components may only depend on lower-level components.
-- Parsing Module must not depend on Resume Module.
-- Rule Engine must not depend on AI Module.
-- AI Module must not calculate business scores.
-- Storage Module must remain independent of business logic.
-- Analysis Module acts as the orchestrator for resume analysis.
+Resume Module may call Parsing Module.
+
+Parsing Module must never depend on Resume Module.
+
+Resume Analysis Engine must never call AI Module.
+
+AI Module must never calculate ATS scores.
+
+Storage Module must never contain business logic.
+
+Analysis Orchestrator coordinates workflow only.
+
+Resume JSON is single source of truth.
+
+Every analysis consumes Resume JSON.
+
+---
+
+# Phase 1 Scope (Current MVP)
+
+Implemented modules
+
+* Auth Module
+* User Module
+* Resume Module
+* Parsing Module
+* Resume JSON
+* Analysis Orchestrator
+* Resume Analysis Engine
+* AI Module
+* Export Module (PDF)
+* Storage Module
+
+Workflow
+
+```text
+Authentication
+
+↓
+
+Upload Resume
+
+↓
+
+Parsing
+
+↓
+
+Resume JSON
+
+↓
+
+General Resume Analysis
+
+↓
+
+Resume Editor
+
+↓
+
+Section-wise AI Improvements
+
+↓
+
+Export PDF
+```
+
+---
+
+# Phase 2 (Target-Based Optimization)
+
+Future architecture
+
+```text
+           ┌────────────────────┐
+           │ Target Module      │
+           └─────────┬──────────┘
+                     │
+                     ▼
+           ┌────────────────────┐
+           │ Target Profile     │
+           └─────────┬──────────┘
+                     │
+                     ▼
+           ┌────────────────────┐
+           │ Comparison Engine  │
+           └─────────┬──────────┘
+                     │
+                     ▼
+                 AI Module
+```
+
+## Target Module
+
+Supports
+
+* Job Title
+* Job Description
+
+Produces
+
+* Required Skills
+* Preferred Skills
+* Responsibilities
+* Keywords
+* Company Context
+
+Comparison Engine compares Resume JSON against Target Profile.
+
+---
+
+# Future Modules
+
+Can be extracted independently.
+
+* Parsing Module
+* AI Module
+* Export Module
+* Storage Module
+* Target Module
+* Notification Module
+* Billing Module
+
+No business behavior changes required.
 
 ---
 
 # Design Principles
 
-- Single Responsibility Principle (SRP)
-- Separation of Concerns
-- Low Coupling
-- High Cohesion
-- Dependency Inversion
-- Modular Monolith Architecture
-
----
-
-# Future Evolution
-
-As the application grows, the following components may be extracted into independent services without changing business behavior:
-
-- Parsing Module
-- AI Module
-- Storage Module
-- Notification Module (future)
+* Single Responsibility Principle
+* Separation of Concerns
+* Low Coupling
+* High Cohesion
+* Dependency Inversion
+* Modular Monolith First
+* Resume JSON as Canonical Domain Model
+* AI Assists Decision Making
+* Rule Engine Owns Business Logic

@@ -274,7 +274,7 @@ multipart/form-data
 Validation
 
 - PDF only
-- Maximum 5 MB
+- Maximum 2 MB
 
 ### Response
 
