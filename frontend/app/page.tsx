@@ -1,11 +1,11 @@
 "use client";
 
-import { authApi } from "@/src/api/auth.api";
+import { authService } from "@/src/features/auth";
 
 export default function HomePage() {
   const handleClick = async () => {
     try {
-      const response = await authApi.me();
+      const response = await authService.me();
       console.log(response.data);
     } catch (error) {
       console.error(error);

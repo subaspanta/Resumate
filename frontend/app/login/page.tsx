@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { authApi } from "@/src/api/auth.api";
+import { authService } from "@/src/features/auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("subas@example.com");
@@ -11,7 +11,7 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await authApi.login({
+      const response = await authService.login({
         email,
         password,
       });
