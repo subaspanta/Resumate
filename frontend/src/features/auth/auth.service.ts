@@ -1,15 +1,23 @@
-import {
-  authApi,
-  type LoginInput,
-  type RegisterInput,
-} from "@/src/api/auth.api";
+import { axiosClient } from "@/src/api/client";
+import type { ApiResponse, SafeUser } from "@/src/features/auth/types";
 
-export const authService = {
-  register: async (data: RegisterInput) => (await authApi.register(data)).data,
+export type LoginInput = {
+  email: string;
+  password: string;
+};
 
-  login: async (data: LoginInput) => (await authApi.login(data)).data,
+export type RegisterInput = LoginInput & {
+  name: string;
+};
 
-  me: async () => (await authApi.me()).data,
+export const authApi = {
+  register: (data: RegisterInput) =>
+    axiosClient.post<ApiResponse<SafeUser>>("/auth/register", data),
 
-  logout: async () => (await authApi.logout()).data,
+  login: (data: LoginInput) =>
+    axiosClient.post<ApiResponse<SafeUser>>("/auth/login", data),
+
+  me: () => axiosClient.get<ApiResponse<SafeUser>>("/auth/me"),
+
+  logout: () => axiosClient.post<ApiResponse<null>>("/auth/logout"),
 };
