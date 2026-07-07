@@ -1,0 +1,249 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Register | ResumeForge</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdcc5",
+                        "surface-container-highest": "#e4e1ed",
+                        "on-tertiary-fixed": "#301400",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "on-surface-variant": "#464554",
+                        "surface-dim": "#dbd8e4",
+                        "canvas": "#F8FAFC",
+                        "on-primary-container": "#fffbff",
+                        "ai-border": "#C7D2FE",
+                        "primary-fixed": "#e1e0ff",
+                        "on-secondary-container": "#626567",
+                        "on-tertiary-container": "#fffbff",
+                        "background": "#fcf8ff",
+                        "text-muted": "#94A3B8",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#444749",
+                        "secondary-fixed": "#e0e3e5",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c7c4d7",
+                        "score-good": "#CA8A04",
+                        "border-base": "#E2E8F0",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "inverse-primary": "#c0c1ff",
+                        "tertiary-container": "#b55d00",
+                        "on-background": "#1b1b23",
+                        "danger": "#DC2626",
+                        "text-primary": "#0F172A",
+                        "score-excellent": "#16A34A",
+                        "surface": "#FFFFFF",
+                        "on-primary-fixed": "#07006c",
+                        "on-secondary-fixed": "#191c1e",
+                        "secondary": "#5c5f61",
+                        "surface-container-low": "#f5f2fe",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "on-error-container": "#93000a",
+                        "text-body": "#475569",
+                        "on-surface": "#1b1b23",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "border-input": "#CBD5E1",
+                        "surface-container": "#efecf8",
+                        "ai-bg": "#EEF2FF",
+                        "inverse-surface": "#303038",
+                        "outline": "#767586",
+                        "score-needs-work": "#EA580C",
+                        "primary": "#4648d4",
+                        "secondary-container": "#e0e3e5",
+                        "surface-container-high": "#e9e6f3",
+                        "tertiary": "#904900",
+                        "surface-variant": "#e4e1ed",
+                        "surface-tint": "#494bd6",
+                        "inverse-on-surface": "#f2effb",
+                        "surface-bright": "#fcf8ff",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "primary-container": "#6063ee"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar-width": "272px",
+                        "max-content": "1280px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "xxl": "48px",
+                        "top-nav-height": "72px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "mono-label": ["JetBrains Mono"],
+                        "display-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-std": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "mono-label": ["11px", {"fontWeight": "500"}],
+                        "display-md": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-std": ["13px", {"fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1;
+        }
+        body {
+            background-color: #F8FAFC;
+        }
+        .no-shadow {
+            box-shadow: none !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-text-body">
+<!-- Top Navigation (Shell Only, Minimal Context) -->
+<header class="fixed top-0 w-full h-top-nav-height z-50 flex items-center px-lg md:px-xl max-w-max-content mx-auto bg-surface border-b border-border-base no-shadow">
+<div class="flex items-center gap-2">
+<span class="font-headline-lg text-headline-lg font-bold text-primary">ResumeForge</span>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center pt-[72px] pb-xl px-md">
+<!-- Register Card -->
+<div class="w-full max-w-[440px] bg-surface border border-border-base rounded-lg p-xl no-shadow">
+<div class="mb-xl text-center">
+<h1 class="font-display-md text-display-md text-text-primary mb-sm">Create account</h1>
+<p class="font-body-md text-body-md text-text-muted">Start building your professional future today.</p>
+</div>
+<form class="space-y-md" onsubmit="return false;">
+<!-- Full Name -->
+<div class="space-y-xs">
+<label class="font-label-std text-label-std text-text-primary" for="full_name">Full Name</label>
+<input class="w-full h-11 px-md border border-border-input rounded-DEFAULT font-body-md text-body-md focus:outline-none focus:ring-0 focus:border-primary focus:bg-ai-bg transition-colors" id="full_name" name="full_name" placeholder="John Doe" type="text">
+</div>
+<!-- Email -->
+<div class="space-y-xs">
+<label class="font-label-std text-label-std text-text-primary" for="email">Email</label>
+<input class="w-full h-11 px-md border border-border-input rounded-DEFAULT font-body-md text-body-md focus:outline-none focus:ring-0 focus:border-primary focus:bg-ai-bg transition-colors" id="email" name="email" placeholder="name@company.com" type="email">
+</div>
+<!-- Password -->
+<div class="space-y-xs">
+<label class="font-label-std text-label-std text-text-primary" for="password">Password</label>
+<input class="w-full h-11 px-md border border-border-input rounded-DEFAULT font-body-md text-body-md focus:outline-none focus:ring-0 focus:border-primary focus:bg-ai-bg transition-colors" id="password" name="password" placeholder="••••••••" type="password">
+<!-- Live Validation Block -->
+<div class="grid grid-cols-2 gap-y-2 mt-sm">
+<div class="flex items-center gap-1.5 font-mono-label text-mono-label text-text-muted transition-colors" id="v-length">
+<span class="material-symbols-outlined !text-[14px]">check_circle</span>
+<span>8+ characters</span>
+</div>
+<div class="flex items-center gap-1.5 font-mono-label text-mono-label text-text-muted transition-colors" id="v-upper">
+<span class="material-symbols-outlined !text-[14px]">check_circle</span>
+<span>Uppercase</span>
+</div>
+<div class="flex items-center gap-1.5 font-mono-label text-mono-label text-text-muted transition-colors" id="v-number">
+<span class="material-symbols-outlined !text-[14px]">check_circle</span>
+<span>Number</span>
+</div>
+<div class="flex items-center gap-1.5 font-mono-label text-mono-label text-text-muted transition-colors" id="v-symbol">
+<span class="material-symbols-outlined !text-[14px]">check_circle</span>
+<span>Symbol</span>
+</div>
+</div>
+</div>
+<!-- Confirm Password (Error State Demo) -->
+<div class="space-y-xs">
+<label class="font-label-std text-label-std text-text-primary" for="confirm_password">Confirm Password</label>
+<input class="w-full h-11 px-md border border-danger rounded-DEFAULT font-body-md text-body-md focus:outline-none focus:ring-0 focus:border-danger bg-surface transition-colors" id="confirm_password" name="confirm_password" placeholder="••••••••" type="password">
+<p class="font-label-std text-[11px] text-danger mt-1">Passwords must match</p>
+</div>
+<!-- Action Button -->
+<button class="w-full h-12 bg-[#6366F1] text-white font-label-std text-label-std rounded-DEFAULT hover:opacity-90 active:opacity-80 transition-all mt-lg" type="submit">
+                    Create Account
+                </button>
+</form>
+<div class="mt-xl pt-xl border-t border-border-base text-center">
+<p class="font-body-md text-body-md text-text-muted">
+                    Already have an account? 
+                    <a class="text-primary font-bold hover:underline" href="#">Sign In</a>
+</p>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl px-lg md:px-xl flex flex-col md:flex-row justify-between items-center gap-md bg-canvas border-t border-border-base no-shadow">
+<div class="font-label-std text-label-std text-text-primary">ResumeForge</div>
+<div class="flex gap-lg">
+<a class="font-body-md text-body-md text-text-muted hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-text-muted hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-body-md text-body-md text-text-muted hover:text-primary transition-colors" href="#">Help Center</a>
+</div>
+<div class="font-body-md text-body-md text-text-muted">
+            © 2024 ResumeForge. Built for professional focus.
+        </div>
+</footer>
+<script>
+        // Micro-interaction for password validation visualizer
+        const passwordInput = document.getElementById('password');
+        const vLength = document.getElementById('v-length');
+        const vUpper = document.getElementById('v-upper');
+        const vNumber = document.getElementById('v-number');
+        const vSymbol = document.getElementById('v-symbol');
+
+        passwordInput.addEventListener('input', (e) => {
+            const val = e.target.value;
+            
+            // Length check
+            updateState(vLength, val.length >= 8);
+            // Uppercase check
+            updateState(vUpper, /[A-Z]/.test(val));
+            // Number check
+            updateState(vNumber, /[0-9]/.test(val));
+            // Symbol check
+            updateState(vSymbol, /[!@#$%^&*(),.?":{}|<>]/.test(val));
+        });
+
+        function updateState(el, isValid) {
+            if (isValid) {
+                el.classList.remove('text-text-muted');
+                el.classList.add('text-[#16A34A]');
+                el.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+            } else {
+                el.classList.add('text-text-muted');
+                el.classList.remove('text-[#16A34A]');
+                el.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 0";
+            }
+        }
+    </script>
+</body></html>
