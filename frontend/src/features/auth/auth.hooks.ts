@@ -2,8 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authApi } from "./auth.service";
-import { type LoginInput, type RegisterInput } from "@/src/api/auth.api";
-import { SafeUser } from "./types";
+import { type LoginInput, type RegisterInput, type SafeUser } from "./types";
 import { isApiError } from "@/src/api/api-error";
 
 const AUTH_QUERY_KEY = ["auth", "me"] as const;

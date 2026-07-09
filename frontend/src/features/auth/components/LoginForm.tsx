@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/features/auth";
+import { isApiError } from "@/src/api/api-error";
 import { toast } from "sonner";
 import { AuthFormField } from "./AuthFormField";
 import { RememberMeCheckbox } from "./RememberMeCheckbox";
@@ -49,10 +50,11 @@ export function LoginForm() {
       });
       toast.success("Welcome back!");
       router.push("/");
-    } catch (error: any) {
-      const apiError = error?.response?.data?.error;
-      if (apiError) {
-        if (apiError.code === "INVALID_CREDENTIALS") {
+    } catch (error) {
+      // The axios interceptor normalizes every failure to a flat `ApiError`,
+      // so we branch on the typed envelope — not the raw axios error shape.
+      if (isApiError(error)) {
+        if (error.code === "INVALID_CREDENTIALS") {
           setError("email", {
             type: "manual",
             message: "Invalid email or password",
@@ -62,11 +64,13 @@ export function LoginForm() {
             message: "Invalid email or password",
           });
           toast.error("Login failed: Invalid email or password.");
+        } else if (error.status === 0) {
+          toast.error("Login failed. Please check your network connection.");
         } else {
-          toast.error(apiError.message || "Login failed. Please try again.");
+          toast.error(error.message || "Login failed. Please try again.");
         }
       } else {
-        toast.error("Login failed. Please check your network connection.");
+        toast.error("Login failed. Please try again.");
       }
     }
   };

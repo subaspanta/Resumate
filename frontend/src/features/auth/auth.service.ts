@@ -1,14 +1,10 @@
 import { axiosClient } from "@/src/api/client";
-import type { ApiResponse, SafeUser } from "@/src/features/auth/types";
-
-export type LoginInput = {
-  email: string;
-  password: string;
-};
-
-export type RegisterInput = LoginInput & {
-  name: string;
-};
+import type {
+  ApiResponse,
+  LoginInput,
+  RegisterInput,
+  SafeUser,
+} from "@/src/features/auth/types";
 
 export const authApi = {
   register: (data: RegisterInput) =>

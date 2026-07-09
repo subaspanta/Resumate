@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/features/auth";
+import { isApiError } from "@/src/api/api-error";
 import { toast } from "sonner";
 import { AuthFormField } from "./AuthFormField";
 import { PasswordStrengthChecklist } from "./PasswordStrengthChecklist";
@@ -74,33 +75,25 @@ export function RegisterForm() {
       });
       toast.success("Account created successfully!");
       router.push("/");
-    } catch (error: any) {
-      console.error("Registration error:", error);
-      const apiError = error?.response?.data?.error;
-
-      if (apiError) {
-        if (apiError.code === "USER_ALREADY_EXISTS") {
+    } catch (error) {
+      // The axios interceptor normalizes every failure to a flat `ApiError`,
+      // so we branch on the typed envelope and its canonical `code`.
+      if (isApiError(error)) {
+        if (error.code === "EMAIL_ALREADY_EXISTS") {
           setError("email", {
             type: "manual",
-            message: "User with this email already exists",
+            message: "An account with this email already exists",
           });
           toast.error("Registration failed: Email already registered.");
-        } else if (apiError.code === "VALIDATION_ERROR") {
-          const details = apiError.details;
-          if (details && typeof details === "object") {
-            Object.keys(details).forEach((key) => {
-              setError(key as any, {
-                type: "server",
-                message: details[key],
-              });
-            });
-          }
-          toast.error("Registration failed: Please correct validation errors.");
+        } else if (error.code === "VALIDATION_FAILED") {
+          toast.error("Registration failed: Please correct the highlighted fields.");
+        } else if (error.status === 0) {
+          toast.error("Registration failed. Please check your network connection.");
         } else {
-          toast.error(apiError.message || "Registration failed. Please try again.");
+          toast.error(error.message || "Registration failed. Please try again.");
         }
       } else {
-        toast.error("Registration failed. Please check your network connection.");
+        toast.error("Registration failed. Please try again.");
       }
     }
   };
