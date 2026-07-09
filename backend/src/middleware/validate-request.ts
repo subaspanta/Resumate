@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { z, ZodType } from "zod";
 
 import { AppError } from "../types/app-error.js";
-import { ERROR_CODES } from "../types/error-codes.js";
+import { ERROR_CODES } from "../constants/error-codes.js";
 
 export const validateRequest =
   <T>(schema: ZodType<T>) =>
@@ -13,7 +13,7 @@ export const validateRequest =
       return next(
         new AppError(
           400,
-          ERROR_CODES.VALIDATION_ERROR,
+          ERROR_CODES.VALIDATION_FAILED,
           "Validation failed",
           z.treeifyError(result.error),
         ),

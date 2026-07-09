@@ -1,5 +1,5 @@
 import { AppError } from "../../types/app-error.js";
-import { ERROR_CODES } from "../../types/error-codes.js";
+import { ERROR_CODES } from "../../constants/error-codes.js";
 import { AuthRepository } from "./auth.repository.js";
 import { LoginUserInput, RegisterUserInput } from "./auth.schema.js";
 import bcrypt from "bcrypt";
@@ -22,7 +22,7 @@ export class AuthService {
     if (existingUser) {
       throw new AppError(
         409,
-        ERROR_CODES.USER_ALREADY_EXISTS,
+        ERROR_CODES.EMAIL_ALREADY_EXISTS,
         "User with this email already exists",
       );
     }
@@ -72,7 +72,7 @@ export class AuthService {
     const user = await this.authRepository.findSafeUserById(userId);
 
     if (!user) {
-      throw new AppError(404, ERROR_CODES.USER_NOT_FOUND, "User not found");
+      throw new AppError(404, ERROR_CODES.RESOURCE_NOT_FOUND, "User not found");
     }
 
     return user;
