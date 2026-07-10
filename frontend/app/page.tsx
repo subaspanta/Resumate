@@ -20,29 +20,29 @@ import {
 } from "@/src/components/dashboard/ActiveDashboardContent";
 
 const MOCK_RESUMES: ResumeSummary[] = [
-  {
-    id: "1",
-    title: "Software Engineer Resume",
-    lastEditedAt: "2 hours ago",
-    atsScore: 91,
-    fileName: "Software_Engineer_Subas.pdf",
-    suggestionsCount: 2,
-    targetJob: null,
-  },
-  {
-    id: "2",
-    title: "Product Manager Draft",
-    lastEditedAt: "Yesterday",
-    atsScore: 76,
-    targetJob: "Google - PM",
-  },
-  {
-    id: "3",
-    title: "Marketing Lead CV",
-    lastEditedAt: "3 days ago",
-    atsScore: 48,
-    targetJob: null,
-  },
+  // {
+  //   id: "1",
+  //   title: "Software Engineer Resume",
+  //   lastEditedAt: "2 hours ago",
+  //   atsScore: 91,
+  //   fileName: "Software_Engineer_Subas.pdf",
+  //   suggestionsCount: 2,
+  //   targetJob: null,
+  // },
+  // {
+  //   id: "2",
+  //   title: "Product Manager Draft",
+  //   lastEditedAt: "Yesterday",
+  //   atsScore: 76,
+  //   targetJob: "Google - PM",
+  // },
+  // {
+  //   id: "3",
+  //   title: "Marketing Lead CV",
+  //   lastEditedAt: "3 days ago",
+  //   atsScore: 48,
+  //   targetJob: null,
+  // },
 ];
 
 const DEMO_RESUMES: ResumeSummary[] = MOCK_RESUMES;
