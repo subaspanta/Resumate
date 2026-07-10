@@ -2,11 +2,14 @@
 
 import { useAuth } from "@/src/features/auth";
 import { toast } from "sonner";
+import type { DashboardView } from "@/src/features/resume/types";
 
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
   userName?: string;
+  view: DashboardView;
+  onUploadClick?: () => void;
 }
 
 interface NavItemProps {
@@ -14,50 +17,81 @@ interface NavItemProps {
   label: string;
   isCollapsed: boolean;
   isActive?: boolean;
-  variant?: "default" | "danger";
+  isFilled?: boolean;
+  disabled?: boolean;
+  hint?: string;
   onClick?: () => void;
   href?: string;
 }
 
-// Shared by every sidebar item so active/hover/danger styling and the
-// collapsed-label-hiding logic live in exactly one place.
-function NavItem({ icon, label, isCollapsed, isActive, variant = "default", onClick, href }: NavItemProps) {
-  const baseClasses =
-    "flex items-center gap-md px-md py-sm rounded-lg transition-all cursor-pointer w-full text-left border-0 bg-transparent";
-  const variantClasses = isActive
-    ? "bg-primary-container text-primary"
-    : variant === "danger"
-    ? "text-danger hover:bg-red-50"
-    : "text-text-body hover:bg-canvas";
+function NavItem({
+  icon,
+  label,
+  isCollapsed,
+  isActive,
+  isFilled,
+  disabled,
+  hint,
+  onClick,
+  href,
+}: NavItemProps) {
+  const className = [
+    "dashboard-nav-item",
+    isActive && "dashboard-nav-item--active",
+    disabled && "dashboard-nav-item--disabled",
+    isCollapsed && "dashboard-nav-item--collapsed",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const content = (
     <>
-      <span className={`material-symbols-outlined shrink-0 ${!isActive ? "font-light" : ""}`}>{icon}</span>
-      {!isCollapsed && (
-        <span className={`font-body-md text-body-md whitespace-nowrap ${isActive ? "font-semibold" : ""}`}>
-          {label}
-        </span>
-      )}
+      <span
+        className="material-symbols-outlined shrink-0"
+        style={isFilled ? { fontVariationSettings: "'FILL' 1" } : undefined}
+      >
+        {icon}
+      </span>
+      {!isCollapsed && <span className="dashboard-nav-label">{label}</span>}
     </>
   );
 
-  if (href) {
+  if (href && !disabled) {
     return (
-      <a className={`${baseClasses} ${variantClasses}`} href={href} aria-label={label}>
+      <a className={className} href={href} aria-label={label}>
         {content}
       </a>
     );
   }
 
   return (
-    <button className={`${baseClasses} ${variantClasses}`} onClick={onClick} aria-label={label}>
-      {content}
-    </button>
+    <>
+      <button
+        className={className}
+        onClick={onClick}
+        disabled={disabled}
+        aria-label={label}
+        type="button"
+      >
+        {content}
+      </button>
+      {!isCollapsed && hint && (
+        <span className="dashboard-nav-hint">{hint}</span>
+      )}
+    </>
   );
 }
 
-export function Sidebar({ isCollapsed, onToggle, userName }: SidebarProps) {
+export function Sidebar({
+  isCollapsed,
+  onToggle,
+  userName,
+  view,
+  onUploadClick,
+}: SidebarProps) {
   const { logout } = useAuth();
+  const isFirstTime = view === "firstTime";
+  const showCollapse = !isFirstTime;
 
   const handleLogout = async () => {
     try {
@@ -69,68 +103,139 @@ export function Sidebar({ isCollapsed, onToggle, userName }: SidebarProps) {
     }
   };
 
+  const handleUnavailable = (feature: string) =>
+    toast.info(`${feature} is not available yet.`);
+
   return (
     <aside
-      className={`fixed left-0 top-0 h-screen bg-surface border-r border-border-base flex flex-col py-xl px-md z-50 transition-all duration-200 ${
-        isCollapsed ? "w-20" : "w-sidebar-width"
+      className={`dashboard-sidebar ${
+        showCollapse && isCollapsed ? "dashboard-sidebar--collapsed" : ""
       }`}
     >
-      <div className={`flex items-center gap-md mb-xxl px-md ${isCollapsed ? "justify-center" : ""}`}>
-        <span
-          className="material-symbols-outlined text-primary text-[28px] shrink-0"
-          style={{ fontVariationSettings: "'FILL' 1" }}
-        >
-          description
-        </span>
-        {!isCollapsed && (
-          <span className="font-headline-lg text-headline-lg text-primary font-bold whitespace-nowrap">
-            ResumeForge
+      <div
+        className={`dashboard-sidebar-brand ${
+          showCollapse && isCollapsed ? "dashboard-sidebar-brand--collapsed" : ""
+        }`}
+      >
+        {!isFirstTime && (
+          <span className="dashboard-sidebar-brand-icon">
+            <span
+              className="material-symbols-outlined text-primary text-[28px]"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              description
+            </span>
           </span>
+        )}
+        {!isCollapsed && (
+          <div>
+            <div className="dashboard-sidebar-brand-name">ResumeForge</div>
+            {isFirstTime && (
+              <p className="dashboard-sidebar-tagline">AI Resume Workspace</p>
+            )}
+          </div>
         )}
       </div>
 
-      <nav className="flex-1 space-y-xs" aria-label="Main navigation">
-        <NavItem icon="dashboard" label="Dashboard" isCollapsed={isCollapsed} isActive href="#" />
-        {/* Removed "Verify Session" debug link — see chat notes on handleTestMe */}
+      <nav className="dashboard-nav" aria-label="Main navigation">
         <NavItem
-          icon="logout"
-          label="Sign Out"
-          isCollapsed={isCollapsed}
-          variant="danger"
-          onClick={handleLogout}
+          icon="dashboard"
+          label="Dashboard"
+          isCollapsed={showCollapse && isCollapsed}
+          isActive
+          isFilled
+        />
+        <NavItem
+          icon="description"
+          label="Resume Workspace"
+          isCollapsed={showCollapse && isCollapsed}
+          disabled={isFirstTime}
+          hint={isFirstTime ? "Upload resume to unlock." : undefined}
+          onClick={() => handleUnavailable("Resume Workspace")}
+        />
+        <NavItem
+          icon="settings"
+          label="Settings"
+          isCollapsed={showCollapse && isCollapsed}
+          onClick={() => handleUnavailable("Settings")}
         />
       </nav>
 
-      <div className="mt-auto flex flex-col">
-        <button
-          onClick={onToggle}
-          className="flex items-center justify-center p-sm mb-md rounded-lg hover:bg-canvas text-text-muted hover:text-primary transition-all cursor-pointer border-0 bg-transparent"
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          <span className="material-symbols-outlined">{isCollapsed ? "menu" : "chevron_left"}</span>
-        </button>
+      {isFirstTime && !isCollapsed && (
+        <div className="dashboard-sidebar-cta">
+          <button
+            type="button"
+            className="dashboard-sidebar-cta-btn"
+            onClick={onUploadClick}
+          >
+            <span className="material-symbols-outlined">add</span>
+            Create New Resume
+          </button>
+        </div>
+      )}
 
-        <div className="pt-lg border-t border-border-base">
+      <div className="dashboard-sidebar-footer">
+        {showCollapse && (
+          <button
+            onClick={onToggle}
+            className="dashboard-sidebar-toggle"
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            type="button"
+          >
+            <span className="material-symbols-outlined">
+              {isCollapsed ? "menu" : "chevron_left"}
+            </span>
+          </button>
+        )}
+
+        <div className="dashboard-sidebar-user">
           <div
-            className={`flex items-center gap-md p-sm rounded-lg hover:bg-canvas cursor-pointer transition-all ${
-              isCollapsed ? "justify-center" : ""
+            className={`dashboard-sidebar-user-card ${
+              showCollapse && isCollapsed
+                ? "dashboard-sidebar-user-card--collapsed"
+                : ""
             }`}
           >
-            <div className="w-10 h-10 rounded-full bg-primary-container text-primary flex items-center justify-center font-bold text-lg shrink-0 select-none">
+            <div
+              className={`dashboard-sidebar-avatar ${
+                isFirstTime ? "dashboard-sidebar-avatar--sm" : ""
+              }`}
+            >
               {userName ? userName.charAt(0).toUpperCase() : "U"}
             </div>
             {!isCollapsed && (
-              <div className="flex flex-col overflow-hidden">
-                <span className="font-label-std text-label-std text-text-primary font-semibold truncate">
+              <div className="flex flex-col overflow-hidden min-w-0 flex-1">
+                <span className="dashboard-sidebar-user-name">
                   {userName || "Guest User"}
                 </span>
-                <span className="font-mono-label text-mono-label text-text-muted truncate uppercase font-medium">
-                  Pro Account
-                </span>
+                <span className="dashboard-sidebar-user-tier">Pro Account</span>
               </div>
+            )}
+            {isFirstTime && !isCollapsed && (
+              <button
+                type="button"
+                className="dashboard-icon-btn ml-auto"
+                aria-label="User menu"
+                onClick={() => handleUnavailable("User menu")}
+              >
+                <span className="material-symbols-outlined text-[20px]">
+                  more_vert
+                </span>
+              </button>
             )}
           </div>
         </div>
+
+        {view === "active" && !isCollapsed && (
+          <div className="mt-sm">
+            <NavItem
+              icon="logout"
+              label="Sign Out"
+              isCollapsed={false}
+              onClick={handleLogout}
+            />
+          </div>
+        )}
       </div>
     </aside>
   );

@@ -1,17 +1,13 @@
 "use client";
 
 import * as React from "react";
-
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-type AuthSubmitButtonProps = Omit<
-  React.ComponentProps<typeof Button>,
-  "variant" | "children"
-> & {
+type AuthSubmitButtonProps = React.ComponentProps<"button"> & {
   isLoading: boolean;
   loadingText: string;
   children: React.ReactNode;
+  variant?: "login" | "register";
 };
 
 export function AuthSubmitButton({
@@ -20,26 +16,30 @@ export function AuthSubmitButton({
   children,
   className,
   disabled,
+  variant = "login",
   ...props
 }: AuthSubmitButtonProps) {
   return (
-    <Button
-      variant="auth"
+    <button
+      type="submit"
       disabled={isLoading || disabled}
       className={cn(
-        "w-full h-12 rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed font-semibold",
+        "auth-btn-primary",
+        variant === "login"
+          ? "auth-btn-primary--login"
+          : "auth-btn-primary--register",
         className
       )}
       {...props}
     >
       {isLoading ? (
         <>
-          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+          <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
           <span>{loadingText}</span>
         </>
       ) : (
         children
       )}
-    </Button>
+    </button>
   );
 }

@@ -1,25 +1,33 @@
 "use client";
 
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface AuthFooterPromptProps {
   promptText: string;
   linkText: string;
   href: string;
+  variant?: "login" | "register";
+  className?: string;
 }
 
 export function AuthFooterPrompt({
   promptText,
   linkText,
   href,
+  variant = "login",
+  className,
 }: AuthFooterPromptProps) {
   return (
-    <p className="mt-lg text-center font-body-md text-body-md text-text-body">
+    <p
+      className={cn(
+        "auth-footer-prompt",
+        variant === "login" && "auth-footer-prompt--login",
+        className
+      )}
+    >
       {promptText}{" "}
-      <Link
-        className="text-primary font-bold hover:underline transition-all"
-        href={href}
-      >
+      <Link className="auth-footer-prompt-link" href={href}>
         {linkText}
       </Link>
     </p>

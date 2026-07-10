@@ -5,13 +5,19 @@ import { cn } from "@/lib/utils";
 interface AuthCardProps {
   children: React.ReactNode;
   className?: string;
+  variant?: "login" | "register";
 }
 
-export function AuthCard({ children, className }: AuthCardProps) {
+export function AuthCard({
+  children,
+  className,
+  variant = "login",
+}: AuthCardProps) {
   return (
     <section
       className={cn(
-        "bg-surface border border-border-base rounded-xxl p-xl shadow-none p-8 mt-6",
+        "auth-card no-shadow",
+        variant === "login" ? "auth-card--login" : "auth-card--register",
         className
       )}
     >

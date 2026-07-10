@@ -5,32 +5,35 @@ interface RecentResumesSectionProps {
   resumes: ResumeSummary[];
   onOpenResume: (id: string) => void;
   onViewAll: () => void;
+  emptyMessage?: string;
+  showViewAll?: boolean;
 }
 
 export function RecentResumesSection({
   resumes,
   onOpenResume,
   onViewAll,
+  emptyMessage = "No resumes yet. Your uploaded resumes will appear here.",
+  showViewAll = true,
 }: RecentResumesSectionProps) {
   return (
-    <section className="space-y-lg">
-      <div className="flex justify-between items-center">
-        <h2 className="font-headline-sm text-headline-sm text-text-primary font-bold">
-          Recent Resumes
-        </h2>
-        <button
-          className="text-primary font-label-std text-label-std hover:underline bg-transparent border-0 cursor-pointer font-semibold"
-          onClick={onViewAll}
-        >
-          View all files
-        </button>
+    <section className="dashboard-recent-section">
+      <div className="dashboard-recent-header">
+        <h2 className="dashboard-recent-title">Recent Resumes</h2>
+        {showViewAll && resumes.length > 0 && (
+          <button
+            className="dashboard-recent-link"
+            onClick={onViewAll}
+            type="button"
+          >
+            View all files
+          </button>
+        )}
       </div>
 
-      <div className="bg-surface rounded-xl overflow-hidden border border-border-base no-shadow">
+      <div className="dashboard-recent-panel">
         {resumes.length === 0 ? (
-          <p className="px-lg py-xl text-center text-text-muted font-body-md">
-            No resumes yet — upload one above to get started.
-          </p>
+          <p className="dashboard-recent-empty">{emptyMessage}</p>
         ) : (
           resumes.map((resume, i) => (
             <ResumeListItem

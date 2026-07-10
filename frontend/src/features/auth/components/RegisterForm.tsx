@@ -76,8 +76,6 @@ export function RegisterForm() {
       toast.success("Account created successfully!");
       router.push("/");
     } catch (error) {
-      // The axios interceptor normalizes every failure to a flat `ApiError`,
-      // so we branch on the typed envelope and its canonical `code`.
       if (isApiError(error)) {
         if (error.code === "EMAIL_ALREADY_EXISTS") {
           setError("email", {
@@ -100,7 +98,10 @@ export function RegisterForm() {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pb-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="auth-form auth-form--register"
+      >
         <AuthFormField
           id="name"
           label="Full Name"
@@ -109,6 +110,7 @@ export function RegisterForm() {
           registration={register("name")}
           error={errors.name?.message}
           disabled={isLoading}
+          variant="register"
         />
 
         <AuthFormField
@@ -119,6 +121,7 @@ export function RegisterForm() {
           registration={register("email")}
           error={errors.email?.message}
           disabled={isLoading}
+          variant="register"
         />
 
         <AuthFormField
@@ -129,6 +132,7 @@ export function RegisterForm() {
           registration={register("password")}
           error={errors.password?.message}
           disabled={isLoading}
+          variant="register"
           footer={<PasswordStrengthChecklist password={password} />}
         />
 
@@ -140,23 +144,24 @@ export function RegisterForm() {
           registration={register("confirmPassword")}
           error={errors.confirmPassword?.message}
           disabled={isLoading}
+          variant="register"
         />
 
         <AuthSubmitButton
           isLoading={isLoading}
           loadingText="Creating Account..."
-          className="mt-4 font-label-std text-label-std"
-          type="submit"
+          variant="register"
         >
           Create Account
         </AuthSubmitButton>
       </form>
 
-      <div className="mt-lg pt-lg border-t border-border-base text-center">
+      <div className="auth-register-divider">
         <AuthFooterPrompt
           promptText="Already have an account?"
           linkText="Sign In"
           href="/login"
+          variant="register"
         />
       </div>
     </>

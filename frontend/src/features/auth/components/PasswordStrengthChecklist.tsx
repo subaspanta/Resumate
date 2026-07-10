@@ -20,12 +20,14 @@ export function PasswordStrengthChecklist({
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-y-sm gap-x-md mt-md border-t border-border-base pt-md">
+    <div className="auth-password-check">
       {items.map((item) => (
         <div
           key={item.id}
-          className={`flex items-center gap-1.5 font-mono-label text-mono-label transition-colors px-sm ${
-            item.met ? "text-[#16A34A]" : "text-text-muted"
+          className={`auth-password-check-item ${
+            item.met
+              ? "auth-password-check-item--met"
+              : "auth-password-check-item--unmet"
           }`}
           id={`v-${item.id}`}
         >

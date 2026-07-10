@@ -1,5 +1,5 @@
 import { ResumeSummary } from "../features/resume/types";
-import { ScoreBadge } from "./Scorebadge";
+import { ScoreBadge } from "./ScoreBadge";
 
 interface ResumeListItemProps {
   resume: ResumeSummary;
@@ -10,8 +10,8 @@ interface ResumeListItemProps {
 export function ResumeListItem({ resume, onOpen, isLast }: ResumeListItemProps) {
   return (
     <div
-      className={`flex items-center justify-between px-lg py-md hover:bg-canvas transition-colors group cursor-pointer ${
-        isLast ? "" : "border-b border-border-base"
+      className={`dashboard-resume-row ${
+        isLast ? "" : "dashboard-resume-row--bordered"
       }`}
       onClick={() => onOpen(resume.id)}
       role="button"
@@ -20,30 +20,33 @@ export function ResumeListItem({ resume, onOpen, isLast }: ResumeListItemProps) 
         if (e.key === "Enter" || e.key === " ") onOpen(resume.id);
       }}
     >
-      <div className="flex items-center gap-lg">
-        <div className="w-10 h-10 bg-canvas flex items-center justify-center rounded border border-border-base">
-          <span className="material-symbols-outlined text-text-muted">description</span>
+      <div className="dashboard-resume-row-left">
+        <div className="dashboard-resume-icon">
+          <span className="material-symbols-outlined text-text-muted">
+            description
+          </span>
         </div>
         <div>
-          <p className="font-body-lg text-body-lg text-text-primary font-medium">
-            {resume.title}
-          </p>
-          <p className="font-body-md text-body-md text-text-muted">
+          <p className="dashboard-resume-name">{resume.title}</p>
+          <p className="dashboard-resume-meta">
             Last Edited: {resume.lastEditedAt}
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-xxl">
+      <div className="dashboard-resume-row-right">
         <ScoreBadge score={resume.atsScore} />
         <button
-          className="flex items-center gap-xs font-label-std text-label-std text-text-body hover:text-primary transition-colors bg-transparent border-0 cursor-pointer font-medium"
+          className="dashboard-open-btn"
           onClick={(e) => {
-            e.stopPropagation(); // avoid double-firing with the row's own onClick
+            e.stopPropagation();
             onOpen(resume.id);
           }}
+          type="button"
         >
           Open Workspace
-          <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+          <span className="material-symbols-outlined text-[18px]">
+            arrow_forward
+          </span>
         </button>
       </div>
     </div>
