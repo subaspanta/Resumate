@@ -18,7 +18,7 @@ export function AuthCard({
       className={cn(
         "auth-card no-shadow",
         variant === "login" ? "auth-card--login" : "auth-card--register",
-        className
+        className,
       )}
     >
       {children}
