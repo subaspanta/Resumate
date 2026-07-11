@@ -22,9 +22,7 @@ export function ScoreBadge({
 
   return (
     <div className="dashboard-score">
-      {showLabel && (
-        <span className="dashboard-score-label">ATS Score</span>
-      )}
+      {showLabel && <span className="dashboard-score-label">ATS Score</span>}
       <span className={badgeClass}>{score}/100</span>
     </div>
   );

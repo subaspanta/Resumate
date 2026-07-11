@@ -30,7 +30,11 @@ export function ContinueWorkingHero({
               {resume.fileName || resume.title}
             </span>
           </div>
-          <ScoreBadge score={resume.atsScore} variant="inline" showLabel={false} />
+          <ScoreBadge
+            score={resume.atsScore}
+            variant="inline"
+            showLabel={false}
+          />
           <div className="dashboard-hero-timestamp">
             <span className="material-symbols-outlined text-[14px]">
               schedule

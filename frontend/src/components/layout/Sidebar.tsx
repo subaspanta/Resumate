@@ -61,6 +61,7 @@ function NavItem({
       <a className={className} href={href} aria-label={label}>
         {content}
       </a>
+      
     );
   }
 
@@ -160,19 +161,6 @@ export function Sidebar({
           onClick={() => handleUnavailable("Settings")}
         />
       </nav>
-
-      {isFirstTime && !isCollapsed && (
-        <div className="dashboard-sidebar-cta">
-          <button
-            type="button"
-            className="dashboard-sidebar-cta-btn"
-            onClick={onUploadClick}
-          >
-            <span className="material-symbols-outlined">add</span>
-            Create New Resume
-          </button>
-        </div>
-      )}
 
       <div className="dashboard-sidebar-footer">
         {showCollapse && (

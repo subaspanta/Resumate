@@ -7,7 +7,11 @@ interface ResumeListItemProps {
   isLast: boolean;
 }
 
-export function ResumeListItem({ resume, onOpen, isLast }: ResumeListItemProps) {
+export function ResumeListItem({
+  resume,
+  onOpen,
+  isLast,
+}: ResumeListItemProps) {
   return (
     <div
       className={`dashboard-resume-row ${
