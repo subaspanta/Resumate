@@ -1,0 +1,91 @@
+/**
+ * Design tokens for the OfferForge app (colors, fonts, type scale, spacing, radii).
+ * Consumed by Tailwind v4 as utility classes (e.g. bg-primary, text-body-md).
+ */
+@theme {
+  --color-primary: #6366F1;
+  --color-primary-container: #EEF2FF;
+  --color-on-primary: #FFFFFF;
+  --color-background: #FCF8FF;
+  --color-canvas: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-border-base: #E2E8F0;
+  --color-border-input: #CBD5E1;
+
+  --color-text-primary: #0F172A;
+  --color-text-body: #475569;
+  --color-text-muted: #94A3B8;
+
+  --color-danger: #DC2626;
+  --color-ai-bg: #EEF2FF;
+  --color-ai-border: #C7D2FE;
+
+  --color-surface-container-low: #f5f2fe;
+  --color-surface-container: #efecf8;
+
+  --color-score-excellent: #16A34A;
+  --color-score-good: #CA8A04;
+  --color-score-needs-work: #EA580C;
+
+  --font-sans: var(--font-sans), Inter, system-ui, sans-serif;
+  --font-mono: var(--font-mono), JetBrains Mono, monospace;
+
+  --font-body-md: var(--font-sans);
+  --font-mono-label: var(--font-mono);
+  --font-display-md: var(--font-sans);
+  --font-headline-sm: var(--font-sans);
+  --font-headline-lg: var(--font-sans);
+  --font-body-lg: var(--font-sans);
+  --font-label-std: var(--font-sans);
+  --font-display-lg: var(--font-sans);
+
+  --text-display-lg: 48px;
+  --text-display-lg--line-height: 56px;
+  --text-display-lg--font-weight: 700;
+  --text-display-lg--letter-spacing: -0.02em;
+
+  --text-display-md: 36px;
+  --text-display-md--line-height: 44px;
+  --text-display-md--font-weight: 600;
+  --text-display-md--letter-spacing: -0.02em;
+
+  --text-headline-lg: 24px;
+  --text-headline-lg--line-height: 32px;
+  --text-headline-lg--font-weight: 600;
+
+  --text-headline-sm: 18px;
+  --text-headline-sm--line-height: 24px;
+  --text-headline-sm--font-weight: 600;
+
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 24px;
+  --text-body-lg--font-weight: 400;
+
+  --text-body-md: 14px;
+  --text-body-md--line-height: 20px;
+  --text-body-md--font-weight: 400;
+
+  --text-label-std: 13px;
+  --text-label-std--line-height: 1.25;
+  --text-label-std--font-weight: 500;
+
+  --text-mono-label: 11px;
+  --text-mono-label--line-height: 1.25;
+  --text-mono-label--font-weight: 500;
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-sidebar-width: 272px;
+  --spacing-sidebar-collapsed-width: 80px;
+  --spacing-max-content: 1280px;
+  --spacing-top-nav-height: 72px;
+
+  --radius-DEFAULT: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-xxl: 16px;
+}

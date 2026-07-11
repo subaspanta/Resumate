@@ -1,0 +1,23 @@
+/**
+ * Global element resets and small cross-cutting utility classes
+ * (not tied to any single feature/component).
+ */
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-text-body);
+}
+
+.no-shadow {
+  box-shadow: none !important;
+}
+
+.transition-standard {
+  transition: all 150ms ease-out;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
