@@ -14,6 +14,8 @@ const requiredEnvVars = [
   "BCRYPT_SALT_ROUNDS",
   "ACCESS_TOKEN_EXPIRES_IN",
   "COOKIE_MAX_AGE",
+  "REFRESH_TOKEN_SECRET",
+  "REFRESH_COOKIE_MAX_AGE",
 ] as const;
 
 const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
@@ -32,6 +34,11 @@ export const env = {
   JWT_SECRET: process.env.JWT_SECRET as string,
   ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN as string,
   COOKIE_MAX_AGE: parseInt(process.env.COOKIE_MAX_AGE || "900000", 10),
+  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET as string,
+  REFRESH_COOKIE_MAX_AGE: parseInt(
+    process.env.REFRESH_COOKIE_MAX_AGE || "604800000",
+    10,
+  ),
   isProduction: process.env.NODE_ENV === "production",
   isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",

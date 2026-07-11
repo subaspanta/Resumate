@@ -26,7 +26,8 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "tokens:cleanup": "tsx src/scripts/cleanup-refresh-tokens.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
