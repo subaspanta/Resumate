@@ -38,7 +38,6 @@ export function ResumeListItem({
         </div>
       </div>
       <div className="dashboard-resume-row-right">
-        <ScoreBadge score={resume.atsScore} />
         <button
           className="dashboard-open-btn"
           onClick={(e) => {

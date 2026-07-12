@@ -1,16 +1,16 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useAuth } from "@/src/features/auth";
 import { toast } from "sonner";
 import {
-  getDashboardView,
-  getSidebarOffset,
-  type ResumeSummary,
+  deriveDashboardState,
+  stateToLayoutKey,
+  type DashboardState,
 } from "@/src/features/resume/types";
-import { Sidebar } from "@/src/components/layout/Sidebar";
-import { TopNav } from "@/src/components/layout/TopNav";
-import { DashboardFooter } from "@/src/components/layout/DashboardFooter";
+import { useResumes, useUploadResume } from "@/src/features/resume/resume.hooks";
+import { useLatestAnalysis } from "@/src/features/analysis/analysis.hooks";
+import { DashboardShell } from "@/src/components/dashboard/shell/DashboardShell";
 import { FirstTimeDashboardContent } from "@/src/components/dashboard/FirstTimeDashboardContent";
 import { DefaultDashboardContent } from "@/src/components/dashboard/DefaultDashboardContent";
 import {
@@ -19,71 +19,51 @@ import {
   RecentResumesTable,
 } from "@/src/components/dashboard/ActiveDashboardContent";
 
-const MOCK_RESUMES: ResumeSummary[] = [
-  // {
-  //   id: "1",
-  //   title: "Software Engineer Resume",
-  //   lastEditedAt: "2 hours ago",
-  //   atsScore: 91,
-  //   fileName: "Software_Engineer_Subas.pdf",
-  //   suggestionsCount: 2,
-  //   targetJob: null,
-  // },
-  // {
-  //   id: "2",
-  //   title: "Product Manager Draft",
-  //   lastEditedAt: "Yesterday",
-  //   atsScore: 76,
-  //   targetJob: "Google - PM",
-  // },
-  // {
-  //   id: "3",
-  //   title: "Marketing Lead CV",
-  //   lastEditedAt: "3 days ago",
-  //   atsScore: 48,
-  //   targetJob: null,
-  // },
-];
-
-const DEMO_RESUMES: ResumeSummary[] = MOCK_RESUMES;
-
 export default function HomePage() {
   const { user } = useAuth();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [resumes, setResumes] = useState<ResumeSummary[]>(DEMO_RESUMES);
-  const uploadInputRef = useRef<HTMLInputElement>(null);
 
-  const view = useMemo(() => getDashboardView(resumes), [resumes]);
-  const isFirstTime = view === "firstTime";
+  // Data layer
+  const { resumes, isLoading: resumesLoading, isError: resumesError } = useResumes();
+  const primaryResumeId = resumes[0]?.id;
+  const { analysis: latestAnalysis } = useLatestAnalysis(primaryResumeId || "");
+  const uploadResumeMutation = useUploadResume();
+
+  // State derivation
+  const dashboardState: DashboardState = useMemo(() => {
+    return deriveDashboardState({
+      resumes,
+      latestAnalysis: latestAnalysis || null,
+      loadError: resumesError,
+    });
+  }, [resumes, latestAnalysis, resumesError]);
+
+  const layoutKey = useMemo(() => stateToLayoutKey(dashboardState), [dashboardState]);
   const primaryResume = resumes[0];
-  const totalSuggestions = useMemo(
-    () => resumes.reduce((sum, r) => sum + (r.suggestionsCount ?? 0), 0),
-    [resumes]
-  );
 
-  const sidebarOffset = getSidebarOffset(view, isSidebarCollapsed);
+  const handleFileSelected = async (file: File) => {
+    const form = new FormData();
+    form.append("file", file);
 
-  const handleFileSelected = (file: File) => {
-    const newResume: ResumeSummary = {
-      id: crypto.randomUUID(),
-      title: file.name.replace(/\.[^.]+$/, ""),
-      lastEditedAt: "Just now",
-      atsScore: 0,
-      fileName: file.name,
-      suggestionsCount: 0,
-      targetJob: null,
-    };
-
-    setResumes((current) => [newResume, ...current]);
-    toast.success(`"${file.name}" uploaded successfully.`);
+    try {
+      await uploadResumeMutation.mutateAsync(form);
+      toast.success(`"${file.name}" uploaded successfully.`);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to upload resume";
+      toast.error(message);
+    }
   };
 
-  const triggerUpload = () => uploadInputRef.current?.click();
-
-  const handleUploadInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) handleFileSelected(file);
-    e.target.value = "";
+  const triggerUpload = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".pdf,.docx";
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) handleFileSelected(file);
+    };
+    input.click();
   };
 
   const handleOpenResume = (id: string) => {
@@ -98,35 +78,28 @@ export default function HomePage() {
     toast.info("Job target setup is not available yet.");
   };
 
+  if (resumesLoading) {
+    return (
+      <div className="dashboard-shell flex items-center justify-center">
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-shell">
-      <input
-        ref={uploadInputRef}
-        type="file"
-        accept=".pdf,.docx"
-        className="hidden"
-        onChange={handleUploadInputChange}
-      />
-      <Sidebar
-        isCollapsed={isSidebarCollapsed}
-        onToggle={() => setIsSidebarCollapsed((prev) => !prev)}
+      <DashboardShell
+        view={layoutKey}
+        isSidebarCollapsed={isSidebarCollapsed}
+        onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
         userName={user?.name}
-        view={view}
         onUploadClick={triggerUpload}
-      />
-      <TopNav isSidebarCollapsed={isSidebarCollapsed} view={view} />
-
-      <main
-        className={`dashboard-main ${
-          isFirstTime ? "dashboard-main--first-time" : ""
-        }`}
-        style={{ marginLeft: sidebarOffset }}
       >
-        {view === "firstTime" && (
+        {dashboardState === "firstTime" && (
           <FirstTimeDashboardContent onFileSelected={handleFileSelected} />
         )}
 
-        {view === "default" && (
+        {dashboardState === "readyToStart" && (
           <DefaultDashboardContent
             userName={user?.name}
             resumes={resumes}
@@ -136,7 +109,7 @@ export default function HomePage() {
           />
         )}
 
-        {view === "active" && (
+        {dashboardState === "workspaceReady" && primaryResume && (
           <div className="dashboard-main-inner dashboard-main-inner--active flex flex-col gap-xl">
             <ContinueWorkingHero
               resume={primaryResume}
@@ -148,21 +121,26 @@ export default function HomePage() {
               <RecentResumesTable
                 resumes={resumes}
                 onOpenResume={handleOpenResume}
-                suggestionsCount={totalSuggestions}
+                suggestionsCount={0}
               />
             </div>
           </div>
         )}
 
-        {isFirstTime ? (
-          <DashboardFooter variant="inline" isSidebarCollapsed={false} />
-        ) : (
-          <DashboardFooter
-            isSidebarCollapsed={isSidebarCollapsed}
-            variant="fixed"
-          />
+        {dashboardState === "error" && (
+          <div className="dashboard-main-inner flex items-center justify-center">
+            <div className="text-center">
+              <p className="text-red-600 mb-4">Failed to load resumes</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
         )}
-      </main>
+      </DashboardShell>
     </div>
   );
 }
