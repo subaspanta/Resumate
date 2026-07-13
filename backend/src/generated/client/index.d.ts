@@ -3441,7 +3441,7 @@ export namespace Prisma {
     originalFileName: string | null
     mimeType: string | null
     fileSize: number | null
-    pdfUrl: string | null
+    fileUrl: string | null
     rawText: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3454,7 +3454,7 @@ export namespace Prisma {
     originalFileName: string | null
     mimeType: string | null
     fileSize: number | null
-    pdfUrl: string | null
+    fileUrl: string | null
     rawText: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3467,7 +3467,7 @@ export namespace Prisma {
     originalFileName: number
     mimeType: number
     fileSize: number
-    pdfUrl: number
+    fileUrl: number
     rawText: number
     structuredResume: number
     createdAt: number
@@ -3491,7 +3491,7 @@ export namespace Prisma {
     originalFileName?: true
     mimeType?: true
     fileSize?: true
-    pdfUrl?: true
+    fileUrl?: true
     rawText?: true
     createdAt?: true
     updatedAt?: true
@@ -3504,7 +3504,7 @@ export namespace Prisma {
     originalFileName?: true
     mimeType?: true
     fileSize?: true
-    pdfUrl?: true
+    fileUrl?: true
     rawText?: true
     createdAt?: true
     updatedAt?: true
@@ -3517,7 +3517,7 @@ export namespace Prisma {
     originalFileName?: true
     mimeType?: true
     fileSize?: true
-    pdfUrl?: true
+    fileUrl?: true
     rawText?: true
     structuredResume?: true
     createdAt?: true
@@ -3618,7 +3618,7 @@ export namespace Prisma {
     originalFileName: string
     mimeType: string
     fileSize: number
-    pdfUrl: string
+    fileUrl: string
     rawText: string
     structuredResume: JsonValue
     createdAt: Date
@@ -3651,7 +3651,7 @@ export namespace Prisma {
     originalFileName?: boolean
     mimeType?: boolean
     fileSize?: boolean
-    pdfUrl?: boolean
+    fileUrl?: boolean
     rawText?: boolean
     structuredResume?: boolean
     createdAt?: boolean
@@ -3668,7 +3668,7 @@ export namespace Prisma {
     originalFileName?: boolean
     mimeType?: boolean
     fileSize?: boolean
-    pdfUrl?: boolean
+    fileUrl?: boolean
     rawText?: boolean
     structuredResume?: boolean
     createdAt?: boolean
@@ -3683,7 +3683,7 @@ export namespace Prisma {
     originalFileName?: boolean
     mimeType?: boolean
     fileSize?: boolean
-    pdfUrl?: boolean
+    fileUrl?: boolean
     rawText?: boolean
     structuredResume?: boolean
     createdAt?: boolean
@@ -3698,14 +3698,14 @@ export namespace Prisma {
     originalFileName?: boolean
     mimeType?: boolean
     fileSize?: boolean
-    pdfUrl?: boolean
+    fileUrl?: boolean
     rawText?: boolean
     structuredResume?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "originalFileName" | "mimeType" | "fileSize" | "pdfUrl" | "rawText" | "structuredResume" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
+  export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "originalFileName" | "mimeType" | "fileSize" | "fileUrl" | "rawText" | "structuredResume" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
   export type ResumeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     analyses?: boolean | Resume$analysesArgs<ExtArgs>
@@ -3731,7 +3731,7 @@ export namespace Prisma {
       originalFileName: string
       mimeType: string
       fileSize: number
-      pdfUrl: string
+      fileUrl: string
       rawText: string
       structuredResume: Prisma.JsonValue
       createdAt: Date
@@ -4167,7 +4167,7 @@ export namespace Prisma {
     readonly originalFileName: FieldRef<"Resume", 'String'>
     readonly mimeType: FieldRef<"Resume", 'String'>
     readonly fileSize: FieldRef<"Resume", 'Int'>
-    readonly pdfUrl: FieldRef<"Resume", 'String'>
+    readonly fileUrl: FieldRef<"Resume", 'String'>
     readonly rawText: FieldRef<"Resume", 'String'>
     readonly structuredResume: FieldRef<"Resume", 'Json'>
     readonly createdAt: FieldRef<"Resume", 'DateTime'>
@@ -5738,7 +5738,7 @@ export namespace Prisma {
     originalFileName: 'originalFileName',
     mimeType: 'mimeType',
     fileSize: 'fileSize',
-    pdfUrl: 'pdfUrl',
+    fileUrl: 'fileUrl',
     rawText: 'rawText',
     structuredResume: 'structuredResume',
     createdAt: 'createdAt',
@@ -6017,7 +6017,7 @@ export namespace Prisma {
     originalFileName?: StringFilter<"Resume"> | string
     mimeType?: StringFilter<"Resume"> | string
     fileSize?: IntFilter<"Resume"> | number
-    pdfUrl?: StringFilter<"Resume"> | string
+    fileUrl?: StringFilter<"Resume"> | string
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
@@ -6033,7 +6033,7 @@ export namespace Prisma {
     originalFileName?: SortOrder
     mimeType?: SortOrder
     fileSize?: SortOrder
-    pdfUrl?: SortOrder
+    fileUrl?: SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
     createdAt?: SortOrder
@@ -6052,7 +6052,7 @@ export namespace Prisma {
     originalFileName?: StringFilter<"Resume"> | string
     mimeType?: StringFilter<"Resume"> | string
     fileSize?: IntFilter<"Resume"> | number
-    pdfUrl?: StringFilter<"Resume"> | string
+    fileUrl?: StringFilter<"Resume"> | string
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
@@ -6068,7 +6068,7 @@ export namespace Prisma {
     originalFileName?: SortOrder
     mimeType?: SortOrder
     fileSize?: SortOrder
-    pdfUrl?: SortOrder
+    fileUrl?: SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
     createdAt?: SortOrder
@@ -6090,7 +6090,7 @@ export namespace Prisma {
     originalFileName?: StringWithAggregatesFilter<"Resume"> | string
     mimeType?: StringWithAggregatesFilter<"Resume"> | string
     fileSize?: IntWithAggregatesFilter<"Resume"> | number
-    pdfUrl?: StringWithAggregatesFilter<"Resume"> | string
+    fileUrl?: StringWithAggregatesFilter<"Resume"> | string
     rawText?: StringWithAggregatesFilter<"Resume"> | string
     structuredResume?: JsonWithAggregatesFilter<"Resume">
     createdAt?: DateTimeWithAggregatesFilter<"Resume"> | Date | string
@@ -6308,7 +6308,7 @@ export namespace Prisma {
     originalFileName: string
     mimeType: string
     fileSize: number
-    pdfUrl: string
+    fileUrl: string
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -6324,7 +6324,7 @@ export namespace Prisma {
     originalFileName: string
     mimeType: string
     fileSize: number
-    pdfUrl: string
+    fileUrl: string
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -6338,7 +6338,7 @@ export namespace Prisma {
     originalFileName?: StringFieldUpdateOperationsInput | string
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
-    pdfUrl?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6354,7 +6354,7 @@ export namespace Prisma {
     originalFileName?: StringFieldUpdateOperationsInput | string
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
-    pdfUrl?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6369,7 +6369,7 @@ export namespace Prisma {
     originalFileName: string
     mimeType: string
     fileSize: number
-    pdfUrl: string
+    fileUrl: string
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -6382,7 +6382,7 @@ export namespace Prisma {
     originalFileName?: StringFieldUpdateOperationsInput | string
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
-    pdfUrl?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6396,7 +6396,7 @@ export namespace Prisma {
     originalFileName?: StringFieldUpdateOperationsInput | string
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
-    pdfUrl?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6720,7 +6720,7 @@ export namespace Prisma {
     originalFileName?: SortOrder
     mimeType?: SortOrder
     fileSize?: SortOrder
-    pdfUrl?: SortOrder
+    fileUrl?: SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
     createdAt?: SortOrder
@@ -6738,7 +6738,7 @@ export namespace Prisma {
     originalFileName?: SortOrder
     mimeType?: SortOrder
     fileSize?: SortOrder
-    pdfUrl?: SortOrder
+    fileUrl?: SortOrder
     rawText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -6751,7 +6751,7 @@ export namespace Prisma {
     originalFileName?: SortOrder
     mimeType?: SortOrder
     fileSize?: SortOrder
-    pdfUrl?: SortOrder
+    fileUrl?: SortOrder
     rawText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7204,7 +7204,7 @@ export namespace Prisma {
     originalFileName: string
     mimeType: string
     fileSize: number
-    pdfUrl: string
+    fileUrl: string
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7218,7 +7218,7 @@ export namespace Prisma {
     originalFileName: string
     mimeType: string
     fileSize: number
-    pdfUrl: string
+    fileUrl: string
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7290,7 +7290,7 @@ export namespace Prisma {
     originalFileName?: StringFilter<"Resume"> | string
     mimeType?: StringFilter<"Resume"> | string
     fileSize?: IntFilter<"Resume"> | number
-    pdfUrl?: StringFilter<"Resume"> | string
+    fileUrl?: StringFilter<"Resume"> | string
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
@@ -7501,7 +7501,7 @@ export namespace Prisma {
     originalFileName: string
     mimeType: string
     fileSize: number
-    pdfUrl: string
+    fileUrl: string
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7516,7 +7516,7 @@ export namespace Prisma {
     originalFileName: string
     mimeType: string
     fileSize: number
-    pdfUrl: string
+    fileUrl: string
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7545,7 +7545,7 @@ export namespace Prisma {
     originalFileName?: StringFieldUpdateOperationsInput | string
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
-    pdfUrl?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7560,7 +7560,7 @@ export namespace Prisma {
     originalFileName?: StringFieldUpdateOperationsInput | string
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
-    pdfUrl?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7573,7 +7573,7 @@ export namespace Prisma {
     originalFileName: string
     mimeType: string
     fileSize: number
-    pdfUrl: string
+    fileUrl: string
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7595,7 +7595,7 @@ export namespace Prisma {
     originalFileName?: StringFieldUpdateOperationsInput | string
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
-    pdfUrl?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7609,7 +7609,7 @@ export namespace Prisma {
     originalFileName?: StringFieldUpdateOperationsInput | string
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
-    pdfUrl?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7623,7 +7623,7 @@ export namespace Prisma {
     originalFileName?: StringFieldUpdateOperationsInput | string
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
-    pdfUrl?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

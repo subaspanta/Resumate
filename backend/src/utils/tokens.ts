@@ -1,16 +1,20 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import crypto from "crypto";
 import { env } from "../config/env.js";
+import { ERROR_CODES } from "../constants/error-codes.js";
+import { AppError } from "../types/app-error.js";
 
 const JWT_SECRET = env.JWT_SECRET;
 const REFRESH_TOKEN_SECRET = env.REFRESH_TOKEN_SECRET;
 
-function isTokenPayload(payload: unknown): payload is JwtPayload {
+function isTokenPayload(
+  payload: unknown,
+): payload is { sub: string; email: string } & JwtPayload {
   return (
     typeof payload === "object" &&
     payload !== null &&
-    "sub" in payload &&
-    "email" in payload
+    typeof (payload as any).sub === "string" &&
+    typeof (payload as any).email === "string"
   );
 }
 
@@ -20,7 +24,9 @@ export function generateAccessToken(payload: JwtPayload): string {
   } as jwt.SignOptions);
 }
 
-export function verifyAccessToken(token: string): JwtPayload | null {
+export function verifyAccessToken(
+  token: string,
+): ({ sub: string; email: string } & JwtPayload) | null {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     return isTokenPayload(payload) ? payload : null;

@@ -2,10 +2,14 @@ import { Router } from "express";
 import { loginUserSchema, registerUserSchema } from "./auth.schema.js";
 import { validateRequest } from "../../middleware/validate-request.js";
 import { AuthController } from "./auth.controller.js";
+import { AuthService } from "./auth.service.js";
+import { AuthRepository } from "./auth.repository.js";
 import { requireAuth } from "../../middleware/requireAuth.js";
 
 const router = Router();
-const authController = new AuthController();
+const authRepository = new AuthRepository();
+const authService = new AuthService(authRepository);
+const authController = new AuthController(authService);
 
 router.post(
   "/register",

@@ -146,7 +146,7 @@ exports.Prisma.ResumeScalarFieldEnum = {
   originalFileName: 'originalFileName',
   mimeType: 'mimeType',
   fileSize: 'fileSize',
-  pdfUrl: 'pdfUrl',
+  fileUrl: 'fileUrl',
   rawText: 'rawText',
   structuredResume: 'structuredResume',
   createdAt: 'createdAt',

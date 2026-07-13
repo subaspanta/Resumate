@@ -14,7 +14,7 @@ import {
 } from "../../utils/tokens.js";
 
 export class AuthService {
-  constructor(private readonly authRepository = new AuthRepository()) {}
+  constructor(private readonly authRepository: AuthRepository) {}
   private throwInvalidCredentials(): never {
     throw new AppError(
       401,
@@ -33,8 +33,14 @@ export class AuthService {
     user: { id: string; email: string },
     familyId: string = crypto.randomUUID(),
   ) {
-    const accessToken = generateAccessToken({ sub: user.id, email: user.email });
-    const refreshToken = generateRefreshToken({ sub: user.id, email: user.email });
+    const accessToken = generateAccessToken({
+      sub: user.id,
+      email: user.email,
+    });
+    const refreshToken = generateRefreshToken({
+      sub: user.id,
+      email: user.email,
+    });
 
     await this.authRepository.createRefreshToken({
       userId: user.id,
@@ -93,6 +99,10 @@ export class AuthService {
     };
   }
   async refresh(rawRefreshToken: string): Promise<RefreshResult> {
+    if (typeof rawRefreshToken !== "string" || rawRefreshToken.length === 0) {
+      this.throwInvalidRefreshToken();
+    }
+
     const payload = verifyRefreshToken(rawRefreshToken);
 
     if (!payload?.sub) {

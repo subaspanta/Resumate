@@ -44,7 +44,7 @@ model Resume {
   originalFileName String   @db.Text
   mimeType         String   @db.VarChar(100)
   fileSize         Int
-  pdfUrl           String   @db.Text
+  fileUrl          String   @db.Text
   rawText          String   @db.Text
   structuredResume Json     @db.JsonB
   createdAt        DateTime @default(now()) @db.Timestamp(6)
@@ -70,5 +70,6 @@ model Analysis {
 
   @@index([resumeId])
   @@index([createdAt(sort: Desc)])
+  @@index([resumeId, createdAt(sort: Desc)])
   @@map("analyses")
 }
