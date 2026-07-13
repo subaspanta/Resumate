@@ -101,4 +101,7 @@ export class ResumeService {
       user: { connect: { id: userId } },
     });
   }
+  async listResumes(userId: string) {
+    return this.resumeRepository.findResumesByUserId(userId);
+  }
 }

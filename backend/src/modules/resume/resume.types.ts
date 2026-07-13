@@ -16,3 +16,12 @@ export interface ParsingModule {
     structuredResume: Record<string, unknown>;
   }>;
 }
+
+export type ResumeSummary = {
+  id: string;
+  title: string;
+  originalFileName: string;
+  fileSize: number;
+  createdAt: Date;
+  updatedAt: Date;
+};

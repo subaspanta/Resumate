@@ -48,16 +48,15 @@ export class ResumeController {
           "No file was uploaded",
         );
       }
-
-      // TODO: pass req.file.buffer to ResumeService to parse + persist the resume.
-
+      const userId = req.user!.sub;
+      const resume = await this.resumeService.uploadResume(
+        userId,
+        req.file,
+        req.body,
+      );
       res.status(HTTP_STATUS.CREATED).json({
         success: true,
-        data: {
-          originalFileName: req.file.originalname,
-          mimeType: req.file.mimetype,
-          fileSize: req.file.size,
-        },
+        data: resume,
       });
     } catch (error) {
       next(error);
