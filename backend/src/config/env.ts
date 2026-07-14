@@ -16,6 +16,9 @@ const requiredEnvVars = [
   "COOKIE_MAX_AGE",
   "REFRESH_TOKEN_SECRET",
   "REFRESH_COOKIE_MAX_AGE",
+  "CLOUDINARY_CLOUD_NAME",
+  "CLOUDINARY_API_KEY",
+  "CLOUDINARY_API_SECRET",
 ] as const;
 
 const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
@@ -42,8 +45,13 @@ export const env = {
   isProduction: process.env.NODE_ENV === "production",
   isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",
+  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
 } as const;
 
-console.log(" Environment loaded from:", envPath);
-console.log(" NODE_ENV:", env.NODE_ENV);
-console.log(" PORT:", env.PORT);
+if (env.NODE_ENV !== "production") {
+  console.log(" Environment loaded from:", envPath);
+  console.log(" NODE_ENV:", env.NODE_ENV);
+  console.log(" PORT:", env.PORT);
+}
