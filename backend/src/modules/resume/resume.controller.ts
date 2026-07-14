@@ -9,17 +9,15 @@ export class ResumeController {
 
   listResumes = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!req.user) {
-        throw new AppError(
-          HTTP_STATUS.UNAUTHORIZED,
-          ERROR_CODES.UNAUTHORIZED,
-          "User authentication required",
-        );
-      }
-
-      const resumes = await this.resumeService.listResumesByUserId(
-        req.user.sub,
-      );
+      // if (!req.user) {
+      //   throw new AppError(
+      //     HTTP_STATUS.UNAUTHORIZED,
+      //     ERROR_CODES.UNAUTHORIZED,
+      //     "User authentication required",
+      //   );
+      // }
+      const userId = req.user?.sub;
+      const resumes = await this.resumeService.listResumesByUserId(userId!);
 
       res.status(HTTP_STATUS.OK).json({
         success: true,
@@ -30,6 +28,7 @@ export class ResumeController {
     }
   };
 
+  // TO DO: Implement getResumeById method in ResumeController
   getResumeById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.sub;
@@ -41,17 +40,10 @@ export class ResumeController {
 
   uploadResume = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!req.file) {
-        throw new AppError(
-          HTTP_STATUS.BAD_REQUEST,
-          ERROR_CODES.VALIDATION_FAILED,
-          "No file was uploaded",
-        );
-      }
       const userId = req.user!.sub;
       const resume = await this.resumeService.uploadResume(
         userId,
-        req.file,
+        req.file!,
         req.body,
       );
       res.status(HTTP_STATUS.CREATED).json({
