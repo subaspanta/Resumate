@@ -15,4 +15,11 @@ export type SafeUser = {
 export type AuthResponse = {
   user: SafeUser;
   accessToken: string;
+  refreshToken: string;
+};
+
+export type RefreshResult = {
+  user: SafeUser;
+  accessToken: string;
+  refreshToken: string;
 };

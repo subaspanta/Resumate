@@ -1,0 +1,155 @@
+/**
+ * Resume upload drop zone and the first-time feature preview cards.
+ * Used by src/components/UploadDropZone.tsx and FeaturePreviewSection.tsx.
+ */
+@layer components {
+  .dashboard-upload {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--spacing-xxl);
+  }
+
+  .dashboard-upload-zone {
+    width: 100%;
+    background-color: var(--color-surface);
+    border: 2px dashed var(--color-border-input);
+    border-radius: var(--radius-xl);
+    padding: 64px var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 200ms ease-out;
+  }
+
+  .dashboard-upload-zone--default {
+    max-width: 750px;
+  }
+
+  .dashboard-upload-zone--first-time {
+    max-width: 100%;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xxl);
+    cursor: pointer;
+  }
+
+  .dashboard-upload-zone--active {
+    border-color: var(--color-primary);
+    background-color: var(--color-ai-bg);
+  }
+
+  .dashboard-upload-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 9999px;
+    background-color: var(--color-surface-container-low);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-lg);
+    transition: all 200ms ease-out;
+  }
+
+  .dashboard-upload-zone--first-time .dashboard-upload-icon {
+    background-color: var(--color-surface-container);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .dashboard-upload-zone--first-time:hover .dashboard-upload-icon {
+    color: var(--color-primary);
+    background-color: var(--color-surface-container-low);
+  }
+
+  .dashboard-upload-title {
+    font-family: var(--font-headline-sm);
+    font-size: var(--text-headline-sm);
+    font-weight: 600;
+    line-height: var(--text-headline-sm--line-height);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .dashboard-upload-desc {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    padding-inline: var(--spacing-lg);
+  }
+
+  .dashboard-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xl);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    border-radius: var(--radius-lg);
+    border: 0;
+    font-family: var(--font-label-std);
+    font-size: var(--text-label-std);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 150ms ease-out;
+  }
+
+  .dashboard-upload-btn:hover {
+    opacity: 0.9;
+  }
+
+  .dashboard-upload-btn--compact {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .dashboard-upload-meta {
+    margin-top: var(--spacing-md);
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  /* Feature previews (first-time) */
+  .dashboard-feature-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-lg);
+  }
+
+  .dashboard-feature-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-border-base);
+    background-color: var(--color-surface);
+    border-radius: var(--radius-lg);
+  }
+
+  .dashboard-feature-card--ai {
+    border-color: var(--color-ai-border);
+    background-color: var(--color-ai-bg);
+  }
+
+  .dashboard-feature-card-title {
+    font-family: var(--font-label-std);
+    font-size: var(--text-label-std);
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+
+  .dashboard-feature-card-title--ai {
+    color: var(--color-primary);
+  }
+
+  .dashboard-feature-arrow {
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+}

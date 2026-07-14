@@ -2,22 +2,36 @@ import { Request, Response, NextFunction } from "express";
 import { AuthService } from "./auth.service.js";
 import { env } from "../../config/env.js";
 import { SafeUser } from "./auth.types.js";
+import { AppError } from "../../types/app-error.js";
+import { ERROR_CODES } from "../../constants/error-codes.js";
+import { HTTP_STATUS } from "../../constants/http-status.js";
+
+const AUTH_COOKIE_PATH = "/api/v1/auth";
 
 export class AuthController {
-  constructor(private readonly authService = new AuthService()) {}
+  constructor(private readonly authService: AuthService) {}
   cookieOptions = {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
     sameSite: "strict" as const,
     maxAge: env.COOKIE_MAX_AGE,
   };
-  private sendAuthresponse(
+  refreshCookieOptions = {
+    httpOnly: true,
+    secure: env.NODE_ENV === "production",
+    sameSite: "strict" as const,
+    maxAge: env.REFRESH_COOKIE_MAX_AGE,
+    path: AUTH_COOKIE_PATH,
+  };
+  private sendAuthResponse(
     res: Response,
     user: SafeUser,
     accessToken: string,
+    refreshToken: string,
     statusCode: number,
   ) {
     res.cookie("accessToken", accessToken, this.cookieOptions);
+    res.cookie("refreshToken", refreshToken, this.refreshCookieOptions);
     res.status(statusCode).json({
       success: true,
       data: user,
@@ -26,29 +40,52 @@ export class AuthController {
 
   register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { user, accessToken } = await this.authService.register(req.body);
-      this.sendAuthresponse(res, user, accessToken, 201);
+      const { user, accessToken, refreshToken } =
+        await this.authService.register(req.body);
+      this.sendAuthResponse(
+        res,
+        user,
+        accessToken,
+        refreshToken,
+        HTTP_STATUS.CREATED,
+      );
     } catch (error) {
       next(error);
     }
   };
   login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { user, accessToken } = await this.authService.login(req.body);
-      this.sendAuthresponse(res, user, accessToken, 200);
+      const { user, accessToken, refreshToken } = await this.authService.login(
+        req.body,
+      );
+      this.sendAuthResponse(res, user, accessToken, refreshToken, 200);
+    } catch (error) {
+      next(error);
+    }
+  };
+  refresh = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { user, accessToken, refreshToken } =
+        await this.authService.refresh(req.cookies.refreshToken);
+      this.sendAuthResponse(
+        res,
+        user,
+        accessToken,
+        refreshToken,
+        HTTP_STATUS.OK,
+      );
     } catch (error) {
       next(error);
     }
   };
   logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.clearCookie("accessToken", {
-        httpOnly: true,
-        secure: env.NODE_ENV === "production",
-        sameSite: "strict" as const,
-      });
+      await this.authService.logout(req.cookies.refreshToken);
 
-      res.status(200).json({
+      res.clearCookie("accessToken", this.cookieOptions);
+      res.clearCookie("refreshToken", this.refreshCookieOptions);
+
+      res.status(HTTP_STATUS.OK).json({
         success: true,
         message: "Logged out successfully",
       });
@@ -58,9 +95,16 @@ export class AuthController {
   };
   me = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = req.user!.sub;
+      if (!req.user) {
+        throw new AppError(
+          401,
+          ERROR_CODES.UNAUTHORIZED,
+          "User authentication required",
+        );
+      }
+      const userId = req.user.sub;
       const currentUser = await this.authService.getCurrentUser(userId);
-      res.status(200).json({
+      res.status(HTTP_STATUS.OK).json({
         success: true,
         data: currentUser,
       });

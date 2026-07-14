@@ -1,16 +1,14 @@
 "use client";
 
-import { getSidebarOffset, type DashboardView } from "@/src/features/resume/types";
 import { toast } from "sonner";
 
 interface TopNavProps {
-  isSidebarCollapsed: boolean;
-  view: DashboardView;
+  mode: "placeholder" | "search";
+  sidebarOffset: string;
 }
 
-export function TopNav({ isSidebarCollapsed, view }: TopNavProps) {
-  const isFirstTime = view === "firstTime";
-  const sidebarOffset = getSidebarOffset(view, isSidebarCollapsed);
+export function TopNav({ mode, sidebarOffset }: TopNavProps) {
+  const isFirstTime = mode === "placeholder";
 
   const handleUpgrade = () => toast.info("Upgrade is not available yet.");
 

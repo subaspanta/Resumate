@@ -23,7 +23,7 @@ export function AuthFooterPrompt({
       className={cn(
         "auth-footer-prompt",
         variant === "login" && "auth-footer-prompt--login",
-        className
+        className,
       )}
     >
       {promptText}{" "}

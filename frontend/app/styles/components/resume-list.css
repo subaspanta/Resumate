@@ -1,0 +1,263 @@
+/**
+ * Recent resumes list/table, score badges, and row actions.
+ * Used by RecentResumeSection.tsx, ResumeListItem.tsx, ScoreBadge.tsx,
+ * and the resume table in ActiveDashboardContent.tsx.
+ */
+@layer components {
+  .dashboard-recent-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+
+  .dashboard-recent-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .dashboard-recent-title {
+    font-family: var(--font-headline-sm);
+    font-size: var(--text-headline-sm);
+    font-weight: 600;
+    line-height: var(--text-headline-sm--line-height);
+    color: var(--color-text-primary);
+  }
+
+  .dashboard-recent-link {
+    font-family: var(--font-label-std);
+    font-size: var(--text-label-std);
+    font-weight: 500;
+    color: var(--color-primary);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: all 150ms ease-out;
+  }
+
+  .dashboard-recent-link:hover {
+    text-decoration: underline;
+  }
+
+  .dashboard-recent-panel {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    border: 1px solid var(--color-border-base);
+  }
+
+  .dashboard-recent-empty {
+    padding: var(--spacing-xl);
+    text-align: center;
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    color: var(--color-text-muted);
+  }
+
+  .dashboard-recent-empty--bordered .dashboard-recent-title {
+    border-bottom: 1px solid var(--color-border-base);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .dashboard-resume-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    cursor: pointer;
+    transition: background-color 150ms ease-out;
+  }
+
+  .dashboard-resume-row:hover {
+    background-color: var(--color-canvas);
+  }
+
+  .dashboard-resume-row--bordered {
+    border-bottom: 1px solid var(--color-border-base);
+  }
+
+  .dashboard-resume-row-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+  }
+
+  .dashboard-resume-icon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-surface-container);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-DEFAULT);
+  }
+
+  .dashboard-resume-name {
+    font-family: var(--font-body-lg);
+    font-size: var(--text-body-lg);
+    font-weight: 500;
+    line-height: var(--text-body-lg--line-height);
+    color: var(--color-text-primary);
+  }
+
+  .dashboard-resume-meta {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    color: var(--color-text-muted);
+  }
+
+  .dashboard-resume-row-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xxl);
+  }
+
+  .dashboard-open-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-family: var(--font-label-std);
+    font-size: var(--text-label-std);
+    font-weight: 500;
+    color: var(--color-text-body);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: color 150ms ease-out;
+  }
+
+  .dashboard-open-btn:hover {
+    color: var(--color-primary);
+  }
+
+  /* Score badges */
+  .dashboard-score {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .dashboard-score-label {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .dashboard-score-badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 500;
+    border-radius: var(--radius-DEFAULT);
+    border: 1px solid;
+  }
+
+  .dashboard-score-badge--excellent {
+    color: var(--color-score-excellent);
+    background-color: color-mix(in srgb, var(--color-score-excellent) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-score-excellent) 20%, transparent);
+  }
+
+  .dashboard-score-badge--good {
+    color: var(--color-score-good);
+    background-color: color-mix(in srgb, var(--color-score-good) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-score-good) 20%, transparent);
+  }
+
+  .dashboard-score-badge--needs-work {
+    color: var(--color-score-needs-work);
+    background-color: color-mix(in srgb, var(--color-score-needs-work) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-score-needs-work) 20%, transparent);
+  }
+
+  .dashboard-score-badge--poor {
+    color: var(--color-danger);
+    background-color: color-mix(in srgb, var(--color-danger) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-danger) 20%, transparent);
+  }
+
+  .dashboard-score-badge--inline {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px var(--spacing-xs);
+  }
+
+  /* Resume table (active state) */
+  .dashboard-table-panel {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .dashboard-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+  }
+
+  .dashboard-table thead tr {
+    border-bottom: 1px solid var(--color-border-base);
+    background-color: var(--color-canvas);
+  }
+
+  .dashboard-table th {
+    padding: var(--spacing-md);
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .dashboard-table th:last-child {
+    text-align: right;
+  }
+
+  .dashboard-table tbody tr {
+    border-bottom: 1px solid var(--color-border-base);
+    transition: background-color 150ms ease-out;
+  }
+
+  .dashboard-table tbody tr:last-child {
+    border-bottom: 0;
+  }
+
+  .dashboard-table tbody tr:hover {
+    background-color: var(--color-canvas);
+  }
+
+  .dashboard-table td {
+    padding: var(--spacing-md);
+  }
+
+  .dashboard-table td:last-child {
+    text-align: right;
+  }
+
+  .dashboard-table-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-family: var(--font-label-std);
+    font-size: var(--text-label-std);
+    font-weight: 500;
+    color: var(--color-primary);
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: all 150ms ease-out;
+  }
+
+  .dashboard-table-action:hover {
+    text-decoration: underline;
+  }
+}

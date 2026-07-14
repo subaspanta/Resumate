@@ -7,7 +7,11 @@ interface ResumeListItemProps {
   isLast: boolean;
 }
 
-export function ResumeListItem({ resume, onOpen, isLast }: ResumeListItemProps) {
+export function ResumeListItem({
+  resume,
+  onOpen,
+  isLast,
+}: ResumeListItemProps) {
   return (
     <div
       className={`dashboard-resume-row ${
@@ -34,7 +38,6 @@ export function ResumeListItem({ resume, onOpen, isLast }: ResumeListItemProps) 
         </div>
       </div>
       <div className="dashboard-resume-row-right">
-        <ScoreBadge score={resume.atsScore} />
         <button
           className="dashboard-open-btn"
           onClick={(e) => {

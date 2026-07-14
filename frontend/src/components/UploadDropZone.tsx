@@ -22,7 +22,7 @@ export function UploadDropzone({
       const file = e.dataTransfer.files?.[0];
       if (file) onFileSelected(file);
     },
-    [onFileSelected]
+    [onFileSelected],
   );
 
   const handleFileInput = useCallback(
@@ -31,14 +31,16 @@ export function UploadDropzone({
       if (file) onFileSelected(file);
       e.target.value = "";
     },
-    [onFileSelected]
+    [onFileSelected],
   );
 
   const openFilePicker = () => inputRef.current?.click();
 
   const zoneClass = [
     "dashboard-upload-zone",
-    isFirstTime ? "dashboard-upload-zone--first-time" : "dashboard-upload-zone--default",
+    isFirstTime
+      ? "dashboard-upload-zone--first-time"
+      : "dashboard-upload-zone--default",
     isDragging ? "dashboard-upload-zone--active" : "",
   ]
     .filter(Boolean)
@@ -54,9 +56,12 @@ export function UploadDropzone({
 
       {!isFirstTime && (
         <>
-          <h3 className="dashboard-upload-title">Upload your existing resume</h3>
+          <h3 className="dashboard-upload-title">
+            Upload your existing resume
+          </h3>
           <p className="dashboard-upload-desc">
-            We&apos;ll parse your details and match them with industry standards.
+            We&apos;ll parse your details and match them with industry
+            standards.
           </p>
         </>
       )}

@@ -1,13 +1,13 @@
 import { getScoreTier, scoreTierClass } from "../features/utils/score";
 
 interface ScoreBadgeProps {
-  score: number;
+  score: number | undefined;
   variant?: "stacked" | "inline";
   showLabel?: boolean;
 }
 
 export function ScoreBadge({
-  score,
+  score = 0,
   variant = "stacked",
   showLabel = true,
 }: ScoreBadgeProps) {
@@ -22,9 +22,7 @@ export function ScoreBadge({
 
   return (
     <div className="dashboard-score">
-      {showLabel && (
-        <span className="dashboard-score-label">ATS Score</span>
-      )}
+      {showLabel && <span className="dashboard-score-label">ATS Score</span>}
       <span className={badgeClass}>{score}/100</span>
     </div>
   );

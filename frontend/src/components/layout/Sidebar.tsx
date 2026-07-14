@@ -2,13 +2,25 @@
 
 import { useAuth } from "@/src/features/auth";
 import { toast } from "sonner";
-import type { DashboardView } from "@/src/features/resume/types";
+import type { DashboardViewLayout } from "@/src/components/dashboard/shell/dashboardViewConfig";
+
+type SidebarLayout = Pick<
+  DashboardViewLayout,
+  | "sidebarCollapsible"
+  | "sidebarShowBrandIcon"
+  | "sidebarShowTagline"
+  | "sidebarNavDisabled"
+  | "sidebarNavHint"
+  | "sidebarAvatarSize"
+  | "sidebarShowUserMenu"
+  | "sidebarShowSignOut"
+>;
 
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
   userName?: string;
-  view: DashboardView;
+  layout: SidebarLayout;
   onUploadClick?: () => void;
 }
 
@@ -61,6 +73,7 @@ function NavItem({
       <a className={className} href={href} aria-label={label}>
         {content}
       </a>
+      
     );
   }
 
@@ -86,12 +99,11 @@ export function Sidebar({
   isCollapsed,
   onToggle,
   userName,
-  view,
+  layout,
   onUploadClick,
 }: SidebarProps) {
   const { logout } = useAuth();
-  const isFirstTime = view === "firstTime";
-  const showCollapse = !isFirstTime;
+  const showCollapse = layout.sidebarCollapsible;
 
   const handleLogout = async () => {
     try {
@@ -117,7 +129,7 @@ export function Sidebar({
           showCollapse && isCollapsed ? "dashboard-sidebar-brand--collapsed" : ""
         }`}
       >
-        {!isFirstTime && (
+        {layout.sidebarShowBrandIcon && (
           <span className="dashboard-sidebar-brand-icon">
             <span
               className="material-symbols-outlined text-primary text-[28px]"
@@ -130,7 +142,7 @@ export function Sidebar({
         {!isCollapsed && (
           <div>
             <div className="dashboard-sidebar-brand-name">ResumeForge</div>
-            {isFirstTime && (
+            {layout.sidebarShowTagline && (
               <p className="dashboard-sidebar-tagline">AI Resume Workspace</p>
             )}
           </div>
@@ -149,8 +161,8 @@ export function Sidebar({
           icon="description"
           label="Resume Workspace"
           isCollapsed={showCollapse && isCollapsed}
-          disabled={isFirstTime}
-          hint={isFirstTime ? "Upload resume to unlock." : undefined}
+          disabled={layout.sidebarNavDisabled}
+          hint={layout.sidebarNavHint}
           onClick={() => handleUnavailable("Resume Workspace")}
         />
         <NavItem
@@ -160,19 +172,6 @@ export function Sidebar({
           onClick={() => handleUnavailable("Settings")}
         />
       </nav>
-
-      {isFirstTime && !isCollapsed && (
-        <div className="dashboard-sidebar-cta">
-          <button
-            type="button"
-            className="dashboard-sidebar-cta-btn"
-            onClick={onUploadClick}
-          >
-            <span className="material-symbols-outlined">add</span>
-            Create New Resume
-          </button>
-        </div>
-      )}
 
       <div className="dashboard-sidebar-footer">
         {showCollapse && (
@@ -198,7 +197,9 @@ export function Sidebar({
           >
             <div
               className={`dashboard-sidebar-avatar ${
-                isFirstTime ? "dashboard-sidebar-avatar--sm" : ""
+                layout.sidebarAvatarSize === "sm"
+                  ? "dashboard-sidebar-avatar--sm"
+                  : ""
               }`}
             >
               {userName ? userName.charAt(0).toUpperCase() : "U"}
@@ -211,7 +212,7 @@ export function Sidebar({
                 <span className="dashboard-sidebar-user-tier">Pro Account</span>
               </div>
             )}
-            {isFirstTime && !isCollapsed && (
+            {layout.sidebarShowUserMenu && !isCollapsed && (
               <button
                 type="button"
                 className="dashboard-icon-btn ml-auto"
@@ -226,7 +227,7 @@ export function Sidebar({
           </div>
         </div>
 
-        {view === "active" && !isCollapsed && (
+        {layout.sidebarShowSignOut && !isCollapsed && (
           <div className="mt-sm">
             <NavItem
               icon="logout"

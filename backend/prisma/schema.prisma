@@ -15,9 +15,26 @@ model User {
   createdAt    DateTime @default(now()) @db.Timestamp(6)
   updatedAt    DateTime @updatedAt @db.Timestamp(6)
 
-  resumes Resume[]
+  resumes       Resume[]
+  refreshTokens RefreshToken[]
 
   @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  familyId  String    @db.Uuid
+  tokenHash String    @unique @db.VarChar(64)
+  userId    String    @db.Uuid
+  expiresAt DateTime  @db.Timestamp(6)
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  revokedAt DateTime? @db.Timestamp(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([familyId])
+  @@map("refresh_tokens")
 }
 
 model Resume {
@@ -27,7 +44,7 @@ model Resume {
   originalFileName String   @db.Text
   mimeType         String   @db.VarChar(100)
   fileSize         Int
-  pdfUrl           String   @db.Text
+  fileUrl          String   @db.Text
   rawText          String   @db.Text
   structuredResume Json     @db.JsonB
   createdAt        DateTime @default(now()) @db.Timestamp(6)
@@ -53,5 +70,6 @@ model Analysis {
 
   @@index([resumeId])
   @@index([createdAt(sort: Desc)])
+  @@index([resumeId, createdAt(sort: Desc)])
   @@map("analyses")
 }
