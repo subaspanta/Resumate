@@ -9,6 +9,7 @@ const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
 const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/octet-stream",
 ]);
 
 const fileFilter = (
