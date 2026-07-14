@@ -8,13 +8,13 @@ import { StubParsingModule } from "../parsing/parsing.types.js";
 import { LocalStorageModule } from "../storage/storage.types.js";
 import { uploadResumeSchema } from "./resume.schema.js";
 import { validateBody } from "../../middleware/validateBody.js";
+import { CloudinaryStorageModule } from "../storage/cloudinary-storage-module.js";
 
 const router = Router();
 const resumeRepository = new ResumeRepository();
-// ResumeService expects three arguments; provide repository plus placeholders for the other two
 const resumeService = new ResumeService(
-  new ResumeRepository(),
-  new LocalStorageModule(),
+  resumeRepository,
+  new CloudinaryStorageModule(),
   new StubParsingModule(),
 );
 const resumeController = new ResumeController(resumeService);
