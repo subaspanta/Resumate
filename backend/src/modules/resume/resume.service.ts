@@ -21,7 +21,7 @@ export class ResumeService {
     return this.resumeRepository.findResumesByUserId(userId);
   }
 
-  private async verifyFileType(buffer: Buffer): Promise<void> {
+  private async verifyFileType(buffer: Buffer): Promise<string> {
     const detected = await fileTypeFromBuffer(buffer);
 
     if (!detected || !ALLOWED_MIME_TYPES.has(detected.mime)) {
@@ -31,6 +31,7 @@ export class ResumeService {
         "Only PDF and DOCX files are supported",
       );
     }
+    return detected.mime;
   }
 
   async uploadResume(
@@ -47,11 +48,13 @@ export class ResumeService {
     }
     await this.verifyFileType(file.buffer);
 
+    const verifiedMimeType = await this.verifyFileType(file.buffer);
+
     const [storageOutcome, parsingOutcome] = await Promise.allSettled([
       this.storageModule.saveFile(
         file.buffer,
         file.originalname,
-        file.mimetype,
+        verifiedMimeType,
       ),
       this.parsingModule.parseResume(file.buffer),
     ]);
@@ -93,7 +96,7 @@ export class ResumeService {
     return this.resumeRepository.createResume({
       title: inputData.title || file.originalname,
       originalFileName: file.originalname,
-      mimeType: file.mimetype,
+      mimeType: verifiedMimeType,
       fileSize: file.size,
       fileUrl,
       rawText,
