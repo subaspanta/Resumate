@@ -24,3 +24,21 @@ export const validateRequest =
 
     next();
   };
+
+export const validateQuery =
+  <T>(schema: ZodType<T>) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const result = schema.safeParse(req.query);
+    if (!result.success) {
+      return next(
+        new AppError(
+          400,
+          ERROR_CODES.VALIDATION_FAILED,
+          "Validation failed",
+          z.treeifyError(result.error),
+        ),
+      );
+    }
+    req.query = result.data as any; // Express types req.query as ParsedQs, needs a cast
+    next();
+  };

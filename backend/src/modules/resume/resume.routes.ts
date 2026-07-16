@@ -5,8 +5,11 @@ import { ResumeController } from "./resume.controller.js";
 import { ResumeService } from "./resume.service.js";
 import { ResumeRepository } from "./resume.repository.js";
 import { StubParsingModule } from "../parsing/parsing.types.js";
-import { uploadResumeSchema } from "./resume.schema.js";
-import { validateRequest } from "../../middleware/validate-request.js";
+import { listResumesQuerySchema, uploadResumeSchema } from "./resume.schema.js";
+import {
+  validateQuery,
+  validateRequest,
+} from "../../middleware/validate-request.js";
 import { CloudinaryStorageModule } from "../storage/cloudinary-storage-module.js";
 
 const router = Router();
@@ -26,7 +29,12 @@ router.post(
   resumeController.upload,
 );
 
-router.get("/", requireAuth, resumeController.list);
+router.get(
+  "/",
+  requireAuth,
+  validateQuery(listResumesQuerySchema),
+  resumeController.list,
+);
 
 router.get("/:id", requireAuth, resumeController.getById);
 
