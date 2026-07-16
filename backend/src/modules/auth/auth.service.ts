@@ -7,11 +7,13 @@ import bcrypt from "bcrypt";
 import { AuthResponse, RefreshResult, SafeUser } from "./auth.types.js";
 import { env } from "../../config/env.js";
 import {
+  DUMMY_PASSWORD_HASH,
   generateAccessToken,
   generateRefreshToken,
   hashToken,
   verifyRefreshToken,
 } from "../../utils/tokens.js";
+import { Prisma } from "../../generated/client/edge.js";
 
 export class AuthService {
   constructor(private readonly authRepository: AuthRepository) {}
@@ -52,43 +54,41 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
   async register(data: RegisterUserInput): Promise<AuthResponse> {
-    const existingUser = await this.authRepository.findUserByEmail(data.email);
-
-    if (existingUser) {
-      throw new AppError(
-        409,
-        ERROR_CODES.EMAIL_ALREADY_EXISTS,
-        "User with this email already exists",
-      );
-    }
     const passwordHash = await bcrypt.hash(data.password, env.SALT_ROUNDS);
 
-    const newUser = await this.authRepository.createUser({
-      name: data.name,
-      email: data.email,
-      passwordHash,
-    });
-
-    const { accessToken, refreshToken } = await this.issueTokens(newUser);
-
-    return { user: newUser, accessToken, refreshToken };
+    try {
+      const newUser = await this.authRepository.createUser({
+        name: data.name,
+        email: data.email,
+        passwordHash,
+      });
+      const { accessToken, refreshToken } = await this.issueTokens(newUser);
+      return { user: newUser, accessToken, refreshToken };
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === "P2002"
+      ) {
+        throw new AppError(
+          409,
+          ERROR_CODES.EMAIL_ALREADY_EXISTS,
+          "User with this email already exists",
+        );
+      }
+      throw err;
+    }
   }
   async login(data: LoginUserInput): Promise<AuthResponse> {
     const user = await this.authRepository.findUserByEmail(data.email);
+    const passwordHash = user?.passwordHash ?? DUMMY_PASSWORD_HASH;
 
-    if (!user) {
+    const isPasswordValid = await bcrypt.compare(data.password, passwordHash);
+
+    if (!user || !isPasswordValid) {
       this.throwInvalidCredentials();
     }
 
-    const isPasswordValid = await bcrypt.compare(
-      data.password,
-      user.passwordHash,
-    );
-
-    if (!isPasswordValid) {
-      this.throwInvalidCredentials();
-    }
-    const { passwordHash, ...safeUser } = user;
+    const { passwordHash: _passwordHash, ...safeUser } = user;
 
     const { accessToken, refreshToken } = await this.issueTokens(safeUser);
 
