@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { AuthService } from "./auth.service.js";
 import { env } from "../../config/env.js";
 import { SafeUser } from "./auth.types.js";
-import { AppError } from "../../types/app-error.js";
-import { ERROR_CODES } from "../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../constants/http-status.js";
 
 const AUTH_COOKIE_PATH = "/api/v1/auth";
@@ -95,14 +93,7 @@ export class AuthController {
   };
   me = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!req.user) {
-        throw new AppError(
-          401,
-          ERROR_CODES.UNAUTHORIZED,
-          "User authentication required",
-        );
-      }
-      const userId = req.user.sub;
+      const userId = req.user!.sub;
       const currentUser = await this.authService.getCurrentUser(userId);
       res.status(HTTP_STATUS.OK).json({
         success: true,

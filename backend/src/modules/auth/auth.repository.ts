@@ -9,7 +9,7 @@ export class AuthRepository {
     });
   }
 
-  async createUser(data: Prisma.UserCreateInput) {
+  async createUser(data: Prisma.UserCreateInput): Promise<SafeUser> {
     return prisma.user.create({
       data,
       select: {
@@ -48,7 +48,9 @@ export class AuthRepository {
     return prisma.refreshToken.create({ data });
   }
 
-  async findRefreshTokenByHash(tokenHash: string): Promise<RefreshToken | null> {
+  async findRefreshTokenByHash(
+    tokenHash: string,
+  ): Promise<RefreshToken | null> {
     return prisma.refreshToken.findUnique({
       where: { tokenHash },
     });

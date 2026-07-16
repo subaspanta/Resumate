@@ -1,4 +1,4 @@
-// resume/resume.types.ts (or a shared contracts file both modules can reference)
+import { Prisma } from "../../generated/client/client.js";
 
 export interface StorageModule {
   saveFile(
@@ -24,4 +24,9 @@ export type ResumeSummary = {
   fileSize: number;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type ResumePage = {
+  items: ResumeSummary[];
+  nextCursor: string | null;
 };

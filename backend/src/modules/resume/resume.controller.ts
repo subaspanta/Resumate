@@ -3,21 +3,18 @@ import { ResumeService } from "./resume.service.js";
 import { AppError } from "../../types/app-error.js";
 import { ERROR_CODES } from "../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../constants/http-status.js";
+import { ListResumesQuery, listResumesQuerySchema } from "./resume.schema.js";
 
 export class ResumeController {
   constructor(private readonly resumeService: ResumeService) {}
 
-  listResumes = async (req: Request, res: Response, next: NextFunction) => {
+  list = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // if (!req.user) {
-      //   throw new AppError(
-      //     HTTP_STATUS.UNAUTHORIZED,
-      //     ERROR_CODES.UNAUTHORIZED,
-      //     "User authentication required",
-      //   );
-      // }
-      const userId = req.user?.sub;
-      const resumes = await this.resumeService.listResumesByUserId(userId!);
+      const userId = req.user!.sub;
+      const resumes = await this.resumeService.listResumesByUserId(
+        userId,
+        req.query as unknown as ListResumesQuery,
+      );
 
       res.status(HTTP_STATUS.OK).json({
         success: true,
@@ -28,17 +25,25 @@ export class ResumeController {
     }
   };
 
-  // TO DO: Implement getResumeById method in ResumeController
-  getResumeById = async (req: Request, res: Response, next: NextFunction) => {
+  getById = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const userId = req.user?.sub;
+      const userId = req.user!.sub;
       const { id } = req.params;
+      const resume = await this.resumeService.getResumeById(userId, id);
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        data: resume,
+      });
     } catch (error) {
       next(error);
     }
   };
 
-  uploadResume = async (req: Request, res: Response, next: NextFunction) => {
+  upload = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user!.sub;
       const resume = await this.resumeService.uploadResume(

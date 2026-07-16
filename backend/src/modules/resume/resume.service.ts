@@ -17,8 +17,11 @@ export class ResumeService {
     private readonly parsingModule: ParsingModule,
   ) {}
 
-  async listResumesByUserId(userId: string) {
-    return this.resumeRepository.findResumesByUserId(userId);
+  async listResumesByUserId(
+    userId: string,
+    options: { limit: number; cursor?: string },
+  ) {
+    return this.resumeRepository.findManyByUserId(userId, options);
   }
 
   private async verifyFileType(buffer: Buffer): Promise<string> {
@@ -46,7 +49,6 @@ export class ResumeService {
         "No file was uploaded",
       );
     }
-    await this.verifyFileType(file.buffer);
 
     const verifiedMimeType = await this.verifyFileType(file.buffer);
 
@@ -93,7 +95,7 @@ export class ResumeService {
     const { url: fileUrl } = storageOutcome.value;
     const { rawText, structuredResume } = parsingOutcome.value;
 
-    return this.resumeRepository.createResume({
+    return this.resumeRepository.create({
       title: inputData.title || file.originalname,
       originalFileName: file.originalname,
       mimeType: verifiedMimeType,
@@ -104,7 +106,16 @@ export class ResumeService {
       user: { connect: { id: userId } },
     });
   }
-  async listResumes(userId: string) {
-    return this.resumeRepository.findResumesByUserId(userId);
+
+  async getResumeById(userId: string, id: string) {
+    const resume = await this.resumeRepository.findByIdAndUserId(userId, id);
+    if (!resume) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Resume not found",
+      );
+    }
+    return resume;
   }
 }
