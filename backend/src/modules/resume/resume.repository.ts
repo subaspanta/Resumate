@@ -1,13 +1,19 @@
 import { Prisma, Resume } from "../../generated/client/index.js";
 import { prisma } from "../../lib/prisma.js";
-import { ResumeSummary } from "./resume.types.js";
+import { ResumePage, ResumeSummary } from "./resume.types.js";
 
 export class ResumeRepository {
-  async createResume(data: Prisma.ResumeCreateInput): Promise<Resume> {
+  async create(data: Prisma.ResumeCreateInput): Promise<Resume> {
     return prisma.resume.create({ data });
   }
-  async findResumesByUserId(userId: string): Promise<ResumeSummary[]> {
-    return prisma.resume.findMany({
+  async findManyByUserId(
+    userId: string,
+    options: { limit: number; cursor?: string },
+  ): Promise<ResumePage> {
+    const { limit, cursor } = options;
+
+    // Fetch one extra row to detect whether a further page exists.
+    const rows = await prisma.resume.findMany({
       where: { userId },
       select: {
         id: true,
@@ -18,6 +24,32 @@ export class ResumeRepository {
         updatedAt: true,
       },
       orderBy: { createdAt: "desc" },
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+    });
+
+    const hasMore = rows.length > limit;
+    const items = hasMore ? rows.slice(0, limit) : rows;
+    const nextCursor = hasMore ? items[items.length - 1].id : null;
+
+    return { items, nextCursor };
+  }
+  async findByIdAndUserId(
+    userId: string,
+    id: string,
+  ): Promise<ResumeSummary | null> {
+    return prisma.resume.findFirst({
+      where: { id, userId },
+      select: {
+        id: true,
+        title: true,
+        originalFileName: true,
+        structuredResume: true,
+        rawText: true,
+        fileSize: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 }
