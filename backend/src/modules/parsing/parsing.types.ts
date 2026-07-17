@@ -1,4 +1,3 @@
-// parsing/parsing.types.ts
 export interface ParsingModule {
   parseResume(
     buffer: Buffer,
@@ -18,10 +17,30 @@ export class ParsingError extends Error {
     this.name = "ParsingError";
   }
 }
+export type StructuredResume = {
+  name?: string;
+  contact?: { email?: string; phone?: string; location?: string };
+  summary?: string;
+  experience: {
+    title: string;
+    company: string | null;
+    workMode?: "remote" | "hybrid" | "onsite" | null;
+    location?: string | null;
+    startDate?: string;
+    endDate?: string;
+    description?: string;
+  }[];
+  education: { degree: string; institution: string; year?: string }[];
+  skills: string[];
+};
 
-// parsing/stub-parsing.module.ts (stub, real parsing later)
-export class StubParsingModule implements ParsingModule {
-  async parseResume(buffer: Buffer) {
-    return { rawText: "stub extracted text", structuredResume: {} };
-  }
+export interface AIStructuringModule {
+  structureResume(rawText: string): Promise<StructuredResume>;
+}
+
+export interface ParsingModule {
+  parseResume(
+    buffer: Buffer,
+    mimeType: string,
+  ): Promise<{ rawText: string; structuredResume: StructuredResume }>;
 }
