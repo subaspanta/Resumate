@@ -64,4 +64,4 @@ For each experience entry:
 For each education entry:
 - "year" is the year of graduation or completion, if stated. If no year is provided, set year to null.
 
-If any field is not present in the text, set it to null or an empty array as appropriate.`;
+If any field is not present in the text, set it to null or an empty array as appropriate. Do not invent data.`;
