@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/features/auth";
 import { toast } from "sonner";
 import {
@@ -21,6 +22,7 @@ import {
 
 export default function HomePage() {
   const { user } = useAuth();
+  const router = useRouter();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Data layer
@@ -67,7 +69,7 @@ export default function HomePage() {
   };
 
   const handleOpenResume = (id: string) => {
-    toast.success(`Opening workspace ${id}...`);
+    router.push(`/workspace/${id}`);
   };
 
   const handleViewAll = () => {

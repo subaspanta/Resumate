@@ -156,10 +156,22 @@ exports.Prisma.ResumeScalarFieldEnum = {
 exports.Prisma.AnalysisScalarFieldEnum = {
   id: 'id',
   resumeId: 'resumeId',
+  userId: 'userId',
   jobDescription: 'jobDescription',
   parsedJob: 'parsedJob',
   resumeSnapshot: 'resumeSnapshot',
   analysisResult: 'analysisResult',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SuggestionScalarFieldEnum = {
+  id: 'id',
+  analysisId: 'analysisId',
+  original: 'original',
+  suggested: 'suggested',
+  section: 'section',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
   createdAt: 'createdAt'
 };
 
@@ -187,13 +199,18 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
-
+exports.SuggestionStatus = exports.$Enums.SuggestionStatus = {
+  pending: 'pending',
+  applied: 'applied',
+  rejected: 'rejected'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
   RefreshToken: 'RefreshToken',
   Resume: 'Resume',
-  Analysis: 'Analysis'
+  Analysis: 'Analysis',
+  Suggestion: 'Suggestion'
 };
 
 /**

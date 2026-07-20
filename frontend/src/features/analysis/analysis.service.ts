@@ -4,11 +4,15 @@ import type {
   Analysis,
   AnalysisSummary,
   CreateAnalysisInput,
+  CreateAnalysisResult,
+  RewriteSuggestionsInput,
+  Suggestion,
+  UpdateSuggestionStatusInput,
 } from "@/src/features/analysis/types";
 
 export const analysisApi = {
   create: (body: CreateAnalysisInput) =>
-    axiosClient.post<ApiResponse<Analysis>>("/analyses", body),
+    axiosClient.post<ApiResponse<CreateAnalysisResult>>("/analyses", body),
 
   latest: (resumeId: string) =>
     axiosClient.get<ApiResponse<Analysis | null>>(
@@ -25,4 +29,27 @@ export const analysisApi = {
 
   remove: (id: string) =>
     axiosClient.delete<ApiResponse<{ id: string }>>(`/analyses/${id}`),
+
+  rewriteSuggestions: (body: RewriteSuggestionsInput) =>
+    axiosClient.post<ApiResponse<Suggestion[]>>(
+      "/analyses/rewrite-suggestions",
+      body
+    ),
+
+  updateSuggestionStatus: ({
+    suggestionId,
+    status,
+    rejectionReason,
+  }: UpdateSuggestionStatusInput) =>
+    axiosClient.patch<ApiResponse<Suggestion>>(
+      `/analyses/suggestions/${suggestionId}`,
+      { status, rejectionReason }
+    ),
+
+  exportPDF: (resumeId: string) =>
+    axiosClient.post<Blob>(
+      `/exports/resumes/${resumeId}/export`,
+      undefined,
+      { responseType: "blob" }
+    ),
 };

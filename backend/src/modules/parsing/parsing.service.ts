@@ -1,4 +1,5 @@
 import { extractTextFromPdf } from "./extractors/pdf-extractor.js";
+import { extractTextFromDocx } from "./extractors/docx-extractor.js";
 import {
   AIStructuringModule,
   ParsingModule,
@@ -44,7 +45,12 @@ export class ParsingService implements ParsingModule {
     if (mimeType === "application/pdf") {
       return extractTextFromPdf(buffer);
     }
-    // docx branch comes later, once mammoth extractor exists
+    if (
+      mimeType ===
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ) {
+      return extractTextFromDocx(buffer);
+    }
     throw new AppError(
       HTTP_STATUS.BAD_REQUEST,
       ERROR_CODES.UNSUPPORTED_FILE_TYPE,

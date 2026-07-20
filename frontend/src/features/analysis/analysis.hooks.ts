@@ -2,7 +2,15 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { analysisApi } from "./analysis.service";
-import type { Analysis, AnalysisSummary, CreateAnalysisInput } from "./types";
+import type {
+  Analysis,
+  AnalysisSummary,
+  CreateAnalysisInput,
+  CreateAnalysisResult,
+  RewriteSuggestionsInput,
+  Suggestion,
+  SuggestionStatus,
+} from "./types";
 import { isApiError } from "@/src/api/api-error";
 
 const LATEST_ANALYSIS_QUERY_KEY = (resumeId: string) =>
@@ -107,18 +115,17 @@ export function useAnalysisHistory(resumeId: string) {
 export function useCreateAnalysis() {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<CreateAnalysisResult, unknown, CreateAnalysisInput>({
     mutationFn: async (input: CreateAnalysisInput) => {
       const response = await analysisApi.create(input);
-      return response?.data?.data as Analysis;
+      return response?.data?.data as CreateAnalysisResult;
     },
-    onSuccess: (analysis) => {
-      queryClient.setQueryData(
-        LATEST_ANALYSIS_QUERY_KEY(analysis.resumeId),
-        analysis
-      );
+    onSuccess: (_result, input) => {
       queryClient.invalidateQueries({
-        queryKey: ANALYSIS_HISTORY_QUERY_KEY(analysis.resumeId),
+        queryKey: LATEST_ANALYSIS_QUERY_KEY(input.resumeId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: ANALYSIS_HISTORY_QUERY_KEY(input.resumeId),
       });
     },
   });
@@ -135,6 +142,107 @@ export function useDeleteAnalysis() {
     onSuccess: () => {
       // Invalidate all analysis queries since we don't know which resume was affected
       queryClient.invalidateQueries({ queryKey: ["analysis"] });
+    },
+  });
+}
+
+export function useRewriteSuggestions(analysisId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation<Suggestion[], unknown, RewriteSuggestionsInput>({
+    mutationFn: async (input: RewriteSuggestionsInput) => {
+      const response = await analysisApi.rewriteSuggestions(input);
+      return response?.data?.data ?? [];
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ANALYSIS_QUERY_KEY(analysisId),
+      });
+    },
+  });
+}
+
+interface UpdateSuggestionVars {
+  suggestionId: string;
+  rejectionReason?: string;
+}
+
+interface SuggestionMutationContext {
+  previous?: Analysis;
+}
+
+// Shared optimistic-PATCH factory: flips one suggestion to `status` in the
+// cached analysis immediately, rolls back on error, and refetches on settle.
+function useUpdateSuggestionStatus(
+  analysisId: string,
+  status: Exclude<SuggestionStatus, "pending">
+) {
+  const queryClient = useQueryClient();
+  const key = ANALYSIS_QUERY_KEY(analysisId);
+
+  return useMutation<
+    Suggestion,
+    unknown,
+    UpdateSuggestionVars,
+    SuggestionMutationContext
+  >({
+    mutationFn: async ({ suggestionId, rejectionReason }) => {
+      const response = await analysisApi.updateSuggestionStatus({
+        suggestionId,
+        status,
+        rejectionReason,
+      });
+      return response?.data?.data as Suggestion;
+    },
+    onMutate: async ({ suggestionId }) => {
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<Analysis>(key);
+      if (previous) {
+        queryClient.setQueryData<Analysis>(key, {
+          ...previous,
+          suggestions: previous.suggestions.map((s) =>
+            s.id === suggestionId ? { ...s, status } : s
+          ),
+        });
+      }
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(key, context.previous);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: key });
+    },
+  });
+}
+
+export function useApplySuggestion(analysisId: string) {
+  return useUpdateSuggestionStatus(analysisId, "applied");
+}
+
+export function useRejectSuggestion(analysisId: string) {
+  return useUpdateSuggestionStatus(analysisId, "rejected");
+}
+
+export function useExportPDF(resumeId: string) {
+  return useMutation<Blob, unknown, void>({
+    mutationFn: async () => {
+      const response = await analysisApi.exportPDF(resumeId);
+      return response.data;
+    },
+    onSuccess: (blob) => {
+      const url = window.URL.createObjectURL(
+        new Blob([blob], { type: "application/pdf" })
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "resume.pdf");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
     },
   });
 }

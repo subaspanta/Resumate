@@ -1,6 +1,6 @@
 import { Prisma, Resume } from "../../generated/client/index.js";
 import { prisma } from "../../lib/prisma.js";
-import { ResumePage, ResumeSummary } from "./resume.types.js";
+import { ResumePage } from "./resume.types.js";
 
 export class ResumeRepository {
   async create(data: Prisma.ResumeCreateInput): Promise<Resume> {
@@ -34,10 +34,7 @@ export class ResumeRepository {
 
     return { items, nextCursor };
   }
-  async findByIdAndUserId(
-    userId: string,
-    id: string,
-  ): Promise<ResumeSummary | null> {
+  async findByIdAndUserId(userId: string, id: string) {
     return prisma.resume.findFirst({
       where: { id, userId },
       select: {
