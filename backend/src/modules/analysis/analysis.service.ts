@@ -20,7 +20,6 @@ export class AnalysisService {
   constructor(
     private readonly analysisRepository: AnalysisRepository,
     private readonly resumeRepository: ResumeRepository,
-    private readonly marketAgent: MarketAgent,
     private readonly jobParserAgent: JobParserAgent,
     private readonly rewriteAgent: RewriteAgent,
   ) {}
@@ -28,9 +27,9 @@ export class AnalysisService {
   // Preview/lookup step — intentionally does NOT persist. Market intel is a
   // read-only enrichment returned directly to the caller; nothing is written
   // to the Analysis table here.
-  async getMarketIntel(jobTitle: string): Promise<MarketIntelOutput> {
-    return this.marketAgent.getMarketIntel(jobTitle);
-  }
+  // async getMarketIntel(jobTitle: string): Promise<MarketIntelOutput> {
+  //   //  return this.marketAgent.getMarketIntel(jobTitle);
+  // }
 
   // Preview step — mirrors getMarketIntel: parses the job description and
   // returns the result directly without persisting.
@@ -69,7 +68,7 @@ export class AnalysisService {
 
     const parsedJob =
       await this.jobParserAgent.parseJobDescription(jobDescription);
-    const marketIntel = await this.marketAgent.getMarketIntel(parsedJob.title);
+    // const marketIntel = await this.marketAgent.getMarketIntel(parsedJob.title);
 
     const analysisResult: AnalysisResult = { marketIntel, parsedJob };
 
