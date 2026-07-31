@@ -92,6 +92,20 @@ export function buildResumeDefinition(
     }
   }
 
+  if (resume.projects?.length) {
+    content.push({ text: "PROJECTS", style: "sectionHeader" });
+    for (const project of resume.projects) {
+      content.push({
+        text: project.name,
+        bold: true,
+        margin: [0, 8, 0, 2],
+      });
+      if (project.description) {
+        content.push({ text: project.description, margin: [12, 1, 0, 1] });
+      }
+    }
+  }
+
   if (resume.education?.length) {
     content.push({ text: "EDUCATION", style: "sectionHeader" });
     for (const edu of resume.education) {
