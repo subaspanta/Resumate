@@ -3619,6 +3619,7 @@ export namespace Prisma {
     mimeType: string | null
     fileSize: number | null
     fileUrl: string | null
+    filePath: string | null
     rawText: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3632,6 +3633,7 @@ export namespace Prisma {
     mimeType: string | null
     fileSize: number | null
     fileUrl: string | null
+    filePath: string | null
     rawText: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3645,6 +3647,7 @@ export namespace Prisma {
     mimeType: number
     fileSize: number
     fileUrl: number
+    filePath: number
     rawText: number
     structuredResume: number
     createdAt: number
@@ -3669,6 +3672,7 @@ export namespace Prisma {
     mimeType?: true
     fileSize?: true
     fileUrl?: true
+    filePath?: true
     rawText?: true
     createdAt?: true
     updatedAt?: true
@@ -3682,6 +3686,7 @@ export namespace Prisma {
     mimeType?: true
     fileSize?: true
     fileUrl?: true
+    filePath?: true
     rawText?: true
     createdAt?: true
     updatedAt?: true
@@ -3695,6 +3700,7 @@ export namespace Prisma {
     mimeType?: true
     fileSize?: true
     fileUrl?: true
+    filePath?: true
     rawText?: true
     structuredResume?: true
     createdAt?: true
@@ -3796,6 +3802,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath: string | null
     rawText: string
     structuredResume: JsonValue
     createdAt: Date
@@ -3829,6 +3836,7 @@ export namespace Prisma {
     mimeType?: boolean
     fileSize?: boolean
     fileUrl?: boolean
+    filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
     createdAt?: boolean
@@ -3846,6 +3854,7 @@ export namespace Prisma {
     mimeType?: boolean
     fileSize?: boolean
     fileUrl?: boolean
+    filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
     createdAt?: boolean
@@ -3861,6 +3870,7 @@ export namespace Prisma {
     mimeType?: boolean
     fileSize?: boolean
     fileUrl?: boolean
+    filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
     createdAt?: boolean
@@ -3876,13 +3886,14 @@ export namespace Prisma {
     mimeType?: boolean
     fileSize?: boolean
     fileUrl?: boolean
+    filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "originalFileName" | "mimeType" | "fileSize" | "fileUrl" | "rawText" | "structuredResume" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
+  export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "originalFileName" | "mimeType" | "fileSize" | "fileUrl" | "filePath" | "rawText" | "structuredResume" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
   export type ResumeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     analyses?: boolean | Resume$analysesArgs<ExtArgs>
@@ -3909,6 +3920,7 @@ export namespace Prisma {
       mimeType: string
       fileSize: number
       fileUrl: string
+      filePath: string | null
       rawText: string
       structuredResume: Prisma.JsonValue
       createdAt: Date
@@ -4345,6 +4357,7 @@ export namespace Prisma {
     readonly mimeType: FieldRef<"Resume", 'String'>
     readonly fileSize: FieldRef<"Resume", 'Int'>
     readonly fileUrl: FieldRef<"Resume", 'String'>
+    readonly filePath: FieldRef<"Resume", 'String'>
     readonly rawText: FieldRef<"Resume", 'String'>
     readonly structuredResume: FieldRef<"Resume", 'Json'>
     readonly createdAt: FieldRef<"Resume", 'DateTime'>
@@ -7069,6 +7082,7 @@ export namespace Prisma {
     mimeType: 'mimeType',
     fileSize: 'fileSize',
     fileUrl: 'fileUrl',
+    filePath: 'filePath',
     rawText: 'rawText',
     structuredResume: 'structuredResume',
     createdAt: 'createdAt',
@@ -7380,6 +7394,7 @@ export namespace Prisma {
     mimeType?: StringFilter<"Resume"> | string
     fileSize?: IntFilter<"Resume"> | number
     fileUrl?: StringFilter<"Resume"> | string
+    filePath?: StringNullableFilter<"Resume"> | string | null
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
@@ -7396,6 +7411,7 @@ export namespace Prisma {
     mimeType?: SortOrder
     fileSize?: SortOrder
     fileUrl?: SortOrder
+    filePath?: SortOrderInput | SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
     createdAt?: SortOrder
@@ -7415,6 +7431,7 @@ export namespace Prisma {
     mimeType?: StringFilter<"Resume"> | string
     fileSize?: IntFilter<"Resume"> | number
     fileUrl?: StringFilter<"Resume"> | string
+    filePath?: StringNullableFilter<"Resume"> | string | null
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
@@ -7431,6 +7448,7 @@ export namespace Prisma {
     mimeType?: SortOrder
     fileSize?: SortOrder
     fileUrl?: SortOrder
+    filePath?: SortOrderInput | SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
     createdAt?: SortOrder
@@ -7453,6 +7471,7 @@ export namespace Prisma {
     mimeType?: StringWithAggregatesFilter<"Resume"> | string
     fileSize?: IntWithAggregatesFilter<"Resume"> | number
     fileUrl?: StringWithAggregatesFilter<"Resume"> | string
+    filePath?: StringNullableWithAggregatesFilter<"Resume"> | string | null
     rawText?: StringWithAggregatesFilter<"Resume"> | string
     structuredResume?: JsonWithAggregatesFilter<"Resume">
     createdAt?: DateTimeWithAggregatesFilter<"Resume"> | Date | string
@@ -7756,6 +7775,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7772,6 +7792,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7786,6 +7807,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7802,6 +7824,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7817,6 +7840,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7830,6 +7854,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7844,6 +7869,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8222,6 +8248,21 @@ export namespace Prisma {
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
   }
+
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -8254,6 +8295,7 @@ export namespace Prisma {
     mimeType?: SortOrder
     fileSize?: SortOrder
     fileUrl?: SortOrder
+    filePath?: SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
     createdAt?: SortOrder
@@ -8272,6 +8314,7 @@ export namespace Prisma {
     mimeType?: SortOrder
     fileSize?: SortOrder
     fileUrl?: SortOrder
+    filePath?: SortOrder
     rawText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8285,6 +8328,7 @@ export namespace Prisma {
     mimeType?: SortOrder
     fileSize?: SortOrder
     fileUrl?: SortOrder
+    filePath?: SortOrder
     rawText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8308,6 +8352,24 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
   export type JsonWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -8378,21 +8440,6 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type EnumSuggestionStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.SuggestionStatus | EnumSuggestionStatusFieldRefInput<$PrismaModel>
     in?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
@@ -8436,24 +8483,6 @@ export namespace Prisma {
     status?: SortOrder
     rejectionReason?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type EnumSuggestionStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -8646,6 +8675,10 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type UserUpdateOneRequiredWithoutResumesNestedInput = {
     create?: XOR<UserCreateWithoutResumesInput, UserUncheckedCreateWithoutResumesInput>
     connectOrCreate?: UserCreateOrConnectWithoutResumesInput
@@ -8756,10 +8789,6 @@ export namespace Prisma {
     create?: XOR<AnalysisCreateWithoutSuggestionsInput, AnalysisUncheckedCreateWithoutSuggestionsInput>
     connectOrCreate?: AnalysisCreateOrConnectWithoutSuggestionsInput
     connect?: AnalysisWhereUniqueInput
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type EnumSuggestionStatusFieldUpdateOperationsInput = {
@@ -8902,6 +8931,20 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -8928,6 +8971,23 @@ export namespace Prisma {
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
   }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -8952,42 +9012,11 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type NestedEnumSuggestionStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.SuggestionStatus | EnumSuggestionStatusFieldRefInput<$PrismaModel>
     in?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumSuggestionStatusFilter<$PrismaModel> | $Enums.SuggestionStatus
-  }
-
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumSuggestionStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -9007,6 +9036,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -9021,6 +9051,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -9125,6 +9156,7 @@ export namespace Prisma {
     mimeType?: StringFilter<"Resume"> | string
     fileSize?: IntFilter<"Resume"> | number
     fileUrl?: StringFilter<"Resume"> | string
+    filePath?: StringNullableFilter<"Resume"> | string | null
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
@@ -9365,6 +9397,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -9380,6 +9413,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -9466,6 +9500,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9481,6 +9516,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9617,6 +9653,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -9649,6 +9686,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9663,6 +9701,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9677,6 +9716,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

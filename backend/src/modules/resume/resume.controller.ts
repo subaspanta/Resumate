@@ -43,6 +43,24 @@ export class ResumeController {
     }
   };
 
+  remove = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const userId = req.user!.sub;
+      const { id } = req.params;
+      await this.resumeService.deleteResume(userId, id);
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        data: { id },
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   upload = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user!.sub;

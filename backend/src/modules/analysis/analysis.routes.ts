@@ -72,4 +72,6 @@ router.get(
 
 router.get("/:id", requireAuth, analysisController.getAnalysisById);
 
+router.delete("/:id", requireAuth, analysisController.deleteAnalysis);
+
 export default router;

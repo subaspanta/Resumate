@@ -120,6 +120,60 @@ export class AnalysisService {
     );
   }
 
+  // A resume with zero analyses is a normal state, not an error — only a
+  // missing/foreign resume is 404. Returns null (not a thrown error) when
+  // the resume exists but has never been analyzed.
+  async getLatestAnalysisForResume(
+    userId: string,
+    resumeId: string,
+  ): Promise<Analysis | null> {
+    const resume = await this.resumeRepository.findByIdAndUserId(
+      userId,
+      resumeId,
+    );
+    if (!resume) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Resume not found",
+      );
+    }
+    return this.analysisRepository.findLatestByResumeId(resumeId);
+  }
+
+  async getAnalysisHistory(
+    userId: string,
+    resumeId: string,
+  ): Promise<
+    Pick<Analysis, "id" | "resumeId" | "jobDescription" | "createdAt">[]
+  > {
+    const resume = await this.resumeRepository.findByIdAndUserId(
+      userId,
+      resumeId,
+    );
+    if (!resume) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Resume not found",
+      );
+    }
+    return this.analysisRepository.findManyByResumeId(resumeId);
+  }
+
+  async deleteAnalysis(userId: string, analysisId: string): Promise<void> {
+    const analysis =
+      await this.analysisRepository.getAnalysisWithSuggestions(analysisId);
+    if (!analysis || analysis.userId !== userId) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Analysis not found",
+      );
+    }
+    await this.analysisRepository.deleteById(analysisId);
+  }
+
   async updateSuggestionStatus(
     userId: string,
     suggestionId: string,

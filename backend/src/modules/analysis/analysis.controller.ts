@@ -130,6 +130,66 @@ export class AnalysisController {
     }
   };
 
+  getLatestAnalysis = async (
+    req: Request<{ resumeId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const userId = req.user!.sub;
+      const { resumeId } = req.params;
+      const data = await this.analysisService.getLatestAnalysisForResume(
+        userId,
+        resumeId,
+      );
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getAnalysisHistory = async (
+    req: Request<{ resumeId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const userId = req.user!.sub;
+      const { resumeId } = req.params;
+      const data = await this.analysisService.getAnalysisHistory(
+        userId,
+        resumeId,
+      );
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  deleteAnalysis = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const userId = req.user!.sub;
+      const { id } = req.params;
+      await this.analysisService.deleteAnalysis(userId, id);
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        data: { id },
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getMergedResume = async (
     req: Request<{ resumeId: string }>,
     res: Response,

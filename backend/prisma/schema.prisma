@@ -46,6 +46,7 @@ model Resume {
   mimeType         String   @db.VarChar(100)
   fileSize         Int
   fileUrl          String   @db.Text
+  filePath         String?  @db.Text
   rawText          String   @db.Text
   structuredResume Json     @db.JsonB
   createdAt        DateTime @default(now()) @db.Timestamp(6)

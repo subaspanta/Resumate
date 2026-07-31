@@ -85,6 +85,32 @@ export class AnalysisRepository {
     return prisma.suggestion.findUnique({ where: { id: suggestionId } });
   }
 
+  async findLatestByResumeId(resumeId: string): Promise<Analysis | null> {
+    return prisma.analysis.findFirst({
+      where: { resumeId },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  async findManyByResumeId(resumeId: string): Promise<
+    Pick<Analysis, "id" | "resumeId" | "jobDescription" | "createdAt">[]
+  > {
+    return prisma.analysis.findMany({
+      where: { resumeId },
+      select: {
+        id: true,
+        resumeId: true,
+        jobDescription: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  async deleteById(id: string): Promise<void> {
+    await prisma.analysis.delete({ where: { id } });
+  }
+
   async getAnalysisWithSuggestions(
     analysisId: string,
   ): Promise<(Analysis & { suggestions: Suggestion[] }) | null> {

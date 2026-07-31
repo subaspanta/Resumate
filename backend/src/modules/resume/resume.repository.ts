@@ -44,9 +44,14 @@ export class ResumeRepository {
         structuredResume: true,
         rawText: true,
         fileSize: true,
+        filePath: true,
         createdAt: true,
         updatedAt: true,
       },
     });
+  }
+
+  async deleteById(id: string): Promise<void> {
+    await prisma.resume.delete({ where: { id } });
   }
 }
