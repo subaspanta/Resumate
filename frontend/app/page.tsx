@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/features/auth";
 import { toast } from "sonner";
+import { isApiError } from "@/src/api/api-error";
 import {
   deriveDashboardState,
   stateToLayoutKey,
@@ -51,6 +52,10 @@ export default function HomePage() {
       await uploadResumeMutation.mutateAsync(form);
       toast.success(`"${file.name}" uploaded successfully.`);
     } catch (error) {
+      if (isApiError(error) && error.code === "GEMINI_RATE_LIMITED") {
+        toast.error("AI is busy right now. Please try again in a moment.");
+        return;
+      }
       const message =
         error instanceof Error ? error.message : "Failed to upload resume";
       toast.error(message);

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { isApiError } from "@/src/api/api-error";
 import { useResume } from "@/src/features/resume/resume.hooks";
 import { useCreateAnalysis } from "@/src/features/analysis/analysis.hooks";
 import { ResumeContextCard } from "@/src/components/workspace/ResumeContextCard";
@@ -29,6 +30,10 @@ export default function WorkspacePage({
       });
       router.push(`/analysis/${result.analysisId}`);
     } catch (error) {
+      if (isApiError(error) && error.code === "GEMINI_RATE_LIMITED") {
+        toast.error("AI is busy right now. Please try again in a moment.");
+        return;
+      }
       const message =
         error instanceof Error ? error.message : "Failed to start analysis";
       toast.error(message);

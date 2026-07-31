@@ -11,6 +11,7 @@ import {
 } from "../analysis.types.js";
 import { validateAgentOutput } from "./validator.js";
 import { validateRewrite } from "./rewrite-validator.js";
+import { classifyGeminiError } from "../../ai/gemini-error.js";
 
 const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
@@ -98,11 +99,7 @@ Job requirements: ${JSON.stringify(input.jobRequirements)}`;
       });
       return response.text ?? "";
     } catch (err) {
-      throw new AppError(
-        HTTP_STATUS.SERVICE_UNAVAILABLE,
-        ERROR_CODES.GEMINI_API_ERROR,
-        "Unable to rewrite this bullet at this time. Please try again later.",
-      );
+      throw classifyGeminiError(err, "rewrite this bullet");
     }
   }
 

@@ -16,7 +16,8 @@ export type ApiErrorCode =
   | "UNSUPPORTED_FILE_TYPE"
   | "PARSING_FAILED"
   | "VALIDATION_FAILED"
-  | "INTERNAL_SERVER_ERROR";
+  | "INTERNAL_SERVER_ERROR"
+  | "GEMINI_RATE_LIMITED";
 
 interface ApiErrorPayload {
   success: false;

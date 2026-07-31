@@ -8,6 +8,7 @@ import { AppError } from "../../types/app-error.js";
 import { ERROR_CODES } from "../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../constants/http-status.js";
 import { env } from "../../config/env.js";
+import { classifyGeminiError } from "./gemini-error.js";
 
 const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
@@ -29,11 +30,7 @@ export class AIStructuringService implements AIStructuringModule {
       });
       return response.text ?? "";
     } catch (err) {
-      throw new AppError(
-        HTTP_STATUS.SERVICE_UNAVAILABLE,
-        ERROR_CODES.GEMINI_API_ERROR,
-        "Unable to structure resume at this time. Please try again later.",
-      );
+      throw classifyGeminiError(err, "structure resume");
     }
   }
 

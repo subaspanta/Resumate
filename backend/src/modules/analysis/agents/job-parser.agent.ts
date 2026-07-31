@@ -5,6 +5,7 @@ import { ERROR_CODES } from "../../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../../constants/http-status.js";
 import { JobParserAgent, ParsedJob, parsedJobSchema } from "../analysis.types.js";
 import { validateAgentOutput } from "./validator.js";
+import { classifyGeminiError } from "../../ai/gemini-error.js";
 
 const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
@@ -60,11 +61,7 @@ ${rawText}`;
       });
       return response.text ?? "";
     } catch (err) {
-      throw new AppError(
-        HTTP_STATUS.SERVICE_UNAVAILABLE,
-        ERROR_CODES.GEMINI_API_ERROR,
-        "Unable to parse the job description at this time. Please try again later.",
-      );
+      throw classifyGeminiError(err, "parse the job description");
     }
   }
 
