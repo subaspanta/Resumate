@@ -10,9 +10,13 @@ import { HTTP_STATUS } from "../../constants/http-status.js";
 import { env } from "../../config/env.js";
 import { classifyGeminiError } from "./gemini-error.js";
 
-const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
-
 export class AIStructuringService implements AIStructuringModule {
+  constructor(
+    private readonly ai: GoogleGenAI = new GoogleGenAI({
+      apiKey: env.GEMINI_API_KEY,
+    }),
+  ) {}
+
   async structureResume(rawText: string): Promise<StructuredResume> {
     const responseText = await this.callGemini(rawText);
     return this.parseResponse(responseText);
@@ -20,7 +24,7 @@ export class AIStructuringService implements AIStructuringModule {
 
   private async callGemini(rawText: string): Promise<string> {
     try {
-      const response = await ai.models.generateContent({
+      const response = await this.ai.models.generateContent({
         model: "gemini-flash-latest",
         contents: `${RESUME_STRUCTURING_PROMPT}\n\nResume text:\n${rawText}`,
         config: {

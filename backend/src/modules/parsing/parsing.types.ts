@@ -32,6 +32,7 @@ export type StructuredResume = {
   }[];
   education: { degree: string; institution: string; year?: string }[];
   skills: string[];
+  projects: { name: string; description?: string }[];
 };
 
 export interface AIStructuringModule {

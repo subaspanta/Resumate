@@ -48,8 +48,19 @@ export const RESUME_SCHEMA = {
       },
     },
     skills: { type: Type.ARRAY, items: { type: Type.STRING } },
+    projects: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          name: { type: Type.STRING },
+          description: { type: Type.STRING, nullable: true },
+        },
+        required: ["name"],
+      },
+    },
   },
-  required: ["experience", "education", "skills"],
+  required: ["experience", "education", "skills", "projects"],
 };
 
 export const RESUME_STRUCTURING_PROMPT = `Extract structured resume data from the provided text.
@@ -63,5 +74,11 @@ For each experience entry:
 
 For each education entry:
 - "year" is the year of graduation or completion, if stated. If no year is provided, set year to null.
+
+For each project entry:
+- "name" is the project's title or name.
+- "description" is what the project does or the work performed, if stated. If no
+  description is present, set it to null.
+If no projects section is present in the resume, return an empty array.
 
 If any field is not present in the text, set it to null or an empty array as appropriate. Do not invent data.`;
