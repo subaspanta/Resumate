@@ -92,9 +92,11 @@ export class AnalysisController {
     next: NextFunction,
   ) => {
     try {
+      const userId = req.user!.sub;
       const { suggestionId } = req.params;
       const { status, rejectionReason } = req.body;
       const data = await this.analysisService.updateSuggestionStatus(
+        userId,
         suggestionId,
         status,
         rejectionReason,

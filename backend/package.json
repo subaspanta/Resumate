@@ -35,7 +35,8 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "tokens:cleanup": "tsx src/scripts/cleanup-refresh-tokens.ts"
+    "tokens:cleanup": "tsx src/scripts/cleanup-refresh-tokens.ts",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -47,8 +48,11 @@
     "@types/multer": "^2.2.0",
     "@types/node": "^26.0.1",
     "@types/pdfmake": "^0.3.3",
+    "@types/supertest": "^7.2.1",
     "prisma": "^7.8.0",
+    "supertest": "^7.2.2",
     "tsx": "^4.19.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
   }
 }

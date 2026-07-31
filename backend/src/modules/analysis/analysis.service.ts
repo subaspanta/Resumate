@@ -107,15 +107,42 @@ export class AnalysisService {
   }
 
   async updateSuggestionStatus(
+    userId: string,
     suggestionId: string,
     status: "applied" | "rejected",
     rejectionReason?: string,
   ): Promise<Suggestion> {
-    return this.analysisRepository.updateSuggestionStatus(
+    const existing =
+      await this.analysisRepository.findSuggestionWithOwner(suggestionId);
+    if (!existing) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Suggestion not found",
+      );
+    }
+    if (existing.analysis.userId !== userId) {
+      throw new AppError(
+        HTTP_STATUS.FORBIDDEN,
+        ERROR_CODES.FORBIDDEN,
+        "You do not have access to this suggestion",
+      );
+    }
+
+    const updated = await this.analysisRepository.updateSuggestionStatus(
       suggestionId,
+      userId,
       status,
       rejectionReason,
     );
+    if (!updated) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Suggestion not found",
+      );
+    }
+    return updated;
   }
 
   async getAnalysisById(

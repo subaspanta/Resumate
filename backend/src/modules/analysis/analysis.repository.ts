@@ -56,15 +56,33 @@ export class AnalysisRepository {
     });
   }
 
+  // Ownership-decision read only — never used to authorize the write itself.
+  async findSuggestionWithOwner(
+    suggestionId: string,
+  ): Promise<{ id: string; analysis: { userId: string } } | null> {
+    return prisma.suggestion.findUnique({
+      where: { id: suggestionId },
+      select: { id: true, analysis: { select: { userId: true } } },
+    });
+  }
+
+  // Ownership-scoped write: the `analysis: { userId }` filter keeps the
+  // update itself safe even though the service already decided 403 vs 404
+  // via findSuggestionWithOwner. Returns null if the row vanished or its
+  // owner changed between the read and this write (race), rather than
+  // throwing — caller treats that as not-found.
   async updateSuggestionStatus(
     suggestionId: string,
+    userId: string,
     status: SuggestionStatus,
     rejectionReason?: string,
-  ): Promise<Suggestion> {
-    return prisma.suggestion.update({
-      where: { id: suggestionId },
+  ): Promise<Suggestion | null> {
+    const result = await prisma.suggestion.updateMany({
+      where: { id: suggestionId, analysis: { userId } },
       data: { status, rejectionReason: rejectionReason ?? null },
     });
+    if (result.count === 0) return null;
+    return prisma.suggestion.findUnique({ where: { id: suggestionId } });
   }
 
   async getAnalysisWithSuggestions(
