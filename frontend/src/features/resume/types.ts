@@ -15,7 +15,6 @@ export interface ResumeSummary {
   originalFileName: string;
   createdAt: string;
   updatedAt: string;
-  // Legacy/computed fields for UI compatibility (Phase 1-2)
   lastEditedAt?: string;
   atsScore?: number;
   fileName?: string;
@@ -23,12 +22,43 @@ export interface ResumeSummary {
   targetJob?: string | null;
 }
 
+export interface StructuredResumeExperience {
+  title: string;
+  company: string | null;
+  workMode?: "remote" | "hybrid" | "onsite" | null;
+  location?: string | null;
+  startDate?: string;
+  endDate?: string;
+  description?: string;
+}
+
+export interface StructuredResumeEducation {
+  degree: string;
+  institution: string;
+  year?: string;
+}
+
+export interface StructuredResumeProject {
+  name: string;
+  description?: string;
+}
+
+export interface StructuredResume {
+  name?: string;
+  contact?: { email?: string; phone?: string; location?: string };
+  summary?: string;
+  experience: StructuredResumeExperience[];
+  education: StructuredResumeEducation[];
+  skills: string[];
+  projects: StructuredResumeProject[];
+}
+
 export interface Resume extends ResumeSummary {
   mimeType: string;
   fileSize: number;
   pdfUrl: string;
   rawText: string;
-  structuredResume: Record<string, unknown>;
+  structuredResume: StructuredResume;
 }
 
 export type CreateResumeInput = FormData;
@@ -39,7 +69,9 @@ export interface DashboardStateInput {
   loadError: boolean;
 }
 
-export function deriveDashboardState(input: DashboardStateInput): DashboardState {
+export function deriveDashboardState(
+  input: DashboardStateInput,
+): DashboardState {
   if (input.loadError) return "error";
   if (input.resumes.length === 0) return "firstTime";
   if (input.latestAnalysis) return "workspaceReady";
@@ -57,7 +89,6 @@ export function stateToLayoutKey(state: DashboardState): DashboardView {
     case "workspaceReady":
       return "active";
     case "error":
-      // Keep the prior layout key — error is inline, not a layout change
       return "default";
   }
 }
@@ -76,7 +107,7 @@ export function getTimeGreeting(): string {
 
 export function getSidebarOffset(
   isCollapsible: boolean,
-  isSidebarCollapsed: boolean
+  isSidebarCollapsed: boolean,
 ): string {
   return isCollapsible && isSidebarCollapsed
     ? "var(--spacing-sidebar-collapsed-width)"

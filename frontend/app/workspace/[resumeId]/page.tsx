@@ -9,6 +9,7 @@ import { isApiError } from "@/src/api/api-error";
 import { useResume } from "@/src/features/resume/resume.hooks";
 import { useCreateAnalysis } from "@/src/features/analysis/analysis.hooks";
 import { ResumeContextCard } from "@/src/components/workspace/ResumeContextCard";
+import { ResumePreview } from "@/src/components/workspace/ResumePreview";
 import { JobInputForm } from "@/src/components/workspace/JobInputForm";
 
 export default function WorkspacePage({
@@ -63,6 +64,11 @@ export default function WorkspacePage({
       </div>
 
       <ResumeContextCard resume={resume} isLoading={resumeLoading} />
+
+      <ResumePreview
+        structuredResume={resume?.structuredResume}
+        isLoading={resumeLoading}
+      />
 
       <JobInputForm
         isSubmitting={createAnalysis.isPending}
