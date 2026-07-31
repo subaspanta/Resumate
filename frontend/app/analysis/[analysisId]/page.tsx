@@ -11,9 +11,11 @@ import {
   useRejectSuggestion,
 } from "@/src/features/analysis/analysis.hooks";
 import type { ParsedJob } from "@/src/features/analysis/types";
+import type { StructuredResume } from "@/src/features/resume/types";
 import { SuggestionsList } from "@/src/components/analysis/SuggestionsList";
 import { ProgressBar } from "@/src/components/analysis/ProgressBar";
 import { ExportButton } from "@/src/components/analysis/ExportButton";
+import { ResumePreview } from "@/src/components/workspace/ResumePreview";
 
 export default function AnalysisPage({
   params,
@@ -29,6 +31,9 @@ export default function AnalysisPage({
 
   const parsedJob = analysis?.parsedJob as ParsedJob | undefined;
   const jobTitle = parsedJob?.title;
+  const resumeSnapshot = analysis?.resumeSnapshot as
+    | StructuredResume
+    | undefined;
 
   const suggestions = useMemo(() => analysis?.suggestions ?? [], [analysis]);
   const reviewedCount = suggestions.filter(
@@ -99,6 +104,12 @@ export default function AnalysisPage({
       </header>
 
       <div className="flex flex-col gap-8">
+        <ResumePreview
+          structuredResume={resumeSnapshot}
+          isLoading={isLoading}
+          skillsMatch={analysis?.skillsMatch}
+        />
+
         <section className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <h2 className="text-xl font-semibold tracking-tight text-foreground">

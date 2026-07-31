@@ -38,13 +38,21 @@ export interface AnalysisSummary {
   createdAt: string;
 }
 
-// GET /analyses/:id returns the full row plus its suggestions.
+export interface SkillsMatch {
+  matched: string[];
+  missing: string[];
+}
+
+// GET /analyses/:id returns the full row plus its suggestions and the
+// computed (not stored) skills match between the resume snapshot and the
+// parsed job.
 export interface Analysis extends AnalysisSummary {
   userId: string;
   parsedJob: ParsedJob | Record<string, unknown>;
   resumeSnapshot: Record<string, unknown>;
   analysisResult: AnalysisResult;
   suggestions: Suggestion[];
+  skillsMatch: SkillsMatch;
 }
 
 export interface CreateAnalysisInput {

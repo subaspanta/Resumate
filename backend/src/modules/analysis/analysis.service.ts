@@ -14,6 +14,7 @@ import {
   RewriteOutput,
   SuggestionSection,
 } from "./analysis.types.js";
+import { matchSkills, SkillsMatch } from "./skills-match.js";
 
 const REWRITE_BY_SECTION: Record<
   SuggestionSection,
@@ -161,7 +162,7 @@ export class AnalysisService {
   async getAnalysisById(
     userId: string,
     analysisId: string,
-  ): Promise<Analysis & { suggestions: Suggestion[] }> {
+  ): Promise<Analysis & { suggestions: Suggestion[]; skillsMatch: SkillsMatch }> {
     const analysis =
       await this.analysisRepository.getAnalysisWithSuggestions(analysisId);
     if (!analysis || analysis.userId !== userId) {
@@ -171,7 +172,16 @@ export class AnalysisService {
         "Analysis not found",
       );
     }
-    return analysis;
+
+    const resumeSkills =
+      (analysis.resumeSnapshot as { skills?: string[] } | null)?.skills ?? [];
+    const jobSkills =
+      (analysis.parsedJob as { skills?: string[] } | null)?.skills ?? [];
+
+    return {
+      ...analysis,
+      skillsMatch: matchSkills(resumeSkills, jobSkills),
+    };
   }
 
   // Merge-on-READ: applies accepted suggestions onto the resume's structured
