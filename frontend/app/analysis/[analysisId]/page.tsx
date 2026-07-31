@@ -10,8 +10,7 @@ import {
   useApplySuggestion,
   useRejectSuggestion,
 } from "@/src/features/analysis/analysis.hooks";
-import type { MarketIntel, ParsedJob } from "@/src/features/analysis/types";
-import { MarketIntelCard } from "@/src/components/analysis/MarketIntelCard";
+import type { ParsedJob } from "@/src/features/analysis/types";
 import { SuggestionsList } from "@/src/components/analysis/SuggestionsList";
 import { ProgressBar } from "@/src/components/analysis/ProgressBar";
 import { ExportButton } from "@/src/components/analysis/ExportButton";
@@ -28,9 +27,6 @@ export default function AnalysisPage({
   const rejectSuggestion = useRejectSuggestion(analysisId);
   const [mutatingId, setMutatingId] = useState<string | null>(null);
 
-  const marketIntel = analysis?.analysisResult?.marketIntel as
-    | MarketIntel
-    | undefined;
   const parsedJob = analysis?.parsedJob as ParsedJob | undefined;
   const jobTitle = parsedJob?.title;
 
@@ -103,8 +99,6 @@ export default function AnalysisPage({
       </header>
 
       <div className="flex flex-col gap-8">
-        <MarketIntelCard marketIntel={marketIntel} isLoading={isLoading} />
-
         <section className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <h2 className="text-xl font-semibold tracking-tight text-foreground">

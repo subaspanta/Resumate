@@ -4,17 +4,6 @@ export interface AnalysisScore {
   sections: Record<string, number>;
 }
 
-export interface MarketIntel {
-  company: string;
-  industry: string;
-  techStack: string[];
-  experienceLevel: string;
-  salaryRangeNPR: { min: number; max: number };
-  atsKeywords: string[];
-  commonRequirements: string[];
-  nepaliContext: string;
-}
-
 export interface ParsedJob {
   title: string;
   company: string | null;
@@ -23,10 +12,8 @@ export interface ParsedJob {
   experienceLevel: string;
 }
 
-// analysisResult is an open envelope on the backend; marketIntel is the only
-// field guaranteed present today.
+// analysisResult is an open envelope on the backend.
 export interface AnalysisResult {
-  marketIntel?: MarketIntel;
   parsedJob?: ParsedJob;
   scores?: AnalysisScore;
 }
@@ -70,7 +57,6 @@ export interface CreateAnalysisInput {
 export interface CreateAnalysisResult {
   analysisId: string;
   parsedJob: Record<string, unknown>;
-  marketIntel: Record<string, unknown>;
 }
 
 export interface RewriteSuggestionsInput {

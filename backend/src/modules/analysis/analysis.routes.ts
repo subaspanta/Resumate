@@ -5,7 +5,6 @@ import {
   createAnalysisInputSchema,
   getRewriteSuggestionsInputSchema,
   jobDescriptionInputSchema,
-  marketIntelInputSchema,
   rewriteBulletInputSchema,
   updateSuggestionStatusInputSchema,
 } from "./analysis.types.js";
@@ -29,13 +28,6 @@ const analysisService = new AnalysisService(
   rewriteAgent,
 );
 const analysisController = new AnalysisController(analysisService);
-
-router.post(
-  "/market",
-  validateRequest(marketIntelInputSchema),
-  requireAuth,
-  analysisController.getMarketIntel,
-);
 
 router.post(
   "/job-desc",

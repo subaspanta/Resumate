@@ -8,8 +8,6 @@ import {
   AnalysisResult,
   GetRewriteSuggestionsInput,
   JobParserAgent,
-  MarketAgent,
-  MarketIntelOutput,
   ParsedJob,
   RewriteAgent,
   RewriteBulletInput,
@@ -24,15 +22,8 @@ export class AnalysisService {
     private readonly rewriteAgent: RewriteAgent,
   ) {}
 
-  // Preview/lookup step — intentionally does NOT persist. Market intel is a
-  // read-only enrichment returned directly to the caller; nothing is written
-  // to the Analysis table here.
-  // async getMarketIntel(jobTitle: string): Promise<MarketIntelOutput> {
-  //   //  return this.marketAgent.getMarketIntel(jobTitle);
-  // }
-
-  // Preview step — mirrors getMarketIntel: parses the job description and
-  // returns the result directly without persisting.
+  // Preview step — parses the job description and returns the result
+  // directly without persisting.
   async parseJobDescription(rawText: string): Promise<ParsedJob> {
     return this.jobParserAgent.parseJobDescription(rawText);
   }
@@ -43,8 +34,8 @@ export class AnalysisService {
     return this.rewriteAgent.rewriteBullet(input);
   }
 
-  // Persisting step — runs the job parser + market agent, then writes an
-  // Analysis row snapshotting the resume and storing the AI results.
+  // Persisting step — runs the job parser, then writes an Analysis row
+  // snapshotting the resume and storing the AI results.
   async createAnalysis(
     userId: string,
     resumeId: string,
@@ -52,7 +43,6 @@ export class AnalysisService {
   ): Promise<{
     analysisId: string;
     parsedJob: ParsedJob;
-    marketIntel: MarketIntelOutput;
   }> {
     const resume = await this.resumeRepository.findByIdAndUserId(
       userId,
@@ -68,9 +58,8 @@ export class AnalysisService {
 
     const parsedJob =
       await this.jobParserAgent.parseJobDescription(jobDescription);
-    // const marketIntel = await this.marketAgent.getMarketIntel(parsedJob.title);
 
-    const analysisResult: AnalysisResult = { marketIntel, parsedJob };
+    const analysisResult: AnalysisResult = { parsedJob };
 
     const analysisId = await this.analysisRepository.createAnalysis({
       resumeId,
@@ -81,7 +70,7 @@ export class AnalysisService {
       analysisResult: analysisResult as unknown as Prisma.InputJsonValue,
     });
 
-    return { analysisId, parsedJob, marketIntel };
+    return { analysisId, parsedJob };
   }
 
   // Persisting step — verifies ownership, runs the rewrite agent (validator runs

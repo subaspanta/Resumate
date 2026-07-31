@@ -3,7 +3,6 @@ import { requireAuth } from "../../middleware/requireAuth.js";
 import { AnalysisRepository } from "../analysis/analysis.repository.js";
 import { ResumeRepository } from "../resume/resume.repository.js";
 import { AnalysisService } from "../analysis/analysis.service.js";
-// import { MarketAgentService } from "../analysis/agents/market.agent.js";
 import { JobParserAgentService } from "../analysis/agents/job-parser.agent.js";
 import { RewriteAgentService } from "../analysis/agents/rewrite.agent.js";
 import { ExportController } from "./export.controller.js";
@@ -12,7 +11,6 @@ const router = Router();
 
 const analysisRepository = new AnalysisRepository();
 const resumeRepository = new ResumeRepository();
-// const marketAgent = new MarketAgentService();
 const jobParserAgent = new JobParserAgentService();
 const rewriteAgent = new RewriteAgentService();
 const analysisService = new AnalysisService(

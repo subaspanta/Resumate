@@ -5,23 +5,6 @@ import { HTTP_STATUS } from "../../constants/http-status.js";
 export class AnalysisController {
   constructor(private readonly analysisService: AnalysisService) {}
 
-  getMarketIntel = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    try {
-      const { jobTitle } = req.body;
-      const data = await this.analysisService.getMarketIntel(jobTitle);
-      res.status(HTTP_STATUS.OK).json({
-        success: true,
-        data,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
   parseJobDescription = async (
     req: Request,
     res: Response,
