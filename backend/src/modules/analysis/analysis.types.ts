@@ -35,12 +35,15 @@ export const createAnalysisInputSchema = z.object({
     .min(50, { message: "Job description is too short to be a real posting" }),
 });
 
+export const suggestionSectionSchema = z.enum(["bullet", "project", "summary"]);
+
 export const getRewriteSuggestionsInputSchema = z.object({
   analysisId: z.string().uuid(),
+  section: suggestionSectionSchema.default("bullet"),
   originalBullet: z
     .string()
     .trim()
-    .min(10, { message: "Bullet is too short to rewrite" }),
+    .min(10, { message: "Text is too short to rewrite" }),
   jobRequirements: z.array(z.string()),
 });
 
@@ -56,6 +59,7 @@ export type AnalysisResult = {
   scores?: unknown;
 };
 
+export type SuggestionSection = z.infer<typeof suggestionSectionSchema>;
 export type JobDescriptionInput = z.infer<typeof jobDescriptionInputSchema>;
 export type ParsedJob = z.infer<typeof parsedJobSchema>;
 export type RewriteBulletInput = z.infer<typeof rewriteBulletInputSchema>;
@@ -75,7 +79,8 @@ export interface JobParserAgent {
   parseJobDescription(rawText: string): Promise<ParsedJob>;
 }
 
-// TODO: implemented by agents/rewrite.agent.ts (walking-skeleton stub for now).
 export interface RewriteAgent {
   rewriteBullet(input: RewriteBulletInput): Promise<RewriteOutput>;
+  rewriteProject(input: RewriteBulletInput): Promise<RewriteOutput>;
+  rewriteSummary(input: RewriteBulletInput): Promise<RewriteOutput>;
 }

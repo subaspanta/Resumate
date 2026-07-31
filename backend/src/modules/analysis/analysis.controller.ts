@@ -71,9 +71,11 @@ export class AnalysisController {
   ) => {
     try {
       const userId = req.user!.sub;
-      const { analysisId, originalBullet, jobRequirements } = req.body;
+      const { analysisId, section, originalBullet, jobRequirements } =
+        req.body;
       const data = await this.analysisService.getRewriteSuggestions(userId, {
         analysisId,
+        section,
         originalBullet,
         jobRequirements,
       });

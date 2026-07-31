@@ -25,7 +25,7 @@ export interface Suggestion {
   analysisId: string;
   original: string;
   suggested: string;
-  section: string | null;
+  section: SuggestionSection | null;
   status: SuggestionStatus;
   rejectionReason: string | null;
   createdAt: string;
@@ -59,8 +59,11 @@ export interface CreateAnalysisResult {
   parsedJob: Record<string, unknown>;
 }
 
+export type SuggestionSection = "bullet" | "project" | "summary";
+
 export interface RewriteSuggestionsInput {
   analysisId: string;
+  section?: SuggestionSection;
   originalBullet: string;
   jobRequirements: string[];
 }

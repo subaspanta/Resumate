@@ -12,7 +12,17 @@ import {
   RewriteAgent,
   RewriteBulletInput,
   RewriteOutput,
+  SuggestionSection,
 } from "./analysis.types.js";
+
+const REWRITE_BY_SECTION: Record<
+  SuggestionSection,
+  (agent: RewriteAgent, input: RewriteBulletInput) => Promise<RewriteOutput>
+> = {
+  bullet: (agent, input) => agent.rewriteBullet(input),
+  project: (agent, input) => agent.rewriteProject(input),
+  summary: (agent, input) => agent.rewriteSummary(input),
+};
 
 export class AnalysisService {
   constructor(
@@ -90,17 +100,20 @@ export class AnalysisService {
       );
     }
 
-    const { suggestions } = await this.rewriteAgent.rewriteBullet({
-      originalBullet: input.originalBullet,
-      jobRequirements: input.jobRequirements,
-    });
+    const { suggestions } = await REWRITE_BY_SECTION[input.section](
+      this.rewriteAgent,
+      {
+        originalBullet: input.originalBullet,
+        jobRequirements: input.jobRequirements,
+      },
+    );
 
     return this.analysisRepository.saveSuggestions(
       input.analysisId,
       suggestions.map((suggested) => ({
         original: input.originalBullet,
         suggested,
-        section: null,
+        section: input.section,
         status: "pending",
       })),
     );

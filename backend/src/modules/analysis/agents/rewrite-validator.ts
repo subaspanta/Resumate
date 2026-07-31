@@ -55,6 +55,45 @@ export function validateRewrite(
   return { valid: true };
 }
 
+// Summary paragraphs tolerate more rewording than a bullet — a prose rewrite
+// naturally pulls in more connective/stylistic words, so it needs a looser
+// (and two-sided) length bound plus a lower overlap floor. Dates/companies
+// are still hallucination risks either way, so those checks are reused as-is.
+export function validateSummaryRewrite(
+  original: string,
+  rewrite: string,
+): RewriteValidationResult {
+  const lengthResult = checkSummaryLength(original, rewrite);
+  if (!lengthResult.valid) return lengthResult;
+
+  const dateResult = checkInventedDates(original, rewrite);
+  if (!dateResult.valid) return dateResult;
+
+  const companyResult = checkInventedCompanies(original, rewrite);
+  if (!companyResult.valid) return companyResult;
+
+  const overlapResult = checkSemanticOverlap(original, rewrite, 20);
+  if (!overlapResult.valid) return overlapResult;
+
+  return { valid: true };
+}
+
+function checkSummaryLength(
+  original: string,
+  rewrite: string,
+): RewriteValidationResult {
+  if (rewrite.length > original.length * 1.5) {
+    return { valid: false, reason: "Rewrite exceeds 1.5x original length" };
+  }
+  if (rewrite.length < original.length * 0.5) {
+    return {
+      valid: false,
+      reason: "Rewrite is under half the original length — likely dropped content",
+    };
+  }
+  return { valid: true };
+}
+
 function checkLength(
   original: string,
   rewrite: string,
@@ -108,6 +147,7 @@ function checkInventedCompanies(
 function checkSemanticOverlap(
   original: string,
   rewrite: string,
+  minOverlapPercent = 30,
 ): RewriteValidationResult {
   const originalWords = meaningfulWords(original);
   const rewriteWords = meaningfulWords(rewrite);
@@ -122,11 +162,10 @@ function checkSemanticOverlap(
   }
   const overlapPercent = (shared / originalWords.size) * 100;
 
-  if (overlapPercent < 30) {
+  if (overlapPercent < minOverlapPercent) {
     return {
       valid: false,
-      reason:
-        "Rewrite shares less than 30% of original's meaningful words — may have drifted from the original content",
+      reason: `Rewrite shares less than ${minOverlapPercent}% of original's meaningful words — may have drifted from the original content`,
     };
   }
   return { valid: true };
