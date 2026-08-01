@@ -16,7 +16,7 @@ export function AuthCard({
   return (
     <section
       className={cn(
-        "auth-card no-shadow",
+        "auth-card",
         variant === "login" ? "auth-card--login" : "auth-card--register",
         className,
       )}

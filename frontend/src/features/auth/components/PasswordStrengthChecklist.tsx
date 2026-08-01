@@ -1,5 +1,12 @@
 "use client";
 
+import {
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_NUMBER_REGEX,
+  PASSWORD_SYMBOL_REGEX,
+  PASSWORD_UPPERCASE_REGEX,
+} from "../auth.schemas";
+
 interface PasswordStrengthChecklistProps {
   password: string;
 }
@@ -7,13 +14,13 @@ interface PasswordStrengthChecklistProps {
 export function PasswordStrengthChecklist({
   password,
 }: PasswordStrengthChecklistProps) {
-  const hasLength = password.length >= 8;
-  const hasUpper = /[A-Z]/.test(password);
-  const hasNumber = /[0-9]/.test(password);
-  const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  const hasLength = password.length >= PASSWORD_MIN_LENGTH;
+  const hasUpper = PASSWORD_UPPERCASE_REGEX.test(password);
+  const hasNumber = PASSWORD_NUMBER_REGEX.test(password);
+  const hasSymbol = PASSWORD_SYMBOL_REGEX.test(password);
 
   const items = [
-    { id: "length", label: "8+ characters", met: hasLength },
+    { id: "length", label: `${PASSWORD_MIN_LENGTH}+ characters`, met: hasLength },
     { id: "upper", label: "Uppercase", met: hasUpper },
     { id: "number", label: "Number", met: hasNumber },
     { id: "symbol", label: "Symbol", met: hasSymbol },

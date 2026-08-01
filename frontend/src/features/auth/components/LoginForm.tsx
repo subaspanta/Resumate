@@ -2,7 +2,6 @@
 
 import { useForm, type UseFormSetError } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/src/features/auth";
 import { isApiError } from "@/src/api/api-error";
@@ -13,17 +12,7 @@ import { AuthSubmitButton } from "./AuthSubmitButton";
 import { AuthDivider } from "./AuthDivider";
 import { GoogleAuthButton } from "./GoogleAuthButton";
 import { useErrorResponse } from "@/src/components/useErrorResponse";
-
-const loginSchema = z.object({
-  email: z
-    .string()
-    .trim()
-    .min(1, "Email is required")
-    .email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
+import { loginSchema, type LoginFormValues } from "../auth.schemas";
 
 const INVALID_CREDENTIALS_MESSAGE = "Invalid email or password";
 

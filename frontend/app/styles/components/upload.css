@@ -1,7 +1,3 @@
-/**
- * Resume upload drop zone and the first-time feature preview cards.
- * Used by src/components/UploadDropZone.tsx and FeaturePreviewSection.tsx.
- */
 @layer components {
   .dashboard-upload {
     display: flex;
@@ -36,6 +32,7 @@
   .dashboard-upload-zone--active {
     border-color: var(--color-primary);
     background-color: var(--color-ai-bg);
+    transform: scale(1.01);
   }
 
   .dashboard-upload-icon {
@@ -47,7 +44,11 @@
     align-items: center;
     justify-content: center;
     margin-bottom: var(--spacing-lg);
-    transition: all 200ms ease-out;
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms ease-out, color 200ms ease-out;
+  }
+
+  .dashboard-upload-zone--active .dashboard-upload-icon {
+    transform: translateY(-4px) scale(1.08);
   }
 
   .dashboard-upload-zone--first-time .dashboard-upload-icon {
@@ -99,6 +100,10 @@
     opacity: 0.9;
   }
 
+  .dashboard-upload-btn:active {
+    transform: scale(0.97);
+  }
+
   .dashboard-upload-btn--compact {
     padding: var(--spacing-sm) var(--spacing-lg);
     margin-bottom: var(--spacing-sm);
@@ -110,46 +115,5 @@
     font-size: var(--text-mono-label);
     font-weight: 500;
     color: var(--color-text-muted);
-  }
-
-  /* Feature previews (first-time) */
-  .dashboard-feature-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--spacing-lg);
-  }
-
-  .dashboard-feature-card {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: var(--spacing-md);
-    border: 1px solid var(--color-border-base);
-    background-color: var(--color-surface);
-    border-radius: var(--radius-lg);
-  }
-
-  .dashboard-feature-card--ai {
-    border-color: var(--color-ai-border);
-    background-color: var(--color-ai-bg);
-  }
-
-  .dashboard-feature-card-title {
-    font-family: var(--font-label-std);
-    font-size: var(--text-label-std);
-    font-weight: 500;
-    color: var(--color-text-primary);
-  }
-
-  .dashboard-feature-card-title--ai {
-    color: var(--color-primary);
-  }
-
-  .dashboard-feature-arrow {
-    color: var(--color-text-muted);
-    flex-shrink: 0;
   }
 }

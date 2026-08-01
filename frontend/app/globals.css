@@ -12,7 +12,6 @@
 /* Feature/component styles */
 @import "./styles/components/auth.css";
 @import "./styles/components/sidebar.css";
-@import "./styles/components/topnav.css";
 @import "./styles/components/layout.css";
 @import "./styles/components/upload.css";
 @import "./styles/components/resume-list.css";

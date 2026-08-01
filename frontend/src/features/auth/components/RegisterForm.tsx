@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/features/auth";
 import { isApiError } from "@/src/api/api-error";
@@ -11,37 +10,7 @@ import { AuthFormField } from "./AuthFormField";
 import { PasswordStrengthChecklist } from "./PasswordStrengthChecklist";
 import { AuthFooterPrompt } from "./AuthFooterPrompt";
 import { AuthSubmitButton } from "./AuthSubmitButton";
-
-const registerSchema = z
-  .object({
-    name: z
-      .string()
-      .trim()
-      .min(1, "Name is required")
-      .max(50, "Name must be at most 50 characters"),
-    email: z
-      .string()
-      .trim()
-      .min(1, "Email is required")
-      .email("Invalid email address"),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .max(32, "Password must be at most 32 characters")
-      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .regex(/[0-9]/, "Password must contain at least one number")
-      .regex(
-        /[!@#$%^&*(),.?":{}|<>]/,
-        "Password must contain at least one special character"
-      ),
-    confirmPassword: z.string().min(1, "Confirm password is required"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords must match",
-    path: ["confirmPassword"],
-  });
-
-type RegisterFormValues = z.infer<typeof registerSchema>;
+import { registerSchema, type RegisterFormValues } from "../auth.schemas";
 
 export function RegisterForm() {
   const { register: registerUser, isRegistering: isLoading } = useAuth();
@@ -52,7 +21,7 @@ export function RegisterForm() {
     handleSubmit,
     watch,
     setError,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -132,6 +101,7 @@ export function RegisterForm() {
           registration={register("password")}
           error={errors.password?.message}
           disabled={isLoading}
+          showPasswordToggle
           variant="register"
           footer={<PasswordStrengthChecklist password={password} />}
         />
@@ -144,11 +114,13 @@ export function RegisterForm() {
           registration={register("confirmPassword")}
           error={errors.confirmPassword?.message}
           disabled={isLoading}
+          showPasswordToggle
           variant="register"
         />
 
         <AuthSubmitButton
           isLoading={isLoading}
+          disabled={!isValid}
           loadingText="Creating Account..."
           variant="register"
         >

@@ -1,5 +1,5 @@
 import { ResumeSummary } from "../features/resume/types";
-import { ScoreBadge } from "./ScoreBadge";
+import { AnalysisStatusBadge } from "./dashboard/ActiveDashboardContent";
 
 interface ResumeListItemProps {
   resume: ResumeSummary;
@@ -38,6 +38,7 @@ export function ResumeListItem({
         </div>
       </div>
       <div className="dashboard-resume-row-right">
+        <AnalysisStatusBadge status={resume.analysisStatus} />
         <button
           className="dashboard-open-btn"
           onClick={(e) => {

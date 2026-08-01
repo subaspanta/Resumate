@@ -7,23 +7,17 @@ export interface DashboardViewLayout {
   sidebarNavDisabled: boolean;
   sidebarNavHint?: string;
   sidebarAvatarSize: "sm" | "md";
-  sidebarShowUserMenu: boolean;
-  sidebarShowSignOut: boolean;
-  topNavMode: "placeholder" | "search";
   footerVariant: "inline" | "fixed";
 }
 
 export const DASHBOARD_VIEW_LAYOUT: Record<DashboardView, DashboardViewLayout> = {
   firstTime: {
-    sidebarCollapsible: false,
+    sidebarCollapsible: true,
     sidebarShowBrandIcon: false,
     sidebarShowTagline: true,
     sidebarNavDisabled: true,
     sidebarNavHint: "Upload resume to unlock.",
     sidebarAvatarSize: "sm",
-    sidebarShowUserMenu: true,
-    sidebarShowSignOut: false,
-    topNavMode: "placeholder",
     footerVariant: "inline",
   },
   default: {
@@ -32,9 +26,6 @@ export const DASHBOARD_VIEW_LAYOUT: Record<DashboardView, DashboardViewLayout> =
     sidebarShowTagline: false,
     sidebarNavDisabled: false,
     sidebarAvatarSize: "md",
-    sidebarShowUserMenu: false,
-    sidebarShowSignOut: false,
-    topNavMode: "search",
     footerVariant: "fixed",
   },
   active: {
@@ -43,9 +34,6 @@ export const DASHBOARD_VIEW_LAYOUT: Record<DashboardView, DashboardViewLayout> =
     sidebarShowTagline: false,
     sidebarNavDisabled: false,
     sidebarAvatarSize: "md",
-    sidebarShowUserMenu: false,
-    sidebarShowSignOut: true,
-    topNavMode: "search",
     footerVariant: "fixed",
   },
 };

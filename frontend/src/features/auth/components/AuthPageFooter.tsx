@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function AuthPageFooter() {
   return (
-    <footer className="w-full py-xl px-lg md:px-xl flex flex-col md:flex-row justify-between items-center gap-md bg-canvas border-t border-border-base no-shadow">
+    <footer className="w-full py-xl px-lg md:px-xl flex flex-col md:flex-row justify-between items-center gap-md bg-canvas border-t border-border-base">
       <div className="font-label-std text-label-std text-text-primary font-medium">
         ResuMate
       </div>

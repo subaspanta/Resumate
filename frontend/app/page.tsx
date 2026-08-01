@@ -17,11 +17,9 @@ import {
 import { DashboardShell } from "@/src/components/dashboard/shell/DashboardShell";
 import { FirstTimeDashboardContent } from "@/src/components/dashboard/FirstTimeDashboardContent";
 import { DefaultDashboardContent } from "@/src/components/dashboard/DefaultDashboardContent";
-import {
-  ContinueWorkingHero,
-  JobTargetCard,
-  RecentResumesTable,
-} from "@/src/components/dashboard/ActiveDashboardContent";
+import { ContinueWorkingHero } from "@/src/components/dashboard/ActiveDashboardContent";
+import { RecentResumesSection } from "@/src/components/RecentResumeSection";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -91,14 +89,28 @@ export default function HomePage() {
     toast.info("Viewing all files is not available yet.");
   };
 
-  const handleSetTarget = () => {
-    toast.info("Job target setup is not available yet.");
-  };
-
   if (resumesLoading) {
     return (
-      <div className="dashboard-shell flex items-center justify-center">
-        <div>Loading...</div>
+      <div className="dashboard-shell">
+        <DashboardShell
+          view="default"
+          isSidebarCollapsed={isSidebarCollapsed}
+          onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
+          userName={user?.name}
+        >
+          <div className="dashboard-main-inner flex flex-col gap-xl">
+            <div className="flex flex-col gap-sm">
+              <Skeleton className="h-9 w-64 bg-surface-container" />
+              <Skeleton className="h-5 w-96 max-w-full bg-surface-container" />
+            </div>
+            <Skeleton className="h-48 w-full rounded-xl bg-surface-container" />
+            <div className="flex flex-col gap-md">
+              <Skeleton className="h-6 w-40 bg-surface-container" />
+              <Skeleton className="h-16 w-full rounded-lg bg-surface-container" />
+              <Skeleton className="h-16 w-full rounded-lg bg-surface-container" />
+            </div>
+          </div>
+        </DashboardShell>
       </div>
     );
   }
@@ -131,31 +143,34 @@ export default function HomePage() {
         )}
 
         {dashboardState === "workspaceReady" && primaryResume && (
-          <div className="dashboard-main-inner dashboard-main-inner--active flex flex-col gap-xl">
+          <div className="dashboard-main-inner flex flex-col gap-xl">
             <ContinueWorkingHero
               resume={primaryResume}
               onOpenWorkspace={handleOpenResume}
               onUploadNew={triggerUpload}
               isUploading={uploadResumeMutation.isPending}
             />
-            <div className="dashboard-active-grid">
-              <JobTargetCard onSetTarget={handleSetTarget} />
-              <RecentResumesTable
-                resumes={resumes}
-                onOpenResume={handleOpenResume}
-                suggestionsCount={0}
-              />
-            </div>
+            <RecentResumesSection
+              resumes={resumes}
+              onOpenResume={handleOpenResume}
+              onViewAll={handleViewAll}
+            />
           </div>
         )}
 
         {dashboardState === "error" && (
           <div className="dashboard-main-inner flex items-center justify-center">
-            <div className="text-center">
-              <p className="text-red-600 mb-4">Failed to load resumes</p>
+            <div className="dashboard-side-panel items-center text-center max-w-sm">
+              <span className="material-symbols-outlined text-danger text-[32px] mb-sm">
+                error
+              </span>
+              <p className="font-body-md text-body-md text-text-primary mb-lg">
+                Failed to load your resumes.
+              </p>
               <button
+                type="button"
                 onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="dashboard-btn-primary"
               >
                 Retry
               </button>

@@ -1,6 +1,6 @@
 /**
- * "Continue working" hero card, job target panel, and the active-state
- * two-column grid layout. Used by ActiveDashboardContent.tsx.
+ * "Continue working" hero card and side panel. Used by
+ * ActiveDashboardContent.tsx and app/page.tsx's error state.
  */
 @layer components {
   .dashboard-hero-card {
@@ -113,6 +113,10 @@
     background-color: var(--color-canvas);
   }
 
+  .dashboard-btn-secondary:active {
+    transform: scale(0.98);
+  }
+
   @media (min-width: 640px) {
     .dashboard-btn-secondary {
       width: auto;
@@ -141,49 +145,32 @@
     opacity: 0.9;
   }
 
+  .dashboard-btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  .dashboard-btn-primary .material-symbols-outlined {
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dashboard-btn-primary:hover .material-symbols-outlined {
+    transform: translateX(3px);
+  }
+
   @media (min-width: 640px) {
     .dashboard-btn-primary {
       width: auto;
     }
   }
 
-  /* Active state: grid layout */
-  .dashboard-active-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--spacing-xl);
-  }
-
-  @media (min-width: 1024px) {
-    .dashboard-active-grid {
-      grid-template-columns: 1fr 2fr;
-    }
-  }
-
-  .dashboard-job-target {
+  .dashboard-side-panel {
     background-color: var(--color-surface);
     border: 1px solid var(--color-border-base);
     border-radius: var(--radius-lg);
     padding: var(--spacing-xl);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     height: 100%;
-    gap: var(--spacing-md);
-  }
-
-  .dashboard-job-target-empty {
-    border: 1px dashed var(--color-border-base);
-    border-radius: var(--radius-DEFAULT);
-    background-color: var(--color-canvas);
-    padding: var(--spacing-lg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: var(--spacing-sm);
-    min-height: 160px;
   }
 
   .dashboard-ai-banner {

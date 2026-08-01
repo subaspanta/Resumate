@@ -1,59 +1,27 @@
 "use client";
 
+import { getSidebarOffset } from "@/src/features/resume/types";
+
 interface DashboardFooterProps {
+  isSidebarCollapsible: boolean;
   isSidebarCollapsed: boolean;
   variant?: "fixed" | "inline";
 }
 
 export function DashboardFooter({
+  isSidebarCollapsible,
   isSidebarCollapsed,
   variant = "fixed",
 }: DashboardFooterProps) {
-  const sidebarOffset = isSidebarCollapsed
-    ? "var(--spacing-sidebar-collapsed-width)"
-    : "var(--spacing-sidebar-width)";
-
-  if (variant === "inline") {
-    return (
-      <footer className="dashboard-footer--inline">
-        <span className="dashboard-footer-copy">
-          © 2024 ResuMate. All rights reserved.
-        </span>
-        <div className="dashboard-footer-links">
-          <a className="dashboard-footer-link" href="#">
-            Privacy Policy
-          </a>
-          <a className="dashboard-footer-link" href="#">
-            Terms of Service
-          </a>
-          <a className="dashboard-footer-link" href="#">
-            Contact Support
-          </a>
-        </div>
-      </footer>
-    );
-  }
+  const sidebarOffset = getSidebarOffset(isSidebarCollapsible, isSidebarCollapsed);
 
   return (
     <footer
       className="dashboard-footer"
-      style={{ marginLeft: sidebarOffset }}
+      style={variant === "fixed" ? { marginLeft: sidebarOffset } : undefined}
     >
       <div className="dashboard-footer-inner">
-        <span className="dashboard-footer-copy">
-          © 2024 ResuMate. All rights reserved.
-        </span>
-        <div className="dashboard-footer-links">
-          <a className="dashboard-footer-link" href="#">
-            Privacy Policy
-          </a>
-          <a className="dashboard-footer-link" href="#">
-            Terms of Service
-          </a>
-          <a className="dashboard-footer-link" href="#">
-            Contact Support
-          </a>
-        </div>
+        <span className="dashboard-footer-copy">© 2024 ResuMate</span>
       </div>
     </footer>
   );

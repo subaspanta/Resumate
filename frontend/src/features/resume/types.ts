@@ -16,10 +16,8 @@ export interface ResumeSummary {
   updatedAt: string;
   analysisStatus: AnalysisStatus;
   lastEditedAt?: string;
-  atsScore?: number;
   fileName?: string;
   suggestionsCount?: number;
-  targetJob?: string | null;
 }
 
 // GET /resumes is cursor-paginated — matches backend ResumePage.

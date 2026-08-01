@@ -11,6 +11,14 @@ export default function LoginPage() {
       <main className="auth-page-shell">
         <LoginBranding />
         <AuthCard variant="login">
+          <div className="text-center mb-lg">
+            <h1 className="font-headline-sm text-headline-sm font-semibold text-text-primary mb-xs">
+              Welcome back
+            </h1>
+            <p className="font-body-md text-body-md text-text-body">
+              Sign in to continue tailoring your resume.
+            </p>
+          </div>
           <LoginForm />
         </AuthCard>
         <AuthFooterPrompt

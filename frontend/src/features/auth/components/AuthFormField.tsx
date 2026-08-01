@@ -56,6 +56,8 @@ export function AuthFormField({
           id={id}
           placeholder={placeholder}
           type={inputType}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${id}-error` : undefined}
           className={cn(
             "auth-input",
             variant === "register" && "auth-input--register",
@@ -69,13 +71,18 @@ export function AuthFormField({
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             disabled={disabled}
+            aria-label={showPassword ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
           >
             {showPassword ? "Hide" : "Show"}
           </button>
         )}
       </div>
 
-      {error && <p className="auth-error">{error}</p>}
+      {error && (
+        <p id={`${id}-error`} className="auth-error" role="alert">
+          {error}
+        </p>
+      )}
 
       {footer}
     </div>

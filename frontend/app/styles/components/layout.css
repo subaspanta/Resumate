@@ -12,45 +12,29 @@
   }
 
   .dashboard-main {
-    padding-top: var(--spacing-top-nav-height);
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
     transition: margin-left 200ms ease-out;
   }
 
-  .dashboard-main--first-time {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    padding-top: 0;
-  }
-
   .dashboard-main-inner {
+    flex: 1;
+    width: 100%;
     max-width: var(--spacing-max-content);
     margin-inline: auto;
     padding: var(--spacing-xxl);
   }
 
   .dashboard-main-inner--first-time {
-    flex: 1;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
     padding-top: var(--spacing-top-nav-height);
     padding-inline: var(--spacing-lg);
     padding-bottom: var(--spacing-xl);
     max-width: 800px;
     margin-top: var(--spacing-xxl);
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xl);
-  }
-
-  .dashboard-main-inner--active {
-    padding: var(--spacing-xl);
-  }
-
-  @media (min-width: 1024px) {
-    .dashboard-main-inner--active {
-      padding: var(--spacing-xxl);
-    }
   }
 
   /* Welcome / hero sections */
@@ -87,36 +71,14 @@
 
   /* Footer */
   .dashboard-footer {
-    background-color: var(--color-canvas);
-    border-top: 1px solid var(--color-border-base);
-    padding-block: var(--spacing-lg);
+    padding-block: var(--spacing-md);
+    padding-inline: var(--spacing-xxl);
     transition: margin-left 200ms ease-out;
-  }
-
-  .dashboard-footer--inline {
-    width: 100%;
-    padding-inline: var(--spacing-lg);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--color-text-muted);
   }
 
   .dashboard-footer-inner {
     max-width: var(--spacing-max-content);
     margin-inline: auto;
-    padding-inline: var(--spacing-lg);
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    align-items: center;
-  }
-
-  @media (min-width: 768px) {
-    .dashboard-footer-inner {
-      flex-direction: row;
-      justify-content: space-between;
-    }
   }
 
   .dashboard-footer-copy {
@@ -124,23 +86,5 @@
     font-size: var(--text-mono-label);
     font-weight: 500;
     color: var(--color-text-muted);
-  }
-
-  .dashboard-footer-links {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xl);
-  }
-
-  .dashboard-footer-link {
-    font-family: var(--font-body-md);
-    font-size: var(--text-body-md);
-    color: var(--color-text-muted);
-    text-decoration: none;
-    transition: color 150ms ease-out;
-  }
-
-  .dashboard-footer-link:hover {
-    color: var(--color-primary);
   }
 }

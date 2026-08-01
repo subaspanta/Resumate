@@ -13,7 +13,6 @@ function enrichResumeSummary(resume: ResumeSummary): ResumeSummary {
     ...resume,
     lastEditedAt: new Date(resume.updatedAt).toLocaleDateString(),
     fileName: resume.originalFileName,
-    atsScore: 0,
     suggestionsCount: 0,
   };
 }

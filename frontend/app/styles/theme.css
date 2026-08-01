@@ -3,8 +3,8 @@
  * Consumed by Tailwind v4 as utility classes (e.g. bg-primary, text-body-md).
  */
 @theme {
-  --color-primary: #6366F1;
-  --color-primary-container: #EEF2FF;
+  --color-primary: #3F6B4F;
+  --color-primary-container: #E9F2EC;
   --color-on-primary: #FFFFFF;
   --color-background: #FCF8FF;
   --color-canvas: #F8FAFC;
@@ -17,11 +17,11 @@
   --color-text-muted: #94A3B8;
 
   --color-danger: #DC2626;
-  --color-ai-bg: #EEF2FF;
-  --color-ai-border: #C7D2FE;
+  --color-ai-bg: #E9F2EC;
+  --color-ai-border: #BBD3C5;
 
-  --color-surface-container-low: #f5f2fe;
-  --color-surface-container: #efecf8;
+  --color-surface-container-low: #EFF4F0;
+  --color-surface-container: #E6EDE8;
 
   --color-score-excellent: #16A34A;
   --color-score-good: #CA8A04;

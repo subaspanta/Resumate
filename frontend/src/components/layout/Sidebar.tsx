@@ -12,8 +12,6 @@ type SidebarLayout = Pick<
   | "sidebarNavDisabled"
   | "sidebarNavHint"
   | "sidebarAvatarSize"
-  | "sidebarShowUserMenu"
-  | "sidebarShowSignOut"
 >;
 
 interface SidebarProps {
@@ -64,7 +62,13 @@ function NavItem({
       >
         {icon}
       </span>
-      {!isCollapsed && <span className="dashboard-nav-label">{label}</span>}
+      <span
+        className={`dashboard-nav-label ${
+          isCollapsed ? "dashboard-nav-label--collapsed" : ""
+        }`}
+      >
+        {label}
+      </span>
     </>
   );
 
@@ -73,7 +77,7 @@ function NavItem({
       <a className={className} href={href} aria-label={label}>
         {content}
       </a>
-      
+
     );
   }
 
@@ -88,8 +92,14 @@ function NavItem({
       >
         {content}
       </button>
-      {!isCollapsed && hint && (
-        <span className="dashboard-nav-hint">{hint}</span>
+      {hint && (
+        <span
+          className={`dashboard-nav-hint ${
+            isCollapsed ? "dashboard-nav-hint--collapsed" : ""
+          }`}
+        >
+          {hint}
+        </span>
       )}
     </>
   );
@@ -102,8 +112,9 @@ export function Sidebar({
   layout,
   onUploadClick,
 }: SidebarProps) {
-  const { logout } = useAuth();
+  const { logout, isLoggingOut } = useAuth();
   const showCollapse = layout.sidebarCollapsible;
+  const collapsed = showCollapse && isCollapsed;
 
   const handleLogout = async () => {
     try {
@@ -121,12 +132,12 @@ export function Sidebar({
   return (
     <aside
       className={`dashboard-sidebar ${
-        showCollapse && isCollapsed ? "dashboard-sidebar--collapsed" : ""
+        collapsed ? "dashboard-sidebar--collapsed" : ""
       }`}
     >
       <div
         className={`dashboard-sidebar-brand ${
-          showCollapse && isCollapsed ? "dashboard-sidebar-brand--collapsed" : ""
+          collapsed ? "dashboard-sidebar-brand--collapsed" : ""
         }`}
       >
         {layout.sidebarShowBrandIcon && (
@@ -139,28 +150,30 @@ export function Sidebar({
             </span>
           </span>
         )}
-        {!isCollapsed && (
-          <div>
-            <div className="dashboard-sidebar-brand-name">ResuMate</div>
-            {layout.sidebarShowTagline && (
-              <p className="dashboard-sidebar-tagline">AI Resume Workspace</p>
-            )}
-          </div>
-        )}
+        <div
+          className={`dashboard-sidebar-brand-text ${
+            collapsed ? "dashboard-sidebar-brand-text--collapsed" : ""
+          }`}
+        >
+          <div className="dashboard-sidebar-brand-name">ResuMate</div>
+          {layout.sidebarShowTagline && (
+            <p className="dashboard-sidebar-tagline">AI Resume Workspace</p>
+          )}
+        </div>
       </div>
 
       <nav className="dashboard-nav" aria-label="Main navigation">
         <NavItem
           icon="dashboard"
           label="Dashboard"
-          isCollapsed={showCollapse && isCollapsed}
+          isCollapsed={collapsed}
           isActive
           isFilled
         />
         <NavItem
           icon="description"
           label="Resume Workspace"
-          isCollapsed={showCollapse && isCollapsed}
+          isCollapsed={collapsed}
           disabled={layout.sidebarNavDisabled}
           hint={layout.sidebarNavHint}
           onClick={() => handleUnavailable("Resume Workspace")}
@@ -168,76 +181,67 @@ export function Sidebar({
         <NavItem
           icon="settings"
           label="Settings"
-          isCollapsed={showCollapse && isCollapsed}
+          isCollapsed={collapsed}
           onClick={() => handleUnavailable("Settings")}
         />
       </nav>
 
       <div className="dashboard-sidebar-footer">
-        {showCollapse && (
-          <button
-            onClick={onToggle}
-            className="dashboard-sidebar-toggle"
-            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            type="button"
-          >
-            <span className="material-symbols-outlined">
-              {isCollapsed ? "menu" : "chevron_left"}
-            </span>
-          </button>
-        )}
-
-        <div className="dashboard-sidebar-user">
+        <div
+          className={`dashboard-sidebar-user-card ${
+            collapsed ? "dashboard-sidebar-user-card--collapsed" : ""
+          }`}
+        >
           <div
-            className={`dashboard-sidebar-user-card ${
-              showCollapse && isCollapsed
-                ? "dashboard-sidebar-user-card--collapsed"
+            className={`dashboard-sidebar-avatar ${
+              layout.sidebarAvatarSize === "sm"
+                ? "dashboard-sidebar-avatar--sm"
                 : ""
             }`}
           >
-            <div
-              className={`dashboard-sidebar-avatar ${
-                layout.sidebarAvatarSize === "sm"
-                  ? "dashboard-sidebar-avatar--sm"
-                  : ""
-              }`}
-            >
-              {userName ? userName.charAt(0).toUpperCase() : "U"}
-            </div>
-            {!isCollapsed && (
-              <div className="flex flex-col overflow-hidden min-w-0 flex-1">
-                <span className="dashboard-sidebar-user-name">
-                  {userName || "Guest User"}
-                </span>
-                <span className="dashboard-sidebar-user-tier">Pro Account</span>
-              </div>
-            )}
-            {layout.sidebarShowUserMenu && !isCollapsed && (
-              <button
-                type="button"
-                className="dashboard-icon-btn ml-auto"
-                aria-label="User menu"
-                onClick={() => handleUnavailable("User menu")}
-              >
-                <span className="material-symbols-outlined text-[20px]">
-                  more_vert
-                </span>
-              </button>
-            )}
+            {userName ? userName.charAt(0).toUpperCase() : "U"}
           </div>
+          <div
+            className={`dashboard-sidebar-user-text ${
+              collapsed ? "dashboard-sidebar-user-text--collapsed" : ""
+            }`}
+          >
+            <span className="dashboard-sidebar-user-name">
+              {userName || "Guest User"}
+            </span>
+            <span className="dashboard-sidebar-user-tier">Pro Account</span>
+          </div>
+          <button
+            type="button"
+            className="dashboard-sidebar-signout"
+            aria-label="Sign out"
+            disabled={isLoggingOut}
+            onClick={handleLogout}
+          >
+            <span className="material-symbols-outlined text-[20px]">
+              logout
+            </span>
+          </button>
         </div>
-
-        {layout.sidebarShowSignOut && !isCollapsed && (
-          <div className="mt-sm">
-            <NavItem
-              icon="logout"
-              label="Sign Out"
-              isCollapsed={false}
-              onClick={handleLogout}
-            />
-          </div>
-        )}
       </div>
+
+      {showCollapse && (
+        <button
+          onClick={onToggle}
+          className="dashboard-sidebar-toggle"
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          type="button"
+        >
+          <span
+            className="material-symbols-outlined text-[18px]"
+            style={{
+              transform: isCollapsed ? "rotate(180deg)" : "rotate(0deg)",
+            }}
+          >
+            chevron_left
+          </span>
+        </button>
+      )}
     </aside>
   );
 }
