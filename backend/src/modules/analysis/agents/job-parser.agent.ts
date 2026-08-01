@@ -77,8 +77,10 @@ ${rawText}`;
       );
     }
 
-    return validateAgentOutput(parsedJobSchema, parsed, {
-      requiredArrayFields: ["requirements", "skills"],
-    });
+    // No requiredArrayFields here: unlike a rewrite (where an empty result
+    // signals a hallucinated/dropped response), a short title-only input is
+    // valid and legitimately yields empty requirements/skills — that's
+    // correct output, not a sign something went wrong.
+    return validateAgentOutput(parsedJobSchema, parsed);
   }
 }

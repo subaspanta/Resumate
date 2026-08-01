@@ -4,7 +4,9 @@ export const jobDescriptionInputSchema = z.object({
   jobDescription: z
     .string()
     .trim()
-    .min(50, { message: "Job description is too short to be a real posting" }),
+    .min(4, {
+      message: "Job description is too short — paste a title or full posting",
+    }),
 });
 
 export const parsedJobSchema = z.object({
@@ -32,7 +34,9 @@ export const createAnalysisInputSchema = z.object({
   jobDescription: z
     .string()
     .trim()
-    .min(50, { message: "Job description is too short to be a real posting" }),
+    .min(4, {
+      message: "Job description is too short — paste a title or full posting",
+    }),
 });
 
 export const suggestionSectionSchema = z.enum(["bullet", "project", "summary"]);

@@ -189,7 +189,12 @@ Job requirements: ${JSON.stringify(input.jobRequirements)}`;
         contents: prompt,
         config: {
           temperature: 0.3,
-          maxOutputTokens: 512,
+          // gemini-flash-latest spends part of this budget on internal
+          // "thinking" tokens before writing visible output — 512 left too
+          // little room for the actual JSON, truncating it mid-string and
+          // failing every rewrite request. Confirmed via usageMetadata:
+          // thinking alone consumed ~420 of a 512 budget.
+          maxOutputTokens: 2048,
           responseMimeType: "application/json",
           responseSchema: REWRITE_SCHEMA,
         },
