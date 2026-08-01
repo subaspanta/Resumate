@@ -39,6 +39,14 @@ export const validateQuery =
         ),
       );
     }
-    req.query = result.data as any; // Express types req.query as ParsedQs, needs a cast
+    // Express 5 makes req.query a read-only getter that re-parses the URL on
+    // every access, so it can neither be reassigned nor mutated in place.
+    // Shadow it with an own data property holding the validated/transformed value.
+    Object.defineProperty(req, "query", {
+      value: result.data,
+      writable: true,
+      configurable: true,
+      enumerable: true,
+    });
     next();
   };

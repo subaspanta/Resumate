@@ -5,6 +5,7 @@ import { HTTP_STATUS } from "../../constants/http-status.js";
 import { AppError } from "../../types/app-error.js";
 import { ResumeRepository } from "./resume.repository.js";
 import { ParsingModule, StorageModule } from "./resume.types.js";
+import { AnalysisRepository } from "../analysis/analysis.repository.js";
 
 const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
@@ -15,13 +16,33 @@ export class ResumeService {
     private readonly resumeRepository: ResumeRepository,
     private readonly storageModule: StorageModule,
     private readonly parsingModule: ParsingModule,
+    private readonly analysisRepository: AnalysisRepository,
   ) {}
 
+  // Merges each resume's export status in via one extra query scoped to the
+  // whole user (not per resume) — avoids N+1 against findLatestExportStatusByUserId.
   async listResumesByUserId(
     userId: string,
     options: { limit: number; cursor?: string },
   ) {
-    return this.resumeRepository.findManyByUserId(userId, options);
+    const page = await this.resumeRepository.findManyByUserId(userId, options);
+    const statusByResumeId =
+      await this.analysisRepository.findLatestExportStatusByUserId(userId);
+
+    return {
+      ...page,
+      items: page.items.map((resume) => {
+        const status = statusByResumeId.get(resume.id);
+        return {
+          ...resume,
+          analysisStatus: !status
+            ? ("none" as const)
+            : status.exported
+              ? ("exported" as const)
+              : ("unexported" as const),
+        };
+      }),
+    };
   }
 
   private async verifyFileType(buffer: Buffer): Promise<string> {
@@ -92,7 +113,7 @@ export class ResumeService {
     }
 
     // Both successful — persist the resume record in the database
-    const { url: fileUrl } = storageOutcome.value;
+    const { url: fileUrl, path: filePath } = storageOutcome.value;
     const { rawText, structuredResume } = parsingOutcome.value;
 
     return this.resumeRepository.create({
@@ -101,6 +122,7 @@ export class ResumeService {
       mimeType: verifiedMimeType,
       fileSize: file.size,
       fileUrl,
+      filePath,
       rawText,
       structuredResume: structuredResume as Prisma.InputJsonValue,
       user: { connect: { id: userId } },
@@ -117,5 +139,36 @@ export class ResumeService {
       );
     }
     return resume;
+  }
+
+  // Deletes the resume row (cascades to its analyses/suggestions via the
+  // schema's onDelete: Cascade) and best-effort cleans up the Cloudinary
+  // file. Resumes uploaded before filePath was tracked have no way to
+  // locate their Cloudinary object, so cleanup is skipped for those (logged,
+  // not thrown) rather than failing the whole delete over storage cleanup —
+  // matches the same best-effort pattern already used on the upload path.
+  async deleteResume(userId: string, id: string): Promise<void> {
+    const resume = await this.resumeRepository.findByIdAndUserId(userId, id);
+    if (!resume) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Resume not found",
+      );
+    }
+
+    if (resume.filePath) {
+      try {
+        await this.storageModule.deleteFile(resume.filePath);
+      } catch (cleanupError) {
+        console.error("Failed to delete resume file from storage", {
+          resumeId: id,
+          filePath: resume.filePath,
+          cleanupError,
+        });
+      }
+    }
+
+    await this.resumeRepository.deleteById(id);
   }
 }

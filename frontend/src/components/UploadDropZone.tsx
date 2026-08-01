@@ -5,11 +5,13 @@ import { useState, useCallback, useRef } from "react";
 interface UploadDropzoneProps {
   onFileSelected: (file: File) => void;
   variant?: "default" | "firstTime";
+  isUploading?: boolean;
 }
 
 export function UploadDropzone({
   onFileSelected,
   variant = "default",
+  isUploading = false,
 }: UploadDropzoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -19,10 +21,11 @@ export function UploadDropzone({
     (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       setIsDragging(false);
+      if (isUploading) return;
       const file = e.dataTransfer.files?.[0];
       if (file) onFileSelected(file);
     },
-    [onFileSelected],
+    [onFileSelected, isUploading],
   );
 
   const handleFileInput = useCallback(
@@ -34,7 +37,10 @@ export function UploadDropzone({
     [onFileSelected],
   );
 
-  const openFilePicker = () => inputRef.current?.click();
+  const openFilePicker = () => {
+    if (isUploading) return;
+    inputRef.current?.click();
+  };
 
   const zoneClass = [
     "dashboard-upload-zone",
@@ -42,11 +48,24 @@ export function UploadDropzone({
       ? "dashboard-upload-zone--first-time"
       : "dashboard-upload-zone--default",
     isDragging ? "dashboard-upload-zone--active" : "",
+    isUploading ? "opacity-60 pointer-events-none" : "",
   ]
     .filter(Boolean)
     .join(" ");
 
-  const content = (
+  const content = isUploading ? (
+    <>
+      <div className="dashboard-upload-icon">
+        <span className="material-symbols-outlined animate-spin text-primary text-[32px]">
+          progress_activity
+        </span>
+      </div>
+      <h3 className="dashboard-upload-title">
+        Uploading and analyzing your resume…
+      </h3>
+      <p className="dashboard-upload-desc">This usually takes a few seconds.</p>
+    </>
+  ) : (
     <>
       <div className="dashboard-upload-icon">
         <span className="material-symbols-outlined text-primary text-[32px]">
@@ -72,6 +91,7 @@ export function UploadDropzone({
           isFirstTime ? "dashboard-upload-btn--compact" : ""
         }`}
         onClick={openFilePicker}
+        disabled={isUploading}
       >
         {!isFirstTime && (
           <span className="material-symbols-outlined text-[18px]">add</span>
@@ -91,6 +111,7 @@ export function UploadDropzone({
         accept=".pdf,.docx"
         className="hidden"
         onChange={handleFileInput}
+        disabled={isUploading}
       />
     </>
   );
@@ -102,13 +123,14 @@ export function UploadDropzone({
           className={zoneClass}
           onDragOver={(e) => {
             e.preventDefault();
-            setIsDragging(true);
+            if (!isUploading) setIsDragging(true);
           }}
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
           onClick={openFilePicker}
           role="region"
           aria-label="Resume upload area"
+          aria-busy={isUploading}
         >
           {content}
         </div>
@@ -122,12 +144,13 @@ export function UploadDropzone({
         className={zoneClass}
         onDragOver={(e) => {
           e.preventDefault();
-          setIsDragging(true);
+          if (!isUploading) setIsDragging(true);
         }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
         role="region"
         aria-label="Resume upload area"
+        aria-busy={isUploading}
       >
         {content}
       </div>

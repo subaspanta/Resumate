@@ -17,7 +17,7 @@ export function DashboardFooter({
     return (
       <footer className="dashboard-footer--inline">
         <span className="dashboard-footer-copy">
-          © 2024 ResumeForge. All rights reserved.
+          © 2024 ResuMate. All rights reserved.
         </span>
         <div className="dashboard-footer-links">
           <a className="dashboard-footer-link" href="#">
@@ -41,7 +41,7 @@ export function DashboardFooter({
     >
       <div className="dashboard-footer-inner">
         <span className="dashboard-footer-copy">
-          © 2024 ResumeForge. All rights reserved.
+          © 2024 ResuMate. All rights reserved.
         </span>
         <div className="dashboard-footer-links">
           <a className="dashboard-footer-link" href="#">

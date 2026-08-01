@@ -1,6 +1,6 @@
 import { Prisma, Resume } from "../../generated/client/index.js";
 import { prisma } from "../../lib/prisma.js";
-import { ResumePage, ResumeSummary } from "./resume.types.js";
+import { RawResumePage } from "./resume.types.js";
 
 export class ResumeRepository {
   async create(data: Prisma.ResumeCreateInput): Promise<Resume> {
@@ -9,7 +9,7 @@ export class ResumeRepository {
   async findManyByUserId(
     userId: string,
     options: { limit: number; cursor?: string },
-  ): Promise<ResumePage> {
+  ): Promise<RawResumePage> {
     const { limit, cursor } = options;
 
     // Fetch one extra row to detect whether a further page exists.
@@ -34,10 +34,7 @@ export class ResumeRepository {
 
     return { items, nextCursor };
   }
-  async findByIdAndUserId(
-    userId: string,
-    id: string,
-  ): Promise<ResumeSummary | null> {
+  async findByIdAndUserId(userId: string, id: string) {
     return prisma.resume.findFirst({
       where: { id, userId },
       select: {
@@ -47,9 +44,14 @@ export class ResumeRepository {
         structuredResume: true,
         rawText: true,
         fileSize: true,
+        filePath: true,
         createdAt: true,
         updatedAt: true,
       },
     });
+  }
+
+  async deleteById(id: string): Promise<void> {
+    await prisma.resume.delete({ where: { id } });
   }
 }

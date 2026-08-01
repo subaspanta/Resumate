@@ -2,18 +2,35 @@
 
 import { ResumeSummary } from "@/src/features/resume/types";
 import { ScoreBadge } from "@/src/components/ScoreBadge";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+
+function AnalysisStatusBadge({
+  status,
+}: {
+  status: ResumeSummary["analysisStatus"];
+}) {
+  if (status === "exported") {
+    return <Badge variant="secondary">Exported</Badge>;
+  }
+  if (status === "unexported") {
+    return <Badge variant="default">Continue</Badge>;
+  }
+  return null;
+}
 
 interface ContinueWorkingHeroProps {
   resume: ResumeSummary;
   onOpenWorkspace: (id: string) => void;
   onUploadNew: () => void;
+  isUploading?: boolean;
 }
 
 export function ContinueWorkingHero({
   resume,
   onOpenWorkspace,
   onUploadNew,
+  isUploading,
 }: ContinueWorkingHeroProps) {
   const suggestionsCount = resume.suggestionsCount ?? 0;
 
@@ -55,8 +72,14 @@ export function ContinueWorkingHero({
           type="button"
           className="dashboard-btn-secondary"
           onClick={onUploadNew}
+          disabled={isUploading}
         >
-          Upload New Resume
+          {isUploading ? (
+            <span className="material-symbols-outlined animate-spin text-[16px]">
+              progress_activity
+            </span>
+          ) : null}
+          {isUploading ? "Uploading…" : "Upload New Resume"}
         </button>
         <button
           type="button"
@@ -139,6 +162,7 @@ export function RecentResumesTable({
                 <th>Resume Name</th>
                 <th>ATS Score</th>
                 <th>Target Job</th>
+                <th>Status</th>
                 <th>Last Updated</th>
                 <th>Action</th>
               </tr>
@@ -171,6 +195,9 @@ export function RecentResumesTable({
                     ) : (
                       <span className="italic">Not Set</span>
                     )}
+                  </td>
+                  <td>
+                    <AnalysisStatusBadge status={resume.analysisStatus} />
                   </td>
                   <td className="font-mono-label text-mono-label text-text-muted">
                     {resume.lastEditedAt}

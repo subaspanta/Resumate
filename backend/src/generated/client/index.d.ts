@@ -33,6 +33,29 @@ export type Resume = $Result.DefaultSelection<Prisma.$ResumePayload>
  * 
  */
 export type Analysis = $Result.DefaultSelection<Prisma.$AnalysisPayload>
+/**
+ * Model Suggestion
+ * 
+ */
+export type Suggestion = $Result.DefaultSelection<Prisma.$SuggestionPayload>
+
+/**
+ * Enums
+ */
+export namespace $Enums {
+  export const SuggestionStatus: {
+  pending: 'pending',
+  applied: 'applied',
+  rejected: 'rejected'
+};
+
+export type SuggestionStatus = (typeof SuggestionStatus)[keyof typeof SuggestionStatus]
+
+}
+
+export type SuggestionStatus = $Enums.SuggestionStatus
+
+export const SuggestionStatus: typeof $Enums.SuggestionStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -194,6 +217,16 @@ export class PrismaClient<
     * ```
     */
   get analysis(): Prisma.AnalysisDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.suggestion`: Exposes CRUD operations for the **Suggestion** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Suggestions
+    * const suggestions = await prisma.suggestion.findMany()
+    * ```
+    */
+  get suggestion(): Prisma.SuggestionDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -631,7 +664,8 @@ export namespace Prisma {
     User: 'User',
     RefreshToken: 'RefreshToken',
     Resume: 'Resume',
-    Analysis: 'Analysis'
+    Analysis: 'Analysis',
+    Suggestion: 'Suggestion'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -647,7 +681,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "refreshToken" | "resume" | "analysis"
+      modelProps: "user" | "refreshToken" | "resume" | "analysis" | "suggestion"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -947,6 +981,80 @@ export namespace Prisma {
           }
         }
       }
+      Suggestion: {
+        payload: Prisma.$SuggestionPayload<ExtArgs>
+        fields: Prisma.SuggestionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SuggestionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SuggestionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>
+          }
+          findFirst: {
+            args: Prisma.SuggestionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SuggestionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>
+          }
+          findMany: {
+            args: Prisma.SuggestionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>[]
+          }
+          create: {
+            args: Prisma.SuggestionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>
+          }
+          createMany: {
+            args: Prisma.SuggestionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SuggestionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>[]
+          }
+          delete: {
+            args: Prisma.SuggestionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>
+          }
+          update: {
+            args: Prisma.SuggestionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>
+          }
+          deleteMany: {
+            args: Prisma.SuggestionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SuggestionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SuggestionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>[]
+          }
+          upsert: {
+            args: Prisma.SuggestionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>
+          }
+          aggregate: {
+            args: Prisma.SuggestionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSuggestion>
+          }
+          groupBy: {
+            args: Prisma.SuggestionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SuggestionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SuggestionCountArgs<ExtArgs>
+            result: $Utils.Optional<SuggestionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1059,6 +1167,7 @@ export namespace Prisma {
     refreshToken?: RefreshTokenOmit
     resume?: ResumeOmit
     analysis?: AnalysisOmit
+    suggestion?: SuggestionOmit
   }
 
   /* Types for Logging */
@@ -1141,11 +1250,13 @@ export namespace Prisma {
   export type UserCountOutputType = {
     resumes: number
     refreshTokens: number
+    analyses: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     resumes?: boolean | UserCountOutputTypeCountResumesArgs
     refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
+    analyses?: boolean | UserCountOutputTypeCountAnalysesArgs
   }
 
   // Custom InputTypes
@@ -1171,6 +1282,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RefreshTokenWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAnalysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnalysisWhereInput
   }
 
 
@@ -1202,6 +1320,37 @@ export namespace Prisma {
    */
   export type ResumeCountOutputTypeCountAnalysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AnalysisWhereInput
+  }
+
+
+  /**
+   * Count Type AnalysisCountOutputType
+   */
+
+  export type AnalysisCountOutputType = {
+    suggestions: number
+  }
+
+  export type AnalysisCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    suggestions?: boolean | AnalysisCountOutputTypeCountSuggestionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AnalysisCountOutputType without action
+   */
+  export type AnalysisCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisCountOutputType
+     */
+    select?: AnalysisCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AnalysisCountOutputType without action
+   */
+  export type AnalysisCountOutputTypeCountSuggestionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SuggestionWhereInput
   }
 
 
@@ -1383,6 +1532,7 @@ export namespace Prisma {
     updatedAt?: boolean
     resumes?: boolean | User$resumesArgs<ExtArgs>
     refreshTokens?: boolean | User$refreshTokensArgs<ExtArgs>
+    analyses?: boolean | User$analysesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1417,6 +1567,7 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     resumes?: boolean | User$resumesArgs<ExtArgs>
     refreshTokens?: boolean | User$refreshTokensArgs<ExtArgs>
+    analyses?: boolean | User$analysesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1427,6 +1578,7 @@ export namespace Prisma {
     objects: {
       resumes: Prisma.$ResumePayload<ExtArgs>[]
       refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
+      analyses: Prisma.$AnalysisPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1831,6 +1983,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     resumes<T extends User$resumesArgs<ExtArgs> = {}>(args?: Subset<T, User$resumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     refreshTokens<T extends User$refreshTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    analyses<T extends User$analysesArgs<ExtArgs> = {}>(args?: Subset<T, User$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2304,6 +2457,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RefreshTokenScalarFieldEnum | RefreshTokenScalarFieldEnum[]
+  }
+
+  /**
+   * User.analyses
+   */
+  export type User$analysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analysis
+     */
+    select?: AnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analysis
+     */
+    omit?: AnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisInclude<ExtArgs> | null
+    where?: AnalysisWhereInput
+    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
+    cursor?: AnalysisWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
   }
 
   /**
@@ -3442,6 +3619,7 @@ export namespace Prisma {
     mimeType: string | null
     fileSize: number | null
     fileUrl: string | null
+    filePath: string | null
     rawText: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3455,6 +3633,7 @@ export namespace Prisma {
     mimeType: string | null
     fileSize: number | null
     fileUrl: string | null
+    filePath: string | null
     rawText: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3468,6 +3647,7 @@ export namespace Prisma {
     mimeType: number
     fileSize: number
     fileUrl: number
+    filePath: number
     rawText: number
     structuredResume: number
     createdAt: number
@@ -3492,6 +3672,7 @@ export namespace Prisma {
     mimeType?: true
     fileSize?: true
     fileUrl?: true
+    filePath?: true
     rawText?: true
     createdAt?: true
     updatedAt?: true
@@ -3505,6 +3686,7 @@ export namespace Prisma {
     mimeType?: true
     fileSize?: true
     fileUrl?: true
+    filePath?: true
     rawText?: true
     createdAt?: true
     updatedAt?: true
@@ -3518,6 +3700,7 @@ export namespace Prisma {
     mimeType?: true
     fileSize?: true
     fileUrl?: true
+    filePath?: true
     rawText?: true
     structuredResume?: true
     createdAt?: true
@@ -3619,6 +3802,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath: string | null
     rawText: string
     structuredResume: JsonValue
     createdAt: Date
@@ -3652,6 +3836,7 @@ export namespace Prisma {
     mimeType?: boolean
     fileSize?: boolean
     fileUrl?: boolean
+    filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
     createdAt?: boolean
@@ -3669,6 +3854,7 @@ export namespace Prisma {
     mimeType?: boolean
     fileSize?: boolean
     fileUrl?: boolean
+    filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
     createdAt?: boolean
@@ -3684,6 +3870,7 @@ export namespace Prisma {
     mimeType?: boolean
     fileSize?: boolean
     fileUrl?: boolean
+    filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
     createdAt?: boolean
@@ -3699,13 +3886,14 @@ export namespace Prisma {
     mimeType?: boolean
     fileSize?: boolean
     fileUrl?: boolean
+    filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "originalFileName" | "mimeType" | "fileSize" | "fileUrl" | "rawText" | "structuredResume" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
+  export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "originalFileName" | "mimeType" | "fileSize" | "fileUrl" | "filePath" | "rawText" | "structuredResume" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
   export type ResumeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     analyses?: boolean | Resume$analysesArgs<ExtArgs>
@@ -3732,6 +3920,7 @@ export namespace Prisma {
       mimeType: string
       fileSize: number
       fileUrl: string
+      filePath: string | null
       rawText: string
       structuredResume: Prisma.JsonValue
       createdAt: Date
@@ -4168,6 +4357,7 @@ export namespace Prisma {
     readonly mimeType: FieldRef<"Resume", 'String'>
     readonly fileSize: FieldRef<"Resume", 'Int'>
     readonly fileUrl: FieldRef<"Resume", 'String'>
+    readonly filePath: FieldRef<"Resume", 'String'>
     readonly rawText: FieldRef<"Resume", 'String'>
     readonly structuredResume: FieldRef<"Resume", 'Json'>
     readonly createdAt: FieldRef<"Resume", 'DateTime'>
@@ -4628,25 +4818,31 @@ export namespace Prisma {
   export type AnalysisMinAggregateOutputType = {
     id: string | null
     resumeId: string | null
+    userId: string | null
     jobDescription: string | null
     createdAt: Date | null
+    exportedAt: Date | null
   }
 
   export type AnalysisMaxAggregateOutputType = {
     id: string | null
     resumeId: string | null
+    userId: string | null
     jobDescription: string | null
     createdAt: Date | null
+    exportedAt: Date | null
   }
 
   export type AnalysisCountAggregateOutputType = {
     id: number
     resumeId: number
+    userId: number
     jobDescription: number
     parsedJob: number
     resumeSnapshot: number
     analysisResult: number
     createdAt: number
+    exportedAt: number
     _all: number
   }
 
@@ -4654,25 +4850,31 @@ export namespace Prisma {
   export type AnalysisMinAggregateInputType = {
     id?: true
     resumeId?: true
+    userId?: true
     jobDescription?: true
     createdAt?: true
+    exportedAt?: true
   }
 
   export type AnalysisMaxAggregateInputType = {
     id?: true
     resumeId?: true
+    userId?: true
     jobDescription?: true
     createdAt?: true
+    exportedAt?: true
   }
 
   export type AnalysisCountAggregateInputType = {
     id?: true
     resumeId?: true
+    userId?: true
     jobDescription?: true
     parsedJob?: true
     resumeSnapshot?: true
     analysisResult?: true
     createdAt?: true
+    exportedAt?: true
     _all?: true
   }
 
@@ -4751,11 +4953,13 @@ export namespace Prisma {
   export type AnalysisGroupByOutputType = {
     id: string
     resumeId: string
+    userId: string
     jobDescription: string
     parsedJob: JsonValue
     resumeSnapshot: JsonValue
     analysisResult: JsonValue
     createdAt: Date
+    exportedAt: Date | null
     _count: AnalysisCountAggregateOutputType | null
     _min: AnalysisMinAggregateOutputType | null
     _max: AnalysisMaxAggregateOutputType | null
@@ -4778,70 +4982,92 @@ export namespace Prisma {
   export type AnalysisSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     resumeId?: boolean
+    userId?: boolean
     jobDescription?: boolean
     parsedJob?: boolean
     resumeSnapshot?: boolean
     analysisResult?: boolean
     createdAt?: boolean
+    exportedAt?: boolean
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    suggestions?: boolean | Analysis$suggestionsArgs<ExtArgs>
+    _count?: boolean | AnalysisCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["analysis"]>
 
   export type AnalysisSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     resumeId?: boolean
+    userId?: boolean
     jobDescription?: boolean
     parsedJob?: boolean
     resumeSnapshot?: boolean
     analysisResult?: boolean
     createdAt?: boolean
+    exportedAt?: boolean
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["analysis"]>
 
   export type AnalysisSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     resumeId?: boolean
+    userId?: boolean
     jobDescription?: boolean
     parsedJob?: boolean
     resumeSnapshot?: boolean
     analysisResult?: boolean
     createdAt?: boolean
+    exportedAt?: boolean
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["analysis"]>
 
   export type AnalysisSelectScalar = {
     id?: boolean
     resumeId?: boolean
+    userId?: boolean
     jobDescription?: boolean
     parsedJob?: boolean
     resumeSnapshot?: boolean
     analysisResult?: boolean
     createdAt?: boolean
+    exportedAt?: boolean
   }
 
-  export type AnalysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "resumeId" | "jobDescription" | "parsedJob" | "resumeSnapshot" | "analysisResult" | "createdAt", ExtArgs["result"]["analysis"]>
+  export type AnalysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "resumeId" | "userId" | "jobDescription" | "parsedJob" | "resumeSnapshot" | "analysisResult" | "createdAt" | "exportedAt", ExtArgs["result"]["analysis"]>
   export type AnalysisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    suggestions?: boolean | Analysis$suggestionsArgs<ExtArgs>
+    _count?: boolean | AnalysisCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AnalysisIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type AnalysisIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $AnalysisPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Analysis"
     objects: {
       resume: Prisma.$ResumePayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+      suggestions: Prisma.$SuggestionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       resumeId: string
+      userId: string
       jobDescription: string
       parsedJob: Prisma.JsonValue
       resumeSnapshot: Prisma.JsonValue
       analysisResult: Prisma.JsonValue
       createdAt: Date
+      exportedAt: Date | null
     }, ExtArgs["result"]["analysis"]>
     composites: {}
   }
@@ -5237,6 +5463,8 @@ export namespace Prisma {
   export interface Prisma__AnalysisClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     resume<T extends ResumeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ResumeDefaultArgs<ExtArgs>>): Prisma__ResumeClient<$Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    suggestions<T extends Analysis$suggestionsArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$suggestionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5268,11 +5496,13 @@ export namespace Prisma {
   interface AnalysisFieldRefs {
     readonly id: FieldRef<"Analysis", 'String'>
     readonly resumeId: FieldRef<"Analysis", 'String'>
+    readonly userId: FieldRef<"Analysis", 'String'>
     readonly jobDescription: FieldRef<"Analysis", 'String'>
     readonly parsedJob: FieldRef<"Analysis", 'Json'>
     readonly resumeSnapshot: FieldRef<"Analysis", 'Json'>
     readonly analysisResult: FieldRef<"Analysis", 'Json'>
     readonly createdAt: FieldRef<"Analysis", 'DateTime'>
+    readonly exportedAt: FieldRef<"Analysis", 'DateTime'>
   }
     
 
@@ -5674,6 +5904,30 @@ export namespace Prisma {
   }
 
   /**
+   * Analysis.suggestions
+   */
+  export type Analysis$suggestionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionInclude<ExtArgs> | null
+    where?: SuggestionWhereInput
+    orderBy?: SuggestionOrderByWithRelationInput | SuggestionOrderByWithRelationInput[]
+    cursor?: SuggestionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SuggestionScalarFieldEnum | SuggestionScalarFieldEnum[]
+  }
+
+  /**
    * Analysis without action
    */
   export type AnalysisDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5689,6 +5943,1108 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: AnalysisInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Suggestion
+   */
+
+  export type AggregateSuggestion = {
+    _count: SuggestionCountAggregateOutputType | null
+    _min: SuggestionMinAggregateOutputType | null
+    _max: SuggestionMaxAggregateOutputType | null
+  }
+
+  export type SuggestionMinAggregateOutputType = {
+    id: string | null
+    analysisId: string | null
+    original: string | null
+    suggested: string | null
+    section: string | null
+    status: $Enums.SuggestionStatus | null
+    rejectionReason: string | null
+    createdAt: Date | null
+  }
+
+  export type SuggestionMaxAggregateOutputType = {
+    id: string | null
+    analysisId: string | null
+    original: string | null
+    suggested: string | null
+    section: string | null
+    status: $Enums.SuggestionStatus | null
+    rejectionReason: string | null
+    createdAt: Date | null
+  }
+
+  export type SuggestionCountAggregateOutputType = {
+    id: number
+    analysisId: number
+    original: number
+    suggested: number
+    section: number
+    status: number
+    rejectionReason: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SuggestionMinAggregateInputType = {
+    id?: true
+    analysisId?: true
+    original?: true
+    suggested?: true
+    section?: true
+    status?: true
+    rejectionReason?: true
+    createdAt?: true
+  }
+
+  export type SuggestionMaxAggregateInputType = {
+    id?: true
+    analysisId?: true
+    original?: true
+    suggested?: true
+    section?: true
+    status?: true
+    rejectionReason?: true
+    createdAt?: true
+  }
+
+  export type SuggestionCountAggregateInputType = {
+    id?: true
+    analysisId?: true
+    original?: true
+    suggested?: true
+    section?: true
+    status?: true
+    rejectionReason?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SuggestionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Suggestion to aggregate.
+     */
+    where?: SuggestionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Suggestions to fetch.
+     */
+    orderBy?: SuggestionOrderByWithRelationInput | SuggestionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SuggestionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Suggestions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Suggestions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Suggestions
+    **/
+    _count?: true | SuggestionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SuggestionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SuggestionMaxAggregateInputType
+  }
+
+  export type GetSuggestionAggregateType<T extends SuggestionAggregateArgs> = {
+        [P in keyof T & keyof AggregateSuggestion]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSuggestion[P]>
+      : GetScalarType<T[P], AggregateSuggestion[P]>
+  }
+
+
+
+
+  export type SuggestionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SuggestionWhereInput
+    orderBy?: SuggestionOrderByWithAggregationInput | SuggestionOrderByWithAggregationInput[]
+    by: SuggestionScalarFieldEnum[] | SuggestionScalarFieldEnum
+    having?: SuggestionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SuggestionCountAggregateInputType | true
+    _min?: SuggestionMinAggregateInputType
+    _max?: SuggestionMaxAggregateInputType
+  }
+
+  export type SuggestionGroupByOutputType = {
+    id: string
+    analysisId: string
+    original: string
+    suggested: string
+    section: string | null
+    status: $Enums.SuggestionStatus
+    rejectionReason: string | null
+    createdAt: Date
+    _count: SuggestionCountAggregateOutputType | null
+    _min: SuggestionMinAggregateOutputType | null
+    _max: SuggestionMaxAggregateOutputType | null
+  }
+
+  type GetSuggestionGroupByPayload<T extends SuggestionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SuggestionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SuggestionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SuggestionGroupByOutputType[P]>
+            : GetScalarType<T[P], SuggestionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SuggestionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    analysisId?: boolean
+    original?: boolean
+    suggested?: boolean
+    section?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    createdAt?: boolean
+    analysis?: boolean | AnalysisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["suggestion"]>
+
+  export type SuggestionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    analysisId?: boolean
+    original?: boolean
+    suggested?: boolean
+    section?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    createdAt?: boolean
+    analysis?: boolean | AnalysisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["suggestion"]>
+
+  export type SuggestionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    analysisId?: boolean
+    original?: boolean
+    suggested?: boolean
+    section?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    createdAt?: boolean
+    analysis?: boolean | AnalysisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["suggestion"]>
+
+  export type SuggestionSelectScalar = {
+    id?: boolean
+    analysisId?: boolean
+    original?: boolean
+    suggested?: boolean
+    section?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    createdAt?: boolean
+  }
+
+  export type SuggestionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "analysisId" | "original" | "suggested" | "section" | "status" | "rejectionReason" | "createdAt", ExtArgs["result"]["suggestion"]>
+  export type SuggestionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    analysis?: boolean | AnalysisDefaultArgs<ExtArgs>
+  }
+  export type SuggestionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    analysis?: boolean | AnalysisDefaultArgs<ExtArgs>
+  }
+  export type SuggestionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    analysis?: boolean | AnalysisDefaultArgs<ExtArgs>
+  }
+
+  export type $SuggestionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Suggestion"
+    objects: {
+      analysis: Prisma.$AnalysisPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      analysisId: string
+      original: string
+      suggested: string
+      section: string | null
+      status: $Enums.SuggestionStatus
+      rejectionReason: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["suggestion"]>
+    composites: {}
+  }
+
+  type SuggestionGetPayload<S extends boolean | null | undefined | SuggestionDefaultArgs> = $Result.GetResult<Prisma.$SuggestionPayload, S>
+
+  type SuggestionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SuggestionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SuggestionCountAggregateInputType | true
+    }
+
+  export interface SuggestionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Suggestion'], meta: { name: 'Suggestion' } }
+    /**
+     * Find zero or one Suggestion that matches the filter.
+     * @param {SuggestionFindUniqueArgs} args - Arguments to find a Suggestion
+     * @example
+     * // Get one Suggestion
+     * const suggestion = await prisma.suggestion.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SuggestionFindUniqueArgs>(args: SelectSubset<T, SuggestionFindUniqueArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Suggestion that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SuggestionFindUniqueOrThrowArgs} args - Arguments to find a Suggestion
+     * @example
+     * // Get one Suggestion
+     * const suggestion = await prisma.suggestion.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SuggestionFindUniqueOrThrowArgs>(args: SelectSubset<T, SuggestionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Suggestion that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuggestionFindFirstArgs} args - Arguments to find a Suggestion
+     * @example
+     * // Get one Suggestion
+     * const suggestion = await prisma.suggestion.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SuggestionFindFirstArgs>(args?: SelectSubset<T, SuggestionFindFirstArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Suggestion that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuggestionFindFirstOrThrowArgs} args - Arguments to find a Suggestion
+     * @example
+     * // Get one Suggestion
+     * const suggestion = await prisma.suggestion.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SuggestionFindFirstOrThrowArgs>(args?: SelectSubset<T, SuggestionFindFirstOrThrowArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Suggestions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuggestionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Suggestions
+     * const suggestions = await prisma.suggestion.findMany()
+     * 
+     * // Get first 10 Suggestions
+     * const suggestions = await prisma.suggestion.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const suggestionWithIdOnly = await prisma.suggestion.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SuggestionFindManyArgs>(args?: SelectSubset<T, SuggestionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Suggestion.
+     * @param {SuggestionCreateArgs} args - Arguments to create a Suggestion.
+     * @example
+     * // Create one Suggestion
+     * const Suggestion = await prisma.suggestion.create({
+     *   data: {
+     *     // ... data to create a Suggestion
+     *   }
+     * })
+     * 
+     */
+    create<T extends SuggestionCreateArgs>(args: SelectSubset<T, SuggestionCreateArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Suggestions.
+     * @param {SuggestionCreateManyArgs} args - Arguments to create many Suggestions.
+     * @example
+     * // Create many Suggestions
+     * const suggestion = await prisma.suggestion.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SuggestionCreateManyArgs>(args?: SelectSubset<T, SuggestionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Suggestions and returns the data saved in the database.
+     * @param {SuggestionCreateManyAndReturnArgs} args - Arguments to create many Suggestions.
+     * @example
+     * // Create many Suggestions
+     * const suggestion = await prisma.suggestion.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Suggestions and only return the `id`
+     * const suggestionWithIdOnly = await prisma.suggestion.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SuggestionCreateManyAndReturnArgs>(args?: SelectSubset<T, SuggestionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Suggestion.
+     * @param {SuggestionDeleteArgs} args - Arguments to delete one Suggestion.
+     * @example
+     * // Delete one Suggestion
+     * const Suggestion = await prisma.suggestion.delete({
+     *   where: {
+     *     // ... filter to delete one Suggestion
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SuggestionDeleteArgs>(args: SelectSubset<T, SuggestionDeleteArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Suggestion.
+     * @param {SuggestionUpdateArgs} args - Arguments to update one Suggestion.
+     * @example
+     * // Update one Suggestion
+     * const suggestion = await prisma.suggestion.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SuggestionUpdateArgs>(args: SelectSubset<T, SuggestionUpdateArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Suggestions.
+     * @param {SuggestionDeleteManyArgs} args - Arguments to filter Suggestions to delete.
+     * @example
+     * // Delete a few Suggestions
+     * const { count } = await prisma.suggestion.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SuggestionDeleteManyArgs>(args?: SelectSubset<T, SuggestionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Suggestions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuggestionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Suggestions
+     * const suggestion = await prisma.suggestion.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SuggestionUpdateManyArgs>(args: SelectSubset<T, SuggestionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Suggestions and returns the data updated in the database.
+     * @param {SuggestionUpdateManyAndReturnArgs} args - Arguments to update many Suggestions.
+     * @example
+     * // Update many Suggestions
+     * const suggestion = await prisma.suggestion.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Suggestions and only return the `id`
+     * const suggestionWithIdOnly = await prisma.suggestion.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SuggestionUpdateManyAndReturnArgs>(args: SelectSubset<T, SuggestionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Suggestion.
+     * @param {SuggestionUpsertArgs} args - Arguments to update or create a Suggestion.
+     * @example
+     * // Update or create a Suggestion
+     * const suggestion = await prisma.suggestion.upsert({
+     *   create: {
+     *     // ... data to create a Suggestion
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Suggestion we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SuggestionUpsertArgs>(args: SelectSubset<T, SuggestionUpsertArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Suggestions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuggestionCountArgs} args - Arguments to filter Suggestions to count.
+     * @example
+     * // Count the number of Suggestions
+     * const count = await prisma.suggestion.count({
+     *   where: {
+     *     // ... the filter for the Suggestions we want to count
+     *   }
+     * })
+    **/
+    count<T extends SuggestionCountArgs>(
+      args?: Subset<T, SuggestionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SuggestionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Suggestion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuggestionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SuggestionAggregateArgs>(args: Subset<T, SuggestionAggregateArgs>): Prisma.PrismaPromise<GetSuggestionAggregateType<T>>
+
+    /**
+     * Group by Suggestion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuggestionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SuggestionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SuggestionGroupByArgs['orderBy'] }
+        : { orderBy?: SuggestionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SuggestionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSuggestionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Suggestion model
+   */
+  readonly fields: SuggestionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Suggestion.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SuggestionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    analysis<T extends AnalysisDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AnalysisDefaultArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Suggestion model
+   */
+  interface SuggestionFieldRefs {
+    readonly id: FieldRef<"Suggestion", 'String'>
+    readonly analysisId: FieldRef<"Suggestion", 'String'>
+    readonly original: FieldRef<"Suggestion", 'String'>
+    readonly suggested: FieldRef<"Suggestion", 'String'>
+    readonly section: FieldRef<"Suggestion", 'String'>
+    readonly status: FieldRef<"Suggestion", 'SuggestionStatus'>
+    readonly rejectionReason: FieldRef<"Suggestion", 'String'>
+    readonly createdAt: FieldRef<"Suggestion", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Suggestion findUnique
+   */
+  export type SuggestionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionInclude<ExtArgs> | null
+    /**
+     * Filter, which Suggestion to fetch.
+     */
+    where: SuggestionWhereUniqueInput
+  }
+
+  /**
+   * Suggestion findUniqueOrThrow
+   */
+  export type SuggestionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionInclude<ExtArgs> | null
+    /**
+     * Filter, which Suggestion to fetch.
+     */
+    where: SuggestionWhereUniqueInput
+  }
+
+  /**
+   * Suggestion findFirst
+   */
+  export type SuggestionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionInclude<ExtArgs> | null
+    /**
+     * Filter, which Suggestion to fetch.
+     */
+    where?: SuggestionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Suggestions to fetch.
+     */
+    orderBy?: SuggestionOrderByWithRelationInput | SuggestionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Suggestions.
+     */
+    cursor?: SuggestionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Suggestions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Suggestions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Suggestions.
+     */
+    distinct?: SuggestionScalarFieldEnum | SuggestionScalarFieldEnum[]
+  }
+
+  /**
+   * Suggestion findFirstOrThrow
+   */
+  export type SuggestionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionInclude<ExtArgs> | null
+    /**
+     * Filter, which Suggestion to fetch.
+     */
+    where?: SuggestionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Suggestions to fetch.
+     */
+    orderBy?: SuggestionOrderByWithRelationInput | SuggestionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Suggestions.
+     */
+    cursor?: SuggestionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Suggestions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Suggestions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Suggestions.
+     */
+    distinct?: SuggestionScalarFieldEnum | SuggestionScalarFieldEnum[]
+  }
+
+  /**
+   * Suggestion findMany
+   */
+  export type SuggestionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionInclude<ExtArgs> | null
+    /**
+     * Filter, which Suggestions to fetch.
+     */
+    where?: SuggestionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Suggestions to fetch.
+     */
+    orderBy?: SuggestionOrderByWithRelationInput | SuggestionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Suggestions.
+     */
+    cursor?: SuggestionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Suggestions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Suggestions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Suggestions.
+     */
+    distinct?: SuggestionScalarFieldEnum | SuggestionScalarFieldEnum[]
+  }
+
+  /**
+   * Suggestion create
+   */
+  export type SuggestionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Suggestion.
+     */
+    data: XOR<SuggestionCreateInput, SuggestionUncheckedCreateInput>
+  }
+
+  /**
+   * Suggestion createMany
+   */
+  export type SuggestionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Suggestions.
+     */
+    data: SuggestionCreateManyInput | SuggestionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Suggestion createManyAndReturn
+   */
+  export type SuggestionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * The data used to create many Suggestions.
+     */
+    data: SuggestionCreateManyInput | SuggestionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Suggestion update
+   */
+  export type SuggestionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Suggestion.
+     */
+    data: XOR<SuggestionUpdateInput, SuggestionUncheckedUpdateInput>
+    /**
+     * Choose, which Suggestion to update.
+     */
+    where: SuggestionWhereUniqueInput
+  }
+
+  /**
+   * Suggestion updateMany
+   */
+  export type SuggestionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Suggestions.
+     */
+    data: XOR<SuggestionUpdateManyMutationInput, SuggestionUncheckedUpdateManyInput>
+    /**
+     * Filter which Suggestions to update
+     */
+    where?: SuggestionWhereInput
+    /**
+     * Limit how many Suggestions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Suggestion updateManyAndReturn
+   */
+  export type SuggestionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * The data used to update Suggestions.
+     */
+    data: XOR<SuggestionUpdateManyMutationInput, SuggestionUncheckedUpdateManyInput>
+    /**
+     * Filter which Suggestions to update
+     */
+    where?: SuggestionWhereInput
+    /**
+     * Limit how many Suggestions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Suggestion upsert
+   */
+  export type SuggestionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Suggestion to update in case it exists.
+     */
+    where: SuggestionWhereUniqueInput
+    /**
+     * In case the Suggestion found by the `where` argument doesn't exist, create a new Suggestion with this data.
+     */
+    create: XOR<SuggestionCreateInput, SuggestionUncheckedCreateInput>
+    /**
+     * In case the Suggestion was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SuggestionUpdateInput, SuggestionUncheckedUpdateInput>
+  }
+
+  /**
+   * Suggestion delete
+   */
+  export type SuggestionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionInclude<ExtArgs> | null
+    /**
+     * Filter which Suggestion to delete.
+     */
+    where: SuggestionWhereUniqueInput
+  }
+
+  /**
+   * Suggestion deleteMany
+   */
+  export type SuggestionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Suggestions to delete
+     */
+    where?: SuggestionWhereInput
+    /**
+     * Limit how many Suggestions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Suggestion without action
+   */
+  export type SuggestionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Suggestion
+     */
+    select?: SuggestionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Suggestion
+     */
+    omit?: SuggestionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuggestionInclude<ExtArgs> | null
   }
 
 
@@ -5739,6 +7095,7 @@ export namespace Prisma {
     mimeType: 'mimeType',
     fileSize: 'fileSize',
     fileUrl: 'fileUrl',
+    filePath: 'filePath',
     rawText: 'rawText',
     structuredResume: 'structuredResume',
     createdAt: 'createdAt',
@@ -5751,14 +7108,30 @@ export namespace Prisma {
   export const AnalysisScalarFieldEnum: {
     id: 'id',
     resumeId: 'resumeId',
+    userId: 'userId',
     jobDescription: 'jobDescription',
     parsedJob: 'parsedJob',
     resumeSnapshot: 'resumeSnapshot',
     analysisResult: 'analysisResult',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    exportedAt: 'exportedAt'
   };
 
   export type AnalysisScalarFieldEnum = (typeof AnalysisScalarFieldEnum)[keyof typeof AnalysisScalarFieldEnum]
+
+
+  export const SuggestionScalarFieldEnum: {
+    id: 'id',
+    analysisId: 'analysisId',
+    original: 'original',
+    suggested: 'suggested',
+    section: 'section',
+    status: 'status',
+    rejectionReason: 'rejectionReason',
+    createdAt: 'createdAt'
+  };
+
+  export type SuggestionScalarFieldEnum = (typeof SuggestionScalarFieldEnum)[keyof typeof SuggestionScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -5863,6 +7236,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'SuggestionStatus'
+   */
+  export type EnumSuggestionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SuggestionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'SuggestionStatus[]'
+   */
+  export type ListEnumSuggestionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SuggestionStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -5891,6 +7278,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     resumes?: ResumeListRelationFilter
     refreshTokens?: RefreshTokenListRelationFilter
+    analyses?: AnalysisListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -5902,6 +7290,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     resumes?: ResumeOrderByRelationAggregateInput
     refreshTokens?: RefreshTokenOrderByRelationAggregateInput
+    analyses?: AnalysisOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -5916,6 +7305,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     resumes?: ResumeListRelationFilter
     refreshTokens?: RefreshTokenListRelationFilter
+    analyses?: AnalysisListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -6018,6 +7408,7 @@ export namespace Prisma {
     mimeType?: StringFilter<"Resume"> | string
     fileSize?: IntFilter<"Resume"> | number
     fileUrl?: StringFilter<"Resume"> | string
+    filePath?: StringNullableFilter<"Resume"> | string | null
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
@@ -6034,6 +7425,7 @@ export namespace Prisma {
     mimeType?: SortOrder
     fileSize?: SortOrder
     fileUrl?: SortOrder
+    filePath?: SortOrderInput | SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
     createdAt?: SortOrder
@@ -6053,6 +7445,7 @@ export namespace Prisma {
     mimeType?: StringFilter<"Resume"> | string
     fileSize?: IntFilter<"Resume"> | number
     fileUrl?: StringFilter<"Resume"> | string
+    filePath?: StringNullableFilter<"Resume"> | string | null
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
@@ -6069,6 +7462,7 @@ export namespace Prisma {
     mimeType?: SortOrder
     fileSize?: SortOrder
     fileUrl?: SortOrder
+    filePath?: SortOrderInput | SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
     createdAt?: SortOrder
@@ -6091,6 +7485,7 @@ export namespace Prisma {
     mimeType?: StringWithAggregatesFilter<"Resume"> | string
     fileSize?: IntWithAggregatesFilter<"Resume"> | number
     fileUrl?: StringWithAggregatesFilter<"Resume"> | string
+    filePath?: StringNullableWithAggregatesFilter<"Resume"> | string | null
     rawText?: StringWithAggregatesFilter<"Resume"> | string
     structuredResume?: JsonWithAggregatesFilter<"Resume">
     createdAt?: DateTimeWithAggregatesFilter<"Resume"> | Date | string
@@ -6103,23 +7498,31 @@ export namespace Prisma {
     NOT?: AnalysisWhereInput | AnalysisWhereInput[]
     id?: UuidFilter<"Analysis"> | string
     resumeId?: UuidFilter<"Analysis"> | string
+    userId?: UuidFilter<"Analysis"> | string
     jobDescription?: StringFilter<"Analysis"> | string
     parsedJob?: JsonFilter<"Analysis">
     resumeSnapshot?: JsonFilter<"Analysis">
     analysisResult?: JsonFilter<"Analysis">
     createdAt?: DateTimeFilter<"Analysis"> | Date | string
+    exportedAt?: DateTimeNullableFilter<"Analysis"> | Date | string | null
     resume?: XOR<ResumeScalarRelationFilter, ResumeWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    suggestions?: SuggestionListRelationFilter
   }
 
   export type AnalysisOrderByWithRelationInput = {
     id?: SortOrder
     resumeId?: SortOrder
+    userId?: SortOrder
     jobDescription?: SortOrder
     parsedJob?: SortOrder
     resumeSnapshot?: SortOrder
     analysisResult?: SortOrder
     createdAt?: SortOrder
+    exportedAt?: SortOrderInput | SortOrder
     resume?: ResumeOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+    suggestions?: SuggestionOrderByRelationAggregateInput
   }
 
   export type AnalysisWhereUniqueInput = Prisma.AtLeast<{
@@ -6128,22 +7531,28 @@ export namespace Prisma {
     OR?: AnalysisWhereInput[]
     NOT?: AnalysisWhereInput | AnalysisWhereInput[]
     resumeId?: UuidFilter<"Analysis"> | string
+    userId?: UuidFilter<"Analysis"> | string
     jobDescription?: StringFilter<"Analysis"> | string
     parsedJob?: JsonFilter<"Analysis">
     resumeSnapshot?: JsonFilter<"Analysis">
     analysisResult?: JsonFilter<"Analysis">
     createdAt?: DateTimeFilter<"Analysis"> | Date | string
+    exportedAt?: DateTimeNullableFilter<"Analysis"> | Date | string | null
     resume?: XOR<ResumeScalarRelationFilter, ResumeWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    suggestions?: SuggestionListRelationFilter
   }, "id">
 
   export type AnalysisOrderByWithAggregationInput = {
     id?: SortOrder
     resumeId?: SortOrder
+    userId?: SortOrder
     jobDescription?: SortOrder
     parsedJob?: SortOrder
     resumeSnapshot?: SortOrder
     analysisResult?: SortOrder
     createdAt?: SortOrder
+    exportedAt?: SortOrderInput | SortOrder
     _count?: AnalysisCountOrderByAggregateInput
     _max?: AnalysisMaxOrderByAggregateInput
     _min?: AnalysisMinOrderByAggregateInput
@@ -6155,11 +7564,83 @@ export namespace Prisma {
     NOT?: AnalysisScalarWhereWithAggregatesInput | AnalysisScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"Analysis"> | string
     resumeId?: UuidWithAggregatesFilter<"Analysis"> | string
+    userId?: UuidWithAggregatesFilter<"Analysis"> | string
     jobDescription?: StringWithAggregatesFilter<"Analysis"> | string
     parsedJob?: JsonWithAggregatesFilter<"Analysis">
     resumeSnapshot?: JsonWithAggregatesFilter<"Analysis">
     analysisResult?: JsonWithAggregatesFilter<"Analysis">
     createdAt?: DateTimeWithAggregatesFilter<"Analysis"> | Date | string
+    exportedAt?: DateTimeNullableWithAggregatesFilter<"Analysis"> | Date | string | null
+  }
+
+  export type SuggestionWhereInput = {
+    AND?: SuggestionWhereInput | SuggestionWhereInput[]
+    OR?: SuggestionWhereInput[]
+    NOT?: SuggestionWhereInput | SuggestionWhereInput[]
+    id?: UuidFilter<"Suggestion"> | string
+    analysisId?: UuidFilter<"Suggestion"> | string
+    original?: StringFilter<"Suggestion"> | string
+    suggested?: StringFilter<"Suggestion"> | string
+    section?: StringNullableFilter<"Suggestion"> | string | null
+    status?: EnumSuggestionStatusFilter<"Suggestion"> | $Enums.SuggestionStatus
+    rejectionReason?: StringNullableFilter<"Suggestion"> | string | null
+    createdAt?: DateTimeFilter<"Suggestion"> | Date | string
+    analysis?: XOR<AnalysisScalarRelationFilter, AnalysisWhereInput>
+  }
+
+  export type SuggestionOrderByWithRelationInput = {
+    id?: SortOrder
+    analysisId?: SortOrder
+    original?: SortOrder
+    suggested?: SortOrder
+    section?: SortOrderInput | SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    analysis?: AnalysisOrderByWithRelationInput
+  }
+
+  export type SuggestionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SuggestionWhereInput | SuggestionWhereInput[]
+    OR?: SuggestionWhereInput[]
+    NOT?: SuggestionWhereInput | SuggestionWhereInput[]
+    analysisId?: UuidFilter<"Suggestion"> | string
+    original?: StringFilter<"Suggestion"> | string
+    suggested?: StringFilter<"Suggestion"> | string
+    section?: StringNullableFilter<"Suggestion"> | string | null
+    status?: EnumSuggestionStatusFilter<"Suggestion"> | $Enums.SuggestionStatus
+    rejectionReason?: StringNullableFilter<"Suggestion"> | string | null
+    createdAt?: DateTimeFilter<"Suggestion"> | Date | string
+    analysis?: XOR<AnalysisScalarRelationFilter, AnalysisWhereInput>
+  }, "id">
+
+  export type SuggestionOrderByWithAggregationInput = {
+    id?: SortOrder
+    analysisId?: SortOrder
+    original?: SortOrder
+    suggested?: SortOrder
+    section?: SortOrderInput | SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: SuggestionCountOrderByAggregateInput
+    _max?: SuggestionMaxOrderByAggregateInput
+    _min?: SuggestionMinOrderByAggregateInput
+  }
+
+  export type SuggestionScalarWhereWithAggregatesInput = {
+    AND?: SuggestionScalarWhereWithAggregatesInput | SuggestionScalarWhereWithAggregatesInput[]
+    OR?: SuggestionScalarWhereWithAggregatesInput[]
+    NOT?: SuggestionScalarWhereWithAggregatesInput | SuggestionScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"Suggestion"> | string
+    analysisId?: UuidWithAggregatesFilter<"Suggestion"> | string
+    original?: StringWithAggregatesFilter<"Suggestion"> | string
+    suggested?: StringWithAggregatesFilter<"Suggestion"> | string
+    section?: StringNullableWithAggregatesFilter<"Suggestion"> | string | null
+    status?: EnumSuggestionStatusWithAggregatesFilter<"Suggestion"> | $Enums.SuggestionStatus
+    rejectionReason?: StringNullableWithAggregatesFilter<"Suggestion"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Suggestion"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -6171,6 +7652,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     resumes?: ResumeCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -6182,6 +7664,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -6193,6 +7676,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumes?: ResumeUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -6204,6 +7688,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -6309,6 +7794,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -6325,6 +7811,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -6339,6 +7826,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6355,6 +7843,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6370,6 +7859,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -6383,6 +7873,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6397,6 +7888,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6410,17 +7902,23 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
     resume: ResumeCreateNestedOneWithoutAnalysesInput
+    user: UserCreateNestedOneWithoutAnalysesInput
+    suggestions?: SuggestionCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisUncheckedCreateInput = {
     id?: string
     resumeId: string
+    userId: string
     jobDescription: string
     parsedJob: JsonNullValueInput | InputJsonValue
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
+    suggestions?: SuggestionUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisUpdateInput = {
@@ -6430,27 +7928,35 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
+    user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
+    suggestions?: SuggestionUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     resumeId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     jobDescription?: StringFieldUpdateOperationsInput | string
     parsedJob?: JsonNullValueInput | InputJsonValue
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suggestions?: SuggestionUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisCreateManyInput = {
     id?: string
     resumeId: string
+    userId: string
     jobDescription: string
     parsedJob: JsonNullValueInput | InputJsonValue
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
   }
 
   export type AnalysisUpdateManyMutationInput = {
@@ -6460,15 +7966,94 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type AnalysisUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     resumeId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     jobDescription?: StringFieldUpdateOperationsInput | string
     parsedJob?: JsonNullValueInput | InputJsonValue
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type SuggestionCreateInput = {
+    id?: string
+    original: string
+    suggested: string
+    section?: string | null
+    status?: $Enums.SuggestionStatus
+    rejectionReason?: string | null
+    createdAt?: Date | string
+    analysis: AnalysisCreateNestedOneWithoutSuggestionsInput
+  }
+
+  export type SuggestionUncheckedCreateInput = {
+    id?: string
+    analysisId: string
+    original: string
+    suggested: string
+    section?: string | null
+    status?: $Enums.SuggestionStatus
+    rejectionReason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SuggestionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    suggested?: StringFieldUpdateOperationsInput | string
+    section?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analysis?: AnalysisUpdateOneRequiredWithoutSuggestionsNestedInput
+  }
+
+  export type SuggestionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    analysisId?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    suggested?: StringFieldUpdateOperationsInput | string
+    section?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SuggestionCreateManyInput = {
+    id?: string
+    analysisId: string
+    original: string
+    suggested: string
+    section?: string | null
+    status?: $Enums.SuggestionStatus
+    rejectionReason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SuggestionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    suggested?: StringFieldUpdateOperationsInput | string
+    section?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SuggestionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    analysisId?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    suggested?: StringFieldUpdateOperationsInput | string
+    section?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -6522,11 +8107,21 @@ export namespace Prisma {
     none?: RefreshTokenWhereInput
   }
 
+  export type AnalysisListRelationFilter = {
+    every?: AnalysisWhereInput
+    some?: AnalysisWhereInput
+    none?: AnalysisWhereInput
+  }
+
   export type ResumeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type RefreshTokenOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AnalysisOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -6679,6 +8274,21 @@ export namespace Prisma {
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
   }
+
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -6703,16 +8313,6 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type AnalysisListRelationFilter = {
-    every?: AnalysisWhereInput
-    some?: AnalysisWhereInput
-    none?: AnalysisWhereInput
-  }
-
-  export type AnalysisOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type ResumeCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -6721,6 +8321,7 @@ export namespace Prisma {
     mimeType?: SortOrder
     fileSize?: SortOrder
     fileUrl?: SortOrder
+    filePath?: SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
     createdAt?: SortOrder
@@ -6739,6 +8340,7 @@ export namespace Prisma {
     mimeType?: SortOrder
     fileSize?: SortOrder
     fileUrl?: SortOrder
+    filePath?: SortOrder
     rawText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -6752,6 +8354,7 @@ export namespace Prisma {
     mimeType?: SortOrder
     fileSize?: SortOrder
     fileUrl?: SortOrder
+    filePath?: SortOrder
     rawText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -6775,6 +8378,24 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
   export type JsonWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -6808,28 +8429,99 @@ export namespace Prisma {
     isNot?: ResumeWhereInput
   }
 
+  export type SuggestionListRelationFilter = {
+    every?: SuggestionWhereInput
+    some?: SuggestionWhereInput
+    none?: SuggestionWhereInput
+  }
+
+  export type SuggestionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type AnalysisCountOrderByAggregateInput = {
     id?: SortOrder
     resumeId?: SortOrder
+    userId?: SortOrder
     jobDescription?: SortOrder
     parsedJob?: SortOrder
     resumeSnapshot?: SortOrder
     analysisResult?: SortOrder
     createdAt?: SortOrder
+    exportedAt?: SortOrder
   }
 
   export type AnalysisMaxOrderByAggregateInput = {
     id?: SortOrder
     resumeId?: SortOrder
+    userId?: SortOrder
     jobDescription?: SortOrder
     createdAt?: SortOrder
+    exportedAt?: SortOrder
   }
 
   export type AnalysisMinOrderByAggregateInput = {
     id?: SortOrder
     resumeId?: SortOrder
+    userId?: SortOrder
     jobDescription?: SortOrder
     createdAt?: SortOrder
+    exportedAt?: SortOrder
+  }
+
+  export type EnumSuggestionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SuggestionStatus | EnumSuggestionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSuggestionStatusFilter<$PrismaModel> | $Enums.SuggestionStatus
+  }
+
+  export type AnalysisScalarRelationFilter = {
+    is?: AnalysisWhereInput
+    isNot?: AnalysisWhereInput
+  }
+
+  export type SuggestionCountOrderByAggregateInput = {
+    id?: SortOrder
+    analysisId?: SortOrder
+    original?: SortOrder
+    suggested?: SortOrder
+    section?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SuggestionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    analysisId?: SortOrder
+    original?: SortOrder
+    suggested?: SortOrder
+    section?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SuggestionMinOrderByAggregateInput = {
+    id?: SortOrder
+    analysisId?: SortOrder
+    original?: SortOrder
+    suggested?: SortOrder
+    section?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumSuggestionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SuggestionStatus | EnumSuggestionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSuggestionStatusWithAggregatesFilter<$PrismaModel> | $Enums.SuggestionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSuggestionStatusFilter<$PrismaModel>
+    _max?: NestedEnumSuggestionStatusFilter<$PrismaModel>
   }
 
   export type ResumeCreateNestedManyWithoutUserInput = {
@@ -6846,6 +8538,13 @@ export namespace Prisma {
     connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
   }
 
+  export type AnalysisCreateNestedManyWithoutUserInput = {
+    create?: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput> | AnalysisCreateWithoutUserInput[] | AnalysisUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutUserInput | AnalysisCreateOrConnectWithoutUserInput[]
+    createMany?: AnalysisCreateManyUserInputEnvelope
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+  }
+
   export type ResumeUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<ResumeCreateWithoutUserInput, ResumeUncheckedCreateWithoutUserInput> | ResumeCreateWithoutUserInput[] | ResumeUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ResumeCreateOrConnectWithoutUserInput | ResumeCreateOrConnectWithoutUserInput[]
@@ -6858,6 +8557,13 @@ export namespace Prisma {
     connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[]
     createMany?: RefreshTokenCreateManyUserInputEnvelope
     connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+  }
+
+  export type AnalysisUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput> | AnalysisCreateWithoutUserInput[] | AnalysisUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutUserInput | AnalysisCreateOrConnectWithoutUserInput[]
+    createMany?: AnalysisCreateManyUserInputEnvelope
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -6896,6 +8602,20 @@ export namespace Prisma {
     deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
   }
 
+  export type AnalysisUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput> | AnalysisCreateWithoutUserInput[] | AnalysisUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutUserInput | AnalysisCreateOrConnectWithoutUserInput[]
+    upsert?: AnalysisUpsertWithWhereUniqueWithoutUserInput | AnalysisUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AnalysisCreateManyUserInputEnvelope
+    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    update?: AnalysisUpdateWithWhereUniqueWithoutUserInput | AnalysisUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AnalysisUpdateManyWithWhereWithoutUserInput | AnalysisUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+  }
+
   export type ResumeUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<ResumeCreateWithoutUserInput, ResumeUncheckedCreateWithoutUserInput> | ResumeCreateWithoutUserInput[] | ResumeUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ResumeCreateOrConnectWithoutUserInput | ResumeCreateOrConnectWithoutUserInput[]
@@ -6922,6 +8642,20 @@ export namespace Prisma {
     update?: RefreshTokenUpdateWithWhereUniqueWithoutUserInput | RefreshTokenUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: RefreshTokenUpdateManyWithWhereWithoutUserInput | RefreshTokenUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
+  }
+
+  export type AnalysisUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput> | AnalysisCreateWithoutUserInput[] | AnalysisUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AnalysisCreateOrConnectWithoutUserInput | AnalysisCreateOrConnectWithoutUserInput[]
+    upsert?: AnalysisUpsertWithWhereUniqueWithoutUserInput | AnalysisUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AnalysisCreateManyUserInputEnvelope
+    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+    update?: AnalysisUpdateWithWhereUniqueWithoutUserInput | AnalysisUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AnalysisUpdateManyWithWhereWithoutUserInput | AnalysisUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutRefreshTokensInput = {
@@ -6970,6 +8704,10 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type UserUpdateOneRequiredWithoutResumesNestedInput = {
     create?: XOR<UserCreateWithoutResumesInput, UserUncheckedCreateWithoutResumesInput>
     connectOrCreate?: UserCreateOrConnectWithoutResumesInput
@@ -7012,12 +8750,86 @@ export namespace Prisma {
     connect?: ResumeWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutAnalysesInput = {
+    create?: XOR<UserCreateWithoutAnalysesInput, UserUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnalysesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type SuggestionCreateNestedManyWithoutAnalysisInput = {
+    create?: XOR<SuggestionCreateWithoutAnalysisInput, SuggestionUncheckedCreateWithoutAnalysisInput> | SuggestionCreateWithoutAnalysisInput[] | SuggestionUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: SuggestionCreateOrConnectWithoutAnalysisInput | SuggestionCreateOrConnectWithoutAnalysisInput[]
+    createMany?: SuggestionCreateManyAnalysisInputEnvelope
+    connect?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
+  }
+
+  export type SuggestionUncheckedCreateNestedManyWithoutAnalysisInput = {
+    create?: XOR<SuggestionCreateWithoutAnalysisInput, SuggestionUncheckedCreateWithoutAnalysisInput> | SuggestionCreateWithoutAnalysisInput[] | SuggestionUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: SuggestionCreateOrConnectWithoutAnalysisInput | SuggestionCreateOrConnectWithoutAnalysisInput[]
+    createMany?: SuggestionCreateManyAnalysisInputEnvelope
+    connect?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
+  }
+
   export type ResumeUpdateOneRequiredWithoutAnalysesNestedInput = {
     create?: XOR<ResumeCreateWithoutAnalysesInput, ResumeUncheckedCreateWithoutAnalysesInput>
     connectOrCreate?: ResumeCreateOrConnectWithoutAnalysesInput
     upsert?: ResumeUpsertWithoutAnalysesInput
     connect?: ResumeWhereUniqueInput
     update?: XOR<XOR<ResumeUpdateToOneWithWhereWithoutAnalysesInput, ResumeUpdateWithoutAnalysesInput>, ResumeUncheckedUpdateWithoutAnalysesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutAnalysesNestedInput = {
+    create?: XOR<UserCreateWithoutAnalysesInput, UserUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnalysesInput
+    upsert?: UserUpsertWithoutAnalysesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAnalysesInput, UserUpdateWithoutAnalysesInput>, UserUncheckedUpdateWithoutAnalysesInput>
+  }
+
+  export type SuggestionUpdateManyWithoutAnalysisNestedInput = {
+    create?: XOR<SuggestionCreateWithoutAnalysisInput, SuggestionUncheckedCreateWithoutAnalysisInput> | SuggestionCreateWithoutAnalysisInput[] | SuggestionUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: SuggestionCreateOrConnectWithoutAnalysisInput | SuggestionCreateOrConnectWithoutAnalysisInput[]
+    upsert?: SuggestionUpsertWithWhereUniqueWithoutAnalysisInput | SuggestionUpsertWithWhereUniqueWithoutAnalysisInput[]
+    createMany?: SuggestionCreateManyAnalysisInputEnvelope
+    set?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
+    disconnect?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
+    delete?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
+    connect?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
+    update?: SuggestionUpdateWithWhereUniqueWithoutAnalysisInput | SuggestionUpdateWithWhereUniqueWithoutAnalysisInput[]
+    updateMany?: SuggestionUpdateManyWithWhereWithoutAnalysisInput | SuggestionUpdateManyWithWhereWithoutAnalysisInput[]
+    deleteMany?: SuggestionScalarWhereInput | SuggestionScalarWhereInput[]
+  }
+
+  export type SuggestionUncheckedUpdateManyWithoutAnalysisNestedInput = {
+    create?: XOR<SuggestionCreateWithoutAnalysisInput, SuggestionUncheckedCreateWithoutAnalysisInput> | SuggestionCreateWithoutAnalysisInput[] | SuggestionUncheckedCreateWithoutAnalysisInput[]
+    connectOrCreate?: SuggestionCreateOrConnectWithoutAnalysisInput | SuggestionCreateOrConnectWithoutAnalysisInput[]
+    upsert?: SuggestionUpsertWithWhereUniqueWithoutAnalysisInput | SuggestionUpsertWithWhereUniqueWithoutAnalysisInput[]
+    createMany?: SuggestionCreateManyAnalysisInputEnvelope
+    set?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
+    disconnect?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
+    delete?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
+    connect?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
+    update?: SuggestionUpdateWithWhereUniqueWithoutAnalysisInput | SuggestionUpdateWithWhereUniqueWithoutAnalysisInput[]
+    updateMany?: SuggestionUpdateManyWithWhereWithoutAnalysisInput | SuggestionUpdateManyWithWhereWithoutAnalysisInput[]
+    deleteMany?: SuggestionScalarWhereInput | SuggestionScalarWhereInput[]
+  }
+
+  export type AnalysisCreateNestedOneWithoutSuggestionsInput = {
+    create?: XOR<AnalysisCreateWithoutSuggestionsInput, AnalysisUncheckedCreateWithoutSuggestionsInput>
+    connectOrCreate?: AnalysisCreateOrConnectWithoutSuggestionsInput
+    connect?: AnalysisWhereUniqueInput
+  }
+
+  export type EnumSuggestionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.SuggestionStatus
+  }
+
+  export type AnalysisUpdateOneRequiredWithoutSuggestionsNestedInput = {
+    create?: XOR<AnalysisCreateWithoutSuggestionsInput, AnalysisUncheckedCreateWithoutSuggestionsInput>
+    connectOrCreate?: AnalysisCreateOrConnectWithoutSuggestionsInput
+    upsert?: AnalysisUpsertWithoutSuggestionsInput
+    connect?: AnalysisWhereUniqueInput
+    update?: XOR<XOR<AnalysisUpdateToOneWithWhereWithoutSuggestionsInput, AnalysisUpdateWithoutSuggestionsInput>, AnalysisUncheckedUpdateWithoutSuggestionsInput>
   }
 
   export type NestedUuidFilter<$PrismaModel = never> = {
@@ -7148,6 +8960,20 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -7174,6 +9000,23 @@ export namespace Prisma {
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
   }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -7198,6 +9041,23 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumSuggestionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SuggestionStatus | EnumSuggestionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSuggestionStatusFilter<$PrismaModel> | $Enums.SuggestionStatus
+  }
+
+  export type NestedEnumSuggestionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SuggestionStatus | EnumSuggestionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSuggestionStatusWithAggregatesFilter<$PrismaModel> | $Enums.SuggestionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSuggestionStatusFilter<$PrismaModel>
+    _max?: NestedEnumSuggestionStatusFilter<$PrismaModel>
+  }
+
   export type ResumeCreateWithoutUserInput = {
     id?: string
     title: string
@@ -7205,6 +9065,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7219,6 +9080,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7264,6 +9126,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AnalysisCreateWithoutUserInput = {
+    id?: string
+    jobDescription: string
+    parsedJob: JsonNullValueInput | InputJsonValue
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    analysisResult: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    exportedAt?: Date | string | null
+    resume: ResumeCreateNestedOneWithoutAnalysesInput
+    suggestions?: SuggestionCreateNestedManyWithoutAnalysisInput
+  }
+
+  export type AnalysisUncheckedCreateWithoutUserInput = {
+    id?: string
+    resumeId: string
+    jobDescription: string
+    parsedJob: JsonNullValueInput | InputJsonValue
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    analysisResult: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    exportedAt?: Date | string | null
+    suggestions?: SuggestionUncheckedCreateNestedManyWithoutAnalysisInput
+  }
+
+  export type AnalysisCreateOrConnectWithoutUserInput = {
+    where: AnalysisWhereUniqueInput
+    create: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput>
+  }
+
+  export type AnalysisCreateManyUserInputEnvelope = {
+    data: AnalysisCreateManyUserInput | AnalysisCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ResumeUpsertWithWhereUniqueWithoutUserInput = {
     where: ResumeWhereUniqueInput
     update: XOR<ResumeUpdateWithoutUserInput, ResumeUncheckedUpdateWithoutUserInput>
@@ -7291,6 +9187,7 @@ export namespace Prisma {
     mimeType?: StringFilter<"Resume"> | string
     fileSize?: IntFilter<"Resume"> | number
     fileUrl?: StringFilter<"Resume"> | string
+    filePath?: StringNullableFilter<"Resume"> | string | null
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
@@ -7326,6 +9223,37 @@ export namespace Prisma {
     revokedAt?: DateTimeNullableFilter<"RefreshToken"> | Date | string | null
   }
 
+  export type AnalysisUpsertWithWhereUniqueWithoutUserInput = {
+    where: AnalysisWhereUniqueInput
+    update: XOR<AnalysisUpdateWithoutUserInput, AnalysisUncheckedUpdateWithoutUserInput>
+    create: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput>
+  }
+
+  export type AnalysisUpdateWithWhereUniqueWithoutUserInput = {
+    where: AnalysisWhereUniqueInput
+    data: XOR<AnalysisUpdateWithoutUserInput, AnalysisUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AnalysisUpdateManyWithWhereWithoutUserInput = {
+    where: AnalysisScalarWhereInput
+    data: XOR<AnalysisUpdateManyMutationInput, AnalysisUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type AnalysisScalarWhereInput = {
+    AND?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+    OR?: AnalysisScalarWhereInput[]
+    NOT?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+    id?: UuidFilter<"Analysis"> | string
+    resumeId?: UuidFilter<"Analysis"> | string
+    userId?: UuidFilter<"Analysis"> | string
+    jobDescription?: StringFilter<"Analysis"> | string
+    parsedJob?: JsonFilter<"Analysis">
+    resumeSnapshot?: JsonFilter<"Analysis">
+    analysisResult?: JsonFilter<"Analysis">
+    createdAt?: DateTimeFilter<"Analysis"> | Date | string
+    exportedAt?: DateTimeNullableFilter<"Analysis"> | Date | string | null
+  }
+
   export type UserCreateWithoutRefreshTokensInput = {
     id?: string
     name: string
@@ -7334,6 +9262,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     resumes?: ResumeCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -7344,6 +9273,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -7370,6 +9300,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumes?: ResumeUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -7380,6 +9311,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutResumesInput = {
@@ -7390,6 +9322,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
+    analyses?: AnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutResumesInput = {
@@ -7400,6 +9333,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutResumesInput = {
@@ -7414,15 +9348,21 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
+    user: UserCreateNestedOneWithoutAnalysesInput
+    suggestions?: SuggestionCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisUncheckedCreateWithoutResumeInput = {
     id?: string
+    userId: string
     jobDescription: string
     parsedJob: JsonNullValueInput | InputJsonValue
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
+    suggestions?: SuggestionUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
   export type AnalysisCreateOrConnectWithoutResumeInput = {
@@ -7454,6 +9394,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutResumesInput = {
@@ -7464,6 +9405,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AnalysisUpsertWithWhereUniqueWithoutResumeInput = {
@@ -7482,19 +9424,6 @@ export namespace Prisma {
     data: XOR<AnalysisUpdateManyMutationInput, AnalysisUncheckedUpdateManyWithoutResumeInput>
   }
 
-  export type AnalysisScalarWhereInput = {
-    AND?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
-    OR?: AnalysisScalarWhereInput[]
-    NOT?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
-    id?: UuidFilter<"Analysis"> | string
-    resumeId?: UuidFilter<"Analysis"> | string
-    jobDescription?: StringFilter<"Analysis"> | string
-    parsedJob?: JsonFilter<"Analysis">
-    resumeSnapshot?: JsonFilter<"Analysis">
-    analysisResult?: JsonFilter<"Analysis">
-    createdAt?: DateTimeFilter<"Analysis"> | Date | string
-  }
-
   export type ResumeCreateWithoutAnalysesInput = {
     id?: string
     title: string
@@ -7502,6 +9431,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7517,6 +9447,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7526,6 +9457,63 @@ export namespace Prisma {
   export type ResumeCreateOrConnectWithoutAnalysesInput = {
     where: ResumeWhereUniqueInput
     create: XOR<ResumeCreateWithoutAnalysesInput, ResumeUncheckedCreateWithoutAnalysesInput>
+  }
+
+  export type UserCreateWithoutAnalysesInput = {
+    id?: string
+    name: string
+    email: string
+    passwordHash: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    resumes?: ResumeCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAnalysesInput = {
+    id?: string
+    name: string
+    email: string
+    passwordHash: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAnalysesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAnalysesInput, UserUncheckedCreateWithoutAnalysesInput>
+  }
+
+  export type SuggestionCreateWithoutAnalysisInput = {
+    id?: string
+    original: string
+    suggested: string
+    section?: string | null
+    status?: $Enums.SuggestionStatus
+    rejectionReason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SuggestionUncheckedCreateWithoutAnalysisInput = {
+    id?: string
+    original: string
+    suggested: string
+    section?: string | null
+    status?: $Enums.SuggestionStatus
+    rejectionReason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SuggestionCreateOrConnectWithoutAnalysisInput = {
+    where: SuggestionWhereUniqueInput
+    create: XOR<SuggestionCreateWithoutAnalysisInput, SuggestionUncheckedCreateWithoutAnalysisInput>
+  }
+
+  export type SuggestionCreateManyAnalysisInputEnvelope = {
+    data: SuggestionCreateManyAnalysisInput | SuggestionCreateManyAnalysisInput[]
+    skipDuplicates?: boolean
   }
 
   export type ResumeUpsertWithoutAnalysesInput = {
@@ -7546,6 +9534,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7561,10 +9550,138 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutAnalysesInput = {
+    update: XOR<UserUpdateWithoutAnalysesInput, UserUncheckedUpdateWithoutAnalysesInput>
+    create: XOR<UserCreateWithoutAnalysesInput, UserUncheckedCreateWithoutAnalysesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAnalysesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAnalysesInput, UserUncheckedUpdateWithoutAnalysesInput>
+  }
+
+  export type UserUpdateWithoutAnalysesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumes?: ResumeUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAnalysesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type SuggestionUpsertWithWhereUniqueWithoutAnalysisInput = {
+    where: SuggestionWhereUniqueInput
+    update: XOR<SuggestionUpdateWithoutAnalysisInput, SuggestionUncheckedUpdateWithoutAnalysisInput>
+    create: XOR<SuggestionCreateWithoutAnalysisInput, SuggestionUncheckedCreateWithoutAnalysisInput>
+  }
+
+  export type SuggestionUpdateWithWhereUniqueWithoutAnalysisInput = {
+    where: SuggestionWhereUniqueInput
+    data: XOR<SuggestionUpdateWithoutAnalysisInput, SuggestionUncheckedUpdateWithoutAnalysisInput>
+  }
+
+  export type SuggestionUpdateManyWithWhereWithoutAnalysisInput = {
+    where: SuggestionScalarWhereInput
+    data: XOR<SuggestionUpdateManyMutationInput, SuggestionUncheckedUpdateManyWithoutAnalysisInput>
+  }
+
+  export type SuggestionScalarWhereInput = {
+    AND?: SuggestionScalarWhereInput | SuggestionScalarWhereInput[]
+    OR?: SuggestionScalarWhereInput[]
+    NOT?: SuggestionScalarWhereInput | SuggestionScalarWhereInput[]
+    id?: UuidFilter<"Suggestion"> | string
+    analysisId?: UuidFilter<"Suggestion"> | string
+    original?: StringFilter<"Suggestion"> | string
+    suggested?: StringFilter<"Suggestion"> | string
+    section?: StringNullableFilter<"Suggestion"> | string | null
+    status?: EnumSuggestionStatusFilter<"Suggestion"> | $Enums.SuggestionStatus
+    rejectionReason?: StringNullableFilter<"Suggestion"> | string | null
+    createdAt?: DateTimeFilter<"Suggestion"> | Date | string
+  }
+
+  export type AnalysisCreateWithoutSuggestionsInput = {
+    id?: string
+    jobDescription: string
+    parsedJob: JsonNullValueInput | InputJsonValue
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    analysisResult: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    exportedAt?: Date | string | null
+    resume: ResumeCreateNestedOneWithoutAnalysesInput
+    user: UserCreateNestedOneWithoutAnalysesInput
+  }
+
+  export type AnalysisUncheckedCreateWithoutSuggestionsInput = {
+    id?: string
+    resumeId: string
+    userId: string
+    jobDescription: string
+    parsedJob: JsonNullValueInput | InputJsonValue
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    analysisResult: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    exportedAt?: Date | string | null
+  }
+
+  export type AnalysisCreateOrConnectWithoutSuggestionsInput = {
+    where: AnalysisWhereUniqueInput
+    create: XOR<AnalysisCreateWithoutSuggestionsInput, AnalysisUncheckedCreateWithoutSuggestionsInput>
+  }
+
+  export type AnalysisUpsertWithoutSuggestionsInput = {
+    update: XOR<AnalysisUpdateWithoutSuggestionsInput, AnalysisUncheckedUpdateWithoutSuggestionsInput>
+    create: XOR<AnalysisCreateWithoutSuggestionsInput, AnalysisUncheckedCreateWithoutSuggestionsInput>
+    where?: AnalysisWhereInput
+  }
+
+  export type AnalysisUpdateToOneWithWhereWithoutSuggestionsInput = {
+    where?: AnalysisWhereInput
+    data: XOR<AnalysisUpdateWithoutSuggestionsInput, AnalysisUncheckedUpdateWithoutSuggestionsInput>
+  }
+
+  export type AnalysisUpdateWithoutSuggestionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    parsedJob?: JsonNullValueInput | InputJsonValue
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    analysisResult?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
+    user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
+  }
+
+  export type AnalysisUncheckedUpdateWithoutSuggestionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resumeId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    parsedJob?: JsonNullValueInput | InputJsonValue
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    analysisResult?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ResumeCreateManyUserInput = {
@@ -7574,6 +9691,7 @@ export namespace Prisma {
     mimeType: string
     fileSize: number
     fileUrl: string
+    filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -7589,6 +9707,17 @@ export namespace Prisma {
     revokedAt?: Date | string | null
   }
 
+  export type AnalysisCreateManyUserInput = {
+    id?: string
+    resumeId: string
+    jobDescription: string
+    parsedJob: JsonNullValueInput | InputJsonValue
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    analysisResult: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    exportedAt?: Date | string | null
+  }
+
   export type ResumeUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -7596,6 +9725,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7610,6 +9740,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7624,6 +9755,7 @@ export namespace Prisma {
     mimeType?: StringFieldUpdateOperationsInput | string
     fileSize?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7657,13 +9789,50 @@ export namespace Prisma {
     revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type AnalysisUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    parsedJob?: JsonNullValueInput | InputJsonValue
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    analysisResult?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
+    suggestions?: SuggestionUpdateManyWithoutAnalysisNestedInput
+  }
+
+  export type AnalysisUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resumeId?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    parsedJob?: JsonNullValueInput | InputJsonValue
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    analysisResult?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suggestions?: SuggestionUncheckedUpdateManyWithoutAnalysisNestedInput
+  }
+
+  export type AnalysisUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resumeId?: StringFieldUpdateOperationsInput | string
+    jobDescription?: StringFieldUpdateOperationsInput | string
+    parsedJob?: JsonNullValueInput | InputJsonValue
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    analysisResult?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type AnalysisCreateManyResumeInput = {
     id?: string
+    userId: string
     jobDescription: string
     parsedJob: JsonNullValueInput | InputJsonValue
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
   }
 
   export type AnalysisUpdateWithoutResumeInput = {
@@ -7673,23 +9842,71 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
+    suggestions?: SuggestionUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisUncheckedUpdateWithoutResumeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     jobDescription?: StringFieldUpdateOperationsInput | string
     parsedJob?: JsonNullValueInput | InputJsonValue
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suggestions?: SuggestionUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
   export type AnalysisUncheckedUpdateManyWithoutResumeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     jobDescription?: StringFieldUpdateOperationsInput | string
     parsedJob?: JsonNullValueInput | InputJsonValue
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type SuggestionCreateManyAnalysisInput = {
+    id?: string
+    original: string
+    suggested: string
+    section?: string | null
+    status?: $Enums.SuggestionStatus
+    rejectionReason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SuggestionUpdateWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    suggested?: StringFieldUpdateOperationsInput | string
+    section?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SuggestionUncheckedUpdateWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    suggested?: StringFieldUpdateOperationsInput | string
+    section?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SuggestionUncheckedUpdateManyWithoutAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    original?: StringFieldUpdateOperationsInput | string
+    suggested?: StringFieldUpdateOperationsInput | string
+    section?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

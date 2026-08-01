@@ -24,7 +24,7 @@ export default function GlobalError({
             Something went wrong
           </h1>
           <p className="text-sm text-neutral-500">
-            ResumeForge hit an unexpected error. Please try again.
+            ResuMate hit an unexpected error. Please try again.
           </p>
           <button
             onClick={reset}

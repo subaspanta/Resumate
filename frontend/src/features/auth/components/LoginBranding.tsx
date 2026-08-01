@@ -11,7 +11,7 @@ export function LoginBranding() {
           description
         </span>
       </div> */}
-      {/* <h2 className="auth-branding-title">ResumeForge</h2> */}
+      {/* <h2 className="auth-branding-title">ResuMate</h2> */}
       <h1 className="auth-branding-headline">
         Build job-tailored resumes in minutes.
       </h1>

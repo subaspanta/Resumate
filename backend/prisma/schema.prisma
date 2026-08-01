@@ -17,6 +17,7 @@ model User {
 
   resumes       Resume[]
   refreshTokens RefreshToken[]
+  analyses      Analysis[]
 
   @@map("users")
 }
@@ -45,6 +46,7 @@ model Resume {
   mimeType         String   @db.VarChar(100)
   fileSize         Int
   fileUrl          String   @db.Text
+  filePath         String?  @db.Text
   rawText          String   @db.Text
   structuredResume Json     @db.JsonB
   createdAt        DateTime @default(now()) @db.Timestamp(6)
@@ -60,16 +62,43 @@ model Resume {
 model Analysis {
   id             String   @id @default(uuid()) @db.Uuid
   resumeId       String   @db.Uuid
+  userId         String   @db.Uuid
   jobDescription String   @db.Text
-  parsedJob      Json     @db.JsonB
-  resumeSnapshot Json     @db.JsonB
-  analysisResult Json     @db.JsonB
-  createdAt      DateTime @default(now()) @db.Timestamp(6)
+  parsedJob      Json      @db.JsonB
+  resumeSnapshot Json      @db.JsonB
+  analysisResult Json      @db.JsonB
+  createdAt      DateTime  @default(now()) @db.Timestamp(6)
+  exportedAt     DateTime? @db.Timestamp(6)
 
-  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  resume      Resume       @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  suggestions Suggestion[]
 
   @@index([resumeId])
+  @@index([userId])
   @@index([createdAt(sort: Desc)])
   @@index([resumeId, createdAt(sort: Desc)])
   @@map("analyses")
+}
+
+enum SuggestionStatus {
+  pending
+  applied
+  rejected
+}
+
+model Suggestion {
+  id              String           @id @default(uuid()) @db.Uuid
+  analysisId      String           @db.Uuid
+  original        String           @db.Text
+  suggested       String           @db.Text
+  section         String?          @db.VarChar(50)
+  status          SuggestionStatus @default(pending)
+  rejectionReason String?          @db.Text
+  createdAt       DateTime         @default(now()) @db.Timestamp(6)
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId])
+  @@map("suggestions")
 }

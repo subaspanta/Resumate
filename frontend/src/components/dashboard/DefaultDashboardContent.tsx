@@ -14,6 +14,7 @@ interface DefaultDashboardContentProps {
   onFileSelected: (file: File) => void;
   onOpenResume: (id: string) => void;
   onViewAll: () => void;
+  isUploading?: boolean;
 }
 
 export function DefaultDashboardContent({
@@ -22,6 +23,7 @@ export function DefaultDashboardContent({
   onFileSelected,
   onOpenResume,
   onViewAll,
+  isUploading,
 }: DefaultDashboardContentProps) {
   const greeting = getTimeGreeting();
   const firstName = getGreetingName(userName);
@@ -37,7 +39,11 @@ export function DefaultDashboardContent({
         </p>
       </section>
 
-      <UploadDropzone onFileSelected={onFileSelected} variant="default" />
+      <UploadDropzone
+        onFileSelected={onFileSelected}
+        variant="default"
+        isUploading={isUploading}
+      />
 
       <RecentResumesSection
         resumes={resumes}

@@ -4,11 +4,22 @@ import type {
   Analysis,
   AnalysisSummary,
   CreateAnalysisInput,
+  CreateAnalysisResult,
+  RewriteSuggestionsInput,
+  Suggestion,
+  UpdateSuggestionStatusInput,
 } from "@/src/features/analysis/types";
+
+// AI-backed calls (job parsing, rewrite generation) run a Gemini round-trip
+// server-side and can exceed the client's default 10s timeout under normal
+// latency, not just when something's actually wrong.
+const AI_CALL_TIMEOUT_MS = 60000;
 
 export const analysisApi = {
   create: (body: CreateAnalysisInput) =>
-    axiosClient.post<ApiResponse<Analysis>>("/analyses", body),
+    axiosClient.post<ApiResponse<CreateAnalysisResult>>("/analyses", body, {
+      timeout: AI_CALL_TIMEOUT_MS,
+    }),
 
   latest: (resumeId: string) =>
     axiosClient.get<ApiResponse<Analysis | null>>(
@@ -25,4 +36,28 @@ export const analysisApi = {
 
   remove: (id: string) =>
     axiosClient.delete<ApiResponse<{ id: string }>>(`/analyses/${id}`),
+
+  rewriteSuggestions: (body: RewriteSuggestionsInput) =>
+    axiosClient.post<ApiResponse<Suggestion[]>>(
+      "/analyses/rewrite-suggestions",
+      body,
+      { timeout: AI_CALL_TIMEOUT_MS }
+    ),
+
+  updateSuggestionStatus: ({
+    suggestionId,
+    status,
+    rejectionReason,
+  }: UpdateSuggestionStatusInput) =>
+    axiosClient.patch<ApiResponse<Suggestion>>(
+      `/analyses/suggestions/${suggestionId}`,
+      { status, rejectionReason }
+    ),
+
+  exportPDF: (resumeId: string) =>
+    axiosClient.post<Blob>(
+      `/exports/resumes/${resumeId}/export`,
+      undefined,
+      { responseType: "blob" }
+    ),
 };

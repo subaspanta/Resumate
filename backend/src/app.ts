@@ -5,6 +5,7 @@ import morgan from "morgan";
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 import { AppError } from "./types/app-error.js";
+import { ERROR_CODES } from "./constants/error-codes.js";
 import { StatusCodes } from "http-status-codes";
 import cookieParser from "cookie-parser";
 import routes from "./routes/index.js";
@@ -58,19 +59,37 @@ app.use((req: Request, res: Response) => {
 });
 
 // Global error handler
-app.use((err: AppError, req: Request, res: Response, next: NextFunction) => {
+app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   logger.error(err);
 
-  const statusCode = err.statusCode ?? StatusCodes.INTERNAL_SERVER_ERROR;
-  const code = err.code ?? "INTERNAL_SERVER_ERROR";
-  const message = err.message || "Internal Server Error";
+  // express.json() throws a SyntaxError (type "entity.parse.failed") on an
+  // unparseable request body. Remap it to a proper client-facing validation
+  // error instead of letting it fall through to a generic 500-shaped code.
+  if (
+    err instanceof SyntaxError &&
+    "type" in err &&
+    (err as { type?: string }).type === "entity.parse.failed"
+  ) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      error: {
+        code: ERROR_CODES.MALFORMED_JSON,
+        message: "Request body is not valid JSON",
+      },
+    });
+  }
+
+  const appError = err as AppError;
+  const statusCode = appError.statusCode ?? StatusCodes.INTERNAL_SERVER_ERROR;
+  const code = appError.code ?? "INTERNAL_SERVER_ERROR";
+  const message = appError.message || "Internal Server Error";
 
   res.status(statusCode).json({
     success: false,
     error: {
       code,
       message,
-      ...(env.isDevelopment && { details: err.details }),
+      ...(env.isDevelopment && { details: appError.details }),
     },
   });
 });

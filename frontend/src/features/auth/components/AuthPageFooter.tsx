@@ -6,7 +6,7 @@ export function AuthPageFooter() {
   return (
     <footer className="w-full py-xl px-lg md:px-xl flex flex-col md:flex-row justify-between items-center gap-md bg-canvas border-t border-border-base no-shadow">
       <div className="font-label-std text-label-std text-text-primary font-medium">
-        ResumeForge
+        ResuMate
       </div>
       <div className="flex gap-lg">
         <Link
@@ -29,7 +29,7 @@ export function AuthPageFooter() {
         </Link>
       </div>
       <div className="font-body-md text-body-md text-text-muted">
-        © 2024 ResumeForge. Built for professional focus.
+        © 2024 ResuMate. Built for professional focus.
       </div>
     </footer>
   );
