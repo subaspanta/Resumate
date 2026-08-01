@@ -8,7 +8,7 @@ export function AuthLoading() {
           </span>
         </div>
         <span className="text-xl font-semibold text-primary tracking-tight animate-pulse">
-          ResumeForge
+          ResuMate
         </span>
         <div className="mt-2 flex items-center justify-center">
           <div className="animate-spin rounded-full h-6 w-6 border-[3px] border-border-input border-t-primary"></div>

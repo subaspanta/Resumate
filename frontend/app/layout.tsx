@@ -14,7 +14,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ResumeForge",
+  title: "ResuMate",
   description: "AI-powered resume optimization built for modern job seekers.",
 };
 

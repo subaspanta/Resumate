@@ -141,7 +141,7 @@ export function Sidebar({
         )}
         {!isCollapsed && (
           <div>
-            <div className="dashboard-sidebar-brand-name">ResumeForge</div>
+            <div className="dashboard-sidebar-brand-name">ResuMate</div>
             {layout.sidebarShowTagline && (
               <p className="dashboard-sidebar-tagline">AI Resume Workspace</p>
             )}
