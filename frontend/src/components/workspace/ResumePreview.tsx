@@ -1,8 +1,10 @@
 "use client";
 
+import { Sparkles, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { StructuredResume } from "@/src/features/resume/types";
 
 interface SkillsMatch {
@@ -10,10 +12,46 @@ interface SkillsMatch {
   missing: string[];
 }
 
+interface GenerateSuggestionsInput {
+  section: "bullet" | "project" | "summary";
+  originalText: string;
+  key: string;
+}
+
 interface ResumePreviewProps {
   structuredResume?: StructuredResume;
   isLoading?: boolean;
   skillsMatch?: SkillsMatch;
+  // Only passed on the analysis page (has analysisId/jobRequirements in
+  // scope) — the workspace page omits it, so no buttons render there.
+  onGenerateSuggestions?: (input: GenerateSuggestionsInput) => void;
+  generatingKey?: string | null;
+}
+
+function GenerateSuggestionsButton({
+  onClick,
+  isGenerating,
+}: {
+  onClick: () => void;
+  isGenerating: boolean;
+}) {
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      className="w-fit"
+      disabled={isGenerating}
+      onClick={onClick}
+    >
+      {isGenerating ? (
+        <Loader2 className="animate-spin" />
+      ) : (
+        <Sparkles />
+      )}
+      Generate Suggestions
+    </Button>
+  );
 }
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
@@ -28,6 +66,8 @@ export function ResumePreview({
   structuredResume,
   isLoading,
   skillsMatch,
+  onGenerateSuggestions,
+  generatingKey,
 }: ResumePreviewProps) {
   if (isLoading) {
     return (
@@ -77,6 +117,18 @@ export function ResumePreview({
         <div className="flex flex-col gap-2">
           <SectionHeading>Summary</SectionHeading>
           <p className="text-sm text-foreground">{summary}</p>
+          {onGenerateSuggestions && (
+            <GenerateSuggestionsButton
+              isGenerating={generatingKey === "summary"}
+              onClick={() =>
+                onGenerateSuggestions({
+                  section: "summary",
+                  originalText: summary,
+                  key: "summary",
+                })
+              }
+            />
+          )}
         </div>
       )}
 
@@ -100,6 +152,18 @@ export function ResumePreview({
                     {entry.description}
                   </p>
                 )}
+                {onGenerateSuggestions && entry.description && (
+                  <GenerateSuggestionsButton
+                    isGenerating={generatingKey === `experience-${i}`}
+                    onClick={() =>
+                      onGenerateSuggestions({
+                        section: "bullet",
+                        originalText: entry.description!,
+                        key: `experience-${i}`,
+                      })
+                    }
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -119,6 +183,18 @@ export function ResumePreview({
                   <p className="text-sm text-muted-foreground">
                     {entry.description}
                   </p>
+                )}
+                {onGenerateSuggestions && entry.description && (
+                  <GenerateSuggestionsButton
+                    isGenerating={generatingKey === `project-${i}`}
+                    onClick={() =>
+                      onGenerateSuggestions({
+                        section: "project",
+                        originalText: entry.description!,
+                        key: `project-${i}`,
+                      })
+                    }
+                  />
                 )}
               </div>
             ))}

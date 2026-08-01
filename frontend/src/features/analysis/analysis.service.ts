@@ -10,9 +10,16 @@ import type {
   UpdateSuggestionStatusInput,
 } from "@/src/features/analysis/types";
 
+// AI-backed calls (job parsing, rewrite generation) run a Gemini round-trip
+// server-side and can exceed the client's default 10s timeout under normal
+// latency, not just when something's actually wrong.
+const AI_CALL_TIMEOUT_MS = 60000;
+
 export const analysisApi = {
   create: (body: CreateAnalysisInput) =>
-    axiosClient.post<ApiResponse<CreateAnalysisResult>>("/analyses", body),
+    axiosClient.post<ApiResponse<CreateAnalysisResult>>("/analyses", body, {
+      timeout: AI_CALL_TIMEOUT_MS,
+    }),
 
   latest: (resumeId: string) =>
     axiosClient.get<ApiResponse<Analysis | null>>(
@@ -33,7 +40,8 @@ export const analysisApi = {
   rewriteSuggestions: (body: RewriteSuggestionsInput) =>
     axiosClient.post<ApiResponse<Suggestion[]>>(
       "/analyses/rewrite-suggestions",
-      body
+      body,
+      { timeout: AI_CALL_TIMEOUT_MS }
     ),
 
   updateSuggestionStatus: ({

@@ -3,12 +3,15 @@
 import { use, useMemo, useState } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { isApiError } from "@/src/api/api-error";
 import {
   useAnalysis,
   useApplySuggestion,
   useRejectSuggestion,
+  useRewriteSuggestions,
 } from "@/src/features/analysis/analysis.hooks";
 import type { ParsedJob } from "@/src/features/analysis/types";
 import type { StructuredResume } from "@/src/features/resume/types";
@@ -27,7 +30,9 @@ export default function AnalysisPage({
   const { analysis, isLoading, isError } = useAnalysis(analysisId);
   const applySuggestion = useApplySuggestion(analysisId);
   const rejectSuggestion = useRejectSuggestion(analysisId);
+  const rewriteSuggestions = useRewriteSuggestions(analysisId);
   const [mutatingId, setMutatingId] = useState<string | null>(null);
+  const [generatingKey, setGeneratingKey] = useState<string | null>(null);
 
   const parsedJob = analysis?.parsedJob as ParsedJob | undefined;
   const jobTitle = parsedJob?.title;
@@ -54,6 +59,32 @@ export default function AnalysisPage({
     rejectSuggestion.mutate(
       { suggestionId: id },
       { onSettled: () => setMutatingId(null) }
+    );
+  };
+
+  const handleGenerateSuggestions = (input: {
+    section: "bullet" | "project" | "summary";
+    originalText: string;
+    key: string;
+  }) => {
+    setGeneratingKey(input.key);
+    rewriteSuggestions.mutate(
+      {
+        analysisId,
+        section: input.section,
+        originalBullet: input.originalText,
+        jobRequirements: parsedJob?.requirements ?? [],
+      },
+      {
+        onError: (error) => {
+          if (isApiError(error) && error.code === "GEMINI_RATE_LIMITED") {
+            toast.error("AI is busy right now. Please try again in a moment.");
+            return;
+          }
+          toast.error("Failed to generate suggestions. Please try again.");
+        },
+        onSettled: () => setGeneratingKey(null),
+      }
     );
   };
 
@@ -108,6 +139,8 @@ export default function AnalysisPage({
           structuredResume={resumeSnapshot}
           isLoading={isLoading}
           skillsMatch={analysis?.skillsMatch}
+          onGenerateSuggestions={handleGenerateSuggestions}
+          generatingKey={generatingKey}
         />
 
         <section className="flex flex-col gap-4">
