@@ -1,6 +1,6 @@
 import { Prisma, Resume } from "../../generated/client/index.js";
 import { prisma } from "../../lib/prisma.js";
-import { ResumePage } from "./resume.types.js";
+import { RawResumePage } from "./resume.types.js";
 
 export class ResumeRepository {
   async create(data: Prisma.ResumeCreateInput): Promise<Resume> {
@@ -9,7 +9,7 @@ export class ResumeRepository {
   async findManyByUserId(
     userId: string,
     options: { limit: number; cursor?: string },
-  ): Promise<ResumePage> {
+  ): Promise<RawResumePage> {
     const { limit, cursor } = options;
 
     // Fetch one extra row to detect whether a further page exists.

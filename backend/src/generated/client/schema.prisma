@@ -60,14 +60,15 @@ model Resume {
 }
 
 model Analysis {
-  id             String   @id @default(uuid()) @db.Uuid
-  resumeId       String   @db.Uuid
-  userId         String   @db.Uuid
-  jobDescription String   @db.Text
-  parsedJob      Json     @db.JsonB
-  resumeSnapshot Json     @db.JsonB
-  analysisResult Json     @db.JsonB
-  createdAt      DateTime @default(now()) @db.Timestamp(6)
+  id             String    @id @default(uuid()) @db.Uuid
+  resumeId       String    @db.Uuid
+  userId         String    @db.Uuid
+  jobDescription String    @db.Text
+  parsedJob      Json      @db.JsonB
+  resumeSnapshot Json      @db.JsonB
+  analysisResult Json      @db.JsonB
+  createdAt      DateTime  @default(now()) @db.Timestamp(6)
+  exportedAt     DateTime? @db.Timestamp(6)
 
   resume      Resume       @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)

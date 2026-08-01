@@ -15,7 +15,7 @@ export class ExportController {
       const userId = req.user!.sub;
       const { resumeId } = req.params;
 
-      const merged = await this.analysisService.getMergedResume(
+      const merged = await this.analysisService.exportResume(
         userId,
         resumeId,
       );

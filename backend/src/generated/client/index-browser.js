@@ -162,7 +162,8 @@ exports.Prisma.AnalysisScalarFieldEnum = {
   parsedJob: 'parsedJob',
   resumeSnapshot: 'resumeSnapshot',
   analysisResult: 'analysisResult',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  exportedAt: 'exportedAt'
 };
 
 exports.Prisma.SuggestionScalarFieldEnum = {

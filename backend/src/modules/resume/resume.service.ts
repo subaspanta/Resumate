@@ -5,6 +5,7 @@ import { HTTP_STATUS } from "../../constants/http-status.js";
 import { AppError } from "../../types/app-error.js";
 import { ResumeRepository } from "./resume.repository.js";
 import { ParsingModule, StorageModule } from "./resume.types.js";
+import { AnalysisRepository } from "../analysis/analysis.repository.js";
 
 const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
@@ -15,13 +16,33 @@ export class ResumeService {
     private readonly resumeRepository: ResumeRepository,
     private readonly storageModule: StorageModule,
     private readonly parsingModule: ParsingModule,
+    private readonly analysisRepository: AnalysisRepository,
   ) {}
 
+  // Merges each resume's export status in via one extra query scoped to the
+  // whole user (not per resume) — avoids N+1 against findLatestExportStatusByUserId.
   async listResumesByUserId(
     userId: string,
     options: { limit: number; cursor?: string },
   ) {
-    return this.resumeRepository.findManyByUserId(userId, options);
+    const page = await this.resumeRepository.findManyByUserId(userId, options);
+    const statusByResumeId =
+      await this.analysisRepository.findLatestExportStatusByUserId(userId);
+
+    return {
+      ...page,
+      items: page.items.map((resume) => {
+        const status = statusByResumeId.get(resume.id);
+        return {
+          ...resume,
+          analysisStatus: !status
+            ? ("none" as const)
+            : status.exported
+              ? ("exported" as const)
+              : ("unexported" as const),
+        };
+      }),
+    };
   }
 
   private async verifyFileType(buffer: Buffer): Promise<string> {

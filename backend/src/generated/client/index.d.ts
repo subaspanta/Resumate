@@ -4821,6 +4821,7 @@ export namespace Prisma {
     userId: string | null
     jobDescription: string | null
     createdAt: Date | null
+    exportedAt: Date | null
   }
 
   export type AnalysisMaxAggregateOutputType = {
@@ -4829,6 +4830,7 @@ export namespace Prisma {
     userId: string | null
     jobDescription: string | null
     createdAt: Date | null
+    exportedAt: Date | null
   }
 
   export type AnalysisCountAggregateOutputType = {
@@ -4840,6 +4842,7 @@ export namespace Prisma {
     resumeSnapshot: number
     analysisResult: number
     createdAt: number
+    exportedAt: number
     _all: number
   }
 
@@ -4850,6 +4853,7 @@ export namespace Prisma {
     userId?: true
     jobDescription?: true
     createdAt?: true
+    exportedAt?: true
   }
 
   export type AnalysisMaxAggregateInputType = {
@@ -4858,6 +4862,7 @@ export namespace Prisma {
     userId?: true
     jobDescription?: true
     createdAt?: true
+    exportedAt?: true
   }
 
   export type AnalysisCountAggregateInputType = {
@@ -4869,6 +4874,7 @@ export namespace Prisma {
     resumeSnapshot?: true
     analysisResult?: true
     createdAt?: true
+    exportedAt?: true
     _all?: true
   }
 
@@ -4953,6 +4959,7 @@ export namespace Prisma {
     resumeSnapshot: JsonValue
     analysisResult: JsonValue
     createdAt: Date
+    exportedAt: Date | null
     _count: AnalysisCountAggregateOutputType | null
     _min: AnalysisMinAggregateOutputType | null
     _max: AnalysisMaxAggregateOutputType | null
@@ -4981,6 +4988,7 @@ export namespace Prisma {
     resumeSnapshot?: boolean
     analysisResult?: boolean
     createdAt?: boolean
+    exportedAt?: boolean
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     suggestions?: boolean | Analysis$suggestionsArgs<ExtArgs>
@@ -4996,6 +5004,7 @@ export namespace Prisma {
     resumeSnapshot?: boolean
     analysisResult?: boolean
     createdAt?: boolean
+    exportedAt?: boolean
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["analysis"]>
@@ -5009,6 +5018,7 @@ export namespace Prisma {
     resumeSnapshot?: boolean
     analysisResult?: boolean
     createdAt?: boolean
+    exportedAt?: boolean
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["analysis"]>
@@ -5022,9 +5032,10 @@ export namespace Prisma {
     resumeSnapshot?: boolean
     analysisResult?: boolean
     createdAt?: boolean
+    exportedAt?: boolean
   }
 
-  export type AnalysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "resumeId" | "userId" | "jobDescription" | "parsedJob" | "resumeSnapshot" | "analysisResult" | "createdAt", ExtArgs["result"]["analysis"]>
+  export type AnalysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "resumeId" | "userId" | "jobDescription" | "parsedJob" | "resumeSnapshot" | "analysisResult" | "createdAt" | "exportedAt", ExtArgs["result"]["analysis"]>
   export type AnalysisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -5056,6 +5067,7 @@ export namespace Prisma {
       resumeSnapshot: Prisma.JsonValue
       analysisResult: Prisma.JsonValue
       createdAt: Date
+      exportedAt: Date | null
     }, ExtArgs["result"]["analysis"]>
     composites: {}
   }
@@ -5490,6 +5502,7 @@ export namespace Prisma {
     readonly resumeSnapshot: FieldRef<"Analysis", 'Json'>
     readonly analysisResult: FieldRef<"Analysis", 'Json'>
     readonly createdAt: FieldRef<"Analysis", 'DateTime'>
+    readonly exportedAt: FieldRef<"Analysis", 'DateTime'>
   }
     
 
@@ -7100,7 +7113,8 @@ export namespace Prisma {
     parsedJob: 'parsedJob',
     resumeSnapshot: 'resumeSnapshot',
     analysisResult: 'analysisResult',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    exportedAt: 'exportedAt'
   };
 
   export type AnalysisScalarFieldEnum = (typeof AnalysisScalarFieldEnum)[keyof typeof AnalysisScalarFieldEnum]
@@ -7490,6 +7504,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonFilter<"Analysis">
     analysisResult?: JsonFilter<"Analysis">
     createdAt?: DateTimeFilter<"Analysis"> | Date | string
+    exportedAt?: DateTimeNullableFilter<"Analysis"> | Date | string | null
     resume?: XOR<ResumeScalarRelationFilter, ResumeWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     suggestions?: SuggestionListRelationFilter
@@ -7504,6 +7519,7 @@ export namespace Prisma {
     resumeSnapshot?: SortOrder
     analysisResult?: SortOrder
     createdAt?: SortOrder
+    exportedAt?: SortOrderInput | SortOrder
     resume?: ResumeOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     suggestions?: SuggestionOrderByRelationAggregateInput
@@ -7521,6 +7537,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonFilter<"Analysis">
     analysisResult?: JsonFilter<"Analysis">
     createdAt?: DateTimeFilter<"Analysis"> | Date | string
+    exportedAt?: DateTimeNullableFilter<"Analysis"> | Date | string | null
     resume?: XOR<ResumeScalarRelationFilter, ResumeWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     suggestions?: SuggestionListRelationFilter
@@ -7535,6 +7552,7 @@ export namespace Prisma {
     resumeSnapshot?: SortOrder
     analysisResult?: SortOrder
     createdAt?: SortOrder
+    exportedAt?: SortOrderInput | SortOrder
     _count?: AnalysisCountOrderByAggregateInput
     _max?: AnalysisMaxOrderByAggregateInput
     _min?: AnalysisMinOrderByAggregateInput
@@ -7552,6 +7570,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonWithAggregatesFilter<"Analysis">
     analysisResult?: JsonWithAggregatesFilter<"Analysis">
     createdAt?: DateTimeWithAggregatesFilter<"Analysis"> | Date | string
+    exportedAt?: DateTimeNullableWithAggregatesFilter<"Analysis"> | Date | string | null
   }
 
   export type SuggestionWhereInput = {
@@ -7883,6 +7902,7 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
     resume: ResumeCreateNestedOneWithoutAnalysesInput
     user: UserCreateNestedOneWithoutAnalysesInput
     suggestions?: SuggestionCreateNestedManyWithoutAnalysisInput
@@ -7897,6 +7917,7 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
     suggestions?: SuggestionUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
@@ -7907,6 +7928,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
     user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
     suggestions?: SuggestionUpdateManyWithoutAnalysisNestedInput
@@ -7921,6 +7943,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     suggestions?: SuggestionUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
@@ -7933,6 +7956,7 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
   }
 
   export type AnalysisUpdateManyMutationInput = {
@@ -7942,6 +7966,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type AnalysisUncheckedUpdateManyInput = {
@@ -7953,6 +7978,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type SuggestionCreateInput = {
@@ -8422,6 +8448,7 @@ export namespace Prisma {
     resumeSnapshot?: SortOrder
     analysisResult?: SortOrder
     createdAt?: SortOrder
+    exportedAt?: SortOrder
   }
 
   export type AnalysisMaxOrderByAggregateInput = {
@@ -8430,6 +8457,7 @@ export namespace Prisma {
     userId?: SortOrder
     jobDescription?: SortOrder
     createdAt?: SortOrder
+    exportedAt?: SortOrder
   }
 
   export type AnalysisMinOrderByAggregateInput = {
@@ -8438,6 +8466,7 @@ export namespace Prisma {
     userId?: SortOrder
     jobDescription?: SortOrder
     createdAt?: SortOrder
+    exportedAt?: SortOrder
   }
 
   export type EnumSuggestionStatusFilter<$PrismaModel = never> = {
@@ -9104,6 +9133,7 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
     resume: ResumeCreateNestedOneWithoutAnalysesInput
     suggestions?: SuggestionCreateNestedManyWithoutAnalysisInput
   }
@@ -9116,6 +9146,7 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
     suggestions?: SuggestionUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
@@ -9220,6 +9251,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonFilter<"Analysis">
     analysisResult?: JsonFilter<"Analysis">
     createdAt?: DateTimeFilter<"Analysis"> | Date | string
+    exportedAt?: DateTimeNullableFilter<"Analysis"> | Date | string | null
   }
 
   export type UserCreateWithoutRefreshTokensInput = {
@@ -9316,6 +9348,7 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
     user: UserCreateNestedOneWithoutAnalysesInput
     suggestions?: SuggestionCreateNestedManyWithoutAnalysisInput
   }
@@ -9328,6 +9361,7 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
     suggestions?: SuggestionUncheckedCreateNestedManyWithoutAnalysisInput
   }
 
@@ -9593,6 +9627,7 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
     resume: ResumeCreateNestedOneWithoutAnalysesInput
     user: UserCreateNestedOneWithoutAnalysesInput
   }
@@ -9606,6 +9641,7 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
   }
 
   export type AnalysisCreateOrConnectWithoutSuggestionsInput = {
@@ -9631,6 +9667,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
     user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
   }
@@ -9644,6 +9681,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ResumeCreateManyUserInput = {
@@ -9677,6 +9715,7 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
   }
 
   export type ResumeUpdateWithoutUserInput = {
@@ -9757,6 +9796,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
     suggestions?: SuggestionUpdateManyWithoutAnalysisNestedInput
   }
@@ -9769,6 +9809,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     suggestions?: SuggestionUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
@@ -9780,6 +9821,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type AnalysisCreateManyResumeInput = {
@@ -9790,6 +9832,7 @@ export namespace Prisma {
     resumeSnapshot: JsonNullValueInput | InputJsonValue
     analysisResult: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    exportedAt?: Date | string | null
   }
 
   export type AnalysisUpdateWithoutResumeInput = {
@@ -9799,6 +9842,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
     suggestions?: SuggestionUpdateManyWithoutAnalysisNestedInput
   }
@@ -9811,6 +9855,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     suggestions?: SuggestionUncheckedUpdateManyWithoutAnalysisNestedInput
   }
 
@@ -9822,6 +9867,7 @@ export namespace Prisma {
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
     analysisResult?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type SuggestionCreateManyAnalysisInput = {

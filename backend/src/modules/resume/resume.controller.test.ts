@@ -170,6 +170,110 @@ describe("GET /resumes/:resumeId/analyses", () => {
   });
 });
 
+describe("GET /resumes — analysisStatus", () => {
+  it("returns 'none' for a resume with no analyses", async () => {
+    const owner = await createUser("StatusOwnerNone");
+    await createResume(owner.user.id);
+
+    const res = await request(app)
+      .get("/api/v1/resumes")
+      .set("Cookie", [`accessToken=${owner.token}`]);
+    expect(res.status).toBe(200);
+    expect(res.body.data.items[0].analysisStatus).toBe("none");
+  });
+
+  it("returns 'unexported' for a resume with an analysis that hasn't been exported", async () => {
+    const owner = await createUser("StatusOwnerUnexported");
+    const resume = await createResume(owner.user.id);
+    await createAnalysis(owner.user.id, resume.id);
+
+    const res = await request(app)
+      .get("/api/v1/resumes")
+      .set("Cookie", [`accessToken=${owner.token}`]);
+    expect(res.status).toBe(200);
+    expect(res.body.data.items[0].analysisStatus).toBe("unexported");
+  });
+
+  it("returns 'exported' for a resume whose latest analysis was exported", async () => {
+    const owner = await createUser("StatusOwnerExported");
+    const resume = await createResume(owner.user.id);
+    const analysis = await createAnalysis(owner.user.id, resume.id);
+    await prisma.analysis.update({
+      where: { id: analysis.id },
+      data: { exportedAt: new Date() },
+    });
+
+    const res = await request(app)
+      .get("/api/v1/resumes")
+      .set("Cookie", [`accessToken=${owner.token}`]);
+    expect(res.status).toBe(200);
+    expect(res.body.data.items[0].analysisStatus).toBe("exported");
+  });
+
+  it("reports each resume's status independently", async () => {
+    const owner = await createUser("StatusOwnerMixed");
+    const resumeNone = await createResume(owner.user.id);
+    const resumeUnexported = await createResume(owner.user.id);
+    const resumeExported = await createResume(owner.user.id);
+    await createAnalysis(owner.user.id, resumeUnexported.id);
+    const exportedAnalysis = await createAnalysis(
+      owner.user.id,
+      resumeExported.id,
+    );
+    await prisma.analysis.update({
+      where: { id: exportedAnalysis.id },
+      data: { exportedAt: new Date() },
+    });
+
+    const res = await request(app)
+      .get("/api/v1/resumes")
+      .set("Cookie", [`accessToken=${owner.token}`]);
+    expect(res.status).toBe(200);
+    const statusById = new Map(
+      res.body.data.items.map((r: { id: string; analysisStatus: string }) => [
+        r.id,
+        r.analysisStatus,
+      ]),
+    );
+    expect(statusById.get(resumeNone.id)).toBe("none");
+    expect(statusById.get(resumeUnexported.id)).toBe("unexported");
+    expect(statusById.get(resumeExported.id)).toBe("exported");
+  });
+});
+
+describe("POST /exports/resumes/:resumeId/export", () => {
+  it("stamps the resume's latest analysis as exported", async () => {
+    const owner = await createUser("ExportStampOwner");
+    const resume = await createResume(owner.user.id);
+    const analysis = await createAnalysis(owner.user.id, resume.id);
+
+    const before = await prisma.analysis.findUnique({
+      where: { id: analysis.id },
+    });
+    expect(before?.exportedAt).toBeNull();
+
+    const res = await request(app)
+      .post(`/api/v1/exports/resumes/${resume.id}/export`)
+      .set("Cookie", [`accessToken=${owner.token}`]);
+    expect(res.status).toBe(200);
+
+    const after = await prisma.analysis.findUnique({
+      where: { id: analysis.id },
+    });
+    expect(after?.exportedAt).not.toBeNull();
+  });
+
+  it("does not fail when the resume has no analysis yet", async () => {
+    const owner = await createUser("ExportStampNoAnalysis");
+    const resume = await createResume(owner.user.id);
+
+    const res = await request(app)
+      .post(`/api/v1/exports/resumes/${resume.id}/export`)
+      .set("Cookie", [`accessToken=${owner.token}`]);
+    expect(res.status).toBe(200);
+  });
+});
+
 describe("DELETE /analyses/:id", () => {
   it("returns 401 with no token", async () => {
     const owner = await createUser("AnalysisDeleteOwner");

@@ -29,8 +29,8 @@ export function useResumes() {
     queryKey: RESUMES_QUERY_KEY,
     queryFn: async () => {
       const response = await resumeApi.list();
-      const raw = response?.data?.data ?? [];
-      return raw.map(enrichResumeSummary);
+      const items = response?.data?.data?.items ?? [];
+      return items.map(enrichResumeSummary);
     },
     staleTime: 1000 * 60 * 5,
     retry: (failureCount, err) => {

@@ -111,6 +111,42 @@ export class AnalysisRepository {
     await prisma.analysis.delete({ where: { id } });
   }
 
+  // Stamps the resume's most recent analysis as exported. No-ops (returns
+  // null) if the resume has no analyses yet — a bare export with no
+  // tailoring done has nothing to mark as finished.
+  async markLatestExported(resumeId: string): Promise<Analysis | null> {
+    const latest = await prisma.analysis.findFirst({
+      where: { resumeId },
+      orderBy: { createdAt: "desc" },
+    });
+    if (!latest) return null;
+    return prisma.analysis.update({
+      where: { id: latest.id },
+      data: { exportedAt: new Date() },
+    });
+  }
+
+  // One row per resume the user owns: the most recent analysis's export
+  // status. Uses DISTINCT ON to get "latest child per parent" in a single
+  // round trip, served directly by the existing
+  // @@index([resumeId, createdAt(sort: Desc)]) index. Resumes with zero
+  // analyses are simply absent from the result.
+  async findLatestExportStatusByUserId(
+    userId: string,
+  ): Promise<Map<string, { exported: boolean }>> {
+    const rows = await prisma.$queryRaw<
+      { resumeId: string; exportedAt: Date | null }[]
+    >`
+      SELECT DISTINCT ON (a."resumeId") a."resumeId", a."exportedAt"
+      FROM "analyses" a
+      WHERE a."userId" = ${userId}
+      ORDER BY a."resumeId", a."createdAt" DESC
+    `;
+    return new Map(
+      rows.map((r) => [r.resumeId, { exported: r.exportedAt !== null }]),
+    );
+  }
+
   async getAnalysisWithSuggestions(
     analysisId: string,
   ): Promise<(Analysis & { suggestions: Suggestion[] }) | null> {

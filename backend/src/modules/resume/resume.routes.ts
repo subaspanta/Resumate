@@ -24,18 +24,23 @@ const resumeRepository = new ResumeRepository();
 const cloudinaryStorageModule = new CloudinaryStorageModule();
 const aiStructuringModule = new AIStructuringService();
 const parsingModule = new ParsingService(aiStructuringModule);
-const resumeService = new ResumeService(
-  resumeRepository,
-  cloudinaryStorageModule,
-  parsingModule,
-);
-const resumeController = new ResumeController(resumeService);
 
 // Latest-analysis and history logically belong to the analysis module, but
 // the frontend already calls them under /resumes/:resumeId/... — mirrors
 // export.routes.ts's existing precedent of standing up its own local
-// AnalysisService for a couple of cross-module routes.
+// AnalysisService for a couple of cross-module routes. ResumeService also
+// needs this repository directly, to merge each resume's export status
+// into the list response.
 const analysisRepository = new AnalysisRepository();
+
+const resumeService = new ResumeService(
+  resumeRepository,
+  cloudinaryStorageModule,
+  parsingModule,
+  analysisRepository,
+);
+const resumeController = new ResumeController(resumeService);
+
 const jobParserAgent = new JobParserAgentService();
 const rewriteAgent = new RewriteAgentService();
 const analysisService = new AnalysisService(
