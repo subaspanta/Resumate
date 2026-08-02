@@ -74,12 +74,8 @@ export class ResumeService {
     const verifiedMimeType = await this.verifyFileType(file.buffer);
 
     const [storageOutcome, parsingOutcome] = await Promise.allSettled([
-      this.storageModule.saveFile(
-        file.buffer,
-        file.originalname,
-        verifiedMimeType,
-      ),
-      this.parsingModule.parseResume(file.buffer),
+      this.storageModule.saveFile(file.buffer),
+      this.parsingModule.parseResume(file.buffer, verifiedMimeType),
     ]);
 
     // Storage failed — nothing was written, nothing to clean up

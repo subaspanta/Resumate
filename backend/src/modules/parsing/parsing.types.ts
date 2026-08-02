@@ -1,19 +1,26 @@
 export type StructuredResume = {
-  name?: string;
-  contact?: { email?: string; phone?: string; location?: string };
-  summary?: string;
+  name?: string | null;
+  contact?: {
+    email?: string | null;
+    phone?: string | null;
+    location?: string | null;
+    github?: string | null;
+    linkedin?: string | null;
+    website?: string | null;
+  };
+  summary?: string | null;
   experience: {
     title: string;
-    company: string | null;
+    company?: string | null;
     workMode?: "remote" | "hybrid" | "onsite" | null;
     location?: string | null;
-    startDate?: string;
-    endDate?: string;
-    description?: string;
+    startDate?: string | null;
+    endDate?: string | null;
+    description?: string | null;
   }[];
-  education: { degree: string; institution: string; year?: string }[];
+  education: { degree: string; institution: string; year?: string | null }[];
   skills: string[];
-  projects: { name: string; description?: string }[];
+  projects: { name: string; description?: string | null }[];
 };
 
 export interface AIStructuringModule {

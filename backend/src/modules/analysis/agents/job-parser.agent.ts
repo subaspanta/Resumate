@@ -4,8 +4,9 @@ import { AppError } from "../../../types/app-error.js";
 import { ERROR_CODES } from "../../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../../constants/http-status.js";
 import { JobParserAgent, ParsedJob, parsedJobSchema } from "../analysis.types.js";
-import { validateAgentOutput } from "./validator.js";
+import { validateAgentOutput } from "../../../utils/agent-output-validator.js";
 import { classifyGeminiError } from "../../ai/gemini-error.js";
+import { GEMINI_CALL_TIMEOUT_MS } from "../../ai/gemini-timeout.js";
 
 const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
@@ -57,6 +58,7 @@ ${rawText}`;
         config: {
           responseMimeType: "application/json",
           responseSchema: PARSED_JOB_SCHEMA,
+          httpOptions: { timeout: GEMINI_CALL_TIMEOUT_MS },
         },
       });
       return response.text ?? "";

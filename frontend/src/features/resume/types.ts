@@ -49,7 +49,14 @@ export interface StructuredResumeProject {
 
 export interface StructuredResume {
   name?: string;
-  contact?: { email?: string; phone?: string; location?: string };
+  contact?: {
+    email?: string;
+    phone?: string;
+    location?: string;
+    github?: string;
+    linkedin?: string;
+    website?: string;
+  };
   summary?: string;
   experience: StructuredResumeExperience[];
   education: StructuredResumeEducation[];

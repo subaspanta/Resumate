@@ -1,10 +1,5 @@
-// storage/storage.types.ts
 export interface StorageModule {
-  saveFile(
-    buffer: Buffer,
-    originalName: string,
-    mimeType: string,
-  ): Promise<{ path: string; url: string }>;
+  saveFile(buffer: Buffer): Promise<{ path: string; url: string }>;
   deleteFile(path: string): Promise<void>;
 }
 

@@ -9,13 +9,14 @@ import {
   RewriteOutput,
   rewriteOutputSchema,
 } from "../analysis.types.js";
-import { validateAgentOutput } from "./validator.js";
+import { validateAgentOutput } from "../../../utils/agent-output-validator.js";
 import {
   RewriteValidationResult,
   validateRewrite,
   validateSummaryRewrite,
 } from "./rewrite-validator.js";
 import { classifyGeminiError } from "../../ai/gemini-error.js";
+import { GEMINI_CALL_TIMEOUT_MS } from "../../ai/gemini-timeout.js";
 
 const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
@@ -200,6 +201,7 @@ ${this.buildContextBlock(input)}`;
           maxOutputTokens: 2048,
           responseMimeType: "application/json",
           responseSchema: REWRITE_SCHEMA,
+          httpOptions: { timeout: GEMINI_CALL_TIMEOUT_MS },
         },
       });
       return response.text ?? "";

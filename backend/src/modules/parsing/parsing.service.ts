@@ -14,20 +14,11 @@ export class ParsingService implements ParsingModule {
 
   async parseResume(
     buffer: Buffer,
-  ): Promise<{ rawText: string; structuredResume: Record<string, unknown> }>;
-  async parseResume(
-    buffer: Buffer,
     mimeType: string,
-  ): Promise<{ rawText: string; structuredResume: StructuredResume }>;
-  async parseResume(buffer: Buffer, mimeType?: string) {
-    const rawText = await this.extractText(
-      buffer,
-      mimeType ?? "application/pdf",
-    );
+  ): Promise<{ rawText: string; structuredResume: StructuredResume }> {
+    const rawText = await this.extractText(buffer, mimeType);
 
     if (!rawText || rawText.trim().length < 20) {
-      // Handles the scanned-PDF-no-text case flagged earlier — fail loud,
-      // don't silently structure an empty string.
       throw new AppError(
         HTTP_STATUS.UNPROCESSABLE_ENTITY,
         ERROR_CODES.PARSING_FAILED,
@@ -44,17 +35,17 @@ export class ParsingService implements ParsingModule {
   private async extractText(buffer: Buffer, mimeType: string): Promise<string> {
     if (mimeType === "application/pdf") {
       return extractTextFromPdf(buffer);
-    }
-    if (
+    } else if (
       mimeType ===
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
       return extractTextFromDocx(buffer);
+    } else {
+      throw new AppError(
+        HTTP_STATUS.BAD_REQUEST,
+        ERROR_CODES.UNSUPPORTED_FILE_TYPE,
+        "Unsupported file type for parsing",
+      );
     }
-    throw new AppError(
-      HTTP_STATUS.BAD_REQUEST,
-      ERROR_CODES.UNSUPPORTED_FILE_TYPE,
-      "Unsupported file type for parsing",
-    );
   }
 }

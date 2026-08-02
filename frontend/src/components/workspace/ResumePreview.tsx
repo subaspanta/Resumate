@@ -92,7 +92,13 @@ export function ResumePreview({
     skills = [],
   } = structuredResume;
 
-  const hasContact = contact?.email || contact?.phone || contact?.location;
+  const hasContact =
+    contact?.email ||
+    contact?.phone ||
+    contact?.location ||
+    contact?.linkedin ||
+    contact?.github ||
+    contact?.website;
 
   return (
     <Card className="flex flex-col gap-6 p-6">
@@ -105,7 +111,14 @@ export function ResumePreview({
           )}
           {hasContact && (
             <p className="text-sm text-muted-foreground">
-              {[contact?.email, contact?.phone, contact?.location]
+              {[
+                contact?.email,
+                contact?.phone,
+                contact?.location,
+                contact?.linkedin,
+                contact?.github,
+                contact?.website,
+              ]
                 .filter(Boolean)
                 .join(" · ")}
             </p>

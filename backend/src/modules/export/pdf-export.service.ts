@@ -20,7 +20,10 @@ const FONTS: TFontDictionary = {
 pdfmake.setFonts(FONTS);
 
 // Formats an experience entry's date range, tolerating missing endpoints.
-function formatDateRange(startDate?: string, endDate?: string): string {
+function formatDateRange(
+  startDate?: string | null,
+  endDate?: string | null,
+): string {
   if (startDate && endDate) return `${startDate} – ${endDate}`;
   return startDate || endDate || "";
 }
@@ -46,6 +49,9 @@ export function buildResumeDefinition(
     resume.contact?.email,
     resume.contact?.phone,
     resume.contact?.location,
+    resume.contact?.linkedin,
+    resume.contact?.github,
+    resume.contact?.website,
   ]
     .filter(Boolean)
     .join(" | ");

@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { ResumeService } from "./resume.service.js";
-import { AppError } from "../../types/app-error.js";
-import { ERROR_CODES } from "../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../constants/http-status.js";
 import { ListResumesQuery, listResumesQuerySchema } from "./resume.schema.js";
 
