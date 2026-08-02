@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { requireAuth } from "../../middleware/requireAuth.js";
 import { uploadSingleFile } from "../../middleware/upload.js";
+import { aiRateLimit } from "../../middleware/ai-rate-limit.js";
 import { listResumesQuerySchema, uploadResumeSchema } from "./resume.schema.js";
 import {
   validateQuery,
@@ -18,6 +19,7 @@ const router = Router();
 router.post(
   "/",
   requireAuth,
+  aiRateLimit,
   uploadSingleFile("resume"),
   validateRequest(uploadResumeSchema),
   resumeController.upload,

@@ -9,6 +9,7 @@ import { ERROR_CODES } from "./constants/error-codes.js";
 import { StatusCodes } from "http-status-codes";
 import cookieParser from "cookie-parser";
 import routes from "./routes/index.js";
+import { prisma } from "./lib/prisma.js";
 
 const API_PREFIX = "/api/v1";
 const app = express();
@@ -16,7 +17,7 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: env.FRONTEND_URL,
     credentials: true,
   }),
 );
@@ -32,16 +33,31 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(cookieParser());
 
-// Health check endpoint
-app.get(`${API_PREFIX}/health`, (req: Request, res: Response) => {
-  res.status(StatusCodes.OK).json({
-    success: true,
-    data: {
-      status: "ok",
-      environment: "...",
-      timestamp: "...",
-    },
-  });
+// Health check endpoint — actually checks DB connectivity, not just that the
+// process is alive, so infra can tell "up" apart from "up but can't serve
+// real requests" (e.g. Postgres unreachable) and route/restart accordingly.
+app.get(`${API_PREFIX}/health`, async (req: Request, res: Response) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.status(StatusCodes.OK).json({
+      success: true,
+      data: {
+        status: "ok",
+        environment: env.NODE_ENV,
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    logger.error({ message: "Health check failed", error });
+    res.status(StatusCodes.SERVICE_UNAVAILABLE).json({
+      success: false,
+      data: {
+        status: "degraded",
+        environment: env.NODE_ENV,
+        timestamp: new Date().toISOString(),
+      },
+    });
+  }
 });
 
 // API routes
@@ -79,17 +95,24 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
     });
   }
 
-  const appError = err as AppError;
-  const statusCode = appError.statusCode ?? StatusCodes.INTERNAL_SERVER_ERROR;
-  const code = appError.code ?? "INTERNAL_SERVER_ERROR";
-  const message = appError.message || "Internal Server Error";
+  // Only an actual AppError carries a client-safe message — anything else
+  // (an uncaught Prisma error, etc.) may embed schema/column details in its
+  // message, so it gets a generic one instead of leaking that outside dev.
+  const isAppError = err instanceof AppError;
+  const statusCode = isAppError
+    ? err.statusCode
+    : StatusCodes.INTERNAL_SERVER_ERROR;
+  const code = isAppError ? err.code : "INTERNAL_SERVER_ERROR";
+  const message = isAppError ? err.message : "Internal Server Error";
 
   res.status(statusCode).json({
     success: false,
     error: {
       code,
       message,
-      ...(env.isDevelopment && { details: appError.details }),
+      ...(env.isDevelopment && {
+        details: isAppError ? err.details : undefined,
+      }),
     },
   });
 });

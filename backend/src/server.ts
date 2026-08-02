@@ -41,4 +41,19 @@ const gracefulShutdown = (signal: string) => {
 process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
+// A bug that throws outside any try/catch (or a rejected promise nobody
+// awaits) leaves the process in an unknown state — continuing to serve
+// requests from there risks worse, harder-to-debug failures than a clean
+// exit. Route both through the same graceful-shutdown path so in-flight
+// requests still get a chance to finish instead of dropping instantly.
+process.on("uncaughtException", (error) => {
+  logger.error({ message: "Uncaught exception", error });
+  gracefulShutdown("uncaughtException");
+});
+
+process.on("unhandledRejection", (reason) => {
+  logger.error({ message: "Unhandled rejection", reason });
+  gracefulShutdown("unhandledRejection");
+});
+
 export default server;

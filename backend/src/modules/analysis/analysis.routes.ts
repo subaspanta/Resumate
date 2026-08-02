@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { validateRequest } from "../../middleware/validate-request.js";
 import { requireAuth } from "../../middleware/requireAuth.js";
+import { aiRateLimit } from "../../middleware/ai-rate-limit.js";
 import {
   createAnalysisInputSchema,
   getRewriteSuggestionsInputSchema,
@@ -12,22 +13,24 @@ const router = Router();
 
 router.post(
   "/",
-  validateRequest(createAnalysisInputSchema),
   requireAuth,
+  aiRateLimit,
+  validateRequest(createAnalysisInputSchema),
   analysisController.createAnalysis,
 );
 
 router.post(
   "/rewrite-suggestions",
-  validateRequest(getRewriteSuggestionsInputSchema),
   requireAuth,
+  aiRateLimit,
+  validateRequest(getRewriteSuggestionsInputSchema),
   analysisController.getRewriteSuggestions,
 );
 
 router.patch(
   "/suggestions/:suggestionId",
-  validateRequest(updateSuggestionStatusInputSchema),
   requireAuth,
+  validateRequest(updateSuggestionStatusInputSchema),
   analysisController.updateSuggestionStatus,
 );
 
