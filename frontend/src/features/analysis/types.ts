@@ -73,7 +73,6 @@ export interface RewriteSuggestionsInput {
   analysisId: string;
   section?: SuggestionSection;
   originalBullet: string;
-  jobRequirements: string[];
 }
 
 export interface UpdateSuggestionStatusInput {

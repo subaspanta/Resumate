@@ -22,8 +22,8 @@ interface ResumePreviewProps {
   structuredResume?: StructuredResume;
   isLoading?: boolean;
   skillsMatch?: SkillsMatch;
-  // Only passed on the analysis page (has analysisId/jobRequirements in
-  // scope) — the workspace page omits it, so no buttons render there.
+  // Only passed on the analysis page (has analysisId in scope) — the
+  // workspace page omits it, so no buttons render there.
   onGenerateSuggestions?: (input: GenerateSuggestionsInput) => void;
   generatingKey?: string | null;
 }
