@@ -15,7 +15,5 @@ export const authApi = {
 
   me: () => axiosClient.get<ApiResponse<SafeUser>>("/auth/me"),
 
-  refresh: () => axiosClient.post<ApiResponse<SafeUser>>("/auth/refresh"),
-
   logout: () => axiosClient.post<ApiResponse<null>>("/auth/logout"),
 };
