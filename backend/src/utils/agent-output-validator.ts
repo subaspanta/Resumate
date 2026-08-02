@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { AppError } from "../../../types/app-error.js";
-import { ERROR_CODES } from "../../../constants/error-codes.js";
-import { HTTP_STATUS } from "../../../constants/http-status.js";
+import { AppError } from "../types/app-error.js";
+import { ERROR_CODES } from "../constants/error-codes.js";
+import { HTTP_STATUS } from "../constants/http-status.js";
 
-// Shared guardrail for every agent: re-validate parsed AI JSON against its Zod
+// Shared guardrail for every AI agent: re-validate parsed AI JSON against its Zod
 // schema rather than trusting Gemini's responseSchema enforcement blindly, then
 // run cheap sanity checks that catch empty/hallucinated output the schema alone
 // would accept.

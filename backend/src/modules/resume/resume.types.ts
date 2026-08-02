@@ -1,17 +1,13 @@
-import { Prisma } from "../../generated/client/client.js";
-
 export interface StorageModule {
-  saveFile(
-    buffer: Buffer,
-    originalName: string,
-    mimeType: string,
-  ): Promise<{ path: string; url: string }>;
-
+  saveFile(buffer: Buffer): Promise<{ path: string; url: string }>;
   deleteFile(path: string): Promise<void>;
 }
 
 export interface ParsingModule {
-  parseResume(buffer: Buffer): Promise<{
+  parseResume(
+    buffer: Buffer,
+    mimeType: string,
+  ): Promise<{
     rawText: string;
     structuredResume: Record<string, unknown>;
   }>;

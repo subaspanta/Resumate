@@ -3,12 +3,18 @@ import {
   AIStructuringModule,
   StructuredResume,
 } from "../parsing/parsing.types.js";
-import { RESUME_SCHEMA, RESUME_STRUCTURING_PROMPT } from "./ai.types.js";
+import {
+  RESUME_SCHEMA,
+  RESUME_STRUCTURING_PROMPT,
+  structuredResumeSchema,
+} from "./ai.types.js";
 import { AppError } from "../../types/app-error.js";
 import { ERROR_CODES } from "../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../constants/http-status.js";
 import { env } from "../../config/env.js";
 import { classifyGeminiError } from "./gemini-error.js";
+import { GEMINI_CALL_TIMEOUT_MS } from "./gemini-timeout.js";
+import { validateAgentOutput } from "../../utils/agent-output-validator.js";
 
 export class AIStructuringService implements AIStructuringModule {
   constructor(
@@ -30,6 +36,7 @@ export class AIStructuringService implements AIStructuringModule {
         config: {
           responseMimeType: "application/json",
           responseSchema: RESUME_SCHEMA,
+          httpOptions: { timeout: GEMINI_CALL_TIMEOUT_MS },
         },
       });
       return response.text ?? "";
@@ -37,10 +44,10 @@ export class AIStructuringService implements AIStructuringModule {
       throw classifyGeminiError(err, "structure resume");
     }
   }
-
   private parseResponse(responseText: string): StructuredResume {
+    let parsed: unknown;
     try {
-      return JSON.parse(responseText) as StructuredResume;
+      parsed = JSON.parse(responseText);
     } catch (err) {
       throw new AppError(
         HTTP_STATUS.UNPROCESSABLE_ENTITY,
@@ -48,5 +55,7 @@ export class AIStructuringService implements AIStructuringModule {
         "AI returned an unexpected response format",
       );
     }
+
+    return validateAgentOutput(structuredResumeSchema, parsed);
   }
 }

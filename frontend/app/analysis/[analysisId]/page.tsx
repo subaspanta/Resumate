@@ -10,6 +10,7 @@ import { isApiError } from "@/src/api/api-error";
 import {
   useAnalysis,
   useApplySuggestion,
+  useMergedResume,
   useRejectSuggestion,
   useRewriteSuggestions,
 } from "@/src/features/analysis/analysis.hooks";
@@ -42,15 +43,24 @@ export default function AnalysisPage({
 
   const suggestions = useMemo(() => analysis?.suggestions ?? [], [analysis]);
   const reviewedCount = suggestions.filter(
-    (s) => s.status !== "pending"
+    (s) => s.status !== "pending",
   ).length;
   const appliedCount = suggestions.filter((s) => s.status === "applied").length;
+
+  // Once a suggestion's applied, the frozen resumeSnapshot no longer reflects
+  // reality — switch the preview to the merged (snapshot + applied rewrites)
+  // version instead.
+  const { structuredResume: mergedResume } = useMergedResume(
+    analysis?.resumeId ?? "",
+    appliedCount > 0,
+  );
+  const previewResume = mergedResume ?? resumeSnapshot;
 
   const handleApply = (id: string) => {
     setMutatingId(id);
     applySuggestion.mutate(
       { suggestionId: id },
-      { onSettled: () => setMutatingId(null) }
+      { onSettled: () => setMutatingId(null) },
     );
   };
 
@@ -58,7 +68,7 @@ export default function AnalysisPage({
     setMutatingId(id);
     rejectSuggestion.mutate(
       { suggestionId: id },
-      { onSettled: () => setMutatingId(null) }
+      { onSettled: () => setMutatingId(null) },
     );
   };
 
@@ -73,7 +83,6 @@ export default function AnalysisPage({
         analysisId,
         section: input.section,
         originalBullet: input.originalText,
-        jobRequirements: parsedJob?.requirements ?? [],
       },
       {
         onError: (error) => {
@@ -84,7 +93,7 @@ export default function AnalysisPage({
           toast.error("Failed to generate suggestions. Please try again.");
         },
         onSettled: () => setGeneratingKey(null),
-      }
+      },
     );
   };
 
@@ -114,7 +123,7 @@ export default function AnalysisPage({
               {isLoading ? (
                 <Skeleton className="h-8 w-64" />
               ) : (
-                jobTitle ?? "Resume Analysis"
+                (jobTitle ?? "Resume Analysis")
               )}
             </h1>
             {parsedJob?.company && (
@@ -136,7 +145,7 @@ export default function AnalysisPage({
 
       <div className="flex flex-col gap-8">
         <ResumePreview
-          structuredResume={resumeSnapshot}
+          structuredResume={previewResume}
           isLoading={isLoading}
           skillsMatch={analysis?.skillsMatch}
           onGenerateSuggestions={handleGenerateSuggestions}

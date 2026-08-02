@@ -9,11 +9,7 @@ cloudinary.config({
 });
 
 export class CloudinaryStorageModule implements StorageModule {
-  async saveFile(
-    buffer: Buffer,
-    originalName: string,
-    mimeType: string,
-  ): Promise<{ path: string; url: string }> {
+  async saveFile(buffer: Buffer): Promise<{ path: string; url: string }> {
     try {
       const result = await new Promise<{
         public_id: string;

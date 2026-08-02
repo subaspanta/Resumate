@@ -19,6 +19,7 @@ const requiredEnvVars = [
   "CLOUDINARY_CLOUD_NAME",
   "CLOUDINARY_API_KEY",
   "CLOUDINARY_API_SECRET",
+  "FRONTEND_URL",
 ] as const;
 
 const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
@@ -49,6 +50,7 @@ export const env = {
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
   GEMINI_API_KEY: process.env.GEMINI_API_KEY as string,
+  FRONTEND_URL: process.env.FRONTEND_URL as string,
 } as const;
 
 if (env.NODE_ENV !== "production") {

@@ -1,16 +1,23 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { Toaster } from "sonner";
 import { QueryProvider } from "@/src/providers/query-provider";
 import { AuthProvider } from "@/src/providers/auth-provider";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+});
+
+const materialSymbols = localFont({
+  src: "../public/fonts/material-symbols-outlined.woff2",
+  variable: "--font-material-symbols",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,15 +33,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(jetbrainsMono.variable, "font-sans", inter.variable)}
+      className={cn(
+        jetbrainsMono.variable,
+        "font-sans",
+        inter.variable,
+        materialSymbols.variable,
+      )}
       suppressHydrationWarning={true}
     >
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body className="min-h-screen font-sans antialiased">
         <QueryProvider>
           <AuthProvider>
@@ -46,5 +52,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-

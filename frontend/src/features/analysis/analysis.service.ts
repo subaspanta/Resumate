@@ -9,6 +9,7 @@ import type {
   Suggestion,
   UpdateSuggestionStatusInput,
 } from "@/src/features/analysis/types";
+import type { StructuredResume } from "@/src/features/resume/types";
 
 // AI-backed calls (job parsing, rewrite generation) run a Gemini round-trip
 // server-side and can exceed the client's default 10s timeout under normal
@@ -32,6 +33,11 @@ export const analysisApi = {
   history: (resumeId: string) =>
     axiosClient.get<ApiResponse<AnalysisSummary[]>>(
       `/resumes/${resumeId}/analyses`
+    ),
+
+  merged: (resumeId: string) =>
+    axiosClient.get<ApiResponse<{ structuredResume: StructuredResume }>>(
+      `/analyses/resumes/${resumeId}/merged`
     ),
 
   remove: (id: string) =>

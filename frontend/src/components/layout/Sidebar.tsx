@@ -77,7 +77,6 @@ function NavItem({
       <a className={className} href={href} aria-label={label}>
         {content}
       </a>
-
     );
   }
 

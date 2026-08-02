@@ -14,11 +14,6 @@ type NewSuggestion = {
 };
 
 export class AnalysisRepository {
-  // Analysis rows are immutable (write-once); only Suggestion rows mutate.
-  async create(data: Prisma.AnalysisCreateInput): Promise<Analysis> {
-    return prisma.analysis.create({ data });
-  }
-
   async createAnalysis(input: {
     resumeId: string;
     userId: string;
@@ -92,7 +87,9 @@ export class AnalysisRepository {
     });
   }
 
-  async findManyByResumeId(resumeId: string): Promise<
+  async findManyByResumeId(
+    resumeId: string,
+  ): Promise<
     Pick<Analysis, "id" | "resumeId" | "jobDescription" | "createdAt">[]
   > {
     return prisma.analysis.findMany({

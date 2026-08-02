@@ -5,43 +5,6 @@ import { HTTP_STATUS } from "../../constants/http-status.js";
 export class AnalysisController {
   constructor(private readonly analysisService: AnalysisService) {}
 
-  parseJobDescription = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    try {
-      const { jobDescription } = req.body;
-      const data = await this.analysisService.parseJobDescription(jobDescription);
-      res.status(HTTP_STATUS.OK).json({
-        success: true,
-        data,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  rewriteBullet = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    try {
-      const { originalBullet, jobRequirements } = req.body;
-      const data = await this.analysisService.rewriteBullet({
-        originalBullet,
-        jobRequirements,
-      });
-      res.status(HTTP_STATUS.OK).json({
-        success: true,
-        data,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
   createAnalysis = async (
     req: Request,
     res: Response,
@@ -71,13 +34,11 @@ export class AnalysisController {
   ) => {
     try {
       const userId = req.user!.sub;
-      const { analysisId, section, originalBullet, jobRequirements } =
-        req.body;
+      const { analysisId, section, originalBullet } = req.body;
       const data = await this.analysisService.getRewriteSuggestions(userId, {
         analysisId,
         section,
         originalBullet,
-        jobRequirements,
       });
       res.status(HTTP_STATUS.CREATED).json({
         success: true,
