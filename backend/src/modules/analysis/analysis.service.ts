@@ -33,18 +33,6 @@ export class AnalysisService {
     private readonly rewriteAgent: RewriteAgent,
   ) {}
 
-  // Preview step — parses the job description and returns the result
-  // directly without persisting.
-  async parseJobDescription(rawText: string): Promise<ParsedJob> {
-    return this.jobParserAgent.parseJobDescription(rawText);
-  }
-
-  // Preview step — returns validated rewrite suggestions directly without
-  // persisting.
-  async rewriteBullet(input: RewriteBulletInput): Promise<RewriteOutput> {
-    return this.rewriteAgent.rewriteBullet(input);
-  }
-
   // Persisting step — runs the job parser, then writes an Analysis row
   // snapshotting the resume and storing the AI results.
   async createAnalysis(
@@ -101,11 +89,13 @@ export class AnalysisService {
       );
     }
 
+    const jobContext = analysis.parsedJob as unknown as ParsedJob;
+
     const { suggestions } = await REWRITE_BY_SECTION[input.section](
       this.rewriteAgent,
       {
         originalBullet: input.originalBullet,
-        jobRequirements: input.jobRequirements,
+        jobContext,
       },
     );
 

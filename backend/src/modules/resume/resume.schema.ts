@@ -9,10 +9,5 @@ export const listResumesQuerySchema = z.object({
   cursor: z.string().uuid().optional(),
 });
 
-export const getResumeByIdParamsSchema = z.object({
-  id: z.string().uuid(),
-});
-
 export type UploadResumeInput = z.infer<typeof uploadResumeSchema>;
 export type ListResumesQuery = z.infer<typeof listResumesQuerySchema>;
-export type GetResumeByIdParams = z.infer<typeof getResumeByIdParamsSchema>;

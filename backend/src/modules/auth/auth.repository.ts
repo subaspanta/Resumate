@@ -21,11 +21,6 @@ export class AuthRepository {
       },
     });
   }
-  async findUserById(id: string): Promise<User | null> {
-    return prisma.user.findUnique({
-      where: { id },
-    });
-  }
   async findSafeUserById(id: string): Promise<SafeUser | null> {
     return prisma.user.findUnique({
       where: { id },

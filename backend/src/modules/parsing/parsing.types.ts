@@ -1,22 +1,3 @@
-export interface ParsingModule {
-  parseResume(
-    buffer: Buffer,
-  ): Promise<{ rawText: string; structuredResume: Record<string, unknown> }>;
-}
-
-export class ParsingError extends Error {
-  constructor(
-    public readonly code:
-      | "UNREADABLE_PDF"
-      | "EMPTY_TEXT"
-      | "PASSWORD_PROTECTED"
-      | "PARSING_FAILED",
-    message: string,
-  ) {
-    super(message);
-    this.name = "ParsingError";
-  }
-}
 export type StructuredResume = {
   name?: string;
   contact?: { email?: string; phone?: string; location?: string };
