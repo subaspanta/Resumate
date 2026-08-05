@@ -4,9 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { resumeApi } from "./resume.service";
 import type { ResumeSummary, Resume } from "./types";
 import { isApiError } from "@/src/api/api-error";
-
-const RESUMES_QUERY_KEY = ["resumes"] as const;
-const RESUME_QUERY_KEY = (id: string) => ["resumes", id] as const;
+import { queryKeys } from "@/src/lib/query-keys";
 
 function enrichResumeSummary(resume: ResumeSummary): ResumeSummary {
   return {
@@ -25,7 +23,7 @@ export function useResumes() {
     error,
     refetch,
   } = useQuery<ResumeSummary[]>({
-    queryKey: RESUMES_QUERY_KEY,
+    queryKey: queryKeys.resumes.all(),
     queryFn: async () => {
       const response = await resumeApi.list();
       const items = response?.data?.data?.items ?? [];
@@ -54,7 +52,7 @@ export function useResume(id: string) {
     isError,
     error,
   } = useQuery<Resume>({
-    queryKey: RESUME_QUERY_KEY(id),
+    queryKey: queryKeys.resumes.detail(id),
     queryFn: async () => {
       const response = await resumeApi.get(id);
       return response?.data?.data as Resume;
@@ -84,7 +82,7 @@ export function useUploadResume() {
       return response?.data?.data as Resume;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: RESUMES_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
     },
   });
 }
@@ -98,7 +96,7 @@ export function useDeleteResume() {
       return id;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: RESUMES_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
     },
   });
 }

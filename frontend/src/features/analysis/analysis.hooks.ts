@@ -12,14 +12,7 @@ import type {
 } from "./types";
 import type { StructuredResume } from "@/src/features/resume/types";
 import { isApiError } from "@/src/api/api-error";
-
-const LATEST_ANALYSIS_QUERY_KEY = (resumeId: string) =>
-  ["analysis", "latest", resumeId] as const;
-const ANALYSIS_QUERY_KEY = (id: string) => ["analysis", id] as const;
-const ANALYSIS_HISTORY_QUERY_KEY = (resumeId: string) =>
-  ["analysis", "history", resumeId] as const;
-const MERGED_RESUME_QUERY_KEY = (resumeId: string) =>
-  ["analysis", "merged", resumeId] as const;
+import { queryKeys } from "@/src/lib/query-keys";
 
 // Unused — no current caller. Backend route (GET /resumes/:resumeId/latest-analysis)
 // still exists, so this can come back if a "continue last analysis" flow is added.
@@ -30,7 +23,7 @@ const MERGED_RESUME_QUERY_KEY = (resumeId: string) =>
 //     isError,
 //     error,
 //   } = useQuery<Analysis | null>({
-//     queryKey: LATEST_ANALYSIS_QUERY_KEY(resumeId),
+//     queryKey: queryKeys.analysis.latest(resumeId),
 //     queryFn: async () => {
 //       try {
 //         const response = await analysisApi.latest(resumeId);
@@ -67,7 +60,7 @@ export function useAnalysis(id: string) {
     isError,
     error,
   } = useQuery<Analysis>({
-    queryKey: ANALYSIS_QUERY_KEY(id),
+    queryKey: queryKeys.analysis.detail(id),
     queryFn: async () => {
       const response = await analysisApi.get(id);
       return response?.data?.data as Analysis;
@@ -97,7 +90,7 @@ export function useAnalysis(id: string) {
 //     isError,
 //     error,
 //   } = useQuery<AnalysisSummary[]>({
-//     queryKey: ANALYSIS_HISTORY_QUERY_KEY(resumeId),
+//     queryKey: queryKeys.analysis.history(resumeId),
 //     queryFn: async () => {
 //       const response = await analysisApi.history(resumeId);
 //       return response?.data?.data ?? [];
@@ -128,7 +121,7 @@ export function useMergedResume(resumeId: string, enabled: boolean) {
     isError,
     error,
   } = useQuery<StructuredResume | undefined>({
-    queryKey: MERGED_RESUME_QUERY_KEY(resumeId),
+    queryKey: queryKeys.analysis.merged(resumeId),
     queryFn: async () => {
       const response = await analysisApi.merged(resumeId);
       return response?.data?.data?.structuredResume;
@@ -156,13 +149,15 @@ export function useCreateAnalysis() {
       const response = await analysisApi.create(input);
       return response?.data?.data as CreateAnalysisResult;
     },
-    onSuccess: (_result, input) => {
-      queryClient.invalidateQueries({
-        queryKey: LATEST_ANALYSIS_QUERY_KEY(input.resumeId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: ANALYSIS_HISTORY_QUERY_KEY(input.resumeId),
-      });
+    onSuccess: () => {
+      // The dashboard derives its whole layout from each resume's
+      // analysisStatus, so without this it keeps showing the pre-analysis
+      // state for the full 5-minute staleTime after an analysis is created.
+      //
+      // The analysis latest/history keys are deliberately not invalidated:
+      // the hooks that read them are commented out, so those calls would be
+      // no-ops that read as though they do something.
+      queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
     },
   });
 }
@@ -179,7 +174,7 @@ export function useCreateAnalysis() {
 //     },
 //     onSuccess: () => {
 //       // Invalidate all analysis queries since we don't know which resume was affected
-//       queryClient.invalidateQueries({ queryKey: ["analysis"] });
+//       queryClient.invalidateQueries({ queryKey: queryKeys.analysis.all() });
 //     },
 //   });
 // }
@@ -194,7 +189,7 @@ export function useRewriteSuggestions(analysisId: string) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ANALYSIS_QUERY_KEY(analysisId),
+        queryKey: queryKeys.analysis.detail(analysisId),
       });
     },
   });
@@ -216,7 +211,7 @@ function useUpdateSuggestionStatus(
   status: Exclude<SuggestionStatus, "pending">
 ) {
   const queryClient = useQueryClient();
-  const key = ANALYSIS_QUERY_KEY(analysisId);
+  const key = queryKeys.analysis.detail(analysisId);
 
   return useMutation<
     Suggestion,
@@ -255,7 +250,7 @@ function useUpdateSuggestionStatus(
       const resumeId = queryClient.getQueryData<Analysis>(key)?.resumeId;
       if (resumeId) {
         queryClient.invalidateQueries({
-          queryKey: MERGED_RESUME_QUERY_KEY(resumeId),
+          queryKey: queryKeys.analysis.merged(resumeId),
         });
       }
     },
