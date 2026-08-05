@@ -11,7 +11,6 @@ interface DashboardShellProps {
   isSidebarCollapsed: boolean;
   onToggleSidebar: () => void;
   userName?: string;
-  onUploadClick?: () => void;
   children: ReactNode;
 }
 
@@ -20,7 +19,6 @@ export function DashboardShell({
   isSidebarCollapsed,
   onToggleSidebar,
   userName,
-  onUploadClick,
   children,
 }: DashboardShellProps) {
   const layout = DASHBOARD_VIEW_LAYOUT[view];
@@ -33,7 +31,6 @@ export function DashboardShell({
         onToggle={onToggleSidebar}
         userName={userName}
         layout={layout}
-        onUploadClick={onUploadClick}
       />
 
       <main className="dashboard-main" style={{ marginLeft: sidebarOffset }}>
