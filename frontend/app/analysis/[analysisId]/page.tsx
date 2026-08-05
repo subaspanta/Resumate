@@ -8,18 +8,19 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { isApiError } from "@/src/api/api-error";
 import {
-  useAnalysis,
   useApplySuggestion,
   useMergedResume,
   useRejectSuggestion,
   useRewriteSuggestions,
 } from "@/src/features/analysis/analysis.hooks";
+import { useRequireAnalysis } from "@/src/features/analysis/use-flow-guard";
 import type { ParsedJob } from "@/src/features/analysis/types";
 import type { StructuredResume } from "@/src/features/resume/types";
 import { SuggestionsList } from "@/src/components/analysis/SuggestionsList";
 import { ProgressBar } from "@/src/components/analysis/ProgressBar";
 import { ExportButton } from "@/src/components/analysis/ExportButton";
 import { ResumePreview } from "@/src/components/workspace/ResumePreview";
+import { FlowRedirect } from "@/src/components/FlowRedirect";
 
 export default function AnalysisPage({
   params,
@@ -28,7 +29,8 @@ export default function AnalysisPage({
 }) {
   const { analysisId } = use(params);
 
-  const { analysis, isLoading, isError } = useAnalysis(analysisId);
+  const { analysis, isLoading, isError, isRedirecting } =
+    useRequireAnalysis(analysisId);
   const applySuggestion = useApplySuggestion(analysisId);
   const rejectSuggestion = useRejectSuggestion(analysisId);
   const rewriteSuggestions = useRewriteSuggestions(analysisId);
@@ -96,6 +98,10 @@ export default function AnalysisPage({
       },
     );
   };
+
+  if (isRedirecting) {
+    return <FlowRedirect />;
+  }
 
   if (isError) {
     return (
