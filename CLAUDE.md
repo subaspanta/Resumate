@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-ResuMate — resume tailoring app. User uploads a PDF/DOCX resume, pastes a full job description, and gets AI-generated bullet rewrites they can accept or reject, then exports a tailored PDF.
+ResuMate — resume tailoring app. User uploads a PDF/DOCX resume, pastes a full job description, and gets AI-generated bullet or paragraph rewrites they can accept or reject, then exports a tailored PDF.
 
 Two apps, no monorepo tooling — [backend/](backend/) (Express 5 + Prisma + Postgres) and [frontend/](frontend/) (Next.js 16 App Router). Each has its own `package.json`; there is no root package.json. Run commands from inside the respective directory.
 
