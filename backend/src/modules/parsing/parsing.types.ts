@@ -19,6 +19,17 @@ export type CustomSection = {
   bullets: string[];
 };
 
+export type EnabledSections = {
+  summary?: boolean;
+  experience?: boolean;
+  projects?: boolean;
+  education?: boolean;
+  skills?: boolean;
+  certifications?: boolean;
+  // Keyed by CustomSection.heading.
+  customSections?: Record<string, boolean>;
+};
+
 export type StructuredResume = {
   name?: string | null;
   contact?: {

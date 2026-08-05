@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { ResumeService } from "./resume.service.js";
 import { HTTP_STATUS } from "../../constants/http-status.js";
-import { ListResumesQuery, listResumesQuerySchema } from "./resume.schema.js";
+import {
+  ListResumesQuery,
+  listResumesQuerySchema,
+  UpdateSectionVisibilityInput,
+} from "./resume.schema.js";
 
 export class ResumeController {
   constructor(private readonly resumeService: ResumeService) {}
@@ -53,6 +57,28 @@ export class ResumeController {
       res.status(HTTP_STATUS.OK).json({
         success: true,
         data: { id },
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  updateSectionVisibility = async (
+    req: Request<{ id: string }, unknown, UpdateSectionVisibilityInput>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const userId = req.user!.sub;
+      const { id } = req.params;
+      const resume = await this.resumeService.updateSectionVisibility(
+        userId,
+        id,
+        req.body,
+      );
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        data: resume,
       });
     } catch (error) {
       next(error);

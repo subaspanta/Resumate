@@ -16,6 +16,7 @@ import {
 } from "./analysis.types.js";
 import { flattenSkills, matchSkills, SkillsMatch } from "./skills-match.js";
 import { normalizeStructuredResume } from "../parsing/normalize-resume.js";
+import { filterVisibleSections } from "../parsing/filter-resume-sections.js";
 import { StructuredResume } from "../parsing/parsing.types.js";
 
 const REWRITE_BY_SECTION: Record<
@@ -262,11 +263,14 @@ export class AnalysisService {
     const applied =
       await this.analysisRepository.findAppliedSuggestionsByResumeId(resumeId);
     // Normalize AFTER the merge: applySuggestions substitutes over the raw
-    // serialized JSON, so it has to see the stored text unchanged.
-    return normalizeStructuredResume(
+    // serialized JSON, so it has to see the stored text unchanged. Section
+    // visibility is applied last since it filters the normalized shape, not
+    // the raw JSON the merge operates on.
+    const merged = normalizeStructuredResume(
       this.applySuggestions(resume.structuredResume, applied),
       { resumeId, source: "getMergedResume" },
     );
+    return filterVisibleSections(merged, resume.enabledSections);
   }
 
   // Ownership check happens inside getMergedResume — kept as a separate
