@@ -49,6 +49,7 @@ model Resume {
   filePath         String?  @db.Text
   rawText          String   @db.Text
   structuredResume Json     @db.JsonB
+  enabledSections  Json?    @db.JsonB
   createdAt        DateTime @default(now()) @db.Timestamp(6)
   updatedAt        DateTime @updatedAt @db.Timestamp(6)
 

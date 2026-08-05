@@ -1,8 +1,5 @@
 export type DashboardState =
-  | "firstTime"
-  | "readyToStart"
-  | "workspaceReady"
-  | "error";
+  "firstTime" | "readyToStart" | "workspaceReady" | "error";
 
 export type AnalysisStatus = "none" | "unexported" | "exported";
 
@@ -33,6 +30,9 @@ export interface StructuredResumeExperience {
   location?: string | null;
   startDate?: string;
   endDate?: string;
+  bullets: string[];
+  // Pre-`bullets` rows stored one string here instead of an array. Read-only
+  // legacy tolerance so an old resumeSnapshot still renders — never write it.
   description?: string;
 }
 
@@ -42,9 +42,45 @@ export interface StructuredResumeEducation {
   year?: string;
 }
 
+// null category = uncategorized — either a legacy flat skills array (no
+// headings) or the backward-compat shape a resume coerces into if it never
+// had explicit skill groupings.
+export interface SkillGroup {
+  category: string | null;
+  items: string[];
+}
+
 export interface StructuredResumeProject {
   name: string;
+  bullets: string[];
+  // See StructuredResumeExperience.description — same legacy shape.
   description?: string;
+}
+
+export interface Certification {
+  name: string;
+  issuer?: string | null;
+  issueDate?: string | null;
+  expiryDate?: string | null;
+  credentialId?: string | null;
+  credentialUrl?: string | null;
+}
+
+export interface CustomSection {
+  heading: string;
+  bullets: string[];
+}
+
+// Missing key = visible. Only an explicit `false` hides a section — mirrors
+// the backend's filterVisibleSections check (`=== false`, never `!== true`).
+export interface EnabledSections {
+  summary?: boolean;
+  experience?: boolean;
+  projects?: boolean;
+  education?: boolean;
+  skills?: boolean;
+  certifications?: boolean;
+  customSections?: Record<string, boolean>;
 }
 
 export interface StructuredResume {
@@ -60,8 +96,10 @@ export interface StructuredResume {
   summary?: string;
   experience: StructuredResumeExperience[];
   education: StructuredResumeEducation[];
-  skills: string[];
+  skills: SkillGroup[];
   projects: StructuredResumeProject[];
+  certifications: Certification[];
+  customSections: CustomSection[];
 }
 
 export interface Resume extends ResumeSummary {
@@ -70,9 +108,31 @@ export interface Resume extends ResumeSummary {
   pdfUrl: string;
   rawText: string;
   structuredResume: StructuredResume;
+  // null in the DB until the user toggles a section at least once.
+  enabledSections?: EnabledSections | null;
 }
 
 export type CreateResumeInput = FormData;
+
+// Mirrors the backend's actual limits (multer's MAX_FILE_SIZE_BYTES and
+// fileFilter in upload.ts) so the UI's stated limits are true, and lets a
+// bad file get rejected client-side instead of after a full round trip.
+// Not a security boundary on its own — the server enforces these for real.
+export const MAX_RESUME_FILE_SIZE_BYTES = 2 * 1024 * 1024;
+export const ALLOWED_RESUME_MIME_TYPES = new Set([
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+]);
+
+export function validateResumeFile(file: File): string | null {
+  if (!ALLOWED_RESUME_MIME_TYPES.has(file.type)) {
+    return "Only PDF and DOCX files are supported.";
+  }
+  if (file.size > MAX_RESUME_FILE_SIZE_BYTES) {
+    return "File exceeds the 2MB limit.";
+  }
+  return null;
+}
 
 export interface DashboardStateInput {
   resumes: ResumeSummary[];

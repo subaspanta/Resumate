@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { toast } from "sonner";
+import { validateResumeFile } from "@/src/features/resume/types";
 
 interface UploadDropzoneProps {
   onFileSelected: (file: File) => void;
@@ -17,24 +19,53 @@ export function UploadDropzone({
   const inputRef = useRef<HTMLInputElement>(null);
   const isFirstTime = variant === "firstTime";
 
+  const selectFile = useCallback(
+    (file: File) => {
+      const error = validateResumeFile(file);
+      if (error) {
+        toast.error(error);
+        return;
+      }
+      onFileSelected(file);
+    },
+    [onFileSelected],
+  );
+
+  const handleDragOver = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      if (!isUploading) setIsDragging(true);
+    },
+    [isUploading],
+  );
+
+  const handleDragLeave = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       setIsDragging(false);
       if (isUploading) return;
-      const file = e.dataTransfer.files?.[0];
-      if (file) onFileSelected(file);
+      const files = e.dataTransfer.files;
+      if (files.length > 1) {
+        toast.error("Only one resume can be uploaded at a time.");
+        return;
+      }
+      const file = files[0];
+      if (file) selectFile(file);
     },
-    [onFileSelected, isUploading],
+    [selectFile, isUploading],
   );
 
   const handleFileInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
-      if (file) onFileSelected(file);
+      if (file) selectFile(file);
       e.target.value = "";
     },
-    [onFileSelected],
+    [selectFile],
   );
 
   const openFilePicker = () => {
@@ -61,7 +92,7 @@ export function UploadDropzone({
         </span>
       </div>
       <h3 className="dashboard-upload-title">
-        Uploading and analyzing your resume…
+        Uploading and reading your resume…
       </h3>
       <p className="dashboard-upload-desc">This usually takes a few seconds.</p>
     </>
@@ -101,8 +132,8 @@ export function UploadDropzone({
 
       <p className="dashboard-upload-meta">
         {isFirstTime
-          ? "Drag & Drop PDF or DOCX (Max 10MB)"
-          : "Supported formats: PDF, DOCX (Max 10MB)"}
+          ? "Drag & Drop PDF or DOCX (Max 2MB)"
+          : "Supported formats: PDF, DOCX (Max 2MB)"}
       </p>
 
       <input
@@ -116,38 +147,14 @@ export function UploadDropzone({
     </>
   );
 
-  if (isFirstTime) {
-    return (
-      <section>
-        <div
-          className={zoneClass}
-          onDragOver={(e) => {
-            e.preventDefault();
-            if (!isUploading) setIsDragging(true);
-          }}
-          onDragLeave={() => setIsDragging(false)}
-          onDrop={handleDrop}
-          onClick={openFilePicker}
-          role="region"
-          aria-label="Resume upload area"
-          aria-busy={isUploading}
-        >
-          {content}
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section className="dashboard-upload">
+    <section className={isFirstTime ? undefined : "dashboard-upload"}>
       <div
         className={zoneClass}
-        onDragOver={(e) => {
-          e.preventDefault();
-          if (!isUploading) setIsDragging(true);
-        }}
-        onDragLeave={() => setIsDragging(false)}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
         onDrop={handleDrop}
+        onClick={openFilePicker}
         role="region"
         aria-label="Resume upload area"
         aria-busy={isUploading}

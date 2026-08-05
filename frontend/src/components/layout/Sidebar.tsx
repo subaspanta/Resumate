@@ -19,7 +19,6 @@ interface SidebarProps {
   onToggle: () => void;
   userName?: string;
   layout: SidebarLayout;
-  onUploadClick?: () => void;
 }
 
 interface NavItemProps {
@@ -109,7 +108,6 @@ export function Sidebar({
   onToggle,
   userName,
   layout,
-  onUploadClick,
 }: SidebarProps) {
   const { logout, isLoggingOut } = useAuth();
   const showCollapse = layout.sidebarCollapsible;

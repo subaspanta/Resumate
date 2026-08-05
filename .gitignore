@@ -3,6 +3,7 @@ backend/cookies.txt
 docs
 
 AGENTS.md
+CLAUDE.md
 .claude/
 
 .impeccable/config.local.json

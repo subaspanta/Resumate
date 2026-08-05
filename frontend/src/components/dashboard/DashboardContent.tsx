@@ -74,7 +74,6 @@ export function DashboardContent({
         isSidebarCollapsed={isSidebarCollapsed}
         onToggleSidebar={onToggleSidebar}
         userName={userName}
-        onUploadClick={onUploadClick}
       >
         {dashboardState === "firstTime" && (
           <FirstTimeDashboardContent

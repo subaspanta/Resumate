@@ -3650,6 +3650,7 @@ export namespace Prisma {
     filePath: number
     rawText: number
     structuredResume: number
+    enabledSections: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -3703,6 +3704,7 @@ export namespace Prisma {
     filePath?: true
     rawText?: true
     structuredResume?: true
+    enabledSections?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3805,6 +3807,7 @@ export namespace Prisma {
     filePath: string | null
     rawText: string
     structuredResume: JsonValue
+    enabledSections: JsonValue | null
     createdAt: Date
     updatedAt: Date
     _count: ResumeCountAggregateOutputType | null
@@ -3839,6 +3842,7 @@ export namespace Prisma {
     filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
+    enabledSections?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -3857,6 +3861,7 @@ export namespace Prisma {
     filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
+    enabledSections?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -3873,6 +3878,7 @@ export namespace Prisma {
     filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
+    enabledSections?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -3889,11 +3895,12 @@ export namespace Prisma {
     filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
+    enabledSections?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "originalFileName" | "mimeType" | "fileSize" | "fileUrl" | "filePath" | "rawText" | "structuredResume" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
+  export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "originalFileName" | "mimeType" | "fileSize" | "fileUrl" | "filePath" | "rawText" | "structuredResume" | "enabledSections" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
   export type ResumeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     analyses?: boolean | Resume$analysesArgs<ExtArgs>
@@ -3923,6 +3930,7 @@ export namespace Prisma {
       filePath: string | null
       rawText: string
       structuredResume: Prisma.JsonValue
+      enabledSections: Prisma.JsonValue | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["resume"]>
@@ -4360,6 +4368,7 @@ export namespace Prisma {
     readonly filePath: FieldRef<"Resume", 'String'>
     readonly rawText: FieldRef<"Resume", 'String'>
     readonly structuredResume: FieldRef<"Resume", 'Json'>
+    readonly enabledSections: FieldRef<"Resume", 'Json'>
     readonly createdAt: FieldRef<"Resume", 'DateTime'>
     readonly updatedAt: FieldRef<"Resume", 'DateTime'>
   }
@@ -7098,6 +7107,7 @@ export namespace Prisma {
     filePath: 'filePath',
     rawText: 'rawText',
     structuredResume: 'structuredResume',
+    enabledSections: 'enabledSections',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -7147,6 +7157,14 @@ export namespace Prisma {
   };
 
   export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const QueryMode: {
@@ -7411,6 +7429,7 @@ export namespace Prisma {
     filePath?: StringNullableFilter<"Resume"> | string | null
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
+    enabledSections?: JsonNullableFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
     updatedAt?: DateTimeFilter<"Resume"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -7428,6 +7447,7 @@ export namespace Prisma {
     filePath?: SortOrderInput | SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
+    enabledSections?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -7448,6 +7468,7 @@ export namespace Prisma {
     filePath?: StringNullableFilter<"Resume"> | string | null
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
+    enabledSections?: JsonNullableFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
     updatedAt?: DateTimeFilter<"Resume"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -7465,6 +7486,7 @@ export namespace Prisma {
     filePath?: SortOrderInput | SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
+    enabledSections?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ResumeCountOrderByAggregateInput
@@ -7488,6 +7510,7 @@ export namespace Prisma {
     filePath?: StringNullableWithAggregatesFilter<"Resume"> | string | null
     rawText?: StringWithAggregatesFilter<"Resume"> | string
     structuredResume?: JsonWithAggregatesFilter<"Resume">
+    enabledSections?: JsonNullableWithAggregatesFilter<"Resume">
     createdAt?: DateTimeWithAggregatesFilter<"Resume"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Resume"> | Date | string
   }
@@ -7797,6 +7820,7 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutResumesInput
@@ -7814,6 +7838,7 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     analyses?: AnalysisUncheckedCreateNestedManyWithoutResumeInput
@@ -7829,6 +7854,7 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutResumesNestedInput
@@ -7846,6 +7872,7 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     analyses?: AnalysisUncheckedUpdateManyWithoutResumeNestedInput
@@ -7862,6 +7889,7 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -7876,6 +7904,7 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7891,6 +7920,7 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8312,6 +8342,29 @@ export namespace Prisma {
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type ResumeCountOrderByAggregateInput = {
     id?: SortOrder
@@ -8324,6 +8377,7 @@ export namespace Prisma {
     filePath?: SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
+    enabledSections?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -8422,6 +8476,32 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedJsonFilter<$PrismaModel>
     _max?: NestedJsonFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type ResumeScalarRelationFilter = {
@@ -9040,6 +9120,29 @@ export namespace Prisma {
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedEnumSuggestionStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.SuggestionStatus | EnumSuggestionStatusFieldRefInput<$PrismaModel>
@@ -9068,6 +9171,7 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     analyses?: AnalysisCreateNestedManyWithoutResumeInput
@@ -9083,6 +9187,7 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     analyses?: AnalysisUncheckedCreateNestedManyWithoutResumeInput
@@ -9190,6 +9295,7 @@ export namespace Prisma {
     filePath?: StringNullableFilter<"Resume"> | string | null
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
+    enabledSections?: JsonNullableFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
     updatedAt?: DateTimeFilter<"Resume"> | Date | string
   }
@@ -9434,6 +9540,7 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutResumesInput
@@ -9450,6 +9557,7 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9537,6 +9645,7 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutResumesNestedInput
@@ -9553,6 +9662,7 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9694,6 +9804,7 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9728,6 +9839,7 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     analyses?: AnalysisUpdateManyWithoutResumeNestedInput
@@ -9743,6 +9855,7 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     analyses?: AnalysisUncheckedUpdateManyWithoutResumeNestedInput
@@ -9758,6 +9871,7 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
+    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

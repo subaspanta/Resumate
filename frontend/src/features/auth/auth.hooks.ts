@@ -4,8 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authApi } from "./auth.service";
 import { type LoginInput, type RegisterInput, type SafeUser } from "./types";
 import { isApiError } from "@/src/api/api-error";
-
-const AUTH_QUERY_KEY = ["auth", "me"] as const;
+import { queryKeys } from "@/src/lib/query-keys";
 
 export function useAuth() {
   const queryClient = useQueryClient();
@@ -16,7 +15,7 @@ export function useAuth() {
     isError,
     refetch,
   } = useQuery<SafeUser | null>({
-    queryKey: AUTH_QUERY_KEY,
+    queryKey: queryKeys.auth.me(),
     queryFn: async () => {
       try {
         const response = await authApi.me();
@@ -43,7 +42,7 @@ export function useAuth() {
       return response?.data;
     },
     onSuccess: (newUser) => {
-      queryClient.setQueryData(AUTH_QUERY_KEY, newUser);
+      queryClient.setQueryData(queryKeys.auth.me(), newUser);
     },
   });
 
@@ -53,7 +52,7 @@ export function useAuth() {
       return response?.data;
     },
     onSuccess: (newUser) => {
-      queryClient.setQueryData(["auth", "me"], newUser);
+      queryClient.setQueryData(queryKeys.auth.me(), newUser);
     },
   });
 
@@ -62,7 +61,7 @@ export function useAuth() {
       await authApi.logout();
     },
     onSuccess: () => {
-      queryClient.setQueryData(["auth", "me"], null);
+      queryClient.setQueryData(queryKeys.auth.me(), null);
       queryClient.clear();
     },
   });

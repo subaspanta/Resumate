@@ -5,7 +5,28 @@ import { HTTP_STATUS } from "../../constants/http-status.js";
 import { AppError } from "../../types/app-error.js";
 import { ResumeRepository } from "./resume.repository.js";
 import { ParsingModule, StorageModule } from "./resume.types.js";
+import { UpdateSectionVisibilityInput } from "./resume.schema.js";
+import { EnabledSections } from "../parsing/parsing.types.js";
 import { AnalysisRepository } from "../analysis/analysis.repository.js";
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+// enabledSections is untyped stored JSON — narrow to a plain object before
+// reading its keys, same defensive treatment normalizeStructuredResume gives
+// structuredResume. Anything else (string, array, null, garbage) is treated
+// as "no prefs stored yet". customSections gets the same guard one level
+// deeper, matching filter-resume-sections.ts's parseEnabledSections — without
+// it, a stored non-object under that key (e.g. a string) would spread as its
+// character indices instead of being treated as absent.
+function asEnabledSectionsRecord(value: unknown): Partial<EnabledSections> {
+  if (!isRecord(value)) return {};
+  const customSections = isRecord(value.customSections)
+    ? (value.customSections as Record<string, boolean>)
+    : {};
+  return { ...value, customSections } as Partial<EnabledSections>;
+}
 
 const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
@@ -166,5 +187,40 @@ export class ResumeService {
     }
 
     await this.resumeRepository.deleteById(id);
+  }
+
+  // Deep-partial merge: a patch only carries the keys the caller wants to
+  // change (e.g. {summary: false}), so toggling one section can't clobber
+  // prefs set by a previous PATCH — including other customSections headings.
+  async updateSectionVisibility(
+    userId: string,
+    id: string,
+    patch: UpdateSectionVisibilityInput,
+  ) {
+    const resume = await this.resumeRepository.findByIdAndUserId(userId, id);
+    if (!resume) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Resume not found",
+      );
+    }
+
+    const current = asEnabledSectionsRecord(resume.enabledSections);
+    const { customSections: customPatch, ...topPatch } = patch;
+    const merged: EnabledSections = {
+      ...current,
+      ...topPatch,
+      customSections: {
+        ...current.customSections,
+        ...customPatch,
+      },
+    };
+
+    return this.resumeRepository.updateSectionVisibility(
+      userId,
+      id,
+      merged as Prisma.InputJsonValue,
+    );
   }
 }

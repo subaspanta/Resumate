@@ -16,3 +16,6 @@
 @import "./styles/components/upload.css";
 @import "./styles/components/resume-list.css";
 @import "./styles/components/hero.css";
+@import "./styles/components/resume-preview.css";
+@import "./styles/components/resume-review.css";
+@import "./styles/components/section-visibility-sidebar.css";

@@ -1,22 +1,15 @@
 "use client";
 
+import { useMemo } from "react";
 import { Sparkles, Loader2 } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { StructuredResume } from "@/src/features/resume/types";
-
-interface SkillsMatch {
-  matched: string[];
-  missing: string[];
-}
-
-interface GenerateSuggestionsInput {
-  section: "bullet" | "project" | "summary";
-  originalText: string;
-  key: string;
-}
+import { entryBullets } from "@/src/features/resume/resume.utils";
+import type {
+  GenerateSuggestionsInput,
+  SkillsMatch,
+} from "@/src/features/analysis/types";
 
 interface ResumePreviewProps {
   structuredResume?: StructuredResume;
@@ -44,21 +37,28 @@ function GenerateSuggestionsButton({
       disabled={isGenerating}
       onClick={onClick}
     >
-      {isGenerating ? (
-        <Loader2 className="animate-spin" />
-      ) : (
-        <Sparkles />
-      )}
+      {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles />}
       Generate Suggestions
     </Button>
   );
 }
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
+  return <h3 className="resume-preview-section-heading">{children}</h3>;
+}
+
+function EntryDates({
+  startDate,
+  endDate,
+}: {
+  startDate?: string | null;
+  endDate?: string | null;
+}) {
+  if (!startDate && !endDate) return null;
   return (
-    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-      {children}
-    </h3>
+    <span className="resume-preview-entry-dates">
+      {[startDate, endDate].filter(Boolean).join(" – ")}
+    </span>
   );
 }
 
@@ -69,14 +69,23 @@ export function ResumePreview({
   onGenerateSuggestions,
   generatingKey,
 }: ResumePreviewProps) {
+  // Hooks must run unconditionally on every render — isLoading genuinely
+  // flips false->true within one mount (it's React Query's fetch state), so
+  // this can't sit below the early returns below without breaking the
+  // Rules of Hooks the moment loading finishes.
+  const matchedSkills = useMemo(
+    () => new Set(skillsMatch?.matched ?? []),
+    [skillsMatch],
+  );
+
   if (isLoading) {
     return (
-      <Card className="flex flex-col gap-4 p-6">
-        <Skeleton className="h-5 w-40" />
+      <div className="resume-preview">
+        <Skeleton className="h-6 w-40" />
         <Skeleton className="h-4 w-full" />
         <Skeleton className="h-4 w-3/4" />
         <Skeleton className="h-4 w-2/3" />
-      </Card>
+      </div>
     );
   }
 
@@ -101,16 +110,12 @@ export function ResumePreview({
     contact?.website;
 
   return (
-    <Card className="flex flex-col gap-6 p-6">
+    <div className="resume-preview">
       {(name || hasContact) && (
-        <div className="flex flex-col gap-1">
-          {name && (
-            <h2 className="text-xl font-semibold tracking-tight text-foreground">
-              {name}
-            </h2>
-          )}
+        <div className="resume-preview-header">
+          {name && <h2 className="resume-preview-name">{name}</h2>}
           {hasContact && (
-            <p className="text-sm text-muted-foreground">
+            <p className="resume-preview-contact">
               {[
                 contact?.email,
                 contact?.phone,
@@ -127,9 +132,9 @@ export function ResumePreview({
       )}
 
       {summary && (
-        <div className="flex flex-col gap-2">
+        <div className="resume-preview-section">
           <SectionHeading>Summary</SectionHeading>
-          <p className="text-sm text-foreground">{summary}</p>
+          <p className="resume-preview-summary">{summary}</p>
           {onGenerateSuggestions && (
             <GenerateSuggestionsButton
               isGenerating={generatingKey === "summary"}
@@ -146,88 +151,121 @@ export function ResumePreview({
       )}
 
       {experience.length > 0 && (
-        <div className="flex flex-col gap-3">
+        <div className="resume-preview-section">
           <SectionHeading>Experience</SectionHeading>
-          <div className="flex flex-col gap-4">
-            {experience.map((entry, i) => (
-              <div key={i} className="flex flex-col gap-1">
-                <p className="text-sm font-medium text-foreground">
-                  {entry.title}
-                  {entry.company ? ` · ${entry.company}` : ""}
-                </p>
-                {(entry.startDate || entry.endDate) && (
-                  <p className="text-xs text-muted-foreground">
-                    {[entry.startDate, entry.endDate].filter(Boolean).join(" – ")}
-                  </p>
-                )}
-                {entry.description && (
-                  <p className="text-sm text-muted-foreground">
-                    {entry.description}
-                  </p>
-                )}
-                {onGenerateSuggestions && entry.description && (
-                  <GenerateSuggestionsButton
-                    isGenerating={generatingKey === `experience-${i}`}
-                    onClick={() =>
-                      onGenerateSuggestions({
-                        section: "bullet",
-                        originalText: entry.description!,
-                        key: `experience-${i}`,
-                      })
-                    }
-                  />
-                )}
-              </div>
-            ))}
+          <div className="resume-preview-entries">
+            {experience.map((entry, i) => {
+              const bullets = entryBullets(entry);
+              return (
+                <div key={i} className="resume-preview-entry">
+                  <div className="resume-preview-entry-row">
+                    <span className="resume-preview-entry-title">
+                      {entry.title}
+                      {entry.company ? ` — ${entry.company}` : ""}
+                    </span>
+                    <EntryDates
+                      startDate={entry.startDate}
+                      endDate={entry.endDate}
+                    />
+                  </div>
+                  {bullets.length > 0 && (
+                    <ul className="resume-preview-bullets">
+                      {bullets.map((bullet, j) => (
+                        <li
+                          key={`${j}-${bullet.slice(0, 20)}`}
+                          className="resume-preview-bullet-row"
+                        >
+                          <span className="resume-preview-bullet">
+                            {bullet}
+                          </span>
+                          {onGenerateSuggestions && (
+                            <GenerateSuggestionsButton
+                              isGenerating={
+                                generatingKey === `experience-${i}-${j}`
+                              }
+                              onClick={() =>
+                                onGenerateSuggestions({
+                                  section: "bullet",
+                                  originalText: bullet,
+                                  key: `experience-${i}-${j}`,
+                                })
+                              }
+                            />
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
 
       {projects.length > 0 && (
-        <div className="flex flex-col gap-3">
+        <div className="resume-preview-section">
           <SectionHeading>Projects</SectionHeading>
-          <div className="flex flex-col gap-4">
-            {projects.map((entry, i) => (
-              <div key={i} className="flex flex-col gap-1">
-                <p className="text-sm font-medium text-foreground">
-                  {entry.name}
-                </p>
-                {entry.description && (
-                  <p className="text-sm text-muted-foreground">
-                    {entry.description}
-                  </p>
-                )}
-                {onGenerateSuggestions && entry.description && (
-                  <GenerateSuggestionsButton
-                    isGenerating={generatingKey === `project-${i}`}
-                    onClick={() =>
-                      onGenerateSuggestions({
-                        section: "project",
-                        originalText: entry.description!,
-                        key: `project-${i}`,
-                      })
-                    }
-                  />
-                )}
-              </div>
-            ))}
+          <div className="resume-preview-entries">
+            {projects.map((entry, i) => {
+              const bullets = entryBullets(entry);
+              return (
+                <div key={i} className="resume-preview-entry">
+                  <span className="resume-preview-entry-title">
+                    {entry.name}
+                  </span>
+                  {bullets.length > 0 && (
+                    <ul className="resume-preview-bullets">
+                      {bullets.map((bullet, j) => (
+                        <li
+                          key={`${j}-${bullet.slice(0, 20)}`}
+                          className="resume-preview-bullet-row"
+                        >
+                          <span className="resume-preview-bullet">
+                            {bullet}
+                          </span>
+                          {onGenerateSuggestions && (
+                            <GenerateSuggestionsButton
+                              isGenerating={
+                                generatingKey === `project-${i}-${j}`
+                              }
+                              onClick={() =>
+                                onGenerateSuggestions({
+                                  section: "project",
+                                  originalText: bullet,
+                                  key: `project-${i}-${j}`,
+                                })
+                              }
+                            />
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
 
       {education.length > 0 && (
-        <div className="flex flex-col gap-3">
+        <div className="resume-preview-section">
           <SectionHeading>Education</SectionHeading>
-          <div className="flex flex-col gap-2">
+          <div className="resume-preview-entries">
             {education.map((entry, i) => (
-              <div key={i} className="flex flex-col gap-0.5">
-                <p className="text-sm font-medium text-foreground">
-                  {entry.degree}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {entry.institution}
-                  {entry.year ? ` · ${entry.year}` : ""}
-                </p>
+              <div key={i} className="resume-preview-entry">
+                <div className="resume-preview-entry-row">
+                  <span className="resume-preview-entry-title">
+                    {entry.degree}
+                  </span>
+                  {entry.year && (
+                    <span className="resume-preview-entry-dates">
+                      {entry.year}
+                    </span>
+                  )}
+                </div>
+                <p className="resume-preview-entry-meta">{entry.institution}</p>
               </div>
             ))}
           </div>
@@ -235,37 +273,48 @@ export function ResumePreview({
       )}
 
       {skills.length > 0 && (
-        <div className="flex flex-col gap-3">
+        <div className="resume-preview-section">
           <SectionHeading>Skills</SectionHeading>
-          <div className="flex flex-wrap gap-2">
-            {skills.map((skill) => {
-              const isMatched = skillsMatch?.matched.includes(skill);
-              return (
-                <Badge
-                  key={skill}
-                  variant={isMatched ? "default" : "secondary"}
-                >
-                  {skill}
-                </Badge>
-              );
-            })}
-          </div>
+          {skills.map((group, g) => (
+            <div key={`${g}-${group.category ?? "uncategorized"}`}>
+              {group.category && (
+                <p className="resume-preview-skills-category">
+                  {group.category}
+                </p>
+              )}
+              <ul className="resume-preview-skills-grid">
+                {group.items.map((skill, i) => {
+                  const isMatched = matchedSkills.has(skill);
+                  return (
+                    <li
+                      key={`${i}-${skill}`}
+                      className="resume-preview-skills-item"
+                    >
+                      <span
+                        className={
+                          isMatched ? "resume-preview-skills-matched" : undefined
+                        }
+                      >
+                        {skill}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
           {skillsMatch && skillsMatch.missing.length > 0 && (
-            <div className="flex flex-col gap-2">
-              <p className="text-xs text-muted-foreground">
-                Missing from this job&apos;s requirements:
+            <div className="resume-preview-skills-missing">
+              <p className="resume-preview-skills-missing-label">
+                Missing from this job&apos;s requirements
               </p>
-              <div className="flex flex-wrap gap-2">
-                {skillsMatch.missing.map((skill) => (
-                  <Badge key={skill} variant="outline">
-                    {skill}
-                  </Badge>
-                ))}
-              </div>
+              <p className="resume-preview-skills-missing-list">
+                {skillsMatch.missing.join(", ")}
+              </p>
             </div>
           )}
         </div>
       )}
-    </Card>
+    </div>
   );
 }

@@ -14,7 +14,10 @@ import {
   RewriteOutput,
   SuggestionSection,
 } from "./analysis.types.js";
-import { matchSkills, SkillsMatch } from "./skills-match.js";
+import { flattenSkills, matchSkills, SkillsMatch } from "./skills-match.js";
+import { normalizeStructuredResume } from "../parsing/normalize-resume.js";
+import { filterVisibleSections } from "../parsing/filter-resume-sections.js";
+import { StructuredResume } from "../parsing/parsing.types.js";
 
 const REWRITE_BY_SECTION: Record<
   SuggestionSection,
@@ -60,12 +63,21 @@ export class AnalysisService {
 
     const analysisResult: AnalysisResult = { parsedJob };
 
+    // Normalize before freezing the snapshot — resume.structuredResume is a
+    // Json column that may still hold a pre-migration shape (e.g. flat
+    // string[] skills). Without this, that shape is what every future read
+    // of this analysis sees forever, since the snapshot never changes again.
+    const normalizedResume = normalizeStructuredResume(
+      resume.structuredResume,
+      { resumeId, source: "createAnalysis" },
+    );
+
     const analysisId = await this.analysisRepository.createAnalysis({
       resumeId,
       userId,
       jobDescription,
       parsedJob: parsedJob as unknown as Prisma.InputJsonValue,
-      resumeSnapshot: resume.structuredResume as Prisma.InputJsonValue,
+      resumeSnapshot: normalizedResume as unknown as Prisma.InputJsonValue,
       analysisResult: analysisResult as unknown as Prisma.InputJsonValue,
     });
 
@@ -128,7 +140,17 @@ export class AnalysisService {
         "Resume not found",
       );
     }
-    return this.analysisRepository.findLatestByResumeId(resumeId);
+    const analysis =
+      await this.analysisRepository.findLatestByResumeId(resumeId);
+    if (!analysis) return null;
+
+    return {
+      ...analysis,
+      resumeSnapshot: normalizeStructuredResume(analysis.resumeSnapshot, {
+        resumeId,
+        source: "getLatestAnalysisForResume",
+      }) as unknown as Prisma.JsonValue,
+    };
   }
 
   async getAnalysisHistory(
@@ -206,7 +228,9 @@ export class AnalysisService {
   async getAnalysisById(
     userId: string,
     analysisId: string,
-  ): Promise<Analysis & { suggestions: Suggestion[]; skillsMatch: SkillsMatch }> {
+  ): Promise<
+    Analysis & { suggestions: Suggestion[]; skillsMatch: SkillsMatch }
+  > {
     const analysis =
       await this.analysisRepository.getAnalysisWithSuggestions(analysisId);
     if (!analysis || analysis.userId !== userId) {
@@ -217,13 +241,21 @@ export class AnalysisService {
       );
     }
 
-    const resumeSkills =
-      (analysis.resumeSnapshot as { skills?: string[] } | null)?.skills ?? [];
+    // Normalize once and reuse: rows written before createAnalysis started
+    // normalizing (or before this fix existed at all) can still carry a
+    // pre-migration resumeSnapshot shape, so every read has to defend, not
+    // just the skills-match calculation below.
+    const normalizedSnapshot = normalizeStructuredResume(
+      analysis.resumeSnapshot,
+      { resumeId: analysis.resumeId, source: "getAnalysisById" },
+    );
+    const resumeSkills = flattenSkills(normalizedSnapshot.skills);
     const jobSkills =
       (analysis.parsedJob as { skills?: string[] } | null)?.skills ?? [];
 
     return {
       ...analysis,
+      resumeSnapshot: normalizedSnapshot as unknown as Prisma.JsonValue,
       skillsMatch: matchSkills(resumeSkills, jobSkills),
     };
   }
@@ -235,7 +267,10 @@ export class AnalysisService {
   //
   // Lives in the analyses service (not resumes) because the merge depends on
   // analysis-derived suggestions, though it operates on a resume resource.
-  async getMergedResume(userId: string, resumeId: string): Promise<unknown> {
+  async getMergedResume(
+    userId: string,
+    resumeId: string,
+  ): Promise<StructuredResume> {
     const resume = await this.resumeRepository.findByIdAndUserId(
       userId,
       resumeId,
@@ -250,14 +285,25 @@ export class AnalysisService {
 
     const applied =
       await this.analysisRepository.findAppliedSuggestionsByResumeId(resumeId);
-    return this.applySuggestions(resume.structuredResume, applied);
+    // Normalize AFTER the merge: applySuggestions substitutes over the raw
+    // serialized JSON, so it has to see the stored text unchanged. Section
+    // visibility is applied last since it filters the normalized shape, not
+    // the raw JSON the merge operates on.
+    const merged = normalizeStructuredResume(
+      this.applySuggestions(resume.structuredResume, applied),
+      { resumeId, source: "getMergedResume" },
+    );
+    return filterVisibleSections(merged, resume.enabledSections);
   }
 
   // Ownership check happens inside getMergedResume — kept as a separate
   // method (not folded into getMergedResume itself) so the write is an
   // explicit, visible step at the export call site rather than a hidden
   // side effect of a read-named method.
-  async exportResume(userId: string, resumeId: string): Promise<unknown> {
+  async exportResume(
+    userId: string,
+    resumeId: string,
+  ): Promise<StructuredResume> {
     const merged = await this.getMergedResume(userId, resumeId);
     await this.analysisRepository.markLatestExported(resumeId);
     return merged;

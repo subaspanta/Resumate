@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { apiConfig } from "./config";
 import { normalizeAxiosError } from "./api-error";
 import { queryClient } from "@/src/lib/query-client";
+import { queryKeys } from "@/src/lib/query-keys";
 
 export const axiosClient = axios.create({
   ...apiConfig,
@@ -63,7 +64,7 @@ axiosClient.interceptors.response.use(
     } catch (refreshError) {
       isRefreshing = false;
       pendingRequests = [];
-      queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() });
       return Promise.reject(normalizeAxiosError(refreshError));
     }
   },

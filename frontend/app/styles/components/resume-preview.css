@@ -1,0 +1,187 @@
+/**
+ * Structured resume preview — the document itself, styled to read as an
+ * ATS-style resume (right-aligned dates, real bullets, plain-text skills)
+ * rather than a settings panel. Used by ResumePreview.tsx.
+ */
+@layer components {
+  .resume-preview {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+
+  .resume-preview-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .resume-preview-name {
+    font-family: var(--font-headline-lg);
+    font-size: var(--text-headline-lg);
+    font-weight: 600;
+    line-height: var(--text-headline-lg--line-height);
+    color: var(--color-text-primary);
+  }
+
+  .resume-preview-contact {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    color: var(--color-text-body);
+  }
+
+  .resume-preview-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .resume-preview-section-heading {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: var(--text-mono-label--font-weight);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .resume-preview-summary {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    color: var(--color-text-primary);
+  }
+
+  .resume-preview-entries {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .resume-preview-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .resume-preview-entry-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+  }
+
+  .resume-preview-entry-title {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .resume-preview-entry-dates {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .resume-preview-entry-meta {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    color: var(--color-text-body);
+  }
+
+  .resume-preview-bullets {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .resume-preview-bullet-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .resume-preview-bullet {
+    display: flex;
+    gap: var(--spacing-sm);
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    color: var(--color-text-body);
+  }
+
+  .resume-preview-bullet::before {
+    content: "•";
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .resume-preview-skills-category {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-sm);
+  }
+
+  .resume-preview-skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--spacing-lg);
+    row-gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .resume-preview-skills-item {
+    display: flex;
+    gap: var(--spacing-sm);
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    color: var(--color-text-primary);
+  }
+
+  .resume-preview-skills-item::before {
+    content: "•";
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .resume-preview-skills-matched {
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .resume-preview-skills-missing {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .resume-preview-skills-missing-label {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .resume-preview-skills-missing-list {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    color: var(--color-text-body);
+  }
+}

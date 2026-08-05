@@ -11,7 +11,6 @@ import { AuthFormField } from "./AuthFormField";
 import { AuthSubmitButton } from "./AuthSubmitButton";
 import { AuthDivider } from "./AuthDivider";
 import { GoogleAuthButton } from "./GoogleAuthButton";
-import { useErrorResponse } from "@/src/components/useErrorResponse";
 import { loginSchema, type LoginFormValues } from "../auth.schemas";
 
 const INVALID_CREDENTIALS_MESSAGE = "Invalid email or password";
@@ -41,7 +40,7 @@ function applyLoginError(
 }
 
 export function LoginForm() {
-  const { login: loginUser, isLoggingIn: isLoading, isError: isLoginError } = useAuth();
+  const { login: loginUser, isLoggingIn: isLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
 

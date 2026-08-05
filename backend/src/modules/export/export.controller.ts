@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { AnalysisService } from "../analysis/analysis.service.js";
-import { StructuredResume } from "../parsing/parsing.types.js";
 import { generateResumePDF } from "./pdf-export.service.js";
 
 export class ExportController {
@@ -15,17 +14,11 @@ export class ExportController {
       const userId = req.user!.sub;
       const { resumeId } = req.params;
 
-      const merged = await this.analysisService.exportResume(
-        userId,
-        resumeId,
-      );
-      const pdf = await generateResumePDF(merged as StructuredResume);
+      const merged = await this.analysisService.exportResume(userId, resumeId);
+      const pdf = await generateResumePDF(merged);
 
       res.setHeader("Content-Type", "application/pdf");
-      res.setHeader(
-        "Content-Disposition",
-        'attachment; filename="resume.pdf"',
-      );
+      res.setHeader("Content-Disposition", 'attachment; filename="resume.pdf"');
       res.send(pdf);
     } catch (error) {
       next(error);

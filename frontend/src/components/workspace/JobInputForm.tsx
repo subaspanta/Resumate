@@ -11,18 +11,27 @@ const MAX_DESCRIPTION_LENGTH = 10000;
 
 interface JobInputFormProps {
   isSubmitting: boolean;
+  // Set while the resume this analysis would attach to is still loading or
+  // absent — submitting then would create an analysis against nothing.
+  isDisabled?: boolean;
   onSubmit: (jobDescription: string) => void;
 }
 
-export function JobInputForm({ isSubmitting, onSubmit }: JobInputFormProps) {
+export function JobInputForm({
+  isSubmitting,
+  isDisabled = false,
+  onSubmit,
+}: JobInputFormProps) {
   const [description, setDescription] = useState("");
 
   const descriptionValid =
     description.trim().length >= MIN_DESCRIPTION_LENGTH &&
     description.trim().length <= MAX_DESCRIPTION_LENGTH;
 
+  const canSubmit = descriptionValid && !isDisabled;
+
   const handleSubmit = () => {
-    if (isSubmitting || !descriptionValid) return;
+    if (isSubmitting || !canSubmit) return;
     onSubmit(description.trim());
   };
 
@@ -33,7 +42,7 @@ export function JobInputForm({ isSubmitting, onSubmit }: JobInputFormProps) {
         <Textarea
           id="job-description"
           value={description}
-          disabled={isSubmitting}
+          disabled={isSubmitting || isDisabled}
           rows={10}
           maxLength={MAX_DESCRIPTION_LENGTH}
           placeholder="Paste the full job description here..."
@@ -56,7 +65,7 @@ export function JobInputForm({ isSubmitting, onSubmit }: JobInputFormProps) {
         type="button"
         size="lg"
         className="self-end"
-        disabled={!descriptionValid || isSubmitting}
+        disabled={!canSubmit || isSubmitting}
         onClick={handleSubmit}
       >
         {isSubmitting ? (

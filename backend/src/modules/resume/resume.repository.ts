@@ -45,6 +45,30 @@ export class ResumeRepository {
         rawText: true,
         fileSize: true,
         filePath: true,
+        enabledSections: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  async updateSectionVisibility(
+    userId: string,
+    id: string,
+    enabledSections: Prisma.InputJsonValue,
+  ) {
+    return prisma.resume.update({
+      where: { id, userId },
+      data: { enabledSections },
+      select: {
+        id: true,
+        title: true,
+        originalFileName: true,
+        structuredResume: true,
+        rawText: true,
+        fileSize: true,
+        filePath: true,
+        enabledSections: true,
         createdAt: true,
         updatedAt: true,
       },

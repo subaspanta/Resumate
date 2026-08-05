@@ -6,11 +6,11 @@ import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { isApiError } from "@/src/api/api-error";
-import { useResume } from "@/src/features/resume/resume.hooks";
+import { useRequireResume } from "@/src/features/resume/use-flow-guard";
 import { useCreateAnalysis } from "@/src/features/analysis/analysis.hooks";
 import { ResumeContextCard } from "@/src/components/workspace/ResumeContextCard";
-import { ResumePreview } from "@/src/components/workspace/ResumePreview";
 import { JobInputForm } from "@/src/components/workspace/JobInputForm";
+import { FlowRedirect } from "@/src/components/FlowRedirect";
 
 export default function WorkspacePage({
   params,
@@ -20,7 +20,11 @@ export default function WorkspacePage({
   const { resumeId } = use(params);
   const router = useRouter();
 
-  const { resume, isLoading: resumeLoading } = useResume(resumeId);
+  const {
+    resume,
+    isLoading: resumeLoading,
+    isRedirecting,
+  } = useRequireResume(resumeId);
   const createAnalysis = useCreateAnalysis();
 
   const handleSubmit = async (jobDescription: string) => {
@@ -41,6 +45,10 @@ export default function WorkspacePage({
     }
   };
 
+  if (isRedirecting) {
+    return <FlowRedirect />;
+  }
+
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-md py-2xl">
       <div className="flex flex-col gap-4">
@@ -54,24 +62,26 @@ export default function WorkspacePage({
           Back
         </Button>
         <div className="flex flex-col gap-2">
+          <p className="text-sm font-medium text-muted-foreground">
+            Step 2 of 3
+          </p>
           <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-            Analyze Your Resume
+            Add the Job Description
           </h1>
           <p className="text-muted-foreground">
-            Enter a job title or paste a job description to get started.
+            Paste the full job description you&apos;re targeting. Your tailored
+            preview unlocks once it&apos;s analyzed.
           </p>
         </div>
       </div>
 
+      {/* Context card only — the full resume preview belongs on the analysis
+          page, which is the step this one unlocks. */}
       <ResumeContextCard resume={resume} isLoading={resumeLoading} />
-
-      <ResumePreview
-        structuredResume={resume?.structuredResume}
-        isLoading={resumeLoading}
-      />
 
       <JobInputForm
         isSubmitting={createAnalysis.isPending}
+        isDisabled={resumeLoading || !resume}
         onSubmit={handleSubmit}
       />
     </main>

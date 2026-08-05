@@ -2,7 +2,11 @@ import { Router } from "express";
 import { requireAuth } from "../../middleware/requireAuth.js";
 import { uploadSingleFile } from "../../middleware/upload.js";
 import { aiRateLimit } from "../../middleware/ai-rate-limit.js";
-import { listResumesQuerySchema, uploadResumeSchema } from "./resume.schema.js";
+import {
+  listResumesQuerySchema,
+  updateSectionVisibilitySchema,
+  uploadResumeSchema,
+} from "./resume.schema.js";
 import {
   validateQuery,
   validateRequest,
@@ -35,6 +39,13 @@ router.get(
 router.get("/:id", requireAuth, resumeController.getById);
 
 router.delete("/:id", requireAuth, resumeController.remove);
+
+router.patch(
+  "/:id/sections",
+  validateRequest(updateSectionVisibilitySchema),
+  requireAuth,
+  resumeController.updateSectionVisibility,
+);
 
 router.get(
   "/:resumeId/latest-analysis",

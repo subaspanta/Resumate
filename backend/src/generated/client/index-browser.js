@@ -150,6 +150,7 @@ exports.Prisma.ResumeScalarFieldEnum = {
   filePath: 'filePath',
   rawText: 'rawText',
   structuredResume: 'structuredResume',
+  enabledSections: 'enabledSections',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -183,6 +184,11 @@ exports.Prisma.SortOrder = {
 };
 
 exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
