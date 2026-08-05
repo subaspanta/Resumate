@@ -1,3 +1,24 @@
+export type SkillGroup = {
+  // null = uncategorized. Backward compat for resumes with no explicit
+  // headings, and the shape a legacy flat array coerces into.
+  category: string | null;
+  items: string[];
+};
+
+export type Certification = {
+  name: string;
+  issuer?: string | null;
+  issueDate?: string | null;
+  expiryDate?: string | null;
+  credentialId?: string | null;
+  credentialUrl?: string | null;
+};
+
+export type CustomSection = {
+  heading: string;
+  bullets: string[];
+};
+
 export type StructuredResume = {
   name?: string | null;
   contact?: {
@@ -19,8 +40,10 @@ export type StructuredResume = {
     bullets: string[];
   }[];
   education: { degree: string; institution: string; year?: string | null }[];
-  skills: string[];
+  skills: SkillGroup[];
   projects: { name: string; bullets: string[] }[];
+  certifications: Certification[];
+  customSections: CustomSection[];
 };
 
 export interface AIStructuringModule {

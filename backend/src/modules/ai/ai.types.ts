@@ -37,10 +37,31 @@ export const structuredResumeSchema = z.object({
       year: z.string().nullable().optional(),
     }),
   ),
-  skills: z.array(z.string()),
+  skills: z.array(
+    z.object({
+      category: z.string().nullable(),
+      items: z.array(z.string()),
+    }),
+  ),
   projects: z.array(
     z.object({
       name: z.string(),
+      bullets: z.array(z.string()),
+    }),
+  ),
+  certifications: z.array(
+    z.object({
+      name: z.string(),
+      issuer: z.string().nullable().optional(),
+      issueDate: z.string().nullable().optional(),
+      expiryDate: z.string().nullable().optional(),
+      credentialId: z.string().nullable().optional(),
+      credentialUrl: z.string().nullable().optional(),
+    }),
+  ),
+  customSections: z.array(
+    z.object({
+      heading: z.string(),
       bullets: z.array(z.string()),
     }),
   ),
@@ -96,7 +117,17 @@ export const RESUME_SCHEMA = {
         required: ["degree", "institution"],
       },
     },
-    skills: { type: Type.ARRAY, items: { type: Type.STRING } },
+    skills: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          category: { type: Type.STRING, nullable: true },
+          items: { type: Type.ARRAY, items: { type: Type.STRING } },
+        },
+        required: ["items"],
+      },
+    },
     projects: {
       type: Type.ARRAY,
       items: {
@@ -108,8 +139,41 @@ export const RESUME_SCHEMA = {
         required: ["name", "bullets"],
       },
     },
+    certifications: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          name: { type: Type.STRING },
+          issuer: { type: Type.STRING, nullable: true },
+          issueDate: { type: Type.STRING, nullable: true },
+          expiryDate: { type: Type.STRING, nullable: true },
+          credentialId: { type: Type.STRING, nullable: true },
+          credentialUrl: { type: Type.STRING, nullable: true },
+        },
+        required: ["name"],
+      },
+    },
+    customSections: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          heading: { type: Type.STRING },
+          bullets: { type: Type.ARRAY, items: { type: Type.STRING } },
+        },
+        required: ["heading", "bullets"],
+      },
+    },
   },
-  required: ["experience", "education", "skills", "projects"],
+  required: [
+    "experience",
+    "education",
+    "skills",
+    "projects",
+    "certifications",
+    "customSections",
+  ],
 };
 
 export const RESUME_STRUCTURING_PROMPT = `Extract structured resume data from the provided text.
@@ -157,17 +221,37 @@ For each project entry:
   bullet content is present, use an empty array.
 If no projects section is present in the resume, return an empty array.
 
-"skills" is a flat array of every individual skill listed in the text — if the resume
-groups skills under headings (e.g. "Frontend:", "Backend:"), ignore the headings and
-collect every skill from every group into one flat list. Do not preserve or invent
-category labels.
+"skills" is an array of skill groups, each with a "category" and a list of "items". If the
+resume groups skills under headings (e.g. "Frontend:", "Backend:"), preserve each heading
+as "category" and its listed skills as "items". If the resume lists skills with no heading
+at all, put them in a single group with "category" set to null. Do not invent a category
+label that isn't written in the text.
+
+For each certification (a licensing/credentialing entry, typically under a heading like
+"Certifications" or "Licenses"):
+- "name" is the certification's title.
+- "issuer" is the organization that issued it, if stated; otherwise null.
+- "issueDate" and "expiryDate" follow the same normalization as experience dates
+  ("YYYY-MM" or "YYYY"). "expiryDate" is null both when the certification does not expire
+  and when no expiry is stated — do not guess which case applies.
+- "credentialId" and "credentialUrl" are only set if explicitly present in the text; never
+  invent or guess either.
+If no certifications section is present, return an empty array.
+
+"customSections" holds any section of the resume that does not fit summary, experience,
+education, skills, projects, or certifications (e.g. "Publications", "Volunteering",
+"Awards", "Languages"). For each such section, set "heading" to the section's heading
+exactly as written, and "bullets" to one entry per distinct line in that section — same
+rule as experience bullets, never merge lines together. Do not drop a section just because
+it doesn't match a known category; every part of the resume's text must end up somewhere in
+the output. If there are no such sections, return an empty array.
 
 If any field is not present in the text, set it to null or an empty array as appropriate.
 Do not invent, infer, or estimate any data that is not explicitly stated in the text —
-this includes dates, employer names, bullets, and skills. If the resume text appears
-garbled, truncated, or corrupted (e.g. from a scanned document with poor text extraction),
-extract whatever is clearly legible and leave the rest null rather than guessing at
-unclear parts.
+this includes dates, employer names, bullets, skills, and certification details. If the
+resume text appears garbled, truncated, or corrupted (e.g. from a scanned document with
+poor text extraction), extract whatever is clearly legible and leave the rest null rather
+than guessing at unclear parts.
 
 EXAMPLE
 
@@ -190,7 +274,13 @@ B.S. Computer Science, University of Texas, 2019
 
 SKILLS
 Backend: Python, Django, PostgreSQL
-Cloud & DevOps: AWS, Docker, Terraform"
+Cloud & DevOps: AWS, Docker, Terraform
+
+CERTIFICATIONS
+AWS Certified Solutions Architect – Associate, Amazon Web Services, issued Mar 2022, expires Mar 2025
+
+PUBLICATIONS
+Co-authored "Scaling Payment Systems at Fintra," presented at PaymentsCon 2023."
 
 Correct extraction:
 {
@@ -222,12 +312,37 @@ Correct extraction:
   "education": [
     { "degree": "B.S. Computer Science", "institution": "University of Texas", "year": "2019" }
   ],
-  "skills": ["Python", "Django", "PostgreSQL", "AWS", "Docker", "Terraform"],
-  "projects": []
+  "skills": [
+    { "category": "Backend", "items": ["Python", "Django", "PostgreSQL"] },
+    { "category": "Cloud & DevOps", "items": ["AWS", "Docker", "Terraform"] }
+  ],
+  "projects": [],
+  "certifications": [
+    {
+      "name": "AWS Certified Solutions Architect – Associate",
+      "issuer": "Amazon Web Services",
+      "issueDate": "2022-03",
+      "expiryDate": "2025-03",
+      "credentialId": null,
+      "credentialUrl": null
+    }
+  ],
+  "customSections": [
+    {
+      "heading": "PUBLICATIONS",
+      "bullets": [
+        "Co-authored 'Scaling Payment Systems at Fintra,' presented at PaymentsCon 2023."
+      ]
+    }
+  ]
 }
 
 Note how "Fintra" (the employer) is separated from "(Remote)" (the work mode, mapped to
 "workMode": "remote", never appended to "company"), "Jan 2021" is normalized to "2021-01",
 each of the three achievement lines becomes its own "bullets" entry rather than being
-merged into one paragraph, and the "Backend:"/"Cloud & DevOps:" headings are dropped —
-every skill from both groups is collected into one flat "skills" array.`;
+merged into one paragraph, and the "Backend:"/"Cloud & DevOps:" headings are preserved as
+"category" on two separate skill groups rather than being flattened away. The certification's
+"issued Mar 2022"/"expires Mar 2025" are normalized to "2022-03"/"2025-03" the same way
+experience dates are, and no credential ID/URL is invented since none was stated. The
+"PUBLICATIONS" heading doesn't match any known section, so it becomes a "customSections"
+entry with its heading preserved verbatim rather than being dropped.`;

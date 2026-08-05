@@ -69,19 +69,28 @@ export function buildResumeDefinition(
     content.push({ text: resume.summary, margin: [0, 0, 0, 12] });
   }
 
-  if (resume.skills?.length) {
+  const skillGroups = (resume.skills ?? []).filter(
+    (group) => group.items.length > 0,
+  );
+  if (skillGroups.length) {
     content.push({ text: "SKILLS", style: "sectionHeader" });
-    const midpoint = Math.ceil(resume.skills.length / 2);
-    const leftColumn = resume.skills.slice(0, midpoint);
-    const rightColumn = resume.skills.slice(midpoint);
-    content.push({
-      columns: [
-        { ul: leftColumn, margin: [0, 0, 0, 0] },
-        { ul: rightColumn, margin: [0, 0, 0, 0] },
-      ],
-      columnGap: 16,
-      margin: [0, 0, 0, 12],
-    });
+    for (const group of skillGroups) {
+      if (group.category) {
+        content.push({
+          text: [
+            { text: `${group.category}: `, bold: true },
+            { text: group.items.join(", ") },
+          ],
+          margin: [0, 2, 0, 2],
+        });
+      } else {
+        content.push({
+          text: group.items.join(", "),
+          margin: [0, 2, 0, 2],
+        });
+      }
+    }
+    content.push({ text: "", margin: [0, 0, 0, 10] });
   }
 
   if (resume.experience?.length) {
@@ -141,6 +150,52 @@ export function buildResumeDefinition(
         ],
         margin: [0, 4, 0, 2],
       });
+    }
+  }
+
+  if (resume.certifications?.length) {
+    content.push({ text: "CERTIFICATIONS", style: "sectionHeader" });
+    for (const cert of resume.certifications) {
+      content.push({
+        columns: [
+          { text: cert.name, bold: true, width: "*" },
+          {
+            text: formatDateRange(cert.issueDate, cert.expiryDate),
+            width: "auto",
+            alignment: "right",
+            color: "#555555",
+          },
+        ],
+        margin: [0, 8, 0, 2],
+      });
+      const metaParts = [
+        cert.issuer,
+        cert.credentialId ? `ID: ${cert.credentialId}` : null,
+        cert.credentialUrl,
+      ].filter(Boolean);
+      if (metaParts.length) {
+        content.push({
+          text: metaParts.join(" | "),
+          fontSize: 10,
+          color: "#333333",
+          margin: [0, 0, 0, 2],
+        });
+      }
+    }
+  }
+
+  if (resume.customSections?.length) {
+    for (const section of resume.customSections) {
+      content.push({
+        text: section.heading.toUpperCase(),
+        style: "sectionHeader",
+      });
+      for (const bullet of section.bullets) {
+        content.push({
+          text: `•  ${bullet}`,
+          margin: [12, 1, 0, 1],
+        });
+      }
     }
   }
 

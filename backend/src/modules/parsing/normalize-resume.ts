@@ -1,4 +1,4 @@
-import { StructuredResume } from "./parsing.types.js";
+import { SkillGroup, StructuredResume } from "./parsing.types.js";
 import { logger } from "../../config/logger.js";
 
 // `structuredResume` / `resumeSnapshot` are Json columns. Prisma neither
@@ -38,6 +38,20 @@ function toArray(value: unknown, field: string, repairs: Repairs): unknown[] {
   return [];
 }
 
+function toNullableString(
+  value: unknown,
+  field: string,
+  repairs: Repairs,
+): string | null {
+  if (typeof value === "string") return value;
+  // Absent is the normal shape for an optional field; only a present-but-wrong
+  // type indicates corruption worth reporting.
+  if (value !== undefined && value !== null) {
+    repairs.push(`${field}:not-a-string`);
+  }
+  return null;
+}
+
 function toStrings(value: unknown, field: string, repairs: Repairs): string[] {
   const items = toArray(value, field, repairs);
   const strings = items.filter(
@@ -72,6 +86,37 @@ function toBullets(
     repairs.push(`${field}:bullets-not-an-array`);
   }
   return [];
+}
+
+// Every existing stored row has `skills` as a flat string[] — the shape the
+// prompt used to enforce. Wrap it as a single uncategorized group rather than
+// migrating stored data, matching the `description` -> `bullets` legacy
+// tolerance above.
+function normalizeSkills(value: unknown, repairs: Repairs): SkillGroup[] {
+  if (Array.isArray(value) && value.every((v) => typeof v === "string")) {
+    if (value.length === 0) return [];
+    repairs.push("skills:legacy-flat-array");
+    return [{ category: null, items: value }];
+  }
+
+  const items = toArray(value, "skills", repairs);
+  const groups: SkillGroup[] = [];
+  let dropped = 0;
+  for (const entry of items) {
+    if (!isRecord(entry)) {
+      dropped++;
+      continue;
+    }
+    const category = typeof entry.category === "string" ? entry.category : null;
+    groups.push({
+      category,
+      items: toStrings(entry.items, "skills[].items", repairs),
+    });
+  }
+  if (dropped > 0) {
+    repairs.push(`skills:${dropped}-non-group-dropped`);
+  }
+  return groups;
 }
 
 export function normalizeStructuredResume(
@@ -115,7 +160,49 @@ export function normalizeStructuredResume(
     isRecord,
   ) as StructuredResume["education"];
 
-  const skills = toStrings(source.skills, "skills", repairs);
+  const skills = normalizeSkills(source.skills, repairs);
+
+  const certifications = toArray(
+    source.certifications,
+    "certifications",
+    repairs,
+  )
+    .filter(isRecord)
+    .map((entry, i) => ({
+      name: typeof entry.name === "string" ? entry.name : "",
+      issuer: toNullableString(entry.issuer, `certifications[${i}].issuer`, repairs),
+      issueDate: toNullableString(
+        entry.issueDate,
+        `certifications[${i}].issueDate`,
+        repairs,
+      ),
+      expiryDate: toNullableString(
+        entry.expiryDate,
+        `certifications[${i}].expiryDate`,
+        repairs,
+      ),
+      credentialId: toNullableString(
+        entry.credentialId,
+        `certifications[${i}].credentialId`,
+        repairs,
+      ),
+      credentialUrl: toNullableString(
+        entry.credentialUrl,
+        `certifications[${i}].credentialUrl`,
+        repairs,
+      ),
+    })) as StructuredResume["certifications"];
+
+  const customSections = toArray(
+    source.customSections,
+    "customSections",
+    repairs,
+  )
+    .filter(isRecord)
+    .map((entry, i) => ({
+      heading: typeof entry.heading === "string" ? entry.heading : "",
+      bullets: toStrings(entry.bullets, `customSections[${i}].bullets`, repairs),
+    })) as StructuredResume["customSections"];
 
   // Warn once per row, after every field has had its say.
   if (repairs.length > 0) {
@@ -132,5 +219,7 @@ export function normalizeStructuredResume(
     education,
     skills,
     projects,
+    certifications,
+    customSections,
   };
 }

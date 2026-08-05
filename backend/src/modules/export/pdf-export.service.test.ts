@@ -9,6 +9,8 @@ const BASE_RESUME: StructuredResume = {
   education: [],
   skills: [],
   projects: [],
+  certifications: [],
+  customSections: [],
 };
 
 function flattenText(content: unknown[]): string[] {
@@ -64,6 +66,163 @@ describe("buildResumeDefinition — projects section", () => {
 // A legacy row reaches the PDF builder only through getMergedResume, which
 // normalizes first. This asserts the pair actually holds: without the
 // normalizer, `for (const bullet of exp.bullets)` throws on these rows.
+describe("buildResumeDefinition — skills section", () => {
+  it("renders a labelled block per categorized skill group", () => {
+    const resume: StructuredResume = {
+      ...BASE_RESUME,
+      skills: [
+        { category: "Backend", items: ["Python", "Django"] },
+        { category: "Cloud", items: ["AWS"] },
+      ],
+    };
+    const texts = flattenText(
+      buildResumeDefinition(resume).content as unknown[],
+    );
+    expect(texts).toContain("SKILLS");
+  });
+
+  it("renders no SKILLS heading when every group is empty", () => {
+    const resume: StructuredResume = {
+      ...BASE_RESUME,
+      skills: [{ category: "Backend", items: [] }],
+    };
+    const texts = flattenText(
+      buildResumeDefinition(resume).content as unknown[],
+    );
+    expect(texts).not.toContain("SKILLS");
+  });
+
+  it("renders no SKILLS heading when skills is empty", () => {
+    const texts = flattenText(
+      buildResumeDefinition(BASE_RESUME).content as unknown[],
+    );
+    expect(texts).not.toContain("SKILLS");
+  });
+});
+
+describe("buildResumeDefinition — certifications section", () => {
+  it("renders name, date range, issuer, and credential info when present", () => {
+    const resume: StructuredResume = {
+      ...BASE_RESUME,
+      certifications: [
+        {
+          name: "AWS Certified Solutions Architect – Associate",
+          issuer: "Amazon Web Services",
+          issueDate: "2022-03",
+          expiryDate: "2025-03",
+          credentialId: "ABC123",
+          credentialUrl: "https://aws.amazon.com/verify/ABC123",
+        },
+      ],
+    };
+    const texts = flattenText(
+      buildResumeDefinition(resume).content as unknown[],
+    );
+    expect(texts).toContain("CERTIFICATIONS");
+    expect(texts).toContain("AWS Certified Solutions Architect – Associate");
+    expect(texts).toContain("2022-03 – 2025-03");
+    expect(
+      texts.some((t) =>
+        t.includes("Amazon Web Services") &&
+        t.includes("ID: ABC123") &&
+        t.includes("https://aws.amazon.com/verify/ABC123"),
+      ),
+    ).toBe(true);
+  });
+
+  it("tolerates a missing issueDate or expiryDate", () => {
+    const resume: StructuredResume = {
+      ...BASE_RESUME,
+      certifications: [
+        { name: "Cert A", issueDate: "2022-03", expiryDate: null },
+        { name: "Cert B", issueDate: null, expiryDate: "2025-03" },
+      ],
+    };
+    const texts = flattenText(
+      buildResumeDefinition(resume).content as unknown[],
+    );
+    expect(texts).toContain("2022-03");
+    expect(texts).toContain("2025-03");
+  });
+
+  it("omits the meta line when issuer and credential fields are absent", () => {
+    const resume: StructuredResume = {
+      ...BASE_RESUME,
+      certifications: [{ name: "Cert A" }],
+    };
+    const texts = flattenText(
+      buildResumeDefinition(resume).content as unknown[],
+    );
+    expect(texts).toContain("Cert A");
+    expect(texts).not.toContain(" | ");
+  });
+
+  it("renders no CERTIFICATIONS heading when certifications is empty or absent", () => {
+    const texts = flattenText(
+      buildResumeDefinition(BASE_RESUME).content as unknown[],
+    );
+    expect(texts).not.toContain("CERTIFICATIONS");
+
+    const { certifications, ...withoutCerts } = BASE_RESUME;
+    const texts2 = flattenText(
+      buildResumeDefinition(withoutCerts as StructuredResume)
+        .content as unknown[],
+    );
+    expect(texts2).not.toContain("CERTIFICATIONS");
+  });
+});
+
+describe("buildResumeDefinition — custom sections", () => {
+  it("renders heading and bullets for each custom section", () => {
+    const resume: StructuredResume = {
+      ...BASE_RESUME,
+      customSections: [
+        {
+          heading: "Publications",
+          bullets: ['Co-authored "Scaling Payment Systems at Fintra."'],
+        },
+      ],
+    };
+    const texts = flattenText(
+      buildResumeDefinition(resume).content as unknown[],
+    );
+    expect(texts).toContain("PUBLICATIONS");
+    expect(texts).toContain(
+      '•  Co-authored "Scaling Payment Systems at Fintra."',
+    );
+  });
+
+  it("renders multiple custom sections in order", () => {
+    const resume: StructuredResume = {
+      ...BASE_RESUME,
+      customSections: [
+        { heading: "Publications", bullets: ["Paper A"] },
+        { heading: "Volunteering", bullets: ["Org B"] },
+      ],
+    };
+    const texts = flattenText(
+      buildResumeDefinition(resume).content as unknown[],
+    );
+    expect(texts.indexOf("PUBLICATIONS")).toBeLessThan(
+      texts.indexOf("VOLUNTEERING"),
+    );
+  });
+
+  it("renders no custom section heading when customSections is empty or absent", () => {
+    const texts = flattenText(
+      buildResumeDefinition(BASE_RESUME).content as unknown[],
+    );
+    expect(texts).not.toContain("PUBLICATIONS");
+
+    const { customSections, ...withoutCustom } = BASE_RESUME;
+    const texts2 = flattenText(
+      buildResumeDefinition(withoutCustom as StructuredResume)
+        .content as unknown[],
+    );
+    expect(texts2).not.toContain("PUBLICATIONS");
+  });
+});
+
 describe("buildResumeDefinition — legacy description-shaped resumes", () => {
   it("renders normalized legacy entries as bullets instead of throwing", () => {
     const legacy = {

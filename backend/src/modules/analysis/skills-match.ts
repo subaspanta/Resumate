@@ -1,3 +1,5 @@
+import { SkillGroup } from "../parsing/parsing.types.js";
+
 // Pure set overlap, no AI call — per BR-14, skills matching is computed on
 // read from resume.skills and analysis.parsedJob, not a rewrite suggestion.
 // Matches only against jobSkills (a token list), not jobRequirements (free
@@ -5,6 +7,12 @@
 export interface SkillsMatch {
   matched: string[];
   missing: string[];
+}
+
+// Resume skills are grouped by category for display; matching only cares
+// about the individual skill names, so flatten across every group.
+export function flattenSkills(groups: SkillGroup[]): string[] {
+  return groups.flatMap((group) => group.items);
 }
 
 export function matchSkills(

@@ -14,7 +14,7 @@ import {
   RewriteOutput,
   SuggestionSection,
 } from "./analysis.types.js";
-import { matchSkills, SkillsMatch } from "./skills-match.js";
+import { flattenSkills, matchSkills, SkillsMatch } from "./skills-match.js";
 import { normalizeStructuredResume } from "../parsing/normalize-resume.js";
 import { StructuredResume } from "../parsing/parsing.types.js";
 
@@ -221,8 +221,12 @@ export class AnalysisService {
       );
     }
 
-    const resumeSkills =
-      (analysis.resumeSnapshot as { skills?: string[] } | null)?.skills ?? [];
+    const resumeSkills = flattenSkills(
+      normalizeStructuredResume(analysis.resumeSnapshot, {
+        resumeId: analysis.resumeId,
+        source: "getAnalysisById",
+      }).skills,
+    );
     const jobSkills =
       (analysis.parsedJob as { skills?: string[] } | null)?.skills ?? [];
 

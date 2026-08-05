@@ -112,20 +112,134 @@ describe("normalizeStructuredResume", () => {
     expect(result.education).toEqual([]);
     expect(result.skills).toEqual([]);
     expect(result.projects).toEqual([]);
+    expect(result.certifications).toEqual([]);
+    expect(result.customSections).toEqual([]);
   });
 
   it("defaults non-array sections to empty arrays", () => {
     const result = normalizeStructuredResume({
       experience: "nope",
       education: 12,
-      skills: { a: 1 },
+      skills: "not an array either",
       projects: null,
+      certifications: "nope",
+      customSections: 5,
     });
 
     expect(result.experience).toEqual([]);
     expect(result.education).toEqual([]);
     expect(result.skills).toEqual([]);
     expect(result.projects).toEqual([]);
+    expect(result.certifications).toEqual([]);
+    expect(result.customSections).toEqual([]);
+  });
+
+  it("wraps a legacy flat skills array into a single uncategorized group", () => {
+    const result = normalizeStructuredResume({
+      skills: ["Python", "Django"],
+    });
+
+    expect(result.skills).toEqual([
+      { category: null, items: ["Python", "Django"] },
+    ]);
+  });
+
+  it("passes an already-grouped skills array through", () => {
+    const result = normalizeStructuredResume({
+      skills: [
+        { category: "Backend", items: ["Python"] },
+        { category: null, items: ["Excel"] },
+      ],
+    });
+
+    expect(result.skills).toEqual([
+      { category: "Backend", items: ["Python"] },
+      { category: null, items: ["Excel"] },
+    ]);
+  });
+
+  it("drops non-record entries from a malformed grouped skills array", () => {
+    const result = normalizeStructuredResume({
+      skills: [{ category: "Backend", items: ["Python"] }, "junk", 42],
+    });
+
+    expect(result.skills).toEqual([{ category: "Backend", items: ["Python"] }]);
+  });
+
+  it("normalizes certifications, coercing a missing name and dropping junk entries", () => {
+    const result = normalizeStructuredResume({
+      certifications: [
+        { name: "AWS SAA", issuer: "AWS", expiryDate: null },
+        { issuer: "no name" },
+        "junk",
+      ],
+    });
+
+    expect(result.certifications).toEqual([
+      {
+        name: "AWS SAA",
+        issuer: "AWS",
+        issueDate: null,
+        expiryDate: null,
+        credentialId: null,
+        credentialUrl: null,
+      },
+      {
+        name: "",
+        issuer: "no name",
+        issueDate: null,
+        expiryDate: null,
+        credentialId: null,
+        credentialUrl: null,
+      },
+    ]);
+  });
+
+  it("drops a non-string issuer/credential field to null with a repair tag", () => {
+    const result = normalizeStructuredResume({
+      certifications: [
+        { name: "AWS SAA", issuer: { nested: true }, credentialId: 42 },
+      ],
+    });
+
+    expect(result.certifications).toEqual([
+      {
+        name: "AWS SAA",
+        issuer: null,
+        issueDate: null,
+        expiryDate: null,
+        credentialId: null,
+        credentialUrl: null,
+      },
+    ]);
+  });
+
+  it("returns an empty array when certifications is absent or malformed", () => {
+    expect(normalizeStructuredResume({}).certifications).toEqual([]);
+    expect(
+      normalizeStructuredResume({ certifications: "nope" }).certifications,
+    ).toEqual([]);
+  });
+
+  it("normalizes custom sections, coercing a missing heading and dropping junk bullets", () => {
+    const result = normalizeStructuredResume({
+      customSections: [
+        { heading: "Publications", bullets: ["Paper A", 42, null] },
+        { bullets: ["No heading"] },
+      ],
+    });
+
+    expect(result.customSections).toEqual([
+      { heading: "Publications", bullets: ["Paper A"] },
+      { heading: "", bullets: ["No heading"] },
+    ]);
+  });
+
+  it("returns an empty array when customSections is absent or malformed", () => {
+    expect(normalizeStructuredResume({}).customSections).toEqual([]);
+    expect(
+      normalizeStructuredResume({ customSections: "nope" }).customSections,
+    ).toEqual([]);
   });
 
   it("preserves unrelated top-level fields", () => {
@@ -150,7 +264,7 @@ describe("normalizeStructuredResume — logging", () => {
     normalizeStructuredResume(
       {
         experience: [{ title: "Engineer", description: "Legacy paragraph." }],
-        skills: ["ok", 42],
+        skills: ["Python", "Django"],
       },
       { resumeId: "resume-123", source: "getMergedResume" },
     );
@@ -163,7 +277,7 @@ describe("normalizeStructuredResume — logging", () => {
       source: "getMergedResume",
     });
     expect(meta.repairs).toContain("experience[0].bullets:legacy-description");
-    expect(meta.repairs).toContain("skills:1-non-string-dropped");
+    expect(meta.repairs).toContain("skills:legacy-flat-array");
   });
 
   it("never logs resume content — only field names and defect tags", () => {
@@ -206,7 +320,7 @@ describe("normalizeStructuredResume — logging", () => {
       name: "Jane Doe",
       experience: [{ title: "Engineer", bullets: ["Shipped X"] }],
       education: [],
-      skills: ["Python"],
+      skills: [{ category: null, items: ["Python"] }],
       projects: [],
     });
 
