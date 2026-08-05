@@ -20,6 +20,7 @@ const requiredEnvVars = [
   "CLOUDINARY_API_KEY",
   "CLOUDINARY_API_SECRET",
   "FRONTEND_URL",
+  "GEMINI_API_KEY",
 ] as const;
 
 const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
