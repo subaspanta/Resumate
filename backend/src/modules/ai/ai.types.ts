@@ -27,7 +27,7 @@ export const structuredResumeSchema = z.object({
       location: z.string().nullable().optional(),
       startDate: z.string().nullable().optional(),
       endDate: z.string().nullable().optional(),
-      description: z.string().nullable().optional(),
+      bullets: z.array(z.string()),
     }),
   ),
   education: z.array(
@@ -41,7 +41,7 @@ export const structuredResumeSchema = z.object({
   projects: z.array(
     z.object({
       name: z.string(),
-      description: z.string().nullable().optional(),
+      bullets: z.array(z.string()),
     }),
   ),
 });
@@ -79,9 +79,9 @@ export const RESUME_SCHEMA = {
           location: { type: Type.STRING, nullable: true },
           startDate: { type: Type.STRING, nullable: true },
           endDate: { type: Type.STRING, nullable: true },
-          description: { type: Type.STRING, nullable: true },
+          bullets: { type: Type.ARRAY, items: { type: Type.STRING } },
         },
-        required: ["title"],
+        required: ["title", "bullets"],
       },
     },
     education: {
@@ -103,9 +103,9 @@ export const RESUME_SCHEMA = {
         type: Type.OBJECT,
         properties: {
           name: { type: Type.STRING },
-          description: { type: Type.STRING, nullable: true },
+          bullets: { type: Type.ARRAY, items: { type: Type.STRING } },
         },
-        required: ["name"],
+        required: ["name", "bullets"],
       },
     },
   },
@@ -142,21 +142,32 @@ For each experience entry:
   arrangement words like "Remote," "Onsite," or "Hybrid" into company.
 - "workMode" captures whether the work arrangement is remote, onsite, or hybrid. If no work arrangement is stated, set workMode to null.
 - "location" is the location of the job, if stated. If no location is provided, set location to null.
+- "bullets" is an array with ONE entry per distinct achievement or responsibility line in
+  the source resume — never merge multiple bullet points into a single string. A resume
+  bullet is usually its own line, often starting with a past-tense verb ("Led," "Built,"
+  "Implemented"). If the role has no bullet content at all, use an empty array.
 
 For each education entry:
 - "year" is the year of graduation or completion, if stated. If no year is provided, set year to null.
 
 For each project entry:
 - "name" is the project's title or name.
-- "description" is what the project does or the work performed, if stated. If no
-  description is present, set it to null.
+- "bullets" is an array with ONE entry per distinct line describing what the project does
+  or the work performed — same rule as experience bullets, never merge them. If no
+  bullet content is present, use an empty array.
 If no projects section is present in the resume, return an empty array.
+
+"skills" is a flat array of every individual skill listed in the text — if the resume
+groups skills under headings (e.g. "Frontend:", "Backend:"), ignore the headings and
+collect every skill from every group into one flat list. Do not preserve or invent
+category labels.
 
 If any field is not present in the text, set it to null or an empty array as appropriate.
 Do not invent, infer, or estimate any data that is not explicitly stated in the text —
-this includes dates, employer names, and skills. If the resume text appears garbled,
-truncated, or corrupted (e.g. from a scanned document with poor text extraction), extract
-whatever is clearly legible and leave the rest null rather than guessing at unclear parts.
+this includes dates, employer names, bullets, and skills. If the resume text appears
+garbled, truncated, or corrupted (e.g. from a scanned document with poor text extraction),
+extract whatever is clearly legible and leave the rest null rather than guessing at
+unclear parts.
 
 EXAMPLE
 
@@ -171,12 +182,15 @@ EXPERIENCE
 Senior Backend Engineer — Fintra (Remote)
 Jan 2021 - Present
 Led migration of the payments service from a monolith to microservices.
+Reduced average API latency by 35% through query optimization and caching.
+Mentored two junior engineers on system design and code review practices.
 
 EDUCATION
 B.S. Computer Science, University of Texas, 2019
 
 SKILLS
-Python, PostgreSQL, AWS, Docker"
+Backend: Python, Django, PostgreSQL
+Cloud & DevOps: AWS, Docker, Terraform"
 
 Correct extraction:
 {
@@ -198,16 +212,22 @@ Correct extraction:
       "location": null,
       "startDate": "2021-01",
       "endDate": "Present",
-      "description": "Led migration of the payments service from a monolith to microservices."
+      "bullets": [
+        "Led migration of the payments service from a monolith to microservices.",
+        "Reduced average API latency by 35% through query optimization and caching.",
+        "Mentored two junior engineers on system design and code review practices."
+      ]
     }
   ],
   "education": [
     { "degree": "B.S. Computer Science", "institution": "University of Texas", "year": "2019" }
   ],
-  "skills": ["Python", "PostgreSQL", "AWS", "Docker"],
+  "skills": ["Python", "Django", "PostgreSQL", "AWS", "Docker", "Terraform"],
   "projects": []
 }
 
 Note how "Fintra" (the employer) is separated from "(Remote)" (the work mode, mapped to
-"workMode": "remote", never appended to "company"), and "Jan 2021" is normalized to
-"2021-01".`;
+"workMode": "remote", never appended to "company"), "Jan 2021" is normalized to "2021-01",
+each of the three achievement lines becomes its own "bullets" entry rather than being
+merged into one paragraph, and the "Backend:"/"Cloud & DevOps:" headings are dropped —
+every skill from both groups is collected into one flat "skills" array.`;

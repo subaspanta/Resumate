@@ -16,11 +16,11 @@ export type StructuredResume = {
     location?: string | null;
     startDate?: string | null;
     endDate?: string | null;
-    description?: string | null;
+    bullets: string[];
   }[];
   education: { degree: string; institution: string; year?: string | null }[];
   skills: string[];
-  projects: { name: string; description?: string | null }[];
+  projects: { name: string; bullets: string[] }[];
 };
 
 export interface AIStructuringModule {

@@ -20,7 +20,7 @@ describe("AIStructuringService.structureResume", () => {
       education: [],
       skills: ["React"],
       projects: [
-        { name: "Portfolio site", description: "Built with Next.js" },
+        { name: "Portfolio site", bullets: ["Built with Next.js"] },
       ],
     });
     const service = new AIStructuringService(fakeGeminiClient(mockResponse));
@@ -28,7 +28,7 @@ describe("AIStructuringService.structureResume", () => {
     const result = await service.structureResume("raw resume text");
 
     expect(result.projects).toEqual([
-      { name: "Portfolio site", description: "Built with Next.js" },
+      { name: "Portfolio site", bullets: ["Built with Next.js"] },
     ]);
   });
 });

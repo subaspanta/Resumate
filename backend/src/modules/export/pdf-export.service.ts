@@ -71,15 +71,23 @@ export function buildResumeDefinition(
 
   if (resume.skills?.length) {
     content.push({ text: "SKILLS", style: "sectionHeader" });
-    content.push({ text: resume.skills.join(" • "), margin: [0, 0, 0, 12] });
+    const midpoint = Math.ceil(resume.skills.length / 2);
+    const leftColumn = resume.skills.slice(0, midpoint);
+    const rightColumn = resume.skills.slice(midpoint);
+    content.push({
+      columns: [
+        { ul: leftColumn, margin: [0, 0, 0, 0] },
+        { ul: rightColumn, margin: [0, 0, 0, 0] },
+      ],
+      columnGap: 16,
+      margin: [0, 0, 0, 12],
+    });
   }
 
   if (resume.experience?.length) {
     content.push({ text: "EXPERIENCE", style: "sectionHeader" });
     for (const exp of resume.experience) {
-      const heading = exp.company
-        ? `${exp.title} — ${exp.company}`
-        : exp.title;
+      const heading = exp.company ? `${exp.title} — ${exp.company}` : exp.title;
       content.push({
         columns: [
           { text: heading, bold: true, width: "*" },
@@ -92,8 +100,11 @@ export function buildResumeDefinition(
         ],
         margin: [0, 8, 0, 2],
       });
-      if (exp.description) {
-        content.push({ text: exp.description, margin: [12, 1, 0, 1] });
+      for (const bullet of exp.bullets) {
+        content.push({
+          text: `•  ${bullet}`,
+          margin: [12, 1, 0, 1],
+        });
       }
     }
   }
@@ -106,8 +117,11 @@ export function buildResumeDefinition(
         bold: true,
         margin: [0, 8, 0, 2],
       });
-      if (project.description) {
-        content.push({ text: project.description, margin: [12, 1, 0, 1] });
+      for (const bullet of project.bullets) {
+        content.push({
+          text: `•  ${bullet}`,
+          margin: [12, 1, 0, 1],
+        });
       }
     }
   }

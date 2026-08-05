@@ -15,6 +15,8 @@ import {
   SuggestionSection,
 } from "./analysis.types.js";
 import { matchSkills, SkillsMatch } from "./skills-match.js";
+import { normalizeStructuredResume } from "../parsing/normalize-resume.js";
+import { StructuredResume } from "../parsing/parsing.types.js";
 
 const REWRITE_BY_SECTION: Record<
   SuggestionSection,
@@ -206,7 +208,9 @@ export class AnalysisService {
   async getAnalysisById(
     userId: string,
     analysisId: string,
-  ): Promise<Analysis & { suggestions: Suggestion[]; skillsMatch: SkillsMatch }> {
+  ): Promise<
+    Analysis & { suggestions: Suggestion[]; skillsMatch: SkillsMatch }
+  > {
     const analysis =
       await this.analysisRepository.getAnalysisWithSuggestions(analysisId);
     if (!analysis || analysis.userId !== userId) {
@@ -235,7 +239,10 @@ export class AnalysisService {
   //
   // Lives in the analyses service (not resumes) because the merge depends on
   // analysis-derived suggestions, though it operates on a resume resource.
-  async getMergedResume(userId: string, resumeId: string): Promise<unknown> {
+  async getMergedResume(
+    userId: string,
+    resumeId: string,
+  ): Promise<StructuredResume> {
     const resume = await this.resumeRepository.findByIdAndUserId(
       userId,
       resumeId,
@@ -250,14 +257,22 @@ export class AnalysisService {
 
     const applied =
       await this.analysisRepository.findAppliedSuggestionsByResumeId(resumeId);
-    return this.applySuggestions(resume.structuredResume, applied);
+    // Normalize AFTER the merge: applySuggestions substitutes over the raw
+    // serialized JSON, so it has to see the stored text unchanged.
+    return normalizeStructuredResume(
+      this.applySuggestions(resume.structuredResume, applied),
+      { resumeId, source: "getMergedResume" },
+    );
   }
 
   // Ownership check happens inside getMergedResume — kept as a separate
   // method (not folded into getMergedResume itself) so the write is an
   // explicit, visible step at the export call site rather than a hidden
   // side effect of a read-named method.
-  async exportResume(userId: string, resumeId: string): Promise<unknown> {
+  async exportResume(
+    userId: string,
+    resumeId: string,
+  ): Promise<StructuredResume> {
     const merged = await this.getMergedResume(userId, resumeId);
     await this.analysisRepository.markLatestExported(resumeId);
     return merged;
