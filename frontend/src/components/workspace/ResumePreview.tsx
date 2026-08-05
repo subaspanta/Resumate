@@ -5,6 +5,7 @@ import { Sparkles, Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import type { StructuredResume } from "@/src/features/resume/types";
+import { entryBullets } from "@/src/features/resume/resume.utils";
 import type {
   GenerateSuggestionsInput,
   SkillsMatch,
@@ -44,18 +45,6 @@ function GenerateSuggestionsButton({
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return <h3 className="resume-preview-section-heading">{children}</h3>;
-}
-
-// resumeSnapshot reaches this component as an unchecked cast from unknown, so
-// `bullets` isn't guaranteed to exist despite the type. Mirrors the backend's
-// normalizeStructuredResume: real array wins, legacy `description` becomes one
-// bullet, otherwise nothing.
-function entryBullets(entry: {
-  bullets?: string[];
-  description?: string;
-}): string[] {
-  if (Array.isArray(entry.bullets)) return entry.bullets;
-  return entry.description ? [entry.description] : [];
 }
 
 function EntryDates({
@@ -286,25 +275,34 @@ export function ResumePreview({
       {skills.length > 0 && (
         <div className="resume-preview-section">
           <SectionHeading>Skills</SectionHeading>
-          <ul className="resume-preview-skills-grid">
-            {skills.map((skill, i) => {
-              const isMatched = matchedSkills.has(skill);
-              return (
-                <li
-                  key={`${i}-${skill}`}
-                  className="resume-preview-skills-item"
-                >
-                  <span
-                    className={
-                      isMatched ? "resume-preview-skills-matched" : undefined
-                    }
-                  >
-                    {skill}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
+          {skills.map((group, g) => (
+            <div key={`${g}-${group.category ?? "uncategorized"}`}>
+              {group.category && (
+                <p className="resume-preview-skills-category">
+                  {group.category}
+                </p>
+              )}
+              <ul className="resume-preview-skills-grid">
+                {group.items.map((skill, i) => {
+                  const isMatched = matchedSkills.has(skill);
+                  return (
+                    <li
+                      key={`${i}-${skill}`}
+                      className="resume-preview-skills-item"
+                    >
+                      <span
+                        className={
+                          isMatched ? "resume-preview-skills-matched" : undefined
+                        }
+                      >
+                        {skill}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
           {skillsMatch && skillsMatch.missing.length > 0 && (
             <div className="resume-preview-skills-missing">
               <p className="resume-preview-skills-missing-label">

@@ -63,12 +63,21 @@ export class AnalysisService {
 
     const analysisResult: AnalysisResult = { parsedJob };
 
+    // Normalize before freezing the snapshot — resume.structuredResume is a
+    // Json column that may still hold a pre-migration shape (e.g. flat
+    // string[] skills). Without this, that shape is what every future read
+    // of this analysis sees forever, since the snapshot never changes again.
+    const normalizedResume = normalizeStructuredResume(
+      resume.structuredResume,
+      { resumeId, source: "createAnalysis" },
+    );
+
     const analysisId = await this.analysisRepository.createAnalysis({
       resumeId,
       userId,
       jobDescription,
       parsedJob: parsedJob as unknown as Prisma.InputJsonValue,
-      resumeSnapshot: resume.structuredResume as Prisma.InputJsonValue,
+      resumeSnapshot: normalizedResume as unknown as Prisma.InputJsonValue,
       analysisResult: analysisResult as unknown as Prisma.InputJsonValue,
     });
 
@@ -131,7 +140,17 @@ export class AnalysisService {
         "Resume not found",
       );
     }
-    return this.analysisRepository.findLatestByResumeId(resumeId);
+    const analysis =
+      await this.analysisRepository.findLatestByResumeId(resumeId);
+    if (!analysis) return null;
+
+    return {
+      ...analysis,
+      resumeSnapshot: normalizeStructuredResume(analysis.resumeSnapshot, {
+        resumeId,
+        source: "getLatestAnalysisForResume",
+      }) as unknown as Prisma.JsonValue,
+    };
   }
 
   async getAnalysisHistory(
@@ -222,17 +241,21 @@ export class AnalysisService {
       );
     }
 
-    const resumeSkills = flattenSkills(
-      normalizeStructuredResume(analysis.resumeSnapshot, {
-        resumeId: analysis.resumeId,
-        source: "getAnalysisById",
-      }).skills,
+    // Normalize once and reuse: rows written before createAnalysis started
+    // normalizing (or before this fix existed at all) can still carry a
+    // pre-migration resumeSnapshot shape, so every read has to defend, not
+    // just the skills-match calculation below.
+    const normalizedSnapshot = normalizeStructuredResume(
+      analysis.resumeSnapshot,
+      { resumeId: analysis.resumeId, source: "getAnalysisById" },
     );
+    const resumeSkills = flattenSkills(normalizedSnapshot.skills);
     const jobSkills =
       (analysis.parsedJob as { skills?: string[] } | null)?.skills ?? [];
 
     return {
       ...analysis,
+      resumeSnapshot: normalizedSnapshot as unknown as Prisma.JsonValue,
       skillsMatch: matchSkills(resumeSkills, jobSkills),
     };
   }

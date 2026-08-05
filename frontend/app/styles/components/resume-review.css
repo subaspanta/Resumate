@@ -1,0 +1,80 @@
+/**
+ * Batch change-review surface — toolbar (zoom/undo-redo/accept/show/decline)
+ * plus a scaled resume card with inline suggestion highlighting. Used by
+ * ResumeReviewToolbar.tsx and ResumeReviewPreview.tsx.
+ */
+@layer components {
+  .resume-review-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) 0;
+  }
+
+  .resume-review-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .resume-review-zoom-label {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    color: var(--color-text-muted);
+    min-width: 3ch;
+    text-align: center;
+  }
+
+  .resume-review-accept-button {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+
+  .resume-review-accept-button:hover:not(:disabled) {
+    background-color: var(--color-primary);
+    opacity: 0.9;
+  }
+
+  .resume-review-show-button {
+    background-color: var(--color-surface-container);
+    color: var(--color-text-primary);
+  }
+
+  .resume-review-show-button:hover {
+    background-color: var(--color-surface-container-low);
+  }
+
+  .resume-review-decline-button {
+    background-color: var(--color-danger);
+    color: var(--color-on-primary);
+  }
+
+  .resume-review-decline-button:hover:not(:disabled) {
+    background-color: var(--color-danger);
+    opacity: 0.9;
+  }
+
+  .resume-review-viewport {
+    background-color: var(--color-canvas);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xxl) var(--spacing-md);
+    display: flex;
+    justify-content: center;
+    overflow: auto;
+  }
+
+  .resume-review-card {
+    transform-origin: top center;
+    width: 100%;
+    max-width: 720px;
+  }
+
+  .resume-review-highlight {
+    background-color: var(--color-primary-container);
+    color: var(--color-text-primary);
+    border-radius: var(--radius-DEFAULT);
+    padding: 0 4px;
+  }
+}

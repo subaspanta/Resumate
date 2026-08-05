@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { resumeApi } from "./resume.service";
-import type { ResumeSummary, Resume } from "./types";
+import type { ResumeSummary, Resume, EnabledSections } from "./types";
 import { isApiError } from "@/src/api/api-error";
 import { queryKeys } from "@/src/lib/query-keys";
 
@@ -97,6 +97,63 @@ export function useDeleteResume() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
+    },
+  });
+}
+
+interface SectionVisibilityMutationContext {
+  previous?: Resume;
+}
+
+// Same optimistic-PATCH shape as useUpdateSuggestionStatus (analysis.hooks.ts)
+// — patch the cache immediately, roll back on error, refetch on settle.
+// Settling invalidates BOTH the resume detail (so this sidebar's own checked
+// state re-syncs) and the merged-resume query (so ResumeReviewPreview, which
+// reads useMergedResume, reflects the newly hidden/shown section) — two
+// separate query keys feeding two separate consumers of the same toggle.
+export function useUpdateSectionVisibility(resumeId: string) {
+  const queryClient = useQueryClient();
+  const key = queryKeys.resumes.detail(resumeId);
+
+  return useMutation<
+    Resume,
+    unknown,
+    Partial<EnabledSections>,
+    SectionVisibilityMutationContext
+  >({
+    mutationFn: async (patch) => {
+      const response = await resumeApi.updateSections(resumeId, patch);
+      return response?.data?.data as Resume;
+    },
+    onMutate: async (patch) => {
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<Resume>(key);
+      if (previous) {
+        const { customSections: customPatch, ...topPatch } = patch;
+        queryClient.setQueryData<Resume>(key, {
+          ...previous,
+          enabledSections: {
+            ...previous.enabledSections,
+            ...topPatch,
+            customSections: {
+              ...previous.enabledSections?.customSections,
+              ...customPatch,
+            },
+          },
+        });
+      }
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(key, context.previous);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: key });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.analysis.merged(resumeId),
+      });
     },
   });
 }

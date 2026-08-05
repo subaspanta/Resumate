@@ -42,11 +42,45 @@ export interface StructuredResumeEducation {
   year?: string;
 }
 
+// null category = uncategorized — either a legacy flat skills array (no
+// headings) or the backward-compat shape a resume coerces into if it never
+// had explicit skill groupings.
+export interface SkillGroup {
+  category: string | null;
+  items: string[];
+}
+
 export interface StructuredResumeProject {
   name: string;
   bullets: string[];
   // See StructuredResumeExperience.description — same legacy shape.
   description?: string;
+}
+
+export interface Certification {
+  name: string;
+  issuer?: string | null;
+  issueDate?: string | null;
+  expiryDate?: string | null;
+  credentialId?: string | null;
+  credentialUrl?: string | null;
+}
+
+export interface CustomSection {
+  heading: string;
+  bullets: string[];
+}
+
+// Missing key = visible. Only an explicit `false` hides a section — mirrors
+// the backend's filterVisibleSections check (`=== false`, never `!== true`).
+export interface EnabledSections {
+  summary?: boolean;
+  experience?: boolean;
+  projects?: boolean;
+  education?: boolean;
+  skills?: boolean;
+  certifications?: boolean;
+  customSections?: Record<string, boolean>;
 }
 
 export interface StructuredResume {
@@ -62,8 +96,10 @@ export interface StructuredResume {
   summary?: string;
   experience: StructuredResumeExperience[];
   education: StructuredResumeEducation[];
-  skills: string[];
+  skills: SkillGroup[];
   projects: StructuredResumeProject[];
+  certifications: Certification[];
+  customSections: CustomSection[];
 }
 
 export interface Resume extends ResumeSummary {
@@ -72,6 +108,8 @@ export interface Resume extends ResumeSummary {
   pdfUrl: string;
   rawText: string;
   structuredResume: StructuredResume;
+  // null in the DB until the user toggles a section at least once.
+  enabledSections?: EnabledSections | null;
 }
 
 export type CreateResumeInput = FormData;

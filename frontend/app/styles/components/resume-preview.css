@@ -126,6 +126,15 @@
     flex-shrink: 0;
   }
 
+  .resume-preview-skills-category {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-sm);
+  }
+
   .resume-preview-skills-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
