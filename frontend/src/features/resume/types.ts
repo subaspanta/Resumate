@@ -1,8 +1,5 @@
 export type DashboardState =
-  | "firstTime"
-  | "readyToStart"
-  | "workspaceReady"
-  | "error";
+  "firstTime" | "readyToStart" | "workspaceReady" | "error";
 
 export type AnalysisStatus = "none" | "unexported" | "exported";
 
@@ -33,6 +30,9 @@ export interface StructuredResumeExperience {
   location?: string | null;
   startDate?: string;
   endDate?: string;
+  bullets: string[];
+  // Pre-`bullets` rows stored one string here instead of an array. Read-only
+  // legacy tolerance so an old resumeSnapshot still renders — never write it.
   description?: string;
 }
 
@@ -44,6 +44,8 @@ export interface StructuredResumeEducation {
 
 export interface StructuredResumeProject {
   name: string;
+  bullets: string[];
+  // See StructuredResumeExperience.description — same legacy shape.
   description?: string;
 }
 
@@ -73,6 +75,26 @@ export interface Resume extends ResumeSummary {
 }
 
 export type CreateResumeInput = FormData;
+
+// Mirrors the backend's actual limits (multer's MAX_FILE_SIZE_BYTES and
+// fileFilter in upload.ts) so the UI's stated limits are true, and lets a
+// bad file get rejected client-side instead of after a full round trip.
+// Not a security boundary on its own — the server enforces these for real.
+export const MAX_RESUME_FILE_SIZE_BYTES = 2 * 1024 * 1024;
+export const ALLOWED_RESUME_MIME_TYPES = new Set([
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+]);
+
+export function validateResumeFile(file: File): string | null {
+  if (!ALLOWED_RESUME_MIME_TYPES.has(file.type)) {
+    return "Only PDF and DOCX files are supported.";
+  }
+  if (file.size > MAX_RESUME_FILE_SIZE_BYTES) {
+    return "File exceeds the 2MB limit.";
+  }
+  return null;
+}
 
 export interface DashboardStateInput {
   resumes: ResumeSummary[];

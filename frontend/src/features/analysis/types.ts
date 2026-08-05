@@ -75,6 +75,17 @@ export interface RewriteSuggestionsInput {
   originalBullet: string;
 }
 
+// UI-click-event shape for "generate a suggestion for this bullet" — passed
+// from ResumePreview up to whatever page owns the rewrite-suggestions
+// mutation. Distinct from RewriteSuggestionsInput (the actual API request
+// shape): this carries a local `key` for tracking per-bullet generating
+// state, not an analysisId.
+export interface GenerateSuggestionsInput {
+  section: SuggestionSection;
+  originalText: string;
+  key: string;
+}
+
 export interface UpdateSuggestionStatusInput {
   suggestionId: string;
   status: Exclude<SuggestionStatus, "pending">;
