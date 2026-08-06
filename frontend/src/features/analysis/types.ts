@@ -4,12 +4,16 @@ export interface AnalysisScore {
   sections: Record<string, number>;
 }
 
+// Mirrors the backend's parsedJobSchema enum — the job parser validates its
+// model output against it, so these are the only values that reach the client.
+export type ExperienceLevel = "entry" | "mid" | "senior";
+
 export interface ParsedJob {
   title: string;
   company: string | null;
   requirements: string[];
   skills: string[];
-  experienceLevel: string;
+  experienceLevel: ExperienceLevel;
 }
 
 // analysisResult is an open envelope on the backend.

@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, FileEdit } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { isApiError } from "@/src/api/api-error";
@@ -61,10 +61,15 @@ export default function WorkspacePage({
           <ArrowLeft />
           Back
         </Button>
-        <div className="flex flex-col gap-2">
-          <p className="text-sm font-medium text-muted-foreground">
-            Step 2 of 3
-          </p>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <div className="workspace-steps" aria-hidden="true">
+              <div className="workspace-step-dot workspace-step-dot--done" />
+              <div className="workspace-step-dot workspace-step-dot--current" />
+              <div className="workspace-step-dot" />
+            </div>
+            <span className="workspace-step-label">Step 2 of 3</span>
+          </div>
           <h1 className="text-3xl font-semibold tracking-tight text-foreground">
             Add the Job Description
           </h1>
@@ -79,11 +84,25 @@ export default function WorkspacePage({
           page, which is the step this one unlocks. */}
       <ResumeContextCard resume={resume} isLoading={resumeLoading} />
 
-      <JobInputForm
-        isSubmitting={createAnalysis.isPending}
-        isDisabled={resumeLoading || !resume}
-        onSubmit={handleSubmit}
-      />
+      <div className="workspace-jd-panel">
+        <div className="workspace-jd-panel-header">
+          <div className="workspace-jd-panel-icon">
+            <FileEdit className="size-5" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <p className="workspace-jd-panel-title">Job description</p>
+            <p className="workspace-jd-panel-desc">
+              The more detail you paste, the more precise your suggestions.
+            </p>
+          </div>
+        </div>
+
+        <JobInputForm
+          isSubmitting={createAnalysis.isPending}
+          isDisabled={resumeLoading || !resume}
+          onSubmit={handleSubmit}
+        />
+      </div>
     </main>
   );
 }

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 
 const MIN_DESCRIPTION_LENGTH = 150;
 const MAX_DESCRIPTION_LENGTH = 10000;
@@ -38,9 +37,9 @@ export function JobInputForm({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="job-description">Job description</Label>
         <Textarea
           id="job-description"
+          aria-label="Job description"
           value={description}
           disabled={isSubmitting || isDisabled}
           rows={10}

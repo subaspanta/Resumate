@@ -170,45 +170,6 @@
     margin-bottom: var(--spacing-xs);
   }
 
-  .dashboard-score-badge {
-    padding: var(--spacing-xs) var(--spacing-sm);
-    font-family: var(--font-mono-label);
-    font-size: var(--text-mono-label);
-    font-weight: 500;
-    border-radius: var(--radius-DEFAULT);
-    border: 1px solid;
-  }
-
-  .dashboard-score-badge--excellent {
-    color: var(--color-score-excellent);
-    background-color: color-mix(in srgb, var(--color-score-excellent) 10%, transparent);
-    border-color: color-mix(in srgb, var(--color-score-excellent) 20%, transparent);
-  }
-
-  .dashboard-score-badge--good {
-    color: var(--color-score-good);
-    background-color: color-mix(in srgb, var(--color-score-good) 10%, transparent);
-    border-color: color-mix(in srgb, var(--color-score-good) 20%, transparent);
-  }
-
-  .dashboard-score-badge--needs-work {
-    color: var(--color-score-needs-work);
-    background-color: color-mix(in srgb, var(--color-score-needs-work) 10%, transparent);
-    border-color: color-mix(in srgb, var(--color-score-needs-work) 20%, transparent);
-  }
-
-  .dashboard-score-badge--poor {
-    color: var(--color-danger);
-    background-color: color-mix(in srgb, var(--color-danger) 10%, transparent);
-    border-color: color-mix(in srgb, var(--color-danger) 20%, transparent);
-  }
-
-  .dashboard-score-badge--inline {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px var(--spacing-xs);
-  }
-
   /* Resume table (active state) */
   .dashboard-table-panel {
     background-color: var(--color-surface);

@@ -26,6 +26,15 @@ import { queryKeys } from "@/src/lib/query-keys";
 import { SuggestionsList } from "@/src/components/analysis/SuggestionsList";
 import { ProgressBar } from "@/src/components/analysis/ProgressBar";
 import { ExportButton } from "@/src/components/analysis/ExportButton";
+import { AnalysisScoreStrip } from "@/src/components/analysis/AnalysisScoreStrip";
+import { JobDescriptionPanel } from "@/src/components/analysis/JobDescriptionPanel";
+import { ScoreBreakdownPanel } from "@/src/components/analysis/ScoreBreakdownPanel";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { ResumeReviewPreview } from "@/src/components/workspace/ResumeReviewPreview";
 import { ResumeReviewToolbar } from "@/src/components/workspace/ResumeReviewToolbar";
 import { SectionVisibilitySidebar } from "@/src/components/workspace/SectionVisibilitySidebar";
@@ -57,7 +66,13 @@ export default function AnalysisPage({
   const [generatingKey, setGeneratingKey] = useState<string | null>(null);
 
   const parsedJob = analysis?.parsedJob as ParsedJob | undefined;
-  const jobTitle = parsedJob?.title;
+  // The JD parser sometimes returns a literal placeholder ("Not specified",
+  // "N/A") when the pasted text has no clear title — treat those the same
+  // as a missing title rather than showing the model's placeholder verbatim.
+  const jobTitle =
+    parsedJob?.title && !/^(not specified|n\/?a)$/i.test(parsedJob.title.trim())
+      ? parsedJob.title
+      : undefined;
   const resumeSnapshot = analysis?.resumeSnapshot as
     | StructuredResume
     | undefined;
@@ -274,6 +289,8 @@ export default function AnalysisPage({
             />
           )}
         </div>
+
+        <AnalysisScoreStrip analysis={analysis} isLoading={isLoading} />
       </header>
 
       <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
@@ -323,25 +340,55 @@ export default function AnalysisPage({
             )
           )}
 
-          <section className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                AI Suggestions
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Review suggestions and apply the ones that strengthen your
-                resume.
-              </p>
-            </div>
+          <Tabs defaultValue="suggestions" className="flex flex-col gap-4">
+            <TabsList>
+              <TabsTrigger value="suggestions">Suggestions</TabsTrigger>
+              <TabsTrigger value="job-description">
+                Job Description
+              </TabsTrigger>
+              <TabsTrigger value="score">Score</TabsTrigger>
+            </TabsList>
 
-            <SuggestionsList
-              suggestions={suggestions}
-              isLoading={isLoading}
-              mutatingId={mutatingId}
-              onApply={handleApply}
-              onReject={handleReject}
-            />
-          </section>
+            <TabsContent
+              value="suggestions"
+              className="flex flex-col gap-4"
+            >
+              <div className="flex flex-col gap-1">
+                <h2 className="text-xl font-semibold tracking-tight text-foreground">
+                  AI Suggestions
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Review suggestions and apply the ones that strengthen your
+                  resume.
+                </p>
+              </div>
+
+              <SuggestionsList
+                suggestions={suggestions}
+                isLoading={isLoading}
+                mutatingId={mutatingId}
+                onApply={handleApply}
+                onReject={handleReject}
+              />
+            </TabsContent>
+
+            <TabsContent value="job-description">
+              <JobDescriptionPanel
+                parsedJob={parsedJob}
+                skillsMatch={analysis?.skillsMatch}
+                isLoading={isLoading}
+              />
+            </TabsContent>
+
+            <TabsContent value="score">
+              <ScoreBreakdownPanel
+                scores={analysis?.analysisResult?.scores}
+                skillsMatch={analysis?.skillsMatch}
+                jobSkills={parsedJob?.skills}
+                isLoading={isLoading}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
 

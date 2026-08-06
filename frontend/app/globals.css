@@ -14,8 +14,11 @@
 @import "./styles/components/sidebar.css";
 @import "./styles/components/layout.css";
 @import "./styles/components/upload.css";
+@import "./styles/components/workspace.css";
+@import "./styles/components/score-badge.css";
 @import "./styles/components/resume-list.css";
 @import "./styles/components/hero.css";
 @import "./styles/components/resume-preview.css";
 @import "./styles/components/resume-review.css";
 @import "./styles/components/section-visibility-sidebar.css";
+@import "./styles/components/analysis-detail.css";
