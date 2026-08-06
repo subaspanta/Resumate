@@ -57,7 +57,7 @@ export function SectionVisibilitySidebar({
   // the backend's filterVisibleSections. Deriving headings from filtered
   // content would make a hidden custom section's checkbox disappear the
   // moment it's hidden, with no way to find it again to re-check it.
-  const customHeadings = (resume?.structuredResume.customSections ?? []).map(
+  const customHeadings = (resume?.structuredResume?.customSections ?? []).map(
     (section) => section.heading,
   );
 

@@ -230,6 +230,13 @@ export default function AnalysisPage({
       },
       {
         onError: (error) => {
+          if (isApiError(error) && error.code === "RATE_LIMIT_EXCEEDED") {
+            // Our own aiRateLimit (10 req / 5 min), not Gemini's. The generic
+            // fallback below says "try again", which is wrong here — the
+            // server's message names the actual wait.
+            toast.error(error.message);
+            return;
+          }
           if (isApiError(error) && error.code === "GEMINI_RATE_LIMITED") {
             toast.error("AI is busy right now. Please try again in a moment.");
             return;

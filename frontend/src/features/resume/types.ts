@@ -103,9 +103,7 @@ export interface StructuredResume {
 }
 
 export interface Resume extends ResumeSummary {
-  mimeType: string;
   fileSize: number;
-  pdfUrl: string;
   rawText: string;
   structuredResume: StructuredResume;
   // null in the DB until the user toggles a section at least once.
@@ -119,9 +117,15 @@ export type CreateResumeInput = FormData;
 // bad file get rejected client-side instead of after a full round trip.
 // Not a security boundary on its own — the server enforces these for real.
 export const MAX_RESUME_FILE_SIZE_BYTES = 2 * 1024 * 1024;
+// octet-stream and "" are accepted because multer accepts octet-stream and
+// the real check is the buffer's magic bytes server-side. Browsers report one
+// of those for a valid PDF often enough — drag-and-drop, no registered
+// handler — that rejecting them here blocks uploads the server would take.
 export const ALLOWED_RESUME_MIME_TYPES = new Set([
   "application/pdf",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/octet-stream",
+  "",
 ]);
 
 export function validateResumeFile(file: File): string | null {

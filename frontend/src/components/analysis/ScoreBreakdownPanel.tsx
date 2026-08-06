@@ -39,7 +39,7 @@ export function ScoreBreakdownPanel({
     const rows: Array<[string, number]> = [
       ["Overall", scores.overall],
       ["ATS", scores.ats],
-      ...Object.entries(scores.sections),
+      ...Object.entries(scores.sections ?? {}),
     ];
 
     return (

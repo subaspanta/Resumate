@@ -39,20 +39,23 @@ export function useAuth() {
   const loginMutation = useMutation({
     mutationFn: async (data: LoginInput) => {
       const response = await authApi.login(data);
-      return response?.data;
+      // Unwrap twice: axios `.data` is the API envelope, `.data.data` is the
+      // user. Must match the `me` queryFn above — both write the same cache key.
+      return response?.data?.data ?? null;
     },
-    onSuccess: (newUser) => {
-      queryClient.setQueryData(queryKeys.auth.me(), newUser);
+    onSuccess: (newUser: SafeUser | null) => {
+      queryClient.setQueryData<SafeUser | null>(queryKeys.auth.me(), newUser);
     },
   });
 
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterInput) => {
       const response = await authApi.register(data);
-      return response?.data;
+      // Same double-unwrap as login — see the comment there.
+      return response?.data?.data ?? null;
     },
-    onSuccess: (newUser) => {
-      queryClient.setQueryData(queryKeys.auth.me(), newUser);
+    onSuccess: (newUser: SafeUser | null) => {
+      queryClient.setQueryData<SafeUser | null>(queryKeys.auth.me(), newUser);
     },
   });
 
@@ -60,7 +63,11 @@ export function useAuth() {
     mutationFn: async () => {
       await authApi.logout();
     },
-    onSuccess: () => {
+    // onSettled, not onSuccess: the logout route requires auth, so an
+    // already-expired session 401s. The user is logged out server-side either
+    // way — failing to clear the cache would strand stale user data behind a
+    // UI that says "logout failed".
+    onSettled: () => {
       queryClient.setQueryData(queryKeys.auth.me(), null);
       queryClient.clear();
     },

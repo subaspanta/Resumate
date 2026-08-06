@@ -1,10 +1,12 @@
 // src/api/api-error.ts
 import { AxiosError } from "axios";
 
-// Matches the exact set of codes in the API spec's Error Codes table.
-// A union (not `string`) means a typo or a new backend code that isn't
-// added here fails to compile at the call site, instead of silently
-// falling through as an unhandled string.
+// Mirrors ERROR_CODES in backend/src/constants/error-codes.ts. Keep both in
+// lockstep: a `code` the backend sends but this union omits still arrives at
+// runtime (normalizeAxiosError casts it below without checking), so the only
+// symptom of drift is a `===` comparison that refuses to compile. Adding a
+// backend code without adding it here silently removes the ability to branch
+// on it.
 export type ApiErrorCode =
   | "INVALID_CREDENTIALS"
   | "EMAIL_ALREADY_EXISTS"
@@ -16,8 +18,15 @@ export type ApiErrorCode =
   | "UNSUPPORTED_FILE_TYPE"
   | "PARSING_FAILED"
   | "VALIDATION_FAILED"
+  | "MALFORMED_JSON"
   | "INTERNAL_SERVER_ERROR"
-  | "GEMINI_RATE_LIMITED";
+  | "STORAGE_FAILED"
+  | "GEMINI_API_ERROR"
+  | "GEMINI_RATE_LIMITED"
+  | "AI_VALIDATION_FAILED"
+  | "JOB_PARSING_FAILED"
+  | "REWRITE_VALIDATION_FAILED"
+  | "RATE_LIMIT_EXCEEDED";
 
 interface ApiErrorPayload {
   success: false;

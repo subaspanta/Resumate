@@ -1,7 +1,10 @@
 export interface AnalysisScore {
   overall: number;
   ats: number;
-  sections: Record<string, number>;
+  // Optional because the backend types analysisResult.scores as `unknown` and
+  // has no writer yet — the first implementation may ship overall/ats without
+  // per-section detail. Guard before iterating.
+  sections?: Record<string, number>;
 }
 
 // Mirrors the backend's parsedJobSchema enum — the job parser validates its
@@ -57,6 +60,9 @@ export interface Analysis extends AnalysisSummary {
   analysisResult: AnalysisResult;
   suggestions: Suggestion[];
   skillsMatch: SkillsMatch;
+  // getAnalysisWithSuggestions uses Prisma `include`, so every column ships,
+  // this one among them.
+  exportedAt: string | null;
 }
 
 export interface CreateAnalysisInput {
