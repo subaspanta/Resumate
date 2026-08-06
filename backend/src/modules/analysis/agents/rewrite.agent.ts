@@ -110,8 +110,13 @@ sharper alternative. Keep the rewrite concise and factual.
 STRICT RULES:
 - Do NOT invent dates, company names, metrics, or achievements not present in the
   original bullet. Only rephrase and sharpen existing content.
-- You may optionally align terminology with the job context below, but only by
-  rewording — never by adding facts the original does not contain.
+- If the bullet has ANY genuine overlap with the job skills/requirements below —
+  even partial — prioritize surfacing and foregrounding that overlap. Use the job
+  context's own terminology to reframe what the bullet already describes, never to
+  add facts, tools, or outcomes the original does not contain.
+- If the bullet has NO genuine overlap with the job skills/requirements, do not
+  force one. Do not bolt on a job-context term just to appear relevant. Instead
+  produce a plain, sharpened rewrite of the bullet on its own terms.
 - Keep the same scope of achievement. Do not exaggerate.
 - The rewrite should stay close in length to the original.
 
@@ -120,14 +125,19 @@ EXAMPLES:
 Original: "Responsible for making the website faster"
 Job requirements: ["performance optimization", "React"]
 Good rewrite: "Optimized website performance, reducing page load times"
+(Overlap exists — "faster" maps directly to "performance optimization" — so the
+rewrite foregrounds that term.)
 
 Original: "Worked on the team that built the payments feature"
 Job requirements: ["backend development", "payment systems"]
-Good rewrite: "Contributed to building the payments feature as part of the team"
+Good rewrite: "Contributed to backend development on the team's payment systems feature"
+(Overlap exists on both requirements — surface both instead of just rephrasing.)
 
 Original: "Did customer support and answered tickets"
-Job requirements: ["customer service", "communication"]
-Good rewrite: "Delivered customer support by resolving incoming tickets"
+Job requirements: ["React", "cloud infrastructure"]
+Good rewrite: "Provided customer support, resolving incoming tickets"
+(No genuine overlap with the job requirements — do not force in "React" or
+"cloud infrastructure"; just sharpen the bullet as written.)
 
 Now rewrite this bullet. Return exactly 1 suggestion.
 
@@ -142,8 +152,13 @@ sharper alternative. Keep the rewrite concise and factual.
 STRICT RULES:
 - Do NOT invent technologies, metrics, or outcomes not present in the original
   description. Only rephrase and sharpen existing content.
-- You may optionally align terminology with the job context below, but only by
-  rewording — never by adding facts the original does not contain.
+- If the description has ANY genuine overlap with the job skills/requirements
+  below — even partial — prioritize surfacing and foregrounding that overlap. Use
+  the job context's own terminology to reframe what the description already
+  states, never to add technologies or outcomes the original does not contain.
+- If the description has NO genuine overlap with the job skills/requirements, do
+  not force one. Do not bolt on a job-context term just to appear relevant.
+  Instead produce a plain, sharpened rewrite of the description on its own terms.
 - Keep the same scope of what the project actually does. Do not exaggerate.
 - The rewrite should stay close in length to the original.
 
@@ -152,6 +167,14 @@ EXAMPLES:
 Original: "Made a website for tracking expenses"
 Job requirements: ["React", "state management"]
 Good rewrite: "Built a web application for tracking personal expenses"
+(No explicit tech named in the original, so no overlap to foreground — sharpen
+only, don't insert "React" or "state management".)
+
+Original: "Built a dashboard using React that displays live sales data"
+Job requirements: ["React", "data visualization"]
+Good rewrite: "Built a React dashboard for visualizing live sales data"
+(Overlap exists — "React" is already present and "displays...data" maps to
+"data visualization" — foreground both.)
 
 Now rewrite this project description. Return exactly 1 suggestion.
 
@@ -166,19 +189,34 @@ into 1 sharper alternative. Keep the rewrite close to the original in length.
 STRICT RULES:
 - Do NOT invent skills, years of experience, job titles, or achievements not present
   in the original summary. Only rephrase and sharpen existing content.
-- You may optionally align terminology with the job context below, but only by
-  rewording — never by adding facts the original does not contain.
+- If the summary has ANY genuine overlap with the job skills/requirements below —
+  even partial — prioritize surfacing and foregrounding that overlap. Use the job
+  context's own terminology to reframe what the summary already states, never to
+  add skills or experience the original does not contain.
+- If the summary has NO genuine overlap with the job skills/requirements, do not
+  force one. Do not bolt on a job-context term just to appear relevant. Instead
+  produce a plain, sharpened rewrite of the summary on its own terms.
 - Do not exaggerate scope, seniority, or impact beyond what the original states.
 - The rewrite should stay close in length to the original — a summary is a short
   paragraph, not a single line, so do not compress it into a bullet.
 
-EXAMPLE:
+EXAMPLES:
 
 Original: "Frontend developer with experience building React applications. Enjoys
 solving UI problems and working with modern JavaScript frameworks."
 Job requirements: ["React", "TypeScript", "team collaboration"]
 Good rewrite: "Frontend developer experienced in building React applications, focused
 on solving UI problems with modern JavaScript frameworks."
+(Overlap exists on "React" — foreground it as done here; "TypeScript" and "team
+collaboration" are absent from the original, so they stay out.)
+
+Original: "Customer support specialist with a background in retail. Comfortable
+handling high ticket volumes and de-escalating frustrated customers."
+Job requirements: ["Python", "data pipelines"]
+Good rewrite: "Customer support specialist with a retail background, skilled in
+handling high ticket volumes and de-escalating frustrated customers."
+(No genuine overlap with the job requirements — do not insert "Python" or "data
+pipelines"; just sharpen the summary as written.)
 
 Now rewrite this summary. Return exactly 1 suggestion.
 
