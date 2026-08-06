@@ -42,8 +42,8 @@ router.delete("/:id", requireAuth, resumeController.remove);
 
 router.patch(
   "/:id/sections",
-  validateRequest(updateSectionVisibilitySchema),
   requireAuth,
+  validateRequest(updateSectionVisibilitySchema),
   resumeController.updateSectionVisibility,
 );
 
