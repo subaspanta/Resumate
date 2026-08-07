@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { FileUp, Loader2, Plus, Upload } from "lucide-react";
 import { toast } from "sonner";
-import { validateResumeFile } from "@/src/features/resume/types";
+import { validateResumeFile } from "@/src/features/resume/resume.utils";
 
 interface UploadDropzoneProps {
   onFileSelected: (file: File) => void;
@@ -87,9 +88,7 @@ export function UploadDropzone({
   const content = isUploading ? (
     <>
       <div className="dashboard-upload-icon">
-        <span className="material-symbols-outlined animate-spin text-primary text-[32px]">
-          progress_activity
-        </span>
+        <Loader2 className="size-8 animate-spin text-primary" aria-hidden="true" />
       </div>
       <h3 className="dashboard-upload-title">
         Uploading and reading your resume…
@@ -99,9 +98,11 @@ export function UploadDropzone({
   ) : (
     <>
       <div className="dashboard-upload-icon">
-        <span className="material-symbols-outlined text-primary text-[32px]">
-          {isFirstTime ? "upload" : "upload_file"}
-        </span>
+        {isFirstTime ? (
+          <Upload className="size-8 text-primary" aria-hidden="true" />
+        ) : (
+          <FileUp className="size-8 text-primary" aria-hidden="true" />
+        )}
       </div>
 
       {!isFirstTime && (
@@ -124,9 +125,7 @@ export function UploadDropzone({
         onClick={openFilePicker}
         disabled={isUploading}
       >
-        {!isFirstTime && (
-          <span className="material-symbols-outlined text-[18px]">add</span>
-        )}
+        {!isFirstTime && <Plus className="size-[18px]" aria-hidden="true" />}
         Upload Resume
       </button>
 

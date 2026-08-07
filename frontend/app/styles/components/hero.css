@@ -28,6 +28,16 @@
     gap: var(--spacing-md);
   }
 
+  /* Subordinate to the page title above it — this card is one item on the
+     dashboard, not the page's headline. */
+  .dashboard-hero-title {
+    font-family: var(--font-headline-lg);
+    font-size: var(--text-headline-lg);
+    font-weight: var(--text-headline-lg--font-weight);
+    line-height: var(--text-headline-lg--line-height);
+    color: var(--color-text-primary);
+  }
+
   .dashboard-hero-file {
     display: flex;
     flex-wrap: wrap;
@@ -149,11 +159,11 @@
     transform: scale(0.98);
   }
 
-  .dashboard-btn-primary .material-symbols-outlined {
+  .dashboard-btn-primary svg {
     transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .dashboard-btn-primary:hover .material-symbols-outlined {
+  .dashboard-btn-primary:hover svg {
     transform: translateX(3px);
   }
 

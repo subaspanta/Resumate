@@ -1,6 +1,6 @@
 import { axiosClient } from "@/src/api/client";
+import type { ApiResponse } from "@/src/api/types";
 import type {
-  ApiResponse,
   LoginInput,
   RegisterInput,
   SafeUser,

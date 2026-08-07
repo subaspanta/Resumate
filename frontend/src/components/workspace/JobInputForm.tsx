@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 
 const MIN_DESCRIPTION_LENGTH = 150;
 const MAX_DESCRIPTION_LENGTH = 10000;
@@ -24,11 +23,13 @@ export function JobInputForm({
 }: JobInputFormProps) {
   const [description, setDescription] = useState("");
 
+  const trimmedLength = description.trim().length;
   const descriptionValid =
-    description.trim().length >= MIN_DESCRIPTION_LENGTH &&
-    description.trim().length <= MAX_DESCRIPTION_LENGTH;
+    trimmedLength >= MIN_DESCRIPTION_LENGTH &&
+    trimmedLength <= MAX_DESCRIPTION_LENGTH;
 
   const canSubmit = descriptionValid && !isDisabled;
+  const progress = Math.min(1, trimmedLength / MIN_DESCRIPTION_LENGTH);
 
   const handleSubmit = () => {
     if (isSubmitting || !canSubmit) return;
@@ -36,50 +37,59 @@ export function JobInputForm({
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="job-description">Job description</Label>
-        <Textarea
-          id="job-description"
-          value={description}
-          disabled={isSubmitting || isDisabled}
-          rows={10}
-          maxLength={MAX_DESCRIPTION_LENGTH}
-          placeholder="Paste the full job description here..."
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <div className="flex justify-between text-xs">
-          <span className="text-muted-foreground">
-            Full accuracy — tailored to the exact posting.
-          </span>
-          <span
-            className={
-              descriptionValid ? "text-muted-foreground" : "text-destructive"
-            }
-          >
-            {description.trim().length} / {MIN_DESCRIPTION_LENGTH} min
+    <div className="jd-form">
+      <Textarea
+        id="job-description"
+        aria-label="Job description"
+        aria-describedby="job-description-hint"
+        value={description}
+        disabled={isSubmitting || isDisabled}
+        rows={12}
+        maxLength={MAX_DESCRIPTION_LENGTH}
+        placeholder="Paste the full job description here — responsibilities, requirements, and the tech stack."
+        onChange={(e) => setDescription(e.target.value)}
+      />
+
+      {/* The submit control and the requirement that gates it live in one
+          bar, so "why is this disabled" and "where do I click" answer each
+          other without scrolling. */}
+      <div className="jd-form-actions">
+        <div className="jd-form-status" id="job-description-hint">
+          <div className="jd-form-meter" aria-hidden="true">
+            <span
+              className={`jd-form-meter-fill ${
+                descriptionValid ? "jd-form-meter-fill--valid" : ""
+              }`}
+              style={{ transform: `scaleX(${progress})` }}
+            />
+          </div>
+          <span className="jd-form-status-text">
+            {descriptionValid
+              ? `${trimmedLength.toLocaleString()} characters — ready to analyze`
+              : `${trimmedLength} of ${MIN_DESCRIPTION_LENGTH} characters minimum`}
           </span>
         </div>
+
+        <Button
+          type="button"
+          size="lg"
+          className="jd-form-submit"
+          disabled={!canSubmit || isSubmitting}
+          onClick={handleSubmit}
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="animate-spin" />
+              Analyzing…
+            </>
+          ) : (
+            <>
+              <Sparkles />
+              Analyze Resume
+            </>
+          )}
+        </Button>
       </div>
-      <Button
-        type="button"
-        size="lg"
-        className="self-end"
-        disabled={!canSubmit || isSubmitting}
-        onClick={handleSubmit}
-      >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="animate-spin" />
-            Analyzing...
-          </>
-        ) : (
-          <>
-            Continue
-            <ArrowRight />
-          </>
-        )}
-      </Button>
     </div>
   );
 }

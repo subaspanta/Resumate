@@ -1,0 +1,272 @@
+/**
+ * Shared page chrome for every authenticated surface — content column,
+ * breadcrumb, flow step rail, and page header. Used by AppShell.tsx and
+ * FlowStepRail.tsx so the dashboard, workspace, and analysis pages read as
+ * one system rather than three.
+ */
+@layer components {
+  .app-shell-inner {
+    flex: 1;
+    width: 100%;
+    max-width: var(--spacing-max-content);
+    margin-inline: auto;
+    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-xxl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+  }
+
+  .app-shell-inner--narrow {
+    max-width: 880px;
+  }
+
+  /* Clears the analysis page's fixed action bar so the last suggestion and
+     the footer never sit underneath it. */
+  .app-shell-inner--actionbar {
+    padding-bottom: 128px;
+  }
+
+  @media (min-width: 768px) {
+    .app-shell-inner {
+      padding-inline: var(--spacing-xl);
+    }
+  }
+
+  /* Header ---------------------------------------------------------------- */
+
+  .app-shell-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .app-shell-topline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+  }
+
+  .app-shell-crumbs {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    min-width: 0;
+  }
+
+  .app-shell-crumb-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .app-shell-crumb-link {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    border-radius: var(--radius-DEFAULT);
+    transition: color 150ms ease-out;
+  }
+
+  .app-shell-crumb-link:hover {
+    color: var(--color-primary);
+  }
+
+  .app-shell-crumb-current {
+    color: var(--color-text-primary);
+  }
+
+  .app-shell-crumb-sep {
+    width: 12px;
+    height: 12px;
+    color: var(--color-text-muted);
+    opacity: 0.6;
+  }
+
+  .app-shell-titlebar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+  }
+
+  .app-shell-titlegroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    min-width: 0;
+  }
+
+  .app-shell-title {
+    font-family: var(--font-display-md);
+    font-size: var(--text-display-md);
+    font-weight: var(--text-display-md--font-weight);
+    line-height: var(--text-display-md--line-height);
+    letter-spacing: var(--text-display-md--letter-spacing);
+    color: var(--color-text-primary);
+    text-wrap: balance;
+  }
+
+  .app-shell-subtitle {
+    font-family: var(--font-body-lg);
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
+    color: var(--color-text-body);
+    max-width: 62ch;
+  }
+
+  .app-shell-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+  }
+
+  .app-shell-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding-top: var(--spacing-xs);
+  }
+
+  /* Step rail ------------------------------------------------------------- */
+
+  .flow-rail {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex-shrink: 0;
+  }
+
+  .flow-rail-list {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .flow-rail-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
+  .flow-rail-step {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 0;
+    background: transparent;
+    border-radius: 9999px;
+    font-family: var(--font-label-std);
+    font-size: var(--text-label-std);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    cursor: default;
+    transition:
+      color 150ms ease-out,
+      background-color 150ms ease-out;
+  }
+
+  .flow-rail-step:not(:disabled) {
+    cursor: pointer;
+  }
+
+  .flow-rail-step:not(:disabled):hover {
+    background-color: var(--color-surface-container);
+    color: var(--color-primary);
+  }
+
+  .flow-rail-marker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border-input);
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 600;
+    line-height: 1;
+    background-color: var(--color-surface);
+    transition:
+      background-color 150ms ease-out,
+      border-color 150ms ease-out,
+      color 150ms ease-out;
+  }
+
+  .flow-rail-step--done {
+    color: var(--color-text-body);
+  }
+
+  .flow-rail-step--done .flow-rail-marker {
+    background-color: var(--color-primary-container);
+    border-color: var(--color-ai-border);
+    color: var(--color-primary);
+  }
+
+  .flow-rail-step--current {
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+
+  .flow-rail-step--current .flow-rail-marker {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+
+  .flow-rail-connector {
+    width: 20px;
+    height: 2px;
+    border-radius: 9999px;
+    background-color: var(--color-border-base);
+    transition: background-color 200ms ease-out;
+  }
+
+  .flow-rail-connector--done {
+    background-color: var(--color-ai-border);
+  }
+
+  .flow-rail-count {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  /* Below the medium breakpoint the labels cost more width than they earn;
+     the numbered markers plus the "Step n of 3" counter still carry position. */
+  @media (max-width: 900px) {
+    .flow-rail-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .flow-rail-step {
+      padding: var(--spacing-xs);
+    }
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { Sparkles } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SuggestionCard } from "./SuggestionCard";
 import type { Suggestion } from "@/src/features/analysis/types";
@@ -10,9 +11,6 @@ interface SuggestionsListProps {
   mutatingId?: string | null;
   onApply: (id: string) => void;
   onReject: (id: string) => void;
-  onGenerate?: () => void;
-  canGenerate?: boolean;
-  isGenerating?: boolean;
 }
 
 export function SuggestionsList({
@@ -34,9 +32,15 @@ export function SuggestionsList({
 
   if (suggestions.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed p-10 text-center">
-        <p className="text-sm text-muted-foreground">
-          No suggestions found for this analysis.
+      <div className="suggestions-empty">
+        <span className="suggestions-empty-icon" aria-hidden="true">
+          <Sparkles className="size-5" />
+        </span>
+        <p className="suggestions-empty-title">No suggestions yet</p>
+        <p className="suggestions-empty-hint">
+          Pick a bullet or summary in your resume and choose{" "}
+          <strong>Generate Suggestions</strong> to get a rewrite tailored to
+          this job.
         </p>
       </div>
     );

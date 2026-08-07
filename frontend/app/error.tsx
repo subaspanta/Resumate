@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { CircleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { logError } from "@/src/lib/log-error";
 
@@ -22,9 +23,7 @@ export default function Error({
     <div className="min-h-screen flex flex-col items-center justify-center bg-canvas px-6">
       <div className="flex flex-col items-center gap-5 text-center max-w-md">
         <div className="flex items-center justify-center w-14 h-14 rounded-full bg-danger/10">
-          <span className="material-symbols-outlined text-danger text-[28px]">
-            error
-          </span>
+          <CircleAlert className="size-7 text-danger" aria-hidden="true" />
         </div>
         <div className="flex flex-col gap-2">
           <h1 className="text-xl font-semibold text-text-primary tracking-tight text-balance">

@@ -1,5 +1,6 @@
 "use client";
 
+import { CircleCheck } from "lucide-react";
 import {
   PASSWORD_MIN_LENGTH,
   PASSWORD_NUMBER_REGEX,
@@ -20,7 +21,11 @@ export function PasswordStrengthChecklist({
   const hasSymbol = PASSWORD_SYMBOL_REGEX.test(password);
 
   const items = [
-    { id: "length", label: `${PASSWORD_MIN_LENGTH}+ characters`, met: hasLength },
+    {
+      id: "length",
+      label: `${PASSWORD_MIN_LENGTH}+ characters`,
+      met: hasLength,
+    },
     { id: "upper", label: "Uppercase", met: hasUpper },
     { id: "number", label: "Number", met: hasNumber },
     { id: "symbol", label: "Symbol", met: hasSymbol },
@@ -38,14 +43,7 @@ export function PasswordStrengthChecklist({
           }`}
           id={`v-${item.id}`}
         >
-          <span
-            className="material-symbols-outlined !text-[14px]"
-            style={{
-              fontVariationSettings: `'FILL' ${item.met ? 1 : 0}`,
-            }}
-          >
-            check_circle
-          </span>
+          <CircleCheck size={14} />
           <span>{item.label}</span>
         </div>
       ))}

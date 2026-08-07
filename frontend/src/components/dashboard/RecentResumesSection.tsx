@@ -1,10 +1,12 @@
-import { ResumeSummary } from "../features/resume/types";
+import { ResumeSummary } from "@/src/features/resume/types";
 import { ResumeListItem } from "./ResumeListItem";
 
 interface RecentResumesSectionProps {
   resumes: ResumeSummary[];
   onOpenResume: (id: string) => void;
   onViewAll: () => void;
+  onDeleteResume?: (id: string, title: string) => void;
+  deletingId?: string;
   emptyMessage?: string;
   showViewAll?: boolean;
 }
@@ -13,8 +15,10 @@ export function RecentResumesSection({
   resumes,
   onOpenResume,
   onViewAll,
+  onDeleteResume,
+  deletingId,
   emptyMessage = "No resumes yet. Your uploaded resumes will appear here.",
-  showViewAll = true,
+  showViewAll = false,
 }: RecentResumesSectionProps) {
   return (
     <section className="dashboard-recent-section">
@@ -40,6 +44,8 @@ export function RecentResumesSection({
               key={resume.id}
               resume={resume}
               onOpen={onOpenResume}
+              onDelete={onDeleteResume}
+              isDeleting={deletingId === resume.id}
               isLast={i === resumes.length - 1}
             />
           ))

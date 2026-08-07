@@ -1,5 +1,5 @@
 import { axiosClient } from "@/src/api/client";
-import type { ApiResponse } from "@/src/features/auth/types";
+import type { ApiResponse } from "@/src/api/types";
 import type {
   Analysis,
   AnalysisSummary,

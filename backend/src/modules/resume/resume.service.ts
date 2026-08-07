@@ -8,6 +8,7 @@ import { ParsingModule, StorageModule } from "./resume.types.js";
 import { UpdateSectionVisibilityInput } from "./resume.schema.js";
 import { EnabledSections } from "../parsing/parsing.types.js";
 import { AnalysisRepository } from "../analysis/analysis.repository.js";
+import { normalizeStructuredResume } from "../parsing/normalize-resume.js";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -155,7 +156,18 @@ export class ResumeService {
         "Resume not found",
       );
     }
-    return resume;
+    // structuredResume is a JSONB column Prisma neither validates nor
+    // migrates, so a row written by an older build can still hold a
+    // pre-migration shape. Every other read path already normalizes; without
+    // this one the workspace sidebar reads .customSections off whatever
+    // happens to be stored and throws.
+    return {
+      ...resume,
+      structuredResume: normalizeStructuredResume(resume.structuredResume, {
+        resumeId: id,
+        source: "getResumeById",
+      }) as unknown as Prisma.JsonValue,
+    };
   }
 
   // Deletes the resume row (cascades to its analyses/suggestions via the

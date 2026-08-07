@@ -1,15 +1,22 @@
 export interface AnalysisScore {
   overall: number;
   ats: number;
-  sections: Record<string, number>;
+  // Optional because the backend types analysisResult.scores as `unknown` and
+  // has no writer yet — the first implementation may ship overall/ats without
+  // per-section detail. Guard before iterating.
+  sections?: Record<string, number>;
 }
+
+// Mirrors the backend's parsedJobSchema enum — the job parser validates its
+// model output against it, so these are the only values that reach the client.
+export type ExperienceLevel = "entry" | "mid" | "senior";
 
 export interface ParsedJob {
   title: string;
   company: string | null;
   requirements: string[];
   skills: string[];
-  experienceLevel: string;
+  experienceLevel: ExperienceLevel;
 }
 
 // analysisResult is an open envelope on the backend.
@@ -53,6 +60,9 @@ export interface Analysis extends AnalysisSummary {
   analysisResult: AnalysisResult;
   suggestions: Suggestion[];
   skillsMatch: SkillsMatch;
+  // getAnalysisWithSuggestions uses Prisma `include`, so every column ships,
+  // this one among them.
+  exportedAt: string | null;
 }
 
 export interface CreateAnalysisInput {
@@ -76,7 +86,7 @@ export interface RewriteSuggestionsInput {
 }
 
 // UI-click-event shape for "generate a suggestion for this bullet" — passed
-// from ResumePreview up to whatever page owns the rewrite-suggestions
+// from ResumeReviewPreview up to whatever page owns the rewrite-suggestions
 // mutation. Distinct from RewriteSuggestionsInput (the actual API request
 // shape): this carries a local `key` for tracking per-bullet generating
 // state, not an analysisId.

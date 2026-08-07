@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight, Clock, FileText, Loader2 } from "lucide-react";
 import { ResumeSummary } from "@/src/features/resume/types";
 import { Badge } from "@/components/ui/badge";
 
@@ -35,30 +36,26 @@ export function ContinueWorkingHero({
   return (
     <section className="dashboard-hero-card">
       <div className="dashboard-hero-content">
-        <h1 className="dashboard-welcome-title">Continue Working</h1>
+        <h2 className="dashboard-hero-title">Continue where you left off</h2>
         <div className="dashboard-hero-file">
           <div className="dashboard-hero-file-chip">
-            <span className="material-symbols-outlined text-text-muted">
-              description
-            </span>
+            <FileText className="size-5 text-text-muted" aria-hidden="true" />
             <span className="dashboard-hero-file-name">
               {resume.fileName || resume.title}
             </span>
           </div>
           <div className="dashboard-hero-timestamp">
-            <span className="material-symbols-outlined text-[14px]">
-              schedule
-            </span>
+            <Clock className="size-3.5" aria-hidden="true" />
             Last edited: {resume.lastEditedAt}
           </div>
         </div>
-        {suggestionsCount > 0 && (
+        {suggestionsCount > 0 ? (
           <div className="dashboard-ai-pill">
             <span className="font-label-std text-label-std">
               {suggestionsCount} Suggestions Waiting
             </span>
           </div>
-        )}
+        ) : null}
       </div>
       <div className="dashboard-hero-actions">
         <button
@@ -68,9 +65,7 @@ export function ContinueWorkingHero({
           disabled={isUploading}
         >
           {isUploading ? (
-            <span className="material-symbols-outlined animate-spin text-[16px]">
-              progress_activity
-            </span>
+            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
           ) : null}
           {isUploading ? "Uploading…" : "Upload New Resume"}
         </button>
@@ -80,7 +75,7 @@ export function ContinueWorkingHero({
           onClick={() => onOpenWorkspace(resume.id)}
         >
           Open Workspace
-          <span className="material-symbols-outlined">arrow_forward</span>
+          <ArrowRight className="size-5" aria-hidden="true" />
         </button>
       </div>
     </section>

@@ -3,7 +3,7 @@
 import { useForm, type UseFormSetError } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuth } from "@/src/features/auth";
+import { useAuth } from "@/src/features/auth/auth.hooks";
 import { isApiError } from "@/src/api/api-error";
 import { getSafeRedirect } from "@/src/lib/safe-redirect";
 import { toast } from "sonner";

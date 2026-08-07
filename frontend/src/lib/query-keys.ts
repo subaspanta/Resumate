@@ -23,9 +23,10 @@ export const queryKeys = {
     all: () => ["analysis"] as const,
     detail: (id: string) => ["analysis", id] as const,
     merged: (resumeId: string) => ["analysis", "merged", resumeId] as const,
-    // No live subscriber — the hooks reading these are commented out in
-    // analysis.hooks.ts. Kept so those hooks can come back without having to
-    // re-derive the key shape.
+    // No live subscriber. The backend routes still exist (GET
+    // /resumes/:resumeId/latest-analysis and /resumes/:resumeId/analyses), so
+    // these are kept for a "continue last analysis" or per-resume history view
+    // without having to re-derive the key shape.
     latest: (resumeId: string) => ["analysis", "latest", resumeId] as const,
     history: (resumeId: string) => ["analysis", "history", resumeId] as const,
   },

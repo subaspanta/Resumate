@@ -76,7 +76,10 @@ function ReviewTextRow({
           text
         )}
       </span>
-      {onGenerateSuggestions && !isHighlighted && (
+      {/* min 10 mirrors the backend's originalBullet bound — without it the
+          button renders on stub text and the request 400s with no way for the
+          user to make the retry succeed. */}
+      {onGenerateSuggestions && !isHighlighted && text.trim().length >= 10 && (
         <GenerateSuggestionsButton
           isGenerating={generatingKey === entryKey}
           onClick={() =>
