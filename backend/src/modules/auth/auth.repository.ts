@@ -21,7 +21,7 @@ export class AuthRepository {
       },
     });
   }
-  async findSafeUserById(id: string): Promise<SafeUser | null> {
+  async findUserByIdOmittingPassword(id: string): Promise<SafeUser | null> {
     return prisma.user.findUnique({
       where: { id },
       select: {
@@ -54,7 +54,7 @@ export class AuthRepository {
   /** Atomically revokes a single token iff it's still live. Returns false if
    *  it was already revoked — either by a concurrent request winning the
    *  race, or by reuse of a previously-rotated token. */
-  async claimRefreshToken(id: string): Promise<boolean> {
+  async revokeRefreshTokenIfLive(id: string): Promise<boolean> {
     const result = await prisma.refreshToken.updateMany({
       where: { id, revokedAt: null },
       data: { revokedAt: new Date() },

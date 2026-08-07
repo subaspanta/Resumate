@@ -17,7 +17,7 @@ import {
   stateToLayoutKey,
 } from "@/src/features/resume/resume.utils";
 import { useAuth } from "@/src/features/auth/auth.hooks";
-import { useResumeDelete } from "@/src/components/dashboard/use-resume-delete";
+import { useDeleteResumeFlow } from "@/src/components/dashboard/use-resume-delete";
 
 interface DashboardContentProps {
   dashboardState: DashboardState;
@@ -75,9 +75,9 @@ export function DashboardContent({
 }: DashboardContentProps) {
   const { user } = useAuth();
   // Owned here, not in the per-state content components: both readyToStart and
-  // workspaceReady render a resume list, and a second useResumeDelete() would
-  // mint a duplicate mutation observer over the same cache key.
-  const { handleDelete, deletingId } = useResumeDelete();
+  // workspaceReady render a resume list, and a second useDeleteResumeFlow()
+  // would mint a duplicate mutation observer over the same cache key.
+  const { handleDelete, deletingId } = useDeleteResumeFlow();
 
   if (isLoading) {
     return (

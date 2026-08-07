@@ -129,14 +129,16 @@ export class AuthService {
     // (reuse — theft signal) or a concurrent request won a genuine race.
     // Both are indistinguishable at the DB layer, so both revoke the whole
     // family — the standard, accepted tradeoff of refresh-token rotation.
-    const claimed = await this.authRepository.claimRefreshToken(stored.id);
+    const claimed = await this.authRepository.revokeRefreshTokenIfLive(
+      stored.id,
+    );
 
     if (!claimed) {
       await this.authRepository.revokeFamily(stored.familyId);
       this.throwInvalidRefreshToken();
     }
 
-    const user = await this.authRepository.findSafeUserById(payload.sub);
+    const user = await this.authRepository.findUserByIdOmittingPassword(payload.sub);
 
     if (!user) {
       this.throwInvalidRefreshToken();
@@ -156,7 +158,7 @@ export class AuthService {
     );
   }
   async getCurrentUser(userId: string): Promise<SafeUser> {
-    const user = await this.authRepository.findSafeUserById(userId);
+    const user = await this.authRepository.findUserByIdOmittingPassword(userId);
 
     if (!user) {
       throw new AppError(404, ERROR_CODES.RESOURCE_NOT_FOUND, "User not found");

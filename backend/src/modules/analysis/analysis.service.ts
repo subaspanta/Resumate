@@ -6,7 +6,7 @@ import { HTTP_STATUS } from "../../constants/http-status.js";
 import { Analysis, Prisma, Suggestion } from "../../generated/client/index.js";
 import {
   AnalysisResult,
-  GetRewriteSuggestionsInput,
+  GenerateRewriteSuggestionsInput,
   JobParserAgent,
   ParsedJob,
   RewriteAgent,
@@ -86,11 +86,11 @@ export class AnalysisService {
 
   // Persisting step — verifies ownership, runs the rewrite agent (validator runs
   // internally), and saves the surviving suggestions as pending rows.
-  async getRewriteSuggestions(
+  async generateRewriteSuggestions(
     userId: string,
-    input: GetRewriteSuggestionsInput,
+    input: GenerateRewriteSuggestionsInput,
   ): Promise<Suggestion[]> {
-    const analysis = await this.analysisRepository.getAnalysisWithSuggestions(
+    const analysis = await this.analysisRepository.findAnalysisWithSuggestions(
       input.analysisId,
     );
     if (!analysis || analysis.userId !== userId) {
@@ -175,7 +175,7 @@ export class AnalysisService {
 
   async deleteAnalysis(userId: string, analysisId: string): Promise<void> {
     const analysis =
-      await this.analysisRepository.getAnalysisWithSuggestions(analysisId);
+      await this.analysisRepository.findAnalysisWithSuggestions(analysisId);
     if (!analysis || analysis.userId !== userId) {
       throw new AppError(
         HTTP_STATUS.NOT_FOUND,
@@ -232,7 +232,7 @@ export class AnalysisService {
     Analysis & { suggestions: Suggestion[]; skillsMatch: SkillsMatch }
   > {
     const analysis =
-      await this.analysisRepository.getAnalysisWithSuggestions(analysisId);
+      await this.analysisRepository.findAnalysisWithSuggestions(analysisId);
     if (!analysis || analysis.userId !== userId) {
       throw new AppError(
         HTTP_STATUS.NOT_FOUND,
@@ -267,7 +267,7 @@ export class AnalysisService {
   //
   // Lives in the analyses service (not resumes) because the merge depends on
   // analysis-derived suggestions, though it operates on a resume resource.
-  async getMergedResume(
+  async mergeAcceptedSuggestions(
     userId: string,
     resumeId: string,
   ): Promise<StructuredResume> {
@@ -291,20 +291,20 @@ export class AnalysisService {
     // the raw JSON the merge operates on.
     const merged = normalizeStructuredResume(
       this.applySuggestions(resume.structuredResume, applied),
-      { resumeId, source: "getMergedResume" },
+      { resumeId, source: "mergeAcceptedSuggestions" },
     );
     return filterVisibleSections(merged, resume.enabledSections);
   }
 
-  // Ownership check happens inside getMergedResume — kept as a separate
-  // method (not folded into getMergedResume itself) so the write is an
+  // Ownership check happens inside mergeAcceptedSuggestions — kept as a separate
+  // method (not folded into mergeAcceptedSuggestions itself) so the write is an
   // explicit, visible step at the export call site rather than a hidden
   // side effect of a read-named method.
   async exportResume(
     userId: string,
     resumeId: string,
   ): Promise<StructuredResume> {
-    const merged = await this.getMergedResume(userId, resumeId);
+    const merged = await this.mergeAcceptedSuggestions(userId, resumeId);
     await this.analysisRepository.markLatestExported(resumeId);
     return merged;
   }

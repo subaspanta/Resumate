@@ -63,7 +63,7 @@ describe("buildResumeDefinition — projects section", () => {
   });
 });
 
-// A legacy row reaches the PDF builder only through getMergedResume, which
+// A legacy row reaches the PDF builder only through mergeAcceptedSuggestions, which
 // normalizes first. This asserts the pair actually holds: without the
 // normalizer, `for (const bullet of exp.bullets)` throws on these rows.
 describe("buildResumeDefinition — skills section", () => {

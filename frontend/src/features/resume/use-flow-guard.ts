@@ -7,9 +7,9 @@ import { isApiError } from "@/src/api/api-error";
 import { useResume } from "./resume.hooks";
 
 // Gates the job-description step: without a resume there's nothing to tailor.
-// Same 404-means-missing-or-foreign contract as useRequireAnalysis, and the
+// Same 404-means-missing-or-foreign contract as useAnalysisGuard, and the
 // same rule that only a 404 redirects.
-export function useRequireResume(resumeId: string) {
+export function useResumeGuard(resumeId: string) {
   const { resume, isLoading, isError, error } = useResume(resumeId);
   const router = useRouter();
 

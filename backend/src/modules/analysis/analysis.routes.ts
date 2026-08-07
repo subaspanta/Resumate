@@ -4,7 +4,7 @@ import { requireAuth } from "../../middleware/requireAuth.js";
 import { aiRateLimit } from "../../middleware/ai-rate-limit.js";
 import {
   createAnalysisInputSchema,
-  getRewriteSuggestionsInputSchema,
+  generateRewriteSuggestionsInputSchema,
   updateSuggestionStatusInputSchema,
 } from "./analysis.types.js";
 import { analysisController } from "../../container.js";
@@ -23,8 +23,8 @@ router.post(
   "/rewrite-suggestions",
   requireAuth,
   aiRateLimit,
-  validateRequest(getRewriteSuggestionsInputSchema),
-  analysisController.getRewriteSuggestions,
+  validateRequest(generateRewriteSuggestionsInputSchema),
+  analysisController.generateRewriteSuggestions,
 );
 
 router.patch(
@@ -37,7 +37,7 @@ router.patch(
 router.get(
   "/resumes/:resumeId/merged",
   requireAuth,
-  analysisController.getMergedResume,
+  analysisController.mergeAcceptedSuggestions,
 );
 
 router.get("/:id", requireAuth, analysisController.getAnalysisById);

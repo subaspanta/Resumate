@@ -67,7 +67,7 @@ export class ResumeService {
     };
   }
 
-  private async verifyFileType(buffer: Buffer): Promise<string> {
+  private async detectAndValidateFileType(buffer: Buffer): Promise<string> {
     const detected = await fileTypeFromBuffer(buffer);
 
     if (!detected || !ALLOWED_MIME_TYPES.has(detected.mime)) {
@@ -93,7 +93,9 @@ export class ResumeService {
       );
     }
 
-    const verifiedMimeType = await this.verifyFileType(file.buffer);
+    const verifiedMimeType = await this.detectAndValidateFileType(
+      file.buffer,
+    );
 
     const [storageOutcome, parsingOutcome] = await Promise.allSettled([
       this.storageModule.saveFile(file.buffer),

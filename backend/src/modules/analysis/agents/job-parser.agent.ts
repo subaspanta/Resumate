@@ -29,7 +29,7 @@ const PARSED_JOB_SCHEMA = {
 export class JobParserAgentService implements JobParserAgent {
   async parseJobDescription(rawText: string): Promise<ParsedJob> {
     const responseText = await this.callGemini(rawText);
-    return this.parseAndValidate(responseText);
+    return this.parseJobResponse(responseText);
   }
 
   private buildPrompt(rawText: string): string {
@@ -67,7 +67,7 @@ ${rawText}`;
     }
   }
 
-  private parseAndValidate(responseText: string): ParsedJob {
+  private parseJobResponse(responseText: string): ParsedJob {
     let parsed: unknown;
     try {
       parsed = JSON.parse(responseText);

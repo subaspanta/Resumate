@@ -60,7 +60,7 @@ export interface Analysis extends AnalysisSummary {
   analysisResult: AnalysisResult;
   suggestions: Suggestion[];
   skillsMatch: SkillsMatch;
-  // getAnalysisWithSuggestions uses Prisma `include`, so every column ships,
+  // findAnalysisWithSuggestions uses Prisma `include`, so every column ships,
   // this one among them.
   exportedAt: string | null;
 }
@@ -92,7 +92,7 @@ export interface RewriteSuggestionsInput {
 // state, not an analysisId.
 export interface GenerateSuggestionsInput {
   section: SuggestionSection;
-  originalText: string;
+  originalBullet: string;
   key: string;
 }
 

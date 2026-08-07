@@ -4,7 +4,7 @@ import { use, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { FileEdit } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRequireResume } from "@/src/features/resume/use-flow-guard";
+import { useResumeGuard } from "@/src/features/resume/use-flow-guard";
 import { useCreateAnalysisFlow } from "@/src/components/workspace/use-create-analysis-flow";
 import { ResumeContextCard } from "@/src/components/workspace/ResumeContextCard";
 import { JobInputForm } from "@/src/components/workspace/JobInputForm";
@@ -30,8 +30,9 @@ export default function WorkspacePage({
     isLoading: resumeLoading,
     isError,
     isRedirecting,
-  } = useRequireResume(resumeId);
-  const { submitJobDescription, isAnalyzing } = useCreateAnalysisFlow(resumeId);
+  } = useResumeGuard(resumeId);
+  const { submitJobDescription, isCreatingAnalysis } =
+    useCreateAnalysisFlow(resumeId);
 
   const handleNavigateStep = useCallback(
     (step: string) => {
@@ -95,13 +96,13 @@ export default function WorkspacePage({
         </div>
 
         <JobInputForm
-          isSubmitting={isAnalyzing}
+          isSubmitting={isCreatingAnalysis}
           isDisabled={resumeLoading || !resume}
           onSubmit={submitJobDescription}
         />
       </section>
 
-      {isAnalyzing && <AnalyzingOverlay />}
+      {isCreatingAnalysis && <AnalyzingOverlay />}
     </AppShell>
   );
 }

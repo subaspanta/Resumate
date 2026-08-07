@@ -18,7 +18,7 @@ import { useAnalysis } from "./analysis.hooks";
 // Only 404 redirects. A 500 or a network drop is a transient failure, not a
 // skipped step — those keep the page's inline retry affordance. 401 is already
 // handled by the axios refresh interceptor and AuthProvider.
-export function useRequireAnalysis(analysisId: string) {
+export function useAnalysisGuard(analysisId: string) {
   const { analysis, isLoading, isError, error } = useAnalysis(analysisId);
   const router = useRouter();
 

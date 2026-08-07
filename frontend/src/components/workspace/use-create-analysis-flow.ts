@@ -7,7 +7,7 @@ import { useCreateAnalysis } from "@/src/features/analysis/analysis.hooks";
 
 /**
  * Mutation + error mapping + navigation for the job-description step, mirroring
- * useResumeUpload on the dashboard. Both steps do the same shape of work, so
+ * useUploadResumeFlow on the dashboard. Both steps do the same shape of work, so
  * they're extracted the same way rather than one being inline in its route.
  */
 export function useCreateAnalysisFlow(resumeId: string) {
@@ -42,6 +42,6 @@ export function useCreateAnalysisFlow(resumeId: string) {
 
   return {
     submitJobDescription,
-    isAnalyzing: createAnalysis.isPending,
+    isCreatingAnalysis: createAnalysis.isPending,
   };
 }

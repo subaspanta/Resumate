@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMergedResume } from "@/src/features/analysis/analysis.hooks";
-import { useRequireAnalysis } from "@/src/features/analysis/use-flow-guard";
+import { useAnalysisGuard } from "@/src/features/analysis/use-flow-guard";
 import { useReviewHistory } from "@/src/components/analysis/use-review-history";
 import { useGenerateSuggestions } from "@/src/components/analysis/use-generate-suggestions";
 import { useDocumentViewer } from "@/src/components/workspace/use-document-viewer";
@@ -34,7 +34,7 @@ export default function AnalysisPage({
   const router = useRouter();
 
   const { analysis, isLoading, isError, isRedirecting } =
-    useRequireAnalysis(analysisId);
+    useAnalysisGuard(analysisId);
   const [mutatingId, setMutatingId] = useState<string | null>(null);
 
   const parsedJob = analysis?.parsedJob as ParsedJob | undefined;

@@ -66,7 +66,7 @@ export class RewriteAgentService implements RewriteAgent {
     validate: (original: string, rewrite: string) => RewriteValidationResult,
   ): Promise<RewriteOutput> {
     const responseText = await this.callGemini(prompt, label);
-    const parsed = this.parseAndValidate(responseText);
+    const parsed = this.parseRewriteResponse(responseText);
 
     const survivors = parsed.suggestions.filter(
       (suggestion) => validate(input.originalBullet, suggestion).valid,
@@ -248,7 +248,7 @@ ${this.buildContextBlock(input)}`;
     }
   }
 
-  private parseAndValidate(responseText: string): RewriteOutput {
+  private parseRewriteResponse(responseText: string): RewriteOutput {
     let parsed: unknown;
     try {
       parsed = JSON.parse(responseText);

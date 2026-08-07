@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import type { DashboardState } from "@/src/features/resume/types";
 import { deriveDashboardState } from "@/src/features/resume/resume.utils";
 import { useResumes } from "@/src/features/resume/resume.hooks";
-import { useResumeUpload } from "@/src/components/dashboard/use-resume-upload";
+import { useUploadResumeFlow } from "@/src/components/dashboard/use-resume-upload";
 import { DashboardContent } from "@/src/components/dashboard/DashboardContent";
 
 export default function HomePage() {
@@ -18,7 +18,8 @@ export default function HomePage() {
     isError: resumesError,
   } = useResumes();
 
-  const { handleFileSelected, triggerUpload, isUploading } = useResumeUpload();
+  const { handleFileSelected, triggerUpload, isUploading } =
+    useUploadResumeFlow();
 
   const dashboardState: DashboardState = useMemo(() => {
     return deriveDashboardState({

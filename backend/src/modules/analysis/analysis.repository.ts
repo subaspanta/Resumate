@@ -144,7 +144,7 @@ export class AnalysisRepository {
     );
   }
 
-  async getAnalysisWithSuggestions(
+  async findAnalysisWithSuggestions(
     analysisId: string,
   ): Promise<(Analysis & { suggestions: Suggestion[] }) | null> {
     return prisma.analysis.findUnique({

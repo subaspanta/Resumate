@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { isApiError } from "@/src/api/api-error";
 import { useUploadResume } from "@/src/features/resume/resume.hooks";
 
-export function useResumeUpload() {
+export function useUploadResumeFlow() {
   const router = useRouter();
   const uploadResumeMutation = useUploadResume();
 

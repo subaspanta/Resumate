@@ -266,7 +266,7 @@ describe("normalizeStructuredResume — logging", () => {
         experience: [{ title: "Engineer", description: "Legacy paragraph." }],
         skills: ["Python", "Django"],
       },
-      { resumeId: "resume-123", source: "getMergedResume" },
+      { resumeId: "resume-123", source: "mergeAcceptedSuggestions" },
     );
 
     expect(warn).toHaveBeenCalledTimes(1);
@@ -274,7 +274,7 @@ describe("normalizeStructuredResume — logging", () => {
     expect(message).toBe("Repaired malformed stored resume JSON");
     expect(meta).toMatchObject({
       resumeId: "resume-123",
-      source: "getMergedResume",
+      source: "mergeAcceptedSuggestions",
     });
     expect(meta.repairs).toContain("experience[0].bullets:legacy-description");
     expect(meta.repairs).toContain("skills:legacy-flat-array");

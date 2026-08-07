@@ -56,7 +56,7 @@ export const suggestionSectionSchema = z.enum(["bullet", "project", "summary"]);
 // Client-facing request shape — deliberately excludes job/user context.
 // Those come from the analysis row itself (parsedJob), fetched server-side
 // in the service, so a client can't send stale or spoofed context.
-export const getRewriteSuggestionsInputSchema = z.object({
+export const generateRewriteSuggestionsInputSchema = z.object({
   analysisId: z.string().uuid(),
   section: suggestionSectionSchema.default("bullet"),
   originalBullet: z
@@ -83,8 +83,8 @@ export type JobContext = z.infer<typeof jobContextSchema>;
 export type RewriteBulletInput = z.infer<typeof rewriteBulletInputSchema>;
 export type RewriteOutput = z.infer<typeof rewriteOutputSchema>;
 export type CreateAnalysisInput = z.infer<typeof createAnalysisInputSchema>;
-export type GetRewriteSuggestionsInput = z.infer<
-  typeof getRewriteSuggestionsInputSchema
+export type GenerateRewriteSuggestionsInput = z.infer<
+  typeof generateRewriteSuggestionsInputSchema
 >;
 export type UpdateSuggestionStatusInput = z.infer<
   typeof updateSuggestionStatusInputSchema

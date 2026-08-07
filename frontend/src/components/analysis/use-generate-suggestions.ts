@@ -8,7 +8,7 @@ import type { GenerateSuggestionsInput } from "@/src/features/analysis/types";
 
 /**
  * On-demand AI rewrite for a single bullet, project, or summary. Mutation plus
- * error mapping, matching how useCreateAnalysisFlow and useResumeUpload handle
+ * error mapping, matching how useCreateAnalysisFlow and useUploadResumeFlow handle
  * the same rate-limit codes on the other two steps.
  */
 export function useGenerateSuggestions(analysisId: string) {
@@ -21,7 +21,7 @@ export function useGenerateSuggestions(analysisId: string) {
       {
         analysisId,
         section: input.section,
-        originalBullet: input.originalText,
+        originalBullet: input.originalBullet,
       },
       {
         onError: (error) => {

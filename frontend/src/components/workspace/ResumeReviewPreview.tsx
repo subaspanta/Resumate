@@ -83,7 +83,7 @@ function ReviewTextRow({
         <GenerateSuggestionsButton
           isGenerating={generatingKey === entryKey}
           onClick={() =>
-            onGenerateSuggestions({ section, originalText: text, key: entryKey })
+            onGenerateSuggestions({ section, originalBullet: text, key: entryKey })
           }
         />
       )}

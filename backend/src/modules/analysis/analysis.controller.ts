@@ -27,7 +27,7 @@ export class AnalysisController {
     }
   };
 
-  getRewriteSuggestions = async (
+  generateRewriteSuggestions = async (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -35,7 +35,7 @@ export class AnalysisController {
     try {
       const userId = req.user!.sub;
       const { analysisId, section, originalBullet } = req.body;
-      const data = await this.analysisService.getRewriteSuggestions(userId, {
+      const data = await this.analysisService.generateRewriteSuggestions(userId, {
         analysisId,
         section,
         originalBullet,
@@ -151,7 +151,7 @@ export class AnalysisController {
     }
   };
 
-  getMergedResume = async (
+  mergeAcceptedSuggestions = async (
     req: Request<{ resumeId: string }>,
     res: Response,
     next: NextFunction,
@@ -159,7 +159,7 @@ export class AnalysisController {
     try {
       const userId = req.user!.sub;
       const { resumeId } = req.params;
-      const merged = await this.analysisService.getMergedResume(
+      const merged = await this.analysisService.mergeAcceptedSuggestions(
         userId,
         resumeId,
       );
