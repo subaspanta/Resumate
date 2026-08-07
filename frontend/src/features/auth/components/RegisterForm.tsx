@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/src/features/auth";
+import { useAuth } from "@/src/features/auth/auth.hooks";
 import { isApiError } from "@/src/api/api-error";
 import { toast } from "sonner";
 import { AuthFormField } from "./AuthFormField";
@@ -53,11 +53,17 @@ export function RegisterForm() {
           });
           toast.error("Registration failed: Email already registered.");
         } else if (error.code === "VALIDATION_FAILED") {
-          toast.error("Registration failed: Please correct the highlighted fields.");
+          toast.error(
+            "Registration failed: Please correct the highlighted fields.",
+          );
         } else if (error.status === 0) {
-          toast.error("Registration failed. Please check your network connection.");
+          toast.error(
+            "Registration failed. Please check your network connection.",
+          );
         } else {
-          toast.error(error.message || "Registration failed. Please try again.");
+          toast.error(
+            error.message || "Registration failed. Please try again.",
+          );
         }
       } else {
         toast.error("Registration failed. Please try again.");

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAuth } from "@/src/features/auth";
+import { useAuth } from "@/src/features/auth/auth.hooks";
 import { AuthLoading } from "./auth-loading";
 import { AuthError } from "./auth-error";
 

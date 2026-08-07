@@ -5,6 +5,7 @@ import { authApi } from "./auth.service";
 import { type LoginInput, type RegisterInput, type SafeUser } from "./types";
 import { isApiError } from "@/src/api/api-error";
 import { queryKeys } from "@/src/lib/query-keys";
+import { defaultQueryRetry } from "@/src/lib/query-client";
 
 export function useAuth() {
   const queryClient = useQueryClient();
@@ -26,12 +27,10 @@ export function useAuth() {
         throw err;
       }
     },
+    // Deliberately longer than DEFAULT_STALE_TIME — the session identity
+    // changes far less often than resume or analysis data.
     staleTime: 1000 * 60 * 10,
-    retry: (failureCount, err) => {
-      // Don't retry auth failures — only retry real transient errors.
-      if (isApiError(err) && err.status === 401) return false;
-      return failureCount < 2;
-    },
+    retry: defaultQueryRetry,
   });
 
   const isAuthenticated = !!user;

@@ -145,101 +145,63 @@
     color: var(--color-primary);
   }
 
-  .dashboard-open-btn .material-symbols-outlined {
+  .dashboard-open-btn svg {
     transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .dashboard-open-btn:hover .material-symbols-outlined {
+  .dashboard-open-btn:hover svg {
     transform: translateX(3px);
   }
 
-  /* Score badges */
-  .dashboard-score {
+  /* Destructive, so it stays muted until the row is hovered or the button
+     itself is focused — present when wanted, not competing with the primary
+     "Open Workspace" action the rest of the time. */
+  .dashboard-resume-delete-btn {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-  }
-
-  .dashboard-score-label {
-    font-family: var(--font-mono-label);
-    font-size: var(--text-mono-label);
-    font-weight: 500;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: var(--spacing-xs);
-  }
-
-  /* Resume table (active state) */
-  .dashboard-table-panel {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-base);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-
-  .dashboard-table {
-    width: 100%;
-    text-align: left;
-    border-collapse: collapse;
-  }
-
-  .dashboard-table thead tr {
-    border-bottom: 1px solid var(--color-border-base);
-    background-color: var(--color-canvas);
-  }
-
-  .dashboard-table th {
-    padding: var(--spacing-md);
-    font-family: var(--font-mono-label);
-    font-size: var(--text-mono-label);
-    font-weight: 500;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .dashboard-table th:last-child {
-    text-align: right;
-  }
-
-  .dashboard-table tbody tr {
-    border-bottom: 1px solid var(--color-border-base);
-    transition: background-color 150ms ease-out;
-  }
-
-  .dashboard-table tbody tr:last-child {
-    border-bottom: 0;
-  }
-
-  .dashboard-table tbody tr:hover {
-    background-color: var(--color-canvas);
-  }
-
-  .dashboard-table td {
-    padding: var(--spacing-md);
-  }
-
-  .dashboard-table td:last-child {
-    text-align: right;
-  }
-
-  .dashboard-table-action {
-    display: inline-flex;
     align-items: center;
-    gap: var(--spacing-xs);
-    font-family: var(--font-label-std);
-    font-size: var(--text-label-std);
-    font-weight: 500;
-    color: var(--color-primary);
-    text-decoration: none;
-    background: transparent;
+    justify-content: center;
+    padding: var(--spacing-xs);
     border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text-muted);
     cursor: pointer;
-    transition: all 150ms ease-out;
+    opacity: 0;
+    transition:
+      opacity 150ms ease-out,
+      color 150ms ease-out,
+      background-color 150ms ease-out;
   }
 
-  .dashboard-table-action:hover {
-    text-decoration: underline;
+  .dashboard-resume-row:hover .dashboard-resume-delete-btn,
+  .dashboard-resume-delete-btn:focus-visible {
+    opacity: 1;
+  }
+
+  .dashboard-resume-delete-btn:hover {
+    color: var(--color-danger);
+    background-color: var(--color-canvas);
+  }
+
+  .dashboard-resume-delete-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  /* Touch devices have no hover, so the control would otherwise be
+     permanently invisible. */
+  @media (hover: none) {
+    .dashboard-resume-delete-btn {
+      opacity: 1;
+    }
+  }
+
+  .dashboard-resume-delete-confirm {
+    background-color: var(--color-danger);
+    color: var(--color-surface);
+  }
+
+  .dashboard-resume-delete-confirm:hover {
+    opacity: 0.9;
   }
 }

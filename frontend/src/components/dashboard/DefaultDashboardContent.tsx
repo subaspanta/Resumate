@@ -1,44 +1,33 @@
 "use client";
 
-import { UploadDropzone } from "@/src/components/UploadDropZone";
-import { RecentResumesSection } from "@/src/components/RecentResumeSection";
-import {
-  getGreetingName,
-  getTimeGreeting,
-  type ResumeSummary,
-} from "@/src/features/resume/types";
+import { UploadDropzone } from "@/src/components/dashboard/UploadDropZone";
+import { RecentResumesSection } from "@/src/components/dashboard/RecentResumesSection";
+import type { ResumeSummary } from "@/src/features/resume/types";
 
 interface DefaultDashboardContentProps {
-  userName?: string;
   resumes: ResumeSummary[];
   onFileSelected: (file: File) => void;
   onOpenResume: (id: string) => void;
   onViewAll: () => void;
   isUploading?: boolean;
+  // Delete is owned by DashboardContent so both dashboard states share one
+  // mutation observer — calling useResumeDelete here too would mint a second
+  // one over the same cache key.
+  onResumeDelete?: (id: string, title: string) => void;
+  deletingId?: string;
 }
 
 export function DefaultDashboardContent({
-  userName,
   resumes,
   onFileSelected,
   onOpenResume,
   onViewAll,
   isUploading,
+  onResumeDelete,
+  deletingId,
 }: DefaultDashboardContentProps) {
-  const greeting = getTimeGreeting();
-  const firstName = getGreetingName(userName);
-
   return (
     <div className="dashboard-main-inner">
-      <section className="dashboard-section-header">
-        <h1 className="dashboard-welcome-title">
-          {greeting}, {firstName}.
-        </h1>
-        <p className="dashboard-welcome-subtitle">
-          Continue improving your resume or start a new workspace from scratch.
-        </p>
-      </section>
-
       <UploadDropzone
         onFileSelected={onFileSelected}
         variant="default"
@@ -49,6 +38,8 @@ export function DefaultDashboardContent({
         resumes={resumes}
         onOpenResume={onOpenResume}
         onViewAll={onViewAll}
+        onDeleteResume={onResumeDelete}
+        deletingId={deletingId}
       />
     </div>
   );

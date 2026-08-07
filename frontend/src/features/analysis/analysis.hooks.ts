@@ -13,45 +13,10 @@ import type {
 import type { StructuredResume } from "@/src/features/resume/types";
 import { isApiError } from "@/src/api/api-error";
 import { queryKeys } from "@/src/lib/query-keys";
-
-// Unused — no current caller. Backend route (GET /resumes/:resumeId/latest-analysis)
-// still exists, so this can come back if a "continue last analysis" flow is added.
-// export function useLatestAnalysis(resumeId: string) {
-//   const {
-//     data: analysis,
-//     isLoading,
-//     isError,
-//     error,
-//   } = useQuery<Analysis | null>({
-//     queryKey: queryKeys.analysis.latest(resumeId),
-//     queryFn: async () => {
-//       try {
-//         const response = await analysisApi.latest(resumeId);
-//         return response?.data?.data ?? null;
-//       } catch (err) {
-//         if (isApiError(err) && err.status === 404) {
-//           return null;
-//         }
-//         throw err;
-//       }
-//     },
-//     staleTime: 1000 * 60 * 5,
-//     retry: (failureCount, err) => {
-//       if (isApiError(err) && (err.status === 401 || err.status === 404)) {
-//         return false;
-//       }
-//       return failureCount < 2;
-//     },
-//     enabled: !!resumeId,
-//   });
-//
-//   return {
-//     analysis,
-//     isLoading,
-//     isError,
-//     error: isApiError(error) ? error : null,
-//   };
-// }
+import {
+  DEFAULT_STALE_TIME,
+  defaultQueryRetry,
+} from "@/src/lib/query-client";
 
 export function useAnalysis(id: string) {
   const {
@@ -65,11 +30,8 @@ export function useAnalysis(id: string) {
       const response = await analysisApi.get(id);
       return response?.data?.data as Analysis;
     },
-    staleTime: 1000 * 60 * 5,
-    retry: (failureCount, err) => {
-      if (isApiError(err) && err.status === 401) return false;
-      return failureCount < 2;
-    },
+    staleTime: DEFAULT_STALE_TIME,
+    retry: defaultQueryRetry,
     enabled: !!id,
   });
 
@@ -80,36 +42,6 @@ export function useAnalysis(id: string) {
     error: isApiError(error) ? error : null,
   };
 }
-
-// Unused — no current caller. Backend route (GET /resumes/:resumeId/analyses)
-// still exists, so this can come back if a per-resume analysis history view is added.
-// export function useAnalysisHistory(resumeId: string) {
-//   const {
-//     data: analyses = [],
-//     isLoading,
-//     isError,
-//     error,
-//   } = useQuery<AnalysisSummary[]>({
-//     queryKey: queryKeys.analysis.history(resumeId),
-//     queryFn: async () => {
-//       const response = await analysisApi.history(resumeId);
-//       return response?.data?.data ?? [];
-//     },
-//     staleTime: 1000 * 60 * 5,
-//     retry: (failureCount, err) => {
-//       if (isApiError(err) && err.status === 401) return false;
-//       return failureCount < 2;
-//     },
-//     enabled: !!resumeId,
-//   });
-//
-//   return {
-//     analyses,
-//     isLoading,
-//     isError,
-//     error: isApiError(error) ? error : null,
-//   };
-// }
 
 // Only meaningful once at least one suggestion has been applied — callers
 // gate `enabled` on that so the preview falls back to the analysis's frozen
@@ -126,10 +58,7 @@ export function useMergedResume(resumeId: string, enabled: boolean) {
       const response = await analysisApi.merged(resumeId);
       return response?.data?.data?.structuredResume;
     },
-    retry: (failureCount, err) => {
-      if (isApiError(err) && err.status === 401) return false;
-      return failureCount < 2;
-    },
+    retry: defaultQueryRetry,
     enabled: enabled && !!resumeId,
   });
 
@@ -155,29 +84,12 @@ export function useCreateAnalysis() {
       // state for the full 5-minute staleTime after an analysis is created.
       //
       // The analysis latest/history keys are deliberately not invalidated:
-      // the hooks that read them are commented out, so those calls would be
-      // no-ops that read as though they do something.
+      // nothing reads them, so invalidating would be a no-op that reads as
+      // though it does something.
       queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
     },
   });
 }
-
-// Unused — no current caller. Backend route (DELETE /analyses/:id) still
-// exists, so this can come back if a delete-analysis action is added to the UI.
-// export function useDeleteAnalysis() {
-//   const queryClient = useQueryClient();
-//
-//   return useMutation({
-//     mutationFn: async (id: string) => {
-//       await analysisApi.remove(id);
-//       return id;
-//     },
-//     onSuccess: () => {
-//       // Invalidate all analysis queries since we don't know which resume was affected
-//       queryClient.invalidateQueries({ queryKey: queryKeys.analysis.all() });
-//     },
-//   });
-// }
 
 export function useRewriteSuggestions(analysisId: string) {
   const queryClient = useQueryClient();

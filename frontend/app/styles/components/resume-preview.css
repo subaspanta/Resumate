@@ -160,28 +160,4 @@
     flex-shrink: 0;
   }
 
-  .resume-preview-skills-matched {
-    font-weight: 600;
-    color: var(--color-primary);
-  }
-
-  .resume-preview-skills-missing {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-  }
-
-  .resume-preview-skills-missing-label {
-    font-family: var(--font-mono-label);
-    font-size: var(--text-mono-label);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-  }
-
-  .resume-preview-skills-missing-list {
-    font-family: var(--font-body-md);
-    font-size: var(--text-body-md);
-    color: var(--color-text-body);
-  }
 }

@@ -22,7 +22,7 @@ export function AuthFooterPrompt({
     <p
       className={cn(
         "auth-footer-prompt",
-        variant === "login" && "auth-footer-prompt--login",
+        `auth-footer-prompt--${variant}`,
         className,
       )}
     >

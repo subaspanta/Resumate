@@ -1,27 +1,23 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/src/features/auth";
 import { toast } from "sonner";
-import {
-  deriveDashboardState,
-  type DashboardState,
-} from "@/src/features/resume/types";
+import type { DashboardState } from "@/src/features/resume/types";
+import { deriveDashboardState } from "@/src/features/resume/resume.utils";
 import { useResumes } from "@/src/features/resume/resume.hooks";
 import { useResumeUpload } from "@/src/components/dashboard/use-resume-upload";
 import { DashboardContent } from "@/src/components/dashboard/DashboardContent";
 
 export default function HomePage() {
-  const { user } = useAuth();
   const router = useRouter();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const {
     resumes,
     isLoading: resumesLoading,
     isError: resumesError,
   } = useResumes();
+
   const { handleFileSelected, triggerUpload, isUploading } = useResumeUpload();
 
   const dashboardState: DashboardState = useMemo(() => {
@@ -46,9 +42,6 @@ export default function HomePage() {
     <DashboardContent
       dashboardState={dashboardState}
       isLoading={resumesLoading}
-      isSidebarCollapsed={isSidebarCollapsed}
-      onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
-      userName={user?.name}
       resumes={resumes}
       primaryResume={primaryResume}
       isUploading={isUploading}

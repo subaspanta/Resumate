@@ -1,8 +1,16 @@
 "use client";
 
-import { useAuth } from "@/src/features/auth";
+import {
+  ChevronLeft,
+  FileText,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  type LucideIcon,
+} from "lucide-react";
+import { useAuth } from "@/src/features/auth/auth.hooks";
 import { toast } from "sonner";
-import type { DashboardViewLayout } from "@/src/components/dashboard/shell/dashboardViewConfig";
+import type { DashboardViewLayout } from "@/src/components/dashboard/dashboardViewConfig";
 
 type SidebarLayout = Pick<
   DashboardViewLayout,
@@ -17,15 +25,21 @@ type SidebarLayout = Pick<
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
-  userName?: string;
   layout: SidebarLayout;
+  /**
+   * Which nav entry the current surface belongs to. The workspace and analysis
+   * pages are both "inside" the resume workspace, so they keep that item lit
+   * rather than falsely highlighting Dashboard.
+   */
+  activeNav?: "dashboard" | "workspace";
 }
 
 interface NavItemProps {
-  icon: string;
+  icon: LucideIcon;
   label: string;
   isCollapsed: boolean;
   isActive?: boolean;
+  /** Lucide has no fill axis, so an active item reads as heavier stroke. */
   isFilled?: boolean;
   disabled?: boolean;
   hint?: string;
@@ -34,7 +48,7 @@ interface NavItemProps {
 }
 
 function NavItem({
-  icon,
+  icon: Icon,
   label,
   isCollapsed,
   isActive,
@@ -55,12 +69,11 @@ function NavItem({
 
   const content = (
     <>
-      <span
-        className="material-symbols-outlined shrink-0"
-        style={isFilled ? { fontVariationSettings: "'FILL' 1" } : undefined}
-      >
-        {icon}
-      </span>
+      <Icon
+        className="size-6 shrink-0"
+        strokeWidth={isFilled ? 2.4 : 2}
+        aria-hidden="true"
+      />
       <span
         className={`dashboard-nav-label ${
           isCollapsed ? "dashboard-nav-label--collapsed" : ""
@@ -106,10 +119,14 @@ function NavItem({
 export function Sidebar({
   isCollapsed,
   onToggle,
-  userName,
   layout,
+  activeNav = "dashboard",
 }: SidebarProps) {
-  const { logout, isLoggingOut } = useAuth();
+  // Read the signed-in user here rather than taking it as a prop: this
+  // component already depends on useAuth for logout, and the dashboard used to
+  // drill the same name down three levels to reach it.
+  const { user, logout, isLoggingOut } = useAuth();
+  const userName = user?.name;
   const showCollapse = layout.sidebarCollapsible;
   const collapsed = showCollapse && isCollapsed;
 
@@ -139,12 +156,11 @@ export function Sidebar({
       >
         {layout.sidebarShowBrandIcon && (
           <span className="dashboard-sidebar-brand-icon">
-            <span
-              className="material-symbols-outlined text-primary text-[28px]"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              description
-            </span>
+            <FileText
+              className="size-7 text-primary"
+              strokeWidth={2.4}
+              aria-hidden="true"
+            />
           </span>
         )}
         <div
@@ -161,22 +177,25 @@ export function Sidebar({
 
       <nav className="dashboard-nav" aria-label="Main navigation">
         <NavItem
-          icon="dashboard"
+          icon={LayoutDashboard}
           label="Dashboard"
           isCollapsed={collapsed}
-          isActive
-          isFilled
+          isActive={activeNav === "dashboard"}
+          isFilled={activeNav === "dashboard"}
+          href="/"
         />
         <NavItem
-          icon="description"
+          icon={FileText}
           label="Resume Workspace"
           isCollapsed={collapsed}
+          isActive={activeNav === "workspace"}
+          isFilled={activeNav === "workspace"}
           disabled={layout.sidebarNavDisabled}
           hint={layout.sidebarNavHint}
           onClick={() => handleUnavailable("Resume Workspace")}
         />
         <NavItem
-          icon="settings"
+          icon={Settings}
           label="Settings"
           isCollapsed={collapsed}
           onClick={() => handleUnavailable("Settings")}
@@ -215,9 +234,7 @@ export function Sidebar({
             disabled={isLoggingOut}
             onClick={handleLogout}
           >
-            <span className="material-symbols-outlined text-[20px]">
-              logout
-            </span>
+            <LogOut className="size-5" aria-hidden="true" />
           </button>
         </div>
       </div>
@@ -229,14 +246,13 @@ export function Sidebar({
           aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           type="button"
         >
-          <span
-            className="material-symbols-outlined text-[18px]"
+          <ChevronLeft
+            className="size-[18px]"
             style={{
               transform: isCollapsed ? "rotate(180deg)" : "rotate(0deg)",
             }}
-          >
-            chevron_left
-          </span>
+            aria-hidden="true"
+          />
         </button>
       )}
     </aside>

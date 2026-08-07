@@ -349,54 +349,6 @@
     color: var(--color-text-muted);
   }
 
-  .auth-branding {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: var(--spacing-xl);
-    text-align: center;
-  }
-
-  .auth-branding-icon {
-    margin-bottom: var(--spacing-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius-lg);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-base);
-  }
-
-  .auth-branding-title {
-    font-family: var(--font-headline-lg);
-    font-size: var(--text-headline-lg);
-    font-weight: 600;
-    line-height: var(--text-headline-lg--line-height);
-    color: var(--color-primary);
-    letter-spacing: -0.025em;
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .auth-branding-headline {
-    font-family: var(--font-display-md);
-    font-size: var(--text-display-md);
-    font-weight: 600;
-    line-height: var(--text-display-md--line-height);
-    letter-spacing: var(--text-display-md--letter-spacing);
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-sm);
-    padding-inline: var(--spacing-md);
-  }
-
-  .auth-branding-subtitle {
-    font-family: var(--font-body-lg);
-    font-size: var(--text-body-lg);
-    line-height: var(--text-body-lg--line-height);
-    color: var(--color-text-body);
-    max-width: 360px;
-  }
 }
 
 @keyframes auth-fade-in {

@@ -1,16 +1,21 @@
 "use client";
 
-import { use } from "react";
+import { use, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, FileEdit } from "lucide-react";
-import { toast } from "sonner";
+import { FileEdit } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { isApiError } from "@/src/api/api-error";
 import { useRequireResume } from "@/src/features/resume/use-flow-guard";
-import { useCreateAnalysis } from "@/src/features/analysis/analysis.hooks";
+import { useCreateAnalysisFlow } from "@/src/components/workspace/use-create-analysis-flow";
 import { ResumeContextCard } from "@/src/components/workspace/ResumeContextCard";
 import { JobInputForm } from "@/src/components/workspace/JobInputForm";
+import { AnalyzingOverlay } from "@/src/components/workspace/AnalyzingOverlay";
 import { FlowRedirect } from "@/src/components/FlowRedirect";
+import { AppShell } from "@/src/components/layout/AppShell";
+
+const CRUMBS = [
+  { label: "Dashboard", href: "/" },
+  { label: "Job Description" },
+];
 
 export default function WorkspacePage({
   params,
@@ -23,92 +28,80 @@ export default function WorkspacePage({
   const {
     resume,
     isLoading: resumeLoading,
+    isError,
     isRedirecting,
   } = useRequireResume(resumeId);
-  const createAnalysis = useCreateAnalysis();
+  const { submitJobDescription, isAnalyzing } = useCreateAnalysisFlow(resumeId);
 
-  const handleSubmit = async (jobDescription: string) => {
-    try {
-      const result = await createAnalysis.mutateAsync({
-        resumeId,
-        jobDescription,
-      });
-      router.push(`/analysis/${result.analysisId}`);
-    } catch (error) {
-      if (isApiError(error) && error.code === "RATE_LIMIT_EXCEEDED") {
-        // Our own aiRateLimit (10 req / 5 min), not Gemini's — the server's
-        // message names the actual wait, so prefer it.
-        toast.error(error.message);
-        return;
-      }
-      if (isApiError(error) && error.code === "GEMINI_RATE_LIMITED") {
-        toast.error("AI is busy right now. Please try again in a moment.");
-        return;
-      }
-      const message =
-        error instanceof Error ? error.message : "Failed to start analysis";
-      toast.error(message);
-    }
-  };
+  const handleNavigateStep = useCallback(
+    (step: string) => {
+      if (step === "upload") router.push("/");
+    },
+    [router],
+  );
 
   if (isRedirecting) {
     return <FlowRedirect />;
   }
 
-  return (
-    <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-md py-2xl">
-      <div className="flex flex-col gap-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="-ml-2 w-fit text-muted-foreground"
-          onClick={() => router.push("/")}
-        >
-          <ArrowLeft />
-          Back
-        </Button>
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-3">
-            <div className="workspace-steps" aria-hidden="true">
-              <div className="workspace-step-dot workspace-step-dot--done" />
-              <div className="workspace-step-dot workspace-step-dot--current" />
-              <div className="workspace-step-dot" />
-            </div>
-            <span className="workspace-step-label">Step 2 of 3</span>
-          </div>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-            Add the Job Description
-          </h1>
-          <p className="text-muted-foreground">
-            Paste the full job description you&apos;re targeting. Your tailored
-            preview unlocks once it&apos;s analyzed.
+  // A non-404 failure (a 500, a dropped connection) leaves nothing to tailor
+  // against. Without this the JD form still renders, permanently disabled and
+  // unexplained. Mirrors the analysis page's error branch: stays inside the
+  // shell so the user keeps navigation.
+  if (isError) {
+    return (
+      <AppShell
+        step="job"
+        width="narrow"
+        crumbs={CRUMBS}
+        title="Add the Job Description"
+        onNavigateStep={handleNavigateStep}
+      >
+        <div className="analysis-error">
+          <p className="analysis-error-message">
+            We couldn&apos;t load this resume.
           </p>
+          <Button onClick={() => window.location.reload()}>Try again</Button>
         </div>
-      </div>
+      </AppShell>
+    );
+  }
 
+  return (
+    <AppShell
+      step="job"
+      width="narrow"
+      crumbs={CRUMBS}
+      title="Add the Job Description"
+      subtitle="Paste the full posting you're targeting. The more detail you include, the more precise your suggestions."
+      onNavigateStep={handleNavigateStep}
+    >
       {/* Context card only — the full resume preview belongs on the analysis
           page, which is the step this one unlocks. */}
       <ResumeContextCard resume={resume} isLoading={resumeLoading} />
 
-      <div className="workspace-jd-panel">
+      <section className="workspace-jd-panel">
         <div className="workspace-jd-panel-header">
-          <div className="workspace-jd-panel-icon">
+          <span className="workspace-jd-panel-icon" aria-hidden="true">
             <FileEdit className="size-5" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <p className="workspace-jd-panel-title">Job description</p>
+          </span>
+          <div className="workspace-jd-panel-heading">
+            <h2 className="workspace-jd-panel-title">Job description</h2>
             <p className="workspace-jd-panel-desc">
-              The more detail you paste, the more precise your suggestions.
+              Responsibilities, requirements, and the tech stack all improve the
+              match.
             </p>
           </div>
         </div>
 
         <JobInputForm
-          isSubmitting={createAnalysis.isPending}
+          isSubmitting={isAnalyzing}
           isDisabled={resumeLoading || !resume}
-          onSubmit={handleSubmit}
+          onSubmit={submitJobDescription}
         />
-      </div>
-    </main>
+      </section>
+
+      {isAnalyzing && <AnalyzingOverlay />}
+    </AppShell>
   );
 }

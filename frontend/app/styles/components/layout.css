@@ -2,6 +2,17 @@
  * Dashboard page shell/main content wrapper, page-level headers, and footer.
  * Used across app/page.tsx and src/components/dashboard/*Content.tsx.
  */
+/* The sidebar's collapse used to animate `margin-left` on full-height
+   containers, which relayouts the whole main column every frame. Registering
+   the offset as a typed custom property lets the browser interpolate the
+   length itself, so each consumer reads a settled value and the transition
+   runs once on the variable rather than on three separate layouts. */
+@property --shell-offset {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 272px;
+}
+
 @layer components {
   /* Dashboard shell */
   .dashboard-shell {
@@ -9,13 +20,19 @@
     color: var(--color-text-primary);
     min-height: 100vh;
     overflow-x: hidden;
+    /* Declared here for the flow pages, where AppShell sets --shell-offset on
+       this element so fixed children (the analysis action bar) inherit it. */
+    transition: --shell-offset 200ms ease-out;
   }
 
   .dashboard-main {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    transition: margin-left 200ms ease-out;
+    margin-left: var(--shell-offset);
+    /* DashboardShell sets --shell-offset on this element, so the interpolation
+       has to be declared here too. */
+    transition: --shell-offset 200ms ease-out;
   }
 
   .dashboard-main-inner {
@@ -37,43 +54,10 @@
     margin-top: var(--spacing-xxl);
   }
 
-  /* Welcome / hero sections */
-  .dashboard-welcome-title {
-    font-family: var(--font-display-md);
-    font-size: var(--text-display-md);
-    font-weight: 600;
-    line-height: var(--text-display-md--line-height);
-    letter-spacing: var(--text-display-md--letter-spacing);
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .dashboard-welcome-subtitle {
-    font-family: var(--font-body-lg);
-    font-size: var(--text-body-lg);
-    line-height: var(--text-body-lg--line-height);
-    color: var(--color-text-body);
-  }
-
-  .dashboard-welcome-subtitle--centered {
-    max-width: 42rem;
-    margin-inline: auto;
-    text-align: center;
-  }
-
-  .dashboard-section-header {
-    margin-bottom: var(--spacing-xxl);
-  }
-
-  .dashboard-section-header--centered {
-    text-align: center;
-  }
-
   /* Footer */
   .dashboard-footer {
     padding-block: var(--spacing-md);
     padding-inline: var(--spacing-xxl);
-    transition: margin-left 200ms ease-out;
   }
 
   .dashboard-footer-inner {
