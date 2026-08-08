@@ -1,0 +1,61 @@
+import { z } from "zod";
+
+// --- Roadmap agent (AI call #3) ---------------------------------------------
+//
+// The model is handed gaps the application already selected and ordered. It
+// writes task content for them and nothing else: there is no field for which
+// gap to address, which week it belongs to, how urgent it is, or whether it is
+// done. Those are all application decisions, so the schema gives the model no
+// way to express them.
+
+export const roadmapTaskContentSchema = z.object({
+  // Echoed back so a task can be matched to the gap it was written for. The
+  // validator rejects any value not in the set the application sent.
+  skillSlug: z.string().min(1),
+  title: z.string().min(1).max(200),
+  description: z.string().min(1).max(2000),
+  // What the user should build. The PRD asks for evidence, not reading lists.
+  projectTask: z.string().min(1).max(2000),
+  expectedEvidence: z.string().min(1).max(1000),
+  resources: z.array(z.string().max(300)).max(5),
+});
+
+export const roadmapAgentOutputSchema = z.object({
+  tasks: z.array(roadmapTaskContentSchema).min(1),
+});
+
+export type RoadmapTaskContent = z.infer<typeof roadmapTaskContentSchema>;
+export type RoadmapAgentOutput = z.infer<typeof roadmapAgentOutputSchema>;
+
+// What the agent is told about one gap. Deliberately excludes priority and
+// week: the model must not learn the ordering, or it starts writing "first,
+// focus on..." into content the application already sequenced.
+export type RoadmapGapBrief = {
+  skillSlug: string;
+  skillName: string;
+  status: string;
+  // Hand-authored seed text explaining why the role needs this skill.
+  rationale: string;
+};
+
+export type RoadmapAgentInput = {
+  roleTitle: string;
+  gaps: RoadmapGapBrief[];
+  // Existing projects, so tasks can extend real work rather than inventing
+  // disconnected tutorial projects (PRD section 5).
+  existingProjects: { name: string; summary: string }[];
+};
+
+export interface RoadmapAgent {
+  generateTasks(input: RoadmapAgentInput): Promise<RoadmapAgentOutput>;
+}
+
+// --- Request schemas --------------------------------------------------------
+
+export const updateRoadmapTaskSchema = z.object({
+  // The only field a client may send. completedAt is derived server-side —
+  // accepting it would let users forge their own progress history.
+  completed: z.boolean(),
+});
+
+export type UpdateRoadmapTaskInput = z.infer<typeof updateRoadmapTaskSchema>;

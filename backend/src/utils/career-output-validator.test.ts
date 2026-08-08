@@ -429,40 +429,45 @@ describe("validateEvidenceGrounding", () => {
 });
 
 describe("validateRoadmapGrounding", () => {
-  const gapIds = new Set(["gap-1", "gap-2"]);
+  const selectedSkillSlugs = ["testing", "docker"];
 
-  it("accepts tasks referencing gaps in this analysis", () => {
-    const tasks = [
-      { skillGapId: "gap-1", weekNumber: 1, title: "T", description: "D" },
-      { skillGapId: null, weekNumber: 4, title: "T", description: "D" },
-    ];
-    expect(
-      validateRoadmapGrounding(tasks, { gapIdsInAnalysis: gapIds, weekCount: 4 }),
-    ).toEqual(tasks);
+  it("accepts exactly one task per selected skill", () => {
+    const tasks = [{ skillSlug: "testing" }, { skillSlug: "docker" }];
+    expect(validateRoadmapGrounding(tasks, { selectedSkillSlugs })).toEqual(
+      tasks,
+    );
   });
 
-  it("throws on a task pinned to a gap from another analysis", () => {
+  it("throws when the model writes a task for a skill it was not given", () => {
+    // Choosing what to work on is the application's decision, not the model's.
     expect(() =>
       validateRoadmapGrounding(
         [
-          {
-            skillGapId: "gap-from-someone-else",
-            weekNumber: 1,
-            title: "T",
-            description: "D",
-          },
+          { skillSlug: "testing" },
+          { skillSlug: "docker" },
+          { skillSlug: "kubernetes" },
         ],
-        { gapIdsInAnalysis: gapIds, weekCount: 4 },
+        { selectedSkillSlugs },
       ),
     ).toThrow(AppError);
   });
 
-  it("throws on a week outside the roadmap's range", () => {
+  it("throws on two tasks for the same skill", () => {
+    // Weeks are assigned per gap, so a duplicate would leave another gap with
+    // no task and quietly lose a week.
     expect(() =>
       validateRoadmapGrounding(
-        [{ skillGapId: "gap-1", weekNumber: 6, title: "T", description: "D" }],
-        { gapIdsInAnalysis: gapIds, weekCount: 4 },
+        [{ skillSlug: "testing" }, { skillSlug: "testing" }],
+        { selectedSkillSlugs },
       ),
+    ).toThrow(AppError);
+  });
+
+  it("throws when a selected skill has no task", () => {
+    expect(() =>
+      validateRoadmapGrounding([{ skillSlug: "testing" }], {
+        selectedSkillSlugs,
+      }),
     ).toThrow(AppError);
   });
 
@@ -470,15 +475,22 @@ describe("validateRoadmapGrounding", () => {
     expect(() =>
       validateRoadmapGrounding(
         [
-          {
-            skillGapId: "gap-1",
-            weekNumber: 1,
-            title: "T",
-            description: "D",
-            completed: true,
-          },
+          { skillSlug: "testing", completed: true },
+          { skillSlug: "docker" },
         ],
-        { gapIdsInAnalysis: gapIds, weekCount: 4 },
+        { selectedSkillSlugs },
+      ),
+    ).toThrow(AppError);
+  });
+
+  it("throws when the AI supplies a completion timestamp", () => {
+    expect(() =>
+      validateRoadmapGrounding(
+        [
+          { skillSlug: "testing", completedAt: "2026-01-01" },
+          { skillSlug: "docker" },
+        ],
+        { selectedSkillSlugs },
       ),
     ).toThrow(AppError);
   });

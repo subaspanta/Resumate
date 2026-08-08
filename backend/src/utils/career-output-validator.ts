@@ -213,55 +213,70 @@ export function validateEvidenceGrounding(
 // --- Roadmap grounding ------------------------------------------------------
 
 export type RoadmapTaskDraft = {
-  skillGapId: string | null;
-  weekNumber: number;
-  title: string;
-  description: string;
-  resources?: unknown;
+  skillSlug: string;
 };
 
-// Validates roadmap output against the analysis it belongs to. Every failure
-// here throws: unlike a bad quote, a task pointing at the wrong gap cannot be
-// partially salvaged.
+// Validates roadmap output against the gaps the application selected for it.
+//
+// Every failure throws. Unlike a bad quote — where dropping one item still
+// leaves an honest, slightly poorer result — a roadmap that addresses the
+// wrong gaps is not partially salvageable: the weeks are assigned by position,
+// so one wrong task silently mislabels the rest.
 export function validateRoadmapGrounding<T extends RoadmapTaskDraft>(
   tasks: T[],
-  context: { gapIdsInAnalysis: Set<string>; weekCount: number },
+  context: { selectedSkillSlugs: string[] },
 ): T[] {
+  const selected = new Set(context.selectedSkillSlugs);
+  const seen = new Set<string>();
+
   for (const task of tasks) {
-    // The security-relevant check. If the model echoes a real uuid belonging
-    // to another user's analysis, writing this task would attach it to their
-    // gap — a cross-tenant write, not merely a validation error.
-    if (task.skillGapId !== null && !context.gapIdsInAnalysis.has(task.skillGapId)) {
+    // A slug outside the selected set means the model chose its own gap to
+    // work on — exactly the decision the application reserves for itself. It
+    // would also fail to resolve to a SkillGap row, so the write would either
+    // explode as a raw Prisma error or attach the task to nothing.
+    if (!selected.has(task.skillSlug)) {
       throw new AppError(
         HTTP_STATUS.UNPROCESSABLE_ENTITY,
         ERROR_CODES.AI_GROUNDING_FAILED,
-        "Roadmap references a skill gap that does not belong to this analysis",
+        "Roadmap addresses a skill that was not selected for it",
+        { unexpectedSkill: task.skillSlug },
       );
     }
 
-    if (
-      !Number.isInteger(task.weekNumber) ||
-      task.weekNumber < 1 ||
-      task.weekNumber > context.weekCount
-    ) {
+    // Two tasks for one gap would leave another gap with none, and weeks are
+    // assigned per gap — the roadmap would quietly lose a week.
+    if (seen.has(task.skillSlug)) {
       throw new AppError(
         HTTP_STATUS.UNPROCESSABLE_ENTITY,
         ERROR_CODES.AI_GROUNDING_FAILED,
-        `Roadmap task falls outside weeks 1-${context.weekCount}`,
+        "Roadmap contains more than one task for the same skill",
+        { duplicatedSkill: task.skillSlug },
       );
     }
+    seen.add(task.skillSlug);
 
-    // Belt-and-braces: the agent's schema has no `completed` field, so this
+    // Belt-and-braces: the agent's schema has no completion field, so this
     // only fires on a schema regression. Worth keeping — completion is the
     // user's only real progress signal, and a forged completedAt is
     // unrecoverable once written.
-    if ((task as { completed?: unknown }).completed) {
+    const claimed = task as { completed?: unknown; completedAt?: unknown };
+    if (claimed.completed || claimed.completedAt) {
       throw new AppError(
         HTTP_STATUS.UNPROCESSABLE_ENTITY,
         ERROR_CODES.AI_GROUNDING_FAILED,
         "Roadmap tasks may not be generated as already completed",
       );
     }
+  }
+
+  // A missing task would leave its gap unaddressed while the weeks that follow
+  // shift up, silently changing what the user was told to do.
+  if (seen.size !== selected.size) {
+    throw new AppError(
+      HTTP_STATUS.UNPROCESSABLE_ENTITY,
+      ERROR_CODES.AI_GROUNDING_FAILED,
+      "Roadmap does not cover every selected skill",
+    );
   }
 
   return tasks;
