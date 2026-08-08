@@ -150,31 +150,102 @@ exports.Prisma.ResumeScalarFieldEnum = {
   filePath: 'filePath',
   rawText: 'rawText',
   structuredResume: 'structuredResume',
-  enabledSections: 'enabledSections',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.AnalysisScalarFieldEnum = {
+exports.Prisma.SkillScalarFieldEnum = {
   id: 'id',
-  resumeId: 'resumeId',
-  userId: 'userId',
-  jobDescription: 'jobDescription',
-  parsedJob: 'parsedJob',
-  resumeSnapshot: 'resumeSnapshot',
-  analysisResult: 'analysisResult',
+  slug: 'slug',
+  name: 'name',
+  aliases: 'aliases',
+  category: 'category',
   createdAt: 'createdAt',
-  exportedAt: 'exportedAt'
+  updatedAt: 'updatedAt'
 };
 
-exports.Prisma.SuggestionScalarFieldEnum = {
+exports.Prisma.RoleScalarFieldEnum = {
   id: 'id',
-  analysisId: 'analysisId',
-  original: 'original',
-  suggested: 'suggested',
-  section: 'section',
+  slug: 'slug',
+  title: 'title',
+  description: 'description',
+  seedVersion: 'seedVersion',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RoleSkillRequirementScalarFieldEnum = {
+  id: 'id',
+  roleId: 'roleId',
+  skillId: 'skillId',
+  importance: 'importance',
+  rationale: 'rationale',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CareerAnalysisScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
   status: 'status',
-  rejectionReason: 'rejectionReason',
+  resumeId: 'resumeId',
+  roleId: 'roleId',
+  resumeSnapshot: 'resumeSnapshot',
+  roleSnapshot: 'roleSnapshot',
+  readinessScore: 'readinessScore',
+  readinessBreakdown: 'readinessBreakdown',
+  failureReason: 'failureReason',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt'
+};
+
+exports.Prisma.CandidateSkillEvidenceScalarFieldEnum = {
+  id: 'id',
+  careerAnalysisId: 'careerAnalysisId',
+  skillId: 'skillId',
+  strength: 'strength',
+  quote: 'quote',
+  sourceSection: 'sourceSection',
+  sourceLabel: 'sourceLabel',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SkillGapScalarFieldEnum = {
+  id: 'id',
+  careerAnalysisId: 'careerAnalysisId',
+  skillId: 'skillId',
+  status: 'status',
+  priority: 'priority',
+  reasoning: 'reasoning',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.RoadmapScalarFieldEnum = {
+  id: 'id',
+  careerAnalysisId: 'careerAnalysisId',
+  weekCount: 'weekCount',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.RoadmapTaskScalarFieldEnum = {
+  id: 'id',
+  roadmapId: 'roadmapId',
+  skillGapId: 'skillGapId',
+  weekNumber: 'weekNumber',
+  orderInWeek: 'orderInWeek',
+  title: 'title',
+  description: 'description',
+  resources: 'resources',
+  completed: 'completed',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AnalysisEventScalarFieldEnum = {
+  id: 'id',
+  careerAnalysisId: 'careerAnalysisId',
+  type: 'type',
+  payload: 'payload',
   createdAt: 'createdAt'
 };
 
@@ -207,18 +278,54 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
-exports.SuggestionStatus = exports.$Enums.SuggestionStatus = {
+exports.SkillImportance = exports.$Enums.SkillImportance = {
+  critical: 'critical',
+  important: 'important',
+  nice_to_have: 'nice_to_have'
+};
+
+exports.CareerAnalysisStatus = exports.$Enums.CareerAnalysisStatus = {
   pending: 'pending',
-  applied: 'applied',
-  rejected: 'rejected'
+  analyzing: 'analyzing',
+  complete: 'complete',
+  failed: 'failed'
+};
+
+exports.EvidenceStrength = exports.$Enums.EvidenceStrength = {
+  experience_backed: 'experience_backed',
+  project_backed: 'project_backed',
+  mentioned: 'mentioned'
+};
+
+exports.GapStatus = exports.$Enums.GapStatus = {
+  strong: 'strong',
+  developing: 'developing',
+  weak_evidence: 'weak_evidence',
+  missing: 'missing'
+};
+
+exports.AnalysisEventType = exports.$Enums.AnalysisEventType = {
+  analysis_started: 'analysis_started',
+  analysis_completed: 'analysis_completed',
+  analysis_failed: 'analysis_failed',
+  roadmap_generated: 'roadmap_generated',
+  task_completed: 'task_completed',
+  task_uncompleted: 'task_uncompleted'
 };
 
 exports.Prisma.ModelName = {
   User: 'User',
   RefreshToken: 'RefreshToken',
   Resume: 'Resume',
-  Analysis: 'Analysis',
-  Suggestion: 'Suggestion'
+  Skill: 'Skill',
+  Role: 'Role',
+  RoleSkillRequirement: 'RoleSkillRequirement',
+  CareerAnalysis: 'CareerAnalysis',
+  CandidateSkillEvidence: 'CandidateSkillEvidence',
+  SkillGap: 'SkillGap',
+  Roadmap: 'Roadmap',
+  RoadmapTask: 'RoadmapTask',
+  AnalysisEvent: 'AnalysisEvent'
 };
 
 /**

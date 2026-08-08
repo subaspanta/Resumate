@@ -29,33 +29,125 @@ export type RefreshToken = $Result.DefaultSelection<Prisma.$RefreshTokenPayload>
  */
 export type Resume = $Result.DefaultSelection<Prisma.$ResumePayload>
 /**
- * Model Analysis
+ * Model Skill
  * 
  */
-export type Analysis = $Result.DefaultSelection<Prisma.$AnalysisPayload>
+export type Skill = $Result.DefaultSelection<Prisma.$SkillPayload>
 /**
- * Model Suggestion
+ * Model Role
  * 
  */
-export type Suggestion = $Result.DefaultSelection<Prisma.$SuggestionPayload>
+export type Role = $Result.DefaultSelection<Prisma.$RolePayload>
+/**
+ * Model RoleSkillRequirement
+ * 
+ */
+export type RoleSkillRequirement = $Result.DefaultSelection<Prisma.$RoleSkillRequirementPayload>
+/**
+ * Model CareerAnalysis
+ * 
+ */
+export type CareerAnalysis = $Result.DefaultSelection<Prisma.$CareerAnalysisPayload>
+/**
+ * Model CandidateSkillEvidence
+ * 
+ */
+export type CandidateSkillEvidence = $Result.DefaultSelection<Prisma.$CandidateSkillEvidencePayload>
+/**
+ * Model SkillGap
+ * 
+ */
+export type SkillGap = $Result.DefaultSelection<Prisma.$SkillGapPayload>
+/**
+ * Model Roadmap
+ * 
+ */
+export type Roadmap = $Result.DefaultSelection<Prisma.$RoadmapPayload>
+/**
+ * Model RoadmapTask
+ * 
+ */
+export type RoadmapTask = $Result.DefaultSelection<Prisma.$RoadmapTaskPayload>
+/**
+ * Model AnalysisEvent
+ * 
+ */
+export type AnalysisEvent = $Result.DefaultSelection<Prisma.$AnalysisEventPayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const SuggestionStatus: {
-  pending: 'pending',
-  applied: 'applied',
-  rejected: 'rejected'
+  export const SkillImportance: {
+  critical: 'critical',
+  important: 'important',
+  nice_to_have: 'nice_to_have'
 };
 
-export type SuggestionStatus = (typeof SuggestionStatus)[keyof typeof SuggestionStatus]
+export type SkillImportance = (typeof SkillImportance)[keyof typeof SkillImportance]
+
+
+export const EvidenceStrength: {
+  experience_backed: 'experience_backed',
+  project_backed: 'project_backed',
+  mentioned: 'mentioned'
+};
+
+export type EvidenceStrength = (typeof EvidenceStrength)[keyof typeof EvidenceStrength]
+
+
+export const GapStatus: {
+  strong: 'strong',
+  developing: 'developing',
+  weak_evidence: 'weak_evidence',
+  missing: 'missing'
+};
+
+export type GapStatus = (typeof GapStatus)[keyof typeof GapStatus]
+
+
+export const CareerAnalysisStatus: {
+  pending: 'pending',
+  analyzing: 'analyzing',
+  complete: 'complete',
+  failed: 'failed'
+};
+
+export type CareerAnalysisStatus = (typeof CareerAnalysisStatus)[keyof typeof CareerAnalysisStatus]
+
+
+export const AnalysisEventType: {
+  analysis_started: 'analysis_started',
+  analysis_completed: 'analysis_completed',
+  analysis_failed: 'analysis_failed',
+  roadmap_generated: 'roadmap_generated',
+  task_completed: 'task_completed',
+  task_uncompleted: 'task_uncompleted'
+};
+
+export type AnalysisEventType = (typeof AnalysisEventType)[keyof typeof AnalysisEventType]
 
 }
 
-export type SuggestionStatus = $Enums.SuggestionStatus
+export type SkillImportance = $Enums.SkillImportance
 
-export const SuggestionStatus: typeof $Enums.SuggestionStatus
+export const SkillImportance: typeof $Enums.SkillImportance
+
+export type EvidenceStrength = $Enums.EvidenceStrength
+
+export const EvidenceStrength: typeof $Enums.EvidenceStrength
+
+export type GapStatus = $Enums.GapStatus
+
+export const GapStatus: typeof $Enums.GapStatus
+
+export type CareerAnalysisStatus = $Enums.CareerAnalysisStatus
+
+export const CareerAnalysisStatus: typeof $Enums.CareerAnalysisStatus
+
+export type AnalysisEventType = $Enums.AnalysisEventType
+
+export const AnalysisEventType: typeof $Enums.AnalysisEventType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -209,24 +301,94 @@ export class PrismaClient<
   get resume(): Prisma.ResumeDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.analysis`: Exposes CRUD operations for the **Analysis** model.
+   * `prisma.skill`: Exposes CRUD operations for the **Skill** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Analyses
-    * const analyses = await prisma.analysis.findMany()
+    * // Fetch zero or more Skills
+    * const skills = await prisma.skill.findMany()
     * ```
     */
-  get analysis(): Prisma.AnalysisDelegate<ExtArgs, ClientOptions>;
+  get skill(): Prisma.SkillDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.suggestion`: Exposes CRUD operations for the **Suggestion** model.
+   * `prisma.role`: Exposes CRUD operations for the **Role** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Suggestions
-    * const suggestions = await prisma.suggestion.findMany()
+    * // Fetch zero or more Roles
+    * const roles = await prisma.role.findMany()
     * ```
     */
-  get suggestion(): Prisma.SuggestionDelegate<ExtArgs, ClientOptions>;
+  get role(): Prisma.RoleDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.roleSkillRequirement`: Exposes CRUD operations for the **RoleSkillRequirement** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RoleSkillRequirements
+    * const roleSkillRequirements = await prisma.roleSkillRequirement.findMany()
+    * ```
+    */
+  get roleSkillRequirement(): Prisma.RoleSkillRequirementDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.careerAnalysis`: Exposes CRUD operations for the **CareerAnalysis** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CareerAnalyses
+    * const careerAnalyses = await prisma.careerAnalysis.findMany()
+    * ```
+    */
+  get careerAnalysis(): Prisma.CareerAnalysisDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.candidateSkillEvidence`: Exposes CRUD operations for the **CandidateSkillEvidence** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CandidateSkillEvidences
+    * const candidateSkillEvidences = await prisma.candidateSkillEvidence.findMany()
+    * ```
+    */
+  get candidateSkillEvidence(): Prisma.CandidateSkillEvidenceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.skillGap`: Exposes CRUD operations for the **SkillGap** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SkillGaps
+    * const skillGaps = await prisma.skillGap.findMany()
+    * ```
+    */
+  get skillGap(): Prisma.SkillGapDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.roadmap`: Exposes CRUD operations for the **Roadmap** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Roadmaps
+    * const roadmaps = await prisma.roadmap.findMany()
+    * ```
+    */
+  get roadmap(): Prisma.RoadmapDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.roadmapTask`: Exposes CRUD operations for the **RoadmapTask** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RoadmapTasks
+    * const roadmapTasks = await prisma.roadmapTask.findMany()
+    * ```
+    */
+  get roadmapTask(): Prisma.RoadmapTaskDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.analysisEvent`: Exposes CRUD operations for the **AnalysisEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AnalysisEvents
+    * const analysisEvents = await prisma.analysisEvent.findMany()
+    * ```
+    */
+  get analysisEvent(): Prisma.AnalysisEventDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -664,8 +826,15 @@ export namespace Prisma {
     User: 'User',
     RefreshToken: 'RefreshToken',
     Resume: 'Resume',
-    Analysis: 'Analysis',
-    Suggestion: 'Suggestion'
+    Skill: 'Skill',
+    Role: 'Role',
+    RoleSkillRequirement: 'RoleSkillRequirement',
+    CareerAnalysis: 'CareerAnalysis',
+    CandidateSkillEvidence: 'CandidateSkillEvidence',
+    SkillGap: 'SkillGap',
+    Roadmap: 'Roadmap',
+    RoadmapTask: 'RoadmapTask',
+    AnalysisEvent: 'AnalysisEvent'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -681,7 +850,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "refreshToken" | "resume" | "analysis" | "suggestion"
+      modelProps: "user" | "refreshToken" | "resume" | "skill" | "role" | "roleSkillRequirement" | "careerAnalysis" | "candidateSkillEvidence" | "skillGap" | "roadmap" | "roadmapTask" | "analysisEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -907,151 +1076,669 @@ export namespace Prisma {
           }
         }
       }
-      Analysis: {
-        payload: Prisma.$AnalysisPayload<ExtArgs>
-        fields: Prisma.AnalysisFieldRefs
+      Skill: {
+        payload: Prisma.$SkillPayload<ExtArgs>
+        fields: Prisma.SkillFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.AnalysisFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload> | null
+            args: Prisma.SkillFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.AnalysisFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>
+            args: Prisma.SkillFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
           }
           findFirst: {
-            args: Prisma.AnalysisFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload> | null
+            args: Prisma.SkillFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.AnalysisFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>
+            args: Prisma.SkillFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
           }
           findMany: {
-            args: Prisma.AnalysisFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>[]
+            args: Prisma.SkillFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>[]
           }
           create: {
-            args: Prisma.AnalysisCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>
+            args: Prisma.SkillCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
           }
           createMany: {
-            args: Prisma.AnalysisCreateManyArgs<ExtArgs>
+            args: Prisma.SkillCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.AnalysisCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>[]
+            args: Prisma.SkillCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>[]
           }
           delete: {
-            args: Prisma.AnalysisDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>
+            args: Prisma.SkillDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
           }
           update: {
-            args: Prisma.AnalysisUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>
+            args: Prisma.SkillUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
           }
           deleteMany: {
-            args: Prisma.AnalysisDeleteManyArgs<ExtArgs>
+            args: Prisma.SkillDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.AnalysisUpdateManyArgs<ExtArgs>
+            args: Prisma.SkillUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.AnalysisUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>[]
+            args: Prisma.SkillUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>[]
           }
           upsert: {
-            args: Prisma.AnalysisUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AnalysisPayload>
+            args: Prisma.SkillUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
           }
           aggregate: {
-            args: Prisma.AnalysisAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateAnalysis>
+            args: Prisma.SkillAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSkill>
           }
           groupBy: {
-            args: Prisma.AnalysisGroupByArgs<ExtArgs>
-            result: $Utils.Optional<AnalysisGroupByOutputType>[]
+            args: Prisma.SkillGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SkillGroupByOutputType>[]
           }
           count: {
-            args: Prisma.AnalysisCountArgs<ExtArgs>
-            result: $Utils.Optional<AnalysisCountAggregateOutputType> | number
+            args: Prisma.SkillCountArgs<ExtArgs>
+            result: $Utils.Optional<SkillCountAggregateOutputType> | number
           }
         }
       }
-      Suggestion: {
-        payload: Prisma.$SuggestionPayload<ExtArgs>
-        fields: Prisma.SuggestionFieldRefs
+      Role: {
+        payload: Prisma.$RolePayload<ExtArgs>
+        fields: Prisma.RoleFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.SuggestionFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload> | null
+            args: Prisma.RoleFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RolePayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.SuggestionFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>
+            args: Prisma.RoleFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RolePayload>
           }
           findFirst: {
-            args: Prisma.SuggestionFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload> | null
+            args: Prisma.RoleFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RolePayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.SuggestionFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>
+            args: Prisma.RoleFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RolePayload>
           }
           findMany: {
-            args: Prisma.SuggestionFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>[]
+            args: Prisma.RoleFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RolePayload>[]
           }
           create: {
-            args: Prisma.SuggestionCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>
+            args: Prisma.RoleCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RolePayload>
           }
           createMany: {
-            args: Prisma.SuggestionCreateManyArgs<ExtArgs>
+            args: Prisma.RoleCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.SuggestionCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>[]
+            args: Prisma.RoleCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RolePayload>[]
           }
           delete: {
-            args: Prisma.SuggestionDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>
+            args: Prisma.RoleDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RolePayload>
           }
           update: {
-            args: Prisma.SuggestionUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>
+            args: Prisma.RoleUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RolePayload>
           }
           deleteMany: {
-            args: Prisma.SuggestionDeleteManyArgs<ExtArgs>
+            args: Prisma.RoleDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.SuggestionUpdateManyArgs<ExtArgs>
+            args: Prisma.RoleUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.SuggestionUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>[]
+            args: Prisma.RoleUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RolePayload>[]
           }
           upsert: {
-            args: Prisma.SuggestionUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SuggestionPayload>
+            args: Prisma.RoleUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RolePayload>
           }
           aggregate: {
-            args: Prisma.SuggestionAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateSuggestion>
+            args: Prisma.RoleAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRole>
           }
           groupBy: {
-            args: Prisma.SuggestionGroupByArgs<ExtArgs>
-            result: $Utils.Optional<SuggestionGroupByOutputType>[]
+            args: Prisma.RoleGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RoleGroupByOutputType>[]
           }
           count: {
-            args: Prisma.SuggestionCountArgs<ExtArgs>
-            result: $Utils.Optional<SuggestionCountAggregateOutputType> | number
+            args: Prisma.RoleCountArgs<ExtArgs>
+            result: $Utils.Optional<RoleCountAggregateOutputType> | number
+          }
+        }
+      }
+      RoleSkillRequirement: {
+        payload: Prisma.$RoleSkillRequirementPayload<ExtArgs>
+        fields: Prisma.RoleSkillRequirementFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RoleSkillRequirementFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoleSkillRequirementPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RoleSkillRequirementFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoleSkillRequirementPayload>
+          }
+          findFirst: {
+            args: Prisma.RoleSkillRequirementFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoleSkillRequirementPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RoleSkillRequirementFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoleSkillRequirementPayload>
+          }
+          findMany: {
+            args: Prisma.RoleSkillRequirementFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoleSkillRequirementPayload>[]
+          }
+          create: {
+            args: Prisma.RoleSkillRequirementCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoleSkillRequirementPayload>
+          }
+          createMany: {
+            args: Prisma.RoleSkillRequirementCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RoleSkillRequirementCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoleSkillRequirementPayload>[]
+          }
+          delete: {
+            args: Prisma.RoleSkillRequirementDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoleSkillRequirementPayload>
+          }
+          update: {
+            args: Prisma.RoleSkillRequirementUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoleSkillRequirementPayload>
+          }
+          deleteMany: {
+            args: Prisma.RoleSkillRequirementDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RoleSkillRequirementUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RoleSkillRequirementUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoleSkillRequirementPayload>[]
+          }
+          upsert: {
+            args: Prisma.RoleSkillRequirementUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoleSkillRequirementPayload>
+          }
+          aggregate: {
+            args: Prisma.RoleSkillRequirementAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRoleSkillRequirement>
+          }
+          groupBy: {
+            args: Prisma.RoleSkillRequirementGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RoleSkillRequirementGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RoleSkillRequirementCountArgs<ExtArgs>
+            result: $Utils.Optional<RoleSkillRequirementCountAggregateOutputType> | number
+          }
+        }
+      }
+      CareerAnalysis: {
+        payload: Prisma.$CareerAnalysisPayload<ExtArgs>
+        fields: Prisma.CareerAnalysisFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CareerAnalysisFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CareerAnalysisPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CareerAnalysisFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CareerAnalysisPayload>
+          }
+          findFirst: {
+            args: Prisma.CareerAnalysisFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CareerAnalysisPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CareerAnalysisFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CareerAnalysisPayload>
+          }
+          findMany: {
+            args: Prisma.CareerAnalysisFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CareerAnalysisPayload>[]
+          }
+          create: {
+            args: Prisma.CareerAnalysisCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CareerAnalysisPayload>
+          }
+          createMany: {
+            args: Prisma.CareerAnalysisCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CareerAnalysisCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CareerAnalysisPayload>[]
+          }
+          delete: {
+            args: Prisma.CareerAnalysisDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CareerAnalysisPayload>
+          }
+          update: {
+            args: Prisma.CareerAnalysisUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CareerAnalysisPayload>
+          }
+          deleteMany: {
+            args: Prisma.CareerAnalysisDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CareerAnalysisUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CareerAnalysisUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CareerAnalysisPayload>[]
+          }
+          upsert: {
+            args: Prisma.CareerAnalysisUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CareerAnalysisPayload>
+          }
+          aggregate: {
+            args: Prisma.CareerAnalysisAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCareerAnalysis>
+          }
+          groupBy: {
+            args: Prisma.CareerAnalysisGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CareerAnalysisGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CareerAnalysisCountArgs<ExtArgs>
+            result: $Utils.Optional<CareerAnalysisCountAggregateOutputType> | number
+          }
+        }
+      }
+      CandidateSkillEvidence: {
+        payload: Prisma.$CandidateSkillEvidencePayload<ExtArgs>
+        fields: Prisma.CandidateSkillEvidenceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CandidateSkillEvidenceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateSkillEvidencePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CandidateSkillEvidenceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateSkillEvidencePayload>
+          }
+          findFirst: {
+            args: Prisma.CandidateSkillEvidenceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateSkillEvidencePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CandidateSkillEvidenceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateSkillEvidencePayload>
+          }
+          findMany: {
+            args: Prisma.CandidateSkillEvidenceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateSkillEvidencePayload>[]
+          }
+          create: {
+            args: Prisma.CandidateSkillEvidenceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateSkillEvidencePayload>
+          }
+          createMany: {
+            args: Prisma.CandidateSkillEvidenceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CandidateSkillEvidenceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateSkillEvidencePayload>[]
+          }
+          delete: {
+            args: Prisma.CandidateSkillEvidenceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateSkillEvidencePayload>
+          }
+          update: {
+            args: Prisma.CandidateSkillEvidenceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateSkillEvidencePayload>
+          }
+          deleteMany: {
+            args: Prisma.CandidateSkillEvidenceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CandidateSkillEvidenceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CandidateSkillEvidenceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateSkillEvidencePayload>[]
+          }
+          upsert: {
+            args: Prisma.CandidateSkillEvidenceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateSkillEvidencePayload>
+          }
+          aggregate: {
+            args: Prisma.CandidateSkillEvidenceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCandidateSkillEvidence>
+          }
+          groupBy: {
+            args: Prisma.CandidateSkillEvidenceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CandidateSkillEvidenceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CandidateSkillEvidenceCountArgs<ExtArgs>
+            result: $Utils.Optional<CandidateSkillEvidenceCountAggregateOutputType> | number
+          }
+        }
+      }
+      SkillGap: {
+        payload: Prisma.$SkillGapPayload<ExtArgs>
+        fields: Prisma.SkillGapFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SkillGapFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGapPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SkillGapFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGapPayload>
+          }
+          findFirst: {
+            args: Prisma.SkillGapFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGapPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SkillGapFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGapPayload>
+          }
+          findMany: {
+            args: Prisma.SkillGapFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGapPayload>[]
+          }
+          create: {
+            args: Prisma.SkillGapCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGapPayload>
+          }
+          createMany: {
+            args: Prisma.SkillGapCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SkillGapCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGapPayload>[]
+          }
+          delete: {
+            args: Prisma.SkillGapDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGapPayload>
+          }
+          update: {
+            args: Prisma.SkillGapUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGapPayload>
+          }
+          deleteMany: {
+            args: Prisma.SkillGapDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SkillGapUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SkillGapUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGapPayload>[]
+          }
+          upsert: {
+            args: Prisma.SkillGapUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillGapPayload>
+          }
+          aggregate: {
+            args: Prisma.SkillGapAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSkillGap>
+          }
+          groupBy: {
+            args: Prisma.SkillGapGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SkillGapGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SkillGapCountArgs<ExtArgs>
+            result: $Utils.Optional<SkillGapCountAggregateOutputType> | number
+          }
+        }
+      }
+      Roadmap: {
+        payload: Prisma.$RoadmapPayload<ExtArgs>
+        fields: Prisma.RoadmapFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RoadmapFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RoadmapFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapPayload>
+          }
+          findFirst: {
+            args: Prisma.RoadmapFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RoadmapFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapPayload>
+          }
+          findMany: {
+            args: Prisma.RoadmapFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapPayload>[]
+          }
+          create: {
+            args: Prisma.RoadmapCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapPayload>
+          }
+          createMany: {
+            args: Prisma.RoadmapCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RoadmapCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapPayload>[]
+          }
+          delete: {
+            args: Prisma.RoadmapDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapPayload>
+          }
+          update: {
+            args: Prisma.RoadmapUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapPayload>
+          }
+          deleteMany: {
+            args: Prisma.RoadmapDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RoadmapUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RoadmapUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapPayload>[]
+          }
+          upsert: {
+            args: Prisma.RoadmapUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapPayload>
+          }
+          aggregate: {
+            args: Prisma.RoadmapAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRoadmap>
+          }
+          groupBy: {
+            args: Prisma.RoadmapGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RoadmapGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RoadmapCountArgs<ExtArgs>
+            result: $Utils.Optional<RoadmapCountAggregateOutputType> | number
+          }
+        }
+      }
+      RoadmapTask: {
+        payload: Prisma.$RoadmapTaskPayload<ExtArgs>
+        fields: Prisma.RoadmapTaskFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RoadmapTaskFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapTaskPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RoadmapTaskFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapTaskPayload>
+          }
+          findFirst: {
+            args: Prisma.RoadmapTaskFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapTaskPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RoadmapTaskFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapTaskPayload>
+          }
+          findMany: {
+            args: Prisma.RoadmapTaskFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapTaskPayload>[]
+          }
+          create: {
+            args: Prisma.RoadmapTaskCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapTaskPayload>
+          }
+          createMany: {
+            args: Prisma.RoadmapTaskCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RoadmapTaskCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapTaskPayload>[]
+          }
+          delete: {
+            args: Prisma.RoadmapTaskDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapTaskPayload>
+          }
+          update: {
+            args: Prisma.RoadmapTaskUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapTaskPayload>
+          }
+          deleteMany: {
+            args: Prisma.RoadmapTaskDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RoadmapTaskUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RoadmapTaskUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapTaskPayload>[]
+          }
+          upsert: {
+            args: Prisma.RoadmapTaskUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoadmapTaskPayload>
+          }
+          aggregate: {
+            args: Prisma.RoadmapTaskAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRoadmapTask>
+          }
+          groupBy: {
+            args: Prisma.RoadmapTaskGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RoadmapTaskGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RoadmapTaskCountArgs<ExtArgs>
+            result: $Utils.Optional<RoadmapTaskCountAggregateOutputType> | number
+          }
+        }
+      }
+      AnalysisEvent: {
+        payload: Prisma.$AnalysisEventPayload<ExtArgs>
+        fields: Prisma.AnalysisEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AnalysisEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AnalysisEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisEventPayload>
+          }
+          findFirst: {
+            args: Prisma.AnalysisEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AnalysisEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisEventPayload>
+          }
+          findMany: {
+            args: Prisma.AnalysisEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisEventPayload>[]
+          }
+          create: {
+            args: Prisma.AnalysisEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisEventPayload>
+          }
+          createMany: {
+            args: Prisma.AnalysisEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AnalysisEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisEventPayload>[]
+          }
+          delete: {
+            args: Prisma.AnalysisEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisEventPayload>
+          }
+          update: {
+            args: Prisma.AnalysisEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.AnalysisEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AnalysisEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AnalysisEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.AnalysisEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisEventPayload>
+          }
+          aggregate: {
+            args: Prisma.AnalysisEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAnalysisEvent>
+          }
+          groupBy: {
+            args: Prisma.AnalysisEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AnalysisEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AnalysisEventCountArgs<ExtArgs>
+            result: $Utils.Optional<AnalysisEventCountAggregateOutputType> | number
           }
         }
       }
@@ -1166,8 +1853,15 @@ export namespace Prisma {
     user?: UserOmit
     refreshToken?: RefreshTokenOmit
     resume?: ResumeOmit
-    analysis?: AnalysisOmit
-    suggestion?: SuggestionOmit
+    skill?: SkillOmit
+    role?: RoleOmit
+    roleSkillRequirement?: RoleSkillRequirementOmit
+    careerAnalysis?: CareerAnalysisOmit
+    candidateSkillEvidence?: CandidateSkillEvidenceOmit
+    skillGap?: SkillGapOmit
+    roadmap?: RoadmapOmit
+    roadmapTask?: RoadmapTaskOmit
+    analysisEvent?: AnalysisEventOmit
   }
 
   /* Types for Logging */
@@ -1288,7 +1982,7 @@ export namespace Prisma {
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountAnalysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AnalysisWhereInput
+    where?: CareerAnalysisWhereInput
   }
 
 
@@ -1319,38 +2013,207 @@ export namespace Prisma {
    * ResumeCountOutputType without action
    */
   export type ResumeCountOutputTypeCountAnalysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AnalysisWhereInput
+    where?: CareerAnalysisWhereInput
   }
 
 
   /**
-   * Count Type AnalysisCountOutputType
+   * Count Type SkillCountOutputType
    */
 
-  export type AnalysisCountOutputType = {
-    suggestions: number
+  export type SkillCountOutputType = {
+    requirements: number
+    evidence: number
+    gaps: number
   }
 
-  export type AnalysisCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    suggestions?: boolean | AnalysisCountOutputTypeCountSuggestionsArgs
+  export type SkillCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requirements?: boolean | SkillCountOutputTypeCountRequirementsArgs
+    evidence?: boolean | SkillCountOutputTypeCountEvidenceArgs
+    gaps?: boolean | SkillCountOutputTypeCountGapsArgs
   }
 
   // Custom InputTypes
   /**
-   * AnalysisCountOutputType without action
+   * SkillCountOutputType without action
    */
-  export type AnalysisCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SkillCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the AnalysisCountOutputType
+     * Select specific fields to fetch from the SkillCountOutputType
      */
-    select?: AnalysisCountOutputTypeSelect<ExtArgs> | null
+    select?: SkillCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * AnalysisCountOutputType without action
+   * SkillCountOutputType without action
    */
-  export type AnalysisCountOutputTypeCountSuggestionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SuggestionWhereInput
+  export type SkillCountOutputTypeCountRequirementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoleSkillRequirementWhereInput
+  }
+
+  /**
+   * SkillCountOutputType without action
+   */
+  export type SkillCountOutputTypeCountEvidenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateSkillEvidenceWhereInput
+  }
+
+  /**
+   * SkillCountOutputType without action
+   */
+  export type SkillCountOutputTypeCountGapsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SkillGapWhereInput
+  }
+
+
+  /**
+   * Count Type RoleCountOutputType
+   */
+
+  export type RoleCountOutputType = {
+    requirements: number
+    analyses: number
+  }
+
+  export type RoleCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requirements?: boolean | RoleCountOutputTypeCountRequirementsArgs
+    analyses?: boolean | RoleCountOutputTypeCountAnalysesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * RoleCountOutputType without action
+   */
+  export type RoleCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleCountOutputType
+     */
+    select?: RoleCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * RoleCountOutputType without action
+   */
+  export type RoleCountOutputTypeCountRequirementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoleSkillRequirementWhereInput
+  }
+
+  /**
+   * RoleCountOutputType without action
+   */
+  export type RoleCountOutputTypeCountAnalysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CareerAnalysisWhereInput
+  }
+
+
+  /**
+   * Count Type CareerAnalysisCountOutputType
+   */
+
+  export type CareerAnalysisCountOutputType = {
+    evidence: number
+    gaps: number
+    events: number
+  }
+
+  export type CareerAnalysisCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    evidence?: boolean | CareerAnalysisCountOutputTypeCountEvidenceArgs
+    gaps?: boolean | CareerAnalysisCountOutputTypeCountGapsArgs
+    events?: boolean | CareerAnalysisCountOutputTypeCountEventsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CareerAnalysisCountOutputType without action
+   */
+  export type CareerAnalysisCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CareerAnalysisCountOutputType
+     */
+    select?: CareerAnalysisCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CareerAnalysisCountOutputType without action
+   */
+  export type CareerAnalysisCountOutputTypeCountEvidenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateSkillEvidenceWhereInput
+  }
+
+  /**
+   * CareerAnalysisCountOutputType without action
+   */
+  export type CareerAnalysisCountOutputTypeCountGapsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SkillGapWhereInput
+  }
+
+  /**
+   * CareerAnalysisCountOutputType without action
+   */
+  export type CareerAnalysisCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnalysisEventWhereInput
+  }
+
+
+  /**
+   * Count Type SkillGapCountOutputType
+   */
+
+  export type SkillGapCountOutputType = {
+    tasks: number
+  }
+
+  export type SkillGapCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tasks?: boolean | SkillGapCountOutputTypeCountTasksArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SkillGapCountOutputType without action
+   */
+  export type SkillGapCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGapCountOutputType
+     */
+    select?: SkillGapCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SkillGapCountOutputType without action
+   */
+  export type SkillGapCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoadmapTaskWhereInput
+  }
+
+
+  /**
+   * Count Type RoadmapCountOutputType
+   */
+
+  export type RoadmapCountOutputType = {
+    tasks: number
+  }
+
+  export type RoadmapCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tasks?: boolean | RoadmapCountOutputTypeCountTasksArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * RoadmapCountOutputType without action
+   */
+  export type RoadmapCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapCountOutputType
+     */
+    select?: RoadmapCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * RoadmapCountOutputType without action
+   */
+  export type RoadmapCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoadmapTaskWhereInput
   }
 
 
@@ -1578,7 +2441,7 @@ export namespace Prisma {
     objects: {
       resumes: Prisma.$ResumePayload<ExtArgs>[]
       refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
-      analyses: Prisma.$AnalysisPayload<ExtArgs>[]
+      analyses: Prisma.$CareerAnalysisPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1983,7 +2846,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     resumes<T extends User$resumesArgs<ExtArgs> = {}>(args?: Subset<T, User$resumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     refreshTokens<T extends User$refreshTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    analyses<T extends User$analysesArgs<ExtArgs> = {}>(args?: Subset<T, User$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    analyses<T extends User$analysesArgs<ExtArgs> = {}>(args?: Subset<T, User$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2464,23 +3327,23 @@ export namespace Prisma {
    */
   export type User$analysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Analysis
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: AnalysisSelect<ExtArgs> | null
+    select?: CareerAnalysisSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Analysis
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: AnalysisOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: AnalysisInclude<ExtArgs> | null
-    where?: AnalysisWhereInput
-    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
-    cursor?: AnalysisWhereUniqueInput
+    include?: CareerAnalysisInclude<ExtArgs> | null
+    where?: CareerAnalysisWhereInput
+    orderBy?: CareerAnalysisOrderByWithRelationInput | CareerAnalysisOrderByWithRelationInput[]
+    cursor?: CareerAnalysisWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
+    distinct?: CareerAnalysisScalarFieldEnum | CareerAnalysisScalarFieldEnum[]
   }
 
   /**
@@ -3650,7 +4513,6 @@ export namespace Prisma {
     filePath: number
     rawText: number
     structuredResume: number
-    enabledSections: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -3704,7 +4566,6 @@ export namespace Prisma {
     filePath?: true
     rawText?: true
     structuredResume?: true
-    enabledSections?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3807,7 +4668,6 @@ export namespace Prisma {
     filePath: string | null
     rawText: string
     structuredResume: JsonValue
-    enabledSections: JsonValue | null
     createdAt: Date
     updatedAt: Date
     _count: ResumeCountAggregateOutputType | null
@@ -3842,7 +4702,6 @@ export namespace Prisma {
     filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
-    enabledSections?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -3861,7 +4720,6 @@ export namespace Prisma {
     filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
-    enabledSections?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -3878,7 +4736,6 @@ export namespace Prisma {
     filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
-    enabledSections?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -3895,12 +4752,11 @@ export namespace Prisma {
     filePath?: boolean
     rawText?: boolean
     structuredResume?: boolean
-    enabledSections?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "originalFileName" | "mimeType" | "fileSize" | "fileUrl" | "filePath" | "rawText" | "structuredResume" | "enabledSections" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
+  export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "originalFileName" | "mimeType" | "fileSize" | "fileUrl" | "filePath" | "rawText" | "structuredResume" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
   export type ResumeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     analyses?: boolean | Resume$analysesArgs<ExtArgs>
@@ -3917,7 +4773,7 @@ export namespace Prisma {
     name: "Resume"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
-      analyses: Prisma.$AnalysisPayload<ExtArgs>[]
+      analyses: Prisma.$CareerAnalysisPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3930,7 +4786,6 @@ export namespace Prisma {
       filePath: string | null
       rawText: string
       structuredResume: Prisma.JsonValue
-      enabledSections: Prisma.JsonValue | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["resume"]>
@@ -4328,7 +5183,7 @@ export namespace Prisma {
   export interface Prisma__ResumeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    analyses<T extends Resume$analysesArgs<ExtArgs> = {}>(args?: Subset<T, Resume$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    analyses<T extends Resume$analysesArgs<ExtArgs> = {}>(args?: Subset<T, Resume$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4368,7 +5223,6 @@ export namespace Prisma {
     readonly filePath: FieldRef<"Resume", 'String'>
     readonly rawText: FieldRef<"Resume", 'String'>
     readonly structuredResume: FieldRef<"Resume", 'Json'>
-    readonly enabledSections: FieldRef<"Resume", 'Json'>
     readonly createdAt: FieldRef<"Resume", 'DateTime'>
     readonly updatedAt: FieldRef<"Resume", 'DateTime'>
   }
@@ -4776,23 +5630,23 @@ export namespace Prisma {
    */
   export type Resume$analysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Analysis
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: AnalysisSelect<ExtArgs> | null
+    select?: CareerAnalysisSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Analysis
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: AnalysisOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: AnalysisInclude<ExtArgs> | null
-    where?: AnalysisWhereInput
-    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
-    cursor?: AnalysisWhereUniqueInput
+    include?: CareerAnalysisInclude<ExtArgs> | null
+    where?: CareerAnalysisWhereInput
+    orderBy?: CareerAnalysisOrderByWithRelationInput | CareerAnalysisOrderByWithRelationInput[]
+    cursor?: CareerAnalysisWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
+    distinct?: CareerAnalysisScalarFieldEnum | CareerAnalysisScalarFieldEnum[]
   }
 
   /**
@@ -4815,1527 +5669,3863 @@ export namespace Prisma {
 
 
   /**
-   * Model Analysis
+   * Model Skill
    */
 
-  export type AggregateAnalysis = {
-    _count: AnalysisCountAggregateOutputType | null
-    _min: AnalysisMinAggregateOutputType | null
-    _max: AnalysisMaxAggregateOutputType | null
+  export type AggregateSkill = {
+    _count: SkillCountAggregateOutputType | null
+    _min: SkillMinAggregateOutputType | null
+    _max: SkillMaxAggregateOutputType | null
   }
 
-  export type AnalysisMinAggregateOutputType = {
+  export type SkillMinAggregateOutputType = {
     id: string | null
-    resumeId: string | null
-    userId: string | null
-    jobDescription: string | null
+    slug: string | null
+    name: string | null
+    category: string | null
     createdAt: Date | null
-    exportedAt: Date | null
+    updatedAt: Date | null
   }
 
-  export type AnalysisMaxAggregateOutputType = {
+  export type SkillMaxAggregateOutputType = {
     id: string | null
-    resumeId: string | null
-    userId: string | null
-    jobDescription: string | null
+    slug: string | null
+    name: string | null
+    category: string | null
     createdAt: Date | null
-    exportedAt: Date | null
+    updatedAt: Date | null
   }
 
-  export type AnalysisCountAggregateOutputType = {
+  export type SkillCountAggregateOutputType = {
     id: number
-    resumeId: number
+    slug: number
+    name: number
+    aliases: number
+    category: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SkillMinAggregateInputType = {
+    id?: true
+    slug?: true
+    name?: true
+    category?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SkillMaxAggregateInputType = {
+    id?: true
+    slug?: true
+    name?: true
+    category?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SkillCountAggregateInputType = {
+    id?: true
+    slug?: true
+    name?: true
+    aliases?: true
+    category?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SkillAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Skill to aggregate.
+     */
+    where?: SkillWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Skills to fetch.
+     */
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SkillWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Skills from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Skills.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Skills
+    **/
+    _count?: true | SkillCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SkillMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SkillMaxAggregateInputType
+  }
+
+  export type GetSkillAggregateType<T extends SkillAggregateArgs> = {
+        [P in keyof T & keyof AggregateSkill]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSkill[P]>
+      : GetScalarType<T[P], AggregateSkill[P]>
+  }
+
+
+
+
+  export type SkillGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SkillWhereInput
+    orderBy?: SkillOrderByWithAggregationInput | SkillOrderByWithAggregationInput[]
+    by: SkillScalarFieldEnum[] | SkillScalarFieldEnum
+    having?: SkillScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SkillCountAggregateInputType | true
+    _min?: SkillMinAggregateInputType
+    _max?: SkillMaxAggregateInputType
+  }
+
+  export type SkillGroupByOutputType = {
+    id: string
+    slug: string
+    name: string
+    aliases: string[]
+    category: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SkillCountAggregateOutputType | null
+    _min: SkillMinAggregateOutputType | null
+    _max: SkillMaxAggregateOutputType | null
+  }
+
+  type GetSkillGroupByPayload<T extends SkillGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SkillGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SkillGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SkillGroupByOutputType[P]>
+            : GetScalarType<T[P], SkillGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SkillSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slug?: boolean
+    name?: boolean
+    aliases?: boolean
+    category?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    requirements?: boolean | Skill$requirementsArgs<ExtArgs>
+    evidence?: boolean | Skill$evidenceArgs<ExtArgs>
+    gaps?: boolean | Skill$gapsArgs<ExtArgs>
+    _count?: boolean | SkillCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["skill"]>
+
+  export type SkillSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slug?: boolean
+    name?: boolean
+    aliases?: boolean
+    category?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["skill"]>
+
+  export type SkillSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slug?: boolean
+    name?: boolean
+    aliases?: boolean
+    category?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["skill"]>
+
+  export type SkillSelectScalar = {
+    id?: boolean
+    slug?: boolean
+    name?: boolean
+    aliases?: boolean
+    category?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SkillOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slug" | "name" | "aliases" | "category" | "createdAt" | "updatedAt", ExtArgs["result"]["skill"]>
+  export type SkillInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requirements?: boolean | Skill$requirementsArgs<ExtArgs>
+    evidence?: boolean | Skill$evidenceArgs<ExtArgs>
+    gaps?: boolean | Skill$gapsArgs<ExtArgs>
+    _count?: boolean | SkillCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SkillIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type SkillIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $SkillPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Skill"
+    objects: {
+      requirements: Prisma.$RoleSkillRequirementPayload<ExtArgs>[]
+      evidence: Prisma.$CandidateSkillEvidencePayload<ExtArgs>[]
+      gaps: Prisma.$SkillGapPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      slug: string
+      name: string
+      aliases: string[]
+      category: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["skill"]>
+    composites: {}
+  }
+
+  type SkillGetPayload<S extends boolean | null | undefined | SkillDefaultArgs> = $Result.GetResult<Prisma.$SkillPayload, S>
+
+  type SkillCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SkillFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SkillCountAggregateInputType | true
+    }
+
+  export interface SkillDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Skill'], meta: { name: 'Skill' } }
+    /**
+     * Find zero or one Skill that matches the filter.
+     * @param {SkillFindUniqueArgs} args - Arguments to find a Skill
+     * @example
+     * // Get one Skill
+     * const skill = await prisma.skill.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SkillFindUniqueArgs>(args: SelectSubset<T, SkillFindUniqueArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Skill that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SkillFindUniqueOrThrowArgs} args - Arguments to find a Skill
+     * @example
+     * // Get one Skill
+     * const skill = await prisma.skill.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SkillFindUniqueOrThrowArgs>(args: SelectSubset<T, SkillFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Skill that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillFindFirstArgs} args - Arguments to find a Skill
+     * @example
+     * // Get one Skill
+     * const skill = await prisma.skill.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SkillFindFirstArgs>(args?: SelectSubset<T, SkillFindFirstArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Skill that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillFindFirstOrThrowArgs} args - Arguments to find a Skill
+     * @example
+     * // Get one Skill
+     * const skill = await prisma.skill.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SkillFindFirstOrThrowArgs>(args?: SelectSubset<T, SkillFindFirstOrThrowArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Skills that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Skills
+     * const skills = await prisma.skill.findMany()
+     * 
+     * // Get first 10 Skills
+     * const skills = await prisma.skill.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const skillWithIdOnly = await prisma.skill.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SkillFindManyArgs>(args?: SelectSubset<T, SkillFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Skill.
+     * @param {SkillCreateArgs} args - Arguments to create a Skill.
+     * @example
+     * // Create one Skill
+     * const Skill = await prisma.skill.create({
+     *   data: {
+     *     // ... data to create a Skill
+     *   }
+     * })
+     * 
+     */
+    create<T extends SkillCreateArgs>(args: SelectSubset<T, SkillCreateArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Skills.
+     * @param {SkillCreateManyArgs} args - Arguments to create many Skills.
+     * @example
+     * // Create many Skills
+     * const skill = await prisma.skill.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SkillCreateManyArgs>(args?: SelectSubset<T, SkillCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Skills and returns the data saved in the database.
+     * @param {SkillCreateManyAndReturnArgs} args - Arguments to create many Skills.
+     * @example
+     * // Create many Skills
+     * const skill = await prisma.skill.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Skills and only return the `id`
+     * const skillWithIdOnly = await prisma.skill.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SkillCreateManyAndReturnArgs>(args?: SelectSubset<T, SkillCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Skill.
+     * @param {SkillDeleteArgs} args - Arguments to delete one Skill.
+     * @example
+     * // Delete one Skill
+     * const Skill = await prisma.skill.delete({
+     *   where: {
+     *     // ... filter to delete one Skill
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SkillDeleteArgs>(args: SelectSubset<T, SkillDeleteArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Skill.
+     * @param {SkillUpdateArgs} args - Arguments to update one Skill.
+     * @example
+     * // Update one Skill
+     * const skill = await prisma.skill.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SkillUpdateArgs>(args: SelectSubset<T, SkillUpdateArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Skills.
+     * @param {SkillDeleteManyArgs} args - Arguments to filter Skills to delete.
+     * @example
+     * // Delete a few Skills
+     * const { count } = await prisma.skill.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SkillDeleteManyArgs>(args?: SelectSubset<T, SkillDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Skills.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Skills
+     * const skill = await prisma.skill.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SkillUpdateManyArgs>(args: SelectSubset<T, SkillUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Skills and returns the data updated in the database.
+     * @param {SkillUpdateManyAndReturnArgs} args - Arguments to update many Skills.
+     * @example
+     * // Update many Skills
+     * const skill = await prisma.skill.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Skills and only return the `id`
+     * const skillWithIdOnly = await prisma.skill.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SkillUpdateManyAndReturnArgs>(args: SelectSubset<T, SkillUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Skill.
+     * @param {SkillUpsertArgs} args - Arguments to update or create a Skill.
+     * @example
+     * // Update or create a Skill
+     * const skill = await prisma.skill.upsert({
+     *   create: {
+     *     // ... data to create a Skill
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Skill we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SkillUpsertArgs>(args: SelectSubset<T, SkillUpsertArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Skills.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillCountArgs} args - Arguments to filter Skills to count.
+     * @example
+     * // Count the number of Skills
+     * const count = await prisma.skill.count({
+     *   where: {
+     *     // ... the filter for the Skills we want to count
+     *   }
+     * })
+    **/
+    count<T extends SkillCountArgs>(
+      args?: Subset<T, SkillCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SkillCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Skill.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SkillAggregateArgs>(args: Subset<T, SkillAggregateArgs>): Prisma.PrismaPromise<GetSkillAggregateType<T>>
+
+    /**
+     * Group by Skill.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SkillGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SkillGroupByArgs['orderBy'] }
+        : { orderBy?: SkillGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SkillGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSkillGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Skill model
+   */
+  readonly fields: SkillFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Skill.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SkillClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    requirements<T extends Skill$requirementsArgs<ExtArgs> = {}>(args?: Subset<T, Skill$requirementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    evidence<T extends Skill$evidenceArgs<ExtArgs> = {}>(args?: Subset<T, Skill$evidenceArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    gaps<T extends Skill$gapsArgs<ExtArgs> = {}>(args?: Subset<T, Skill$gapsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Skill model
+   */
+  interface SkillFieldRefs {
+    readonly id: FieldRef<"Skill", 'String'>
+    readonly slug: FieldRef<"Skill", 'String'>
+    readonly name: FieldRef<"Skill", 'String'>
+    readonly aliases: FieldRef<"Skill", 'String[]'>
+    readonly category: FieldRef<"Skill", 'String'>
+    readonly createdAt: FieldRef<"Skill", 'DateTime'>
+    readonly updatedAt: FieldRef<"Skill", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Skill findUnique
+   */
+  export type SkillFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skill to fetch.
+     */
+    where: SkillWhereUniqueInput
+  }
+
+  /**
+   * Skill findUniqueOrThrow
+   */
+  export type SkillFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skill to fetch.
+     */
+    where: SkillWhereUniqueInput
+  }
+
+  /**
+   * Skill findFirst
+   */
+  export type SkillFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skill to fetch.
+     */
+    where?: SkillWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Skills to fetch.
+     */
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Skills.
+     */
+    cursor?: SkillWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Skills from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Skills.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Skills.
+     */
+    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
+  }
+
+  /**
+   * Skill findFirstOrThrow
+   */
+  export type SkillFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skill to fetch.
+     */
+    where?: SkillWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Skills to fetch.
+     */
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Skills.
+     */
+    cursor?: SkillWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Skills from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Skills.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Skills.
+     */
+    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
+  }
+
+  /**
+   * Skill findMany
+   */
+  export type SkillFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skills to fetch.
+     */
+    where?: SkillWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Skills to fetch.
+     */
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Skills.
+     */
+    cursor?: SkillWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Skills from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Skills.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Skills.
+     */
+    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
+  }
+
+  /**
+   * Skill create
+   */
+  export type SkillCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Skill.
+     */
+    data: XOR<SkillCreateInput, SkillUncheckedCreateInput>
+  }
+
+  /**
+   * Skill createMany
+   */
+  export type SkillCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Skills.
+     */
+    data: SkillCreateManyInput | SkillCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Skill createManyAndReturn
+   */
+  export type SkillCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * The data used to create many Skills.
+     */
+    data: SkillCreateManyInput | SkillCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Skill update
+   */
+  export type SkillUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Skill.
+     */
+    data: XOR<SkillUpdateInput, SkillUncheckedUpdateInput>
+    /**
+     * Choose, which Skill to update.
+     */
+    where: SkillWhereUniqueInput
+  }
+
+  /**
+   * Skill updateMany
+   */
+  export type SkillUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Skills.
+     */
+    data: XOR<SkillUpdateManyMutationInput, SkillUncheckedUpdateManyInput>
+    /**
+     * Filter which Skills to update
+     */
+    where?: SkillWhereInput
+    /**
+     * Limit how many Skills to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Skill updateManyAndReturn
+   */
+  export type SkillUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * The data used to update Skills.
+     */
+    data: XOR<SkillUpdateManyMutationInput, SkillUncheckedUpdateManyInput>
+    /**
+     * Filter which Skills to update
+     */
+    where?: SkillWhereInput
+    /**
+     * Limit how many Skills to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Skill upsert
+   */
+  export type SkillUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Skill to update in case it exists.
+     */
+    where: SkillWhereUniqueInput
+    /**
+     * In case the Skill found by the `where` argument doesn't exist, create a new Skill with this data.
+     */
+    create: XOR<SkillCreateInput, SkillUncheckedCreateInput>
+    /**
+     * In case the Skill was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SkillUpdateInput, SkillUncheckedUpdateInput>
+  }
+
+  /**
+   * Skill delete
+   */
+  export type SkillDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter which Skill to delete.
+     */
+    where: SkillWhereUniqueInput
+  }
+
+  /**
+   * Skill deleteMany
+   */
+  export type SkillDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Skills to delete
+     */
+    where?: SkillWhereInput
+    /**
+     * Limit how many Skills to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Skill.requirements
+   */
+  export type Skill$requirementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementInclude<ExtArgs> | null
+    where?: RoleSkillRequirementWhereInput
+    orderBy?: RoleSkillRequirementOrderByWithRelationInput | RoleSkillRequirementOrderByWithRelationInput[]
+    cursor?: RoleSkillRequirementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoleSkillRequirementScalarFieldEnum | RoleSkillRequirementScalarFieldEnum[]
+  }
+
+  /**
+   * Skill.evidence
+   */
+  export type Skill$evidenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceInclude<ExtArgs> | null
+    where?: CandidateSkillEvidenceWhereInput
+    orderBy?: CandidateSkillEvidenceOrderByWithRelationInput | CandidateSkillEvidenceOrderByWithRelationInput[]
+    cursor?: CandidateSkillEvidenceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CandidateSkillEvidenceScalarFieldEnum | CandidateSkillEvidenceScalarFieldEnum[]
+  }
+
+  /**
+   * Skill.gaps
+   */
+  export type Skill$gapsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+    where?: SkillGapWhereInput
+    orderBy?: SkillGapOrderByWithRelationInput | SkillGapOrderByWithRelationInput[]
+    cursor?: SkillGapWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SkillGapScalarFieldEnum | SkillGapScalarFieldEnum[]
+  }
+
+  /**
+   * Skill without action
+   */
+  export type SkillDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Role
+   */
+
+  export type AggregateRole = {
+    _count: RoleCountAggregateOutputType | null
+    _min: RoleMinAggregateOutputType | null
+    _max: RoleMaxAggregateOutputType | null
+  }
+
+  export type RoleMinAggregateOutputType = {
+    id: string | null
+    slug: string | null
+    title: string | null
+    description: string | null
+    seedVersion: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RoleMaxAggregateOutputType = {
+    id: string | null
+    slug: string | null
+    title: string | null
+    description: string | null
+    seedVersion: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RoleCountAggregateOutputType = {
+    id: number
+    slug: number
+    title: number
+    description: number
+    seedVersion: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RoleMinAggregateInputType = {
+    id?: true
+    slug?: true
+    title?: true
+    description?: true
+    seedVersion?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RoleMaxAggregateInputType = {
+    id?: true
+    slug?: true
+    title?: true
+    description?: true
+    seedVersion?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RoleCountAggregateInputType = {
+    id?: true
+    slug?: true
+    title?: true
+    description?: true
+    seedVersion?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RoleAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Role to aggregate.
+     */
+    where?: RoleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Roles to fetch.
+     */
+    orderBy?: RoleOrderByWithRelationInput | RoleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RoleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Roles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Roles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Roles
+    **/
+    _count?: true | RoleCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RoleMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RoleMaxAggregateInputType
+  }
+
+  export type GetRoleAggregateType<T extends RoleAggregateArgs> = {
+        [P in keyof T & keyof AggregateRole]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRole[P]>
+      : GetScalarType<T[P], AggregateRole[P]>
+  }
+
+
+
+
+  export type RoleGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoleWhereInput
+    orderBy?: RoleOrderByWithAggregationInput | RoleOrderByWithAggregationInput[]
+    by: RoleScalarFieldEnum[] | RoleScalarFieldEnum
+    having?: RoleScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RoleCountAggregateInputType | true
+    _min?: RoleMinAggregateInputType
+    _max?: RoleMaxAggregateInputType
+  }
+
+  export type RoleGroupByOutputType = {
+    id: string
+    slug: string
+    title: string
+    description: string
+    seedVersion: string
+    createdAt: Date
+    updatedAt: Date
+    _count: RoleCountAggregateOutputType | null
+    _min: RoleMinAggregateOutputType | null
+    _max: RoleMaxAggregateOutputType | null
+  }
+
+  type GetRoleGroupByPayload<T extends RoleGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RoleGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RoleGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RoleGroupByOutputType[P]>
+            : GetScalarType<T[P], RoleGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RoleSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slug?: boolean
+    title?: boolean
+    description?: boolean
+    seedVersion?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    requirements?: boolean | Role$requirementsArgs<ExtArgs>
+    analyses?: boolean | Role$analysesArgs<ExtArgs>
+    _count?: boolean | RoleCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["role"]>
+
+  export type RoleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slug?: boolean
+    title?: boolean
+    description?: boolean
+    seedVersion?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["role"]>
+
+  export type RoleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slug?: boolean
+    title?: boolean
+    description?: boolean
+    seedVersion?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["role"]>
+
+  export type RoleSelectScalar = {
+    id?: boolean
+    slug?: boolean
+    title?: boolean
+    description?: boolean
+    seedVersion?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RoleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slug" | "title" | "description" | "seedVersion" | "createdAt" | "updatedAt", ExtArgs["result"]["role"]>
+  export type RoleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requirements?: boolean | Role$requirementsArgs<ExtArgs>
+    analyses?: boolean | Role$analysesArgs<ExtArgs>
+    _count?: boolean | RoleCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type RoleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type RoleIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $RolePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Role"
+    objects: {
+      requirements: Prisma.$RoleSkillRequirementPayload<ExtArgs>[]
+      analyses: Prisma.$CareerAnalysisPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      slug: string
+      title: string
+      description: string
+      seedVersion: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["role"]>
+    composites: {}
+  }
+
+  type RoleGetPayload<S extends boolean | null | undefined | RoleDefaultArgs> = $Result.GetResult<Prisma.$RolePayload, S>
+
+  type RoleCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RoleFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RoleCountAggregateInputType | true
+    }
+
+  export interface RoleDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Role'], meta: { name: 'Role' } }
+    /**
+     * Find zero or one Role that matches the filter.
+     * @param {RoleFindUniqueArgs} args - Arguments to find a Role
+     * @example
+     * // Get one Role
+     * const role = await prisma.role.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RoleFindUniqueArgs>(args: SelectSubset<T, RoleFindUniqueArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Role that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RoleFindUniqueOrThrowArgs} args - Arguments to find a Role
+     * @example
+     * // Get one Role
+     * const role = await prisma.role.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RoleFindUniqueOrThrowArgs>(args: SelectSubset<T, RoleFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Role that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleFindFirstArgs} args - Arguments to find a Role
+     * @example
+     * // Get one Role
+     * const role = await prisma.role.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RoleFindFirstArgs>(args?: SelectSubset<T, RoleFindFirstArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Role that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleFindFirstOrThrowArgs} args - Arguments to find a Role
+     * @example
+     * // Get one Role
+     * const role = await prisma.role.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RoleFindFirstOrThrowArgs>(args?: SelectSubset<T, RoleFindFirstOrThrowArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Roles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Roles
+     * const roles = await prisma.role.findMany()
+     * 
+     * // Get first 10 Roles
+     * const roles = await prisma.role.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const roleWithIdOnly = await prisma.role.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RoleFindManyArgs>(args?: SelectSubset<T, RoleFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Role.
+     * @param {RoleCreateArgs} args - Arguments to create a Role.
+     * @example
+     * // Create one Role
+     * const Role = await prisma.role.create({
+     *   data: {
+     *     // ... data to create a Role
+     *   }
+     * })
+     * 
+     */
+    create<T extends RoleCreateArgs>(args: SelectSubset<T, RoleCreateArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Roles.
+     * @param {RoleCreateManyArgs} args - Arguments to create many Roles.
+     * @example
+     * // Create many Roles
+     * const role = await prisma.role.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RoleCreateManyArgs>(args?: SelectSubset<T, RoleCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Roles and returns the data saved in the database.
+     * @param {RoleCreateManyAndReturnArgs} args - Arguments to create many Roles.
+     * @example
+     * // Create many Roles
+     * const role = await prisma.role.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Roles and only return the `id`
+     * const roleWithIdOnly = await prisma.role.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RoleCreateManyAndReturnArgs>(args?: SelectSubset<T, RoleCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Role.
+     * @param {RoleDeleteArgs} args - Arguments to delete one Role.
+     * @example
+     * // Delete one Role
+     * const Role = await prisma.role.delete({
+     *   where: {
+     *     // ... filter to delete one Role
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RoleDeleteArgs>(args: SelectSubset<T, RoleDeleteArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Role.
+     * @param {RoleUpdateArgs} args - Arguments to update one Role.
+     * @example
+     * // Update one Role
+     * const role = await prisma.role.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RoleUpdateArgs>(args: SelectSubset<T, RoleUpdateArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Roles.
+     * @param {RoleDeleteManyArgs} args - Arguments to filter Roles to delete.
+     * @example
+     * // Delete a few Roles
+     * const { count } = await prisma.role.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RoleDeleteManyArgs>(args?: SelectSubset<T, RoleDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Roles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Roles
+     * const role = await prisma.role.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RoleUpdateManyArgs>(args: SelectSubset<T, RoleUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Roles and returns the data updated in the database.
+     * @param {RoleUpdateManyAndReturnArgs} args - Arguments to update many Roles.
+     * @example
+     * // Update many Roles
+     * const role = await prisma.role.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Roles and only return the `id`
+     * const roleWithIdOnly = await prisma.role.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RoleUpdateManyAndReturnArgs>(args: SelectSubset<T, RoleUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Role.
+     * @param {RoleUpsertArgs} args - Arguments to update or create a Role.
+     * @example
+     * // Update or create a Role
+     * const role = await prisma.role.upsert({
+     *   create: {
+     *     // ... data to create a Role
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Role we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RoleUpsertArgs>(args: SelectSubset<T, RoleUpsertArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Roles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleCountArgs} args - Arguments to filter Roles to count.
+     * @example
+     * // Count the number of Roles
+     * const count = await prisma.role.count({
+     *   where: {
+     *     // ... the filter for the Roles we want to count
+     *   }
+     * })
+    **/
+    count<T extends RoleCountArgs>(
+      args?: Subset<T, RoleCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RoleCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Role.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RoleAggregateArgs>(args: Subset<T, RoleAggregateArgs>): Prisma.PrismaPromise<GetRoleAggregateType<T>>
+
+    /**
+     * Group by Role.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RoleGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RoleGroupByArgs['orderBy'] }
+        : { orderBy?: RoleGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RoleGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRoleGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Role model
+   */
+  readonly fields: RoleFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Role.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RoleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    requirements<T extends Role$requirementsArgs<ExtArgs> = {}>(args?: Subset<T, Role$requirementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    analyses<T extends Role$analysesArgs<ExtArgs> = {}>(args?: Subset<T, Role$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Role model
+   */
+  interface RoleFieldRefs {
+    readonly id: FieldRef<"Role", 'String'>
+    readonly slug: FieldRef<"Role", 'String'>
+    readonly title: FieldRef<"Role", 'String'>
+    readonly description: FieldRef<"Role", 'String'>
+    readonly seedVersion: FieldRef<"Role", 'String'>
+    readonly createdAt: FieldRef<"Role", 'DateTime'>
+    readonly updatedAt: FieldRef<"Role", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Role findUnique
+   */
+  export type RoleFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    /**
+     * Filter, which Role to fetch.
+     */
+    where: RoleWhereUniqueInput
+  }
+
+  /**
+   * Role findUniqueOrThrow
+   */
+  export type RoleFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    /**
+     * Filter, which Role to fetch.
+     */
+    where: RoleWhereUniqueInput
+  }
+
+  /**
+   * Role findFirst
+   */
+  export type RoleFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    /**
+     * Filter, which Role to fetch.
+     */
+    where?: RoleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Roles to fetch.
+     */
+    orderBy?: RoleOrderByWithRelationInput | RoleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Roles.
+     */
+    cursor?: RoleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Roles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Roles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Roles.
+     */
+    distinct?: RoleScalarFieldEnum | RoleScalarFieldEnum[]
+  }
+
+  /**
+   * Role findFirstOrThrow
+   */
+  export type RoleFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    /**
+     * Filter, which Role to fetch.
+     */
+    where?: RoleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Roles to fetch.
+     */
+    orderBy?: RoleOrderByWithRelationInput | RoleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Roles.
+     */
+    cursor?: RoleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Roles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Roles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Roles.
+     */
+    distinct?: RoleScalarFieldEnum | RoleScalarFieldEnum[]
+  }
+
+  /**
+   * Role findMany
+   */
+  export type RoleFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    /**
+     * Filter, which Roles to fetch.
+     */
+    where?: RoleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Roles to fetch.
+     */
+    orderBy?: RoleOrderByWithRelationInput | RoleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Roles.
+     */
+    cursor?: RoleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Roles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Roles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Roles.
+     */
+    distinct?: RoleScalarFieldEnum | RoleScalarFieldEnum[]
+  }
+
+  /**
+   * Role create
+   */
+  export type RoleCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Role.
+     */
+    data: XOR<RoleCreateInput, RoleUncheckedCreateInput>
+  }
+
+  /**
+   * Role createMany
+   */
+  export type RoleCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Roles.
+     */
+    data: RoleCreateManyInput | RoleCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Role createManyAndReturn
+   */
+  export type RoleCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * The data used to create many Roles.
+     */
+    data: RoleCreateManyInput | RoleCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Role update
+   */
+  export type RoleUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Role.
+     */
+    data: XOR<RoleUpdateInput, RoleUncheckedUpdateInput>
+    /**
+     * Choose, which Role to update.
+     */
+    where: RoleWhereUniqueInput
+  }
+
+  /**
+   * Role updateMany
+   */
+  export type RoleUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Roles.
+     */
+    data: XOR<RoleUpdateManyMutationInput, RoleUncheckedUpdateManyInput>
+    /**
+     * Filter which Roles to update
+     */
+    where?: RoleWhereInput
+    /**
+     * Limit how many Roles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Role updateManyAndReturn
+   */
+  export type RoleUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * The data used to update Roles.
+     */
+    data: XOR<RoleUpdateManyMutationInput, RoleUncheckedUpdateManyInput>
+    /**
+     * Filter which Roles to update
+     */
+    where?: RoleWhereInput
+    /**
+     * Limit how many Roles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Role upsert
+   */
+  export type RoleUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Role to update in case it exists.
+     */
+    where: RoleWhereUniqueInput
+    /**
+     * In case the Role found by the `where` argument doesn't exist, create a new Role with this data.
+     */
+    create: XOR<RoleCreateInput, RoleUncheckedCreateInput>
+    /**
+     * In case the Role was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RoleUpdateInput, RoleUncheckedUpdateInput>
+  }
+
+  /**
+   * Role delete
+   */
+  export type RoleDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    /**
+     * Filter which Role to delete.
+     */
+    where: RoleWhereUniqueInput
+  }
+
+  /**
+   * Role deleteMany
+   */
+  export type RoleDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Roles to delete
+     */
+    where?: RoleWhereInput
+    /**
+     * Limit how many Roles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Role.requirements
+   */
+  export type Role$requirementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementInclude<ExtArgs> | null
+    where?: RoleSkillRequirementWhereInput
+    orderBy?: RoleSkillRequirementOrderByWithRelationInput | RoleSkillRequirementOrderByWithRelationInput[]
+    cursor?: RoleSkillRequirementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoleSkillRequirementScalarFieldEnum | RoleSkillRequirementScalarFieldEnum[]
+  }
+
+  /**
+   * Role.analyses
+   */
+  export type Role$analysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CareerAnalysis
+     */
+    select?: CareerAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CareerAnalysis
+     */
+    omit?: CareerAnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CareerAnalysisInclude<ExtArgs> | null
+    where?: CareerAnalysisWhereInput
+    orderBy?: CareerAnalysisOrderByWithRelationInput | CareerAnalysisOrderByWithRelationInput[]
+    cursor?: CareerAnalysisWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CareerAnalysisScalarFieldEnum | CareerAnalysisScalarFieldEnum[]
+  }
+
+  /**
+   * Role without action
+   */
+  export type RoleDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RoleSkillRequirement
+   */
+
+  export type AggregateRoleSkillRequirement = {
+    _count: RoleSkillRequirementCountAggregateOutputType | null
+    _min: RoleSkillRequirementMinAggregateOutputType | null
+    _max: RoleSkillRequirementMaxAggregateOutputType | null
+  }
+
+  export type RoleSkillRequirementMinAggregateOutputType = {
+    id: string | null
+    roleId: string | null
+    skillId: string | null
+    importance: $Enums.SkillImportance | null
+    rationale: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RoleSkillRequirementMaxAggregateOutputType = {
+    id: string | null
+    roleId: string | null
+    skillId: string | null
+    importance: $Enums.SkillImportance | null
+    rationale: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RoleSkillRequirementCountAggregateOutputType = {
+    id: number
+    roleId: number
+    skillId: number
+    importance: number
+    rationale: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RoleSkillRequirementMinAggregateInputType = {
+    id?: true
+    roleId?: true
+    skillId?: true
+    importance?: true
+    rationale?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RoleSkillRequirementMaxAggregateInputType = {
+    id?: true
+    roleId?: true
+    skillId?: true
+    importance?: true
+    rationale?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RoleSkillRequirementCountAggregateInputType = {
+    id?: true
+    roleId?: true
+    skillId?: true
+    importance?: true
+    rationale?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RoleSkillRequirementAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoleSkillRequirement to aggregate.
+     */
+    where?: RoleSkillRequirementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoleSkillRequirements to fetch.
+     */
+    orderBy?: RoleSkillRequirementOrderByWithRelationInput | RoleSkillRequirementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RoleSkillRequirementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoleSkillRequirements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoleSkillRequirements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RoleSkillRequirements
+    **/
+    _count?: true | RoleSkillRequirementCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RoleSkillRequirementMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RoleSkillRequirementMaxAggregateInputType
+  }
+
+  export type GetRoleSkillRequirementAggregateType<T extends RoleSkillRequirementAggregateArgs> = {
+        [P in keyof T & keyof AggregateRoleSkillRequirement]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRoleSkillRequirement[P]>
+      : GetScalarType<T[P], AggregateRoleSkillRequirement[P]>
+  }
+
+
+
+
+  export type RoleSkillRequirementGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoleSkillRequirementWhereInput
+    orderBy?: RoleSkillRequirementOrderByWithAggregationInput | RoleSkillRequirementOrderByWithAggregationInput[]
+    by: RoleSkillRequirementScalarFieldEnum[] | RoleSkillRequirementScalarFieldEnum
+    having?: RoleSkillRequirementScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RoleSkillRequirementCountAggregateInputType | true
+    _min?: RoleSkillRequirementMinAggregateInputType
+    _max?: RoleSkillRequirementMaxAggregateInputType
+  }
+
+  export type RoleSkillRequirementGroupByOutputType = {
+    id: string
+    roleId: string
+    skillId: string
+    importance: $Enums.SkillImportance
+    rationale: string
+    createdAt: Date
+    updatedAt: Date
+    _count: RoleSkillRequirementCountAggregateOutputType | null
+    _min: RoleSkillRequirementMinAggregateOutputType | null
+    _max: RoleSkillRequirementMaxAggregateOutputType | null
+  }
+
+  type GetRoleSkillRequirementGroupByPayload<T extends RoleSkillRequirementGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RoleSkillRequirementGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RoleSkillRequirementGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RoleSkillRequirementGroupByOutputType[P]>
+            : GetScalarType<T[P], RoleSkillRequirementGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RoleSkillRequirementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roleId?: boolean
+    skillId?: boolean
+    importance?: boolean
+    rationale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    role?: boolean | RoleDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roleSkillRequirement"]>
+
+  export type RoleSkillRequirementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roleId?: boolean
+    skillId?: boolean
+    importance?: boolean
+    rationale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    role?: boolean | RoleDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roleSkillRequirement"]>
+
+  export type RoleSkillRequirementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roleId?: boolean
+    skillId?: boolean
+    importance?: boolean
+    rationale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    role?: boolean | RoleDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roleSkillRequirement"]>
+
+  export type RoleSkillRequirementSelectScalar = {
+    id?: boolean
+    roleId?: boolean
+    skillId?: boolean
+    importance?: boolean
+    rationale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RoleSkillRequirementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roleId" | "skillId" | "importance" | "rationale" | "createdAt" | "updatedAt", ExtArgs["result"]["roleSkillRequirement"]>
+  export type RoleSkillRequirementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    role?: boolean | RoleDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }
+  export type RoleSkillRequirementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    role?: boolean | RoleDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }
+  export type RoleSkillRequirementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    role?: boolean | RoleDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }
+
+  export type $RoleSkillRequirementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RoleSkillRequirement"
+    objects: {
+      role: Prisma.$RolePayload<ExtArgs>
+      skill: Prisma.$SkillPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      roleId: string
+      skillId: string
+      importance: $Enums.SkillImportance
+      rationale: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["roleSkillRequirement"]>
+    composites: {}
+  }
+
+  type RoleSkillRequirementGetPayload<S extends boolean | null | undefined | RoleSkillRequirementDefaultArgs> = $Result.GetResult<Prisma.$RoleSkillRequirementPayload, S>
+
+  type RoleSkillRequirementCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RoleSkillRequirementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RoleSkillRequirementCountAggregateInputType | true
+    }
+
+  export interface RoleSkillRequirementDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RoleSkillRequirement'], meta: { name: 'RoleSkillRequirement' } }
+    /**
+     * Find zero or one RoleSkillRequirement that matches the filter.
+     * @param {RoleSkillRequirementFindUniqueArgs} args - Arguments to find a RoleSkillRequirement
+     * @example
+     * // Get one RoleSkillRequirement
+     * const roleSkillRequirement = await prisma.roleSkillRequirement.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RoleSkillRequirementFindUniqueArgs>(args: SelectSubset<T, RoleSkillRequirementFindUniqueArgs<ExtArgs>>): Prisma__RoleSkillRequirementClient<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RoleSkillRequirement that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RoleSkillRequirementFindUniqueOrThrowArgs} args - Arguments to find a RoleSkillRequirement
+     * @example
+     * // Get one RoleSkillRequirement
+     * const roleSkillRequirement = await prisma.roleSkillRequirement.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RoleSkillRequirementFindUniqueOrThrowArgs>(args: SelectSubset<T, RoleSkillRequirementFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RoleSkillRequirementClient<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoleSkillRequirement that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleSkillRequirementFindFirstArgs} args - Arguments to find a RoleSkillRequirement
+     * @example
+     * // Get one RoleSkillRequirement
+     * const roleSkillRequirement = await prisma.roleSkillRequirement.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RoleSkillRequirementFindFirstArgs>(args?: SelectSubset<T, RoleSkillRequirementFindFirstArgs<ExtArgs>>): Prisma__RoleSkillRequirementClient<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoleSkillRequirement that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleSkillRequirementFindFirstOrThrowArgs} args - Arguments to find a RoleSkillRequirement
+     * @example
+     * // Get one RoleSkillRequirement
+     * const roleSkillRequirement = await prisma.roleSkillRequirement.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RoleSkillRequirementFindFirstOrThrowArgs>(args?: SelectSubset<T, RoleSkillRequirementFindFirstOrThrowArgs<ExtArgs>>): Prisma__RoleSkillRequirementClient<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RoleSkillRequirements that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleSkillRequirementFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RoleSkillRequirements
+     * const roleSkillRequirements = await prisma.roleSkillRequirement.findMany()
+     * 
+     * // Get first 10 RoleSkillRequirements
+     * const roleSkillRequirements = await prisma.roleSkillRequirement.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const roleSkillRequirementWithIdOnly = await prisma.roleSkillRequirement.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RoleSkillRequirementFindManyArgs>(args?: SelectSubset<T, RoleSkillRequirementFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RoleSkillRequirement.
+     * @param {RoleSkillRequirementCreateArgs} args - Arguments to create a RoleSkillRequirement.
+     * @example
+     * // Create one RoleSkillRequirement
+     * const RoleSkillRequirement = await prisma.roleSkillRequirement.create({
+     *   data: {
+     *     // ... data to create a RoleSkillRequirement
+     *   }
+     * })
+     * 
+     */
+    create<T extends RoleSkillRequirementCreateArgs>(args: SelectSubset<T, RoleSkillRequirementCreateArgs<ExtArgs>>): Prisma__RoleSkillRequirementClient<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RoleSkillRequirements.
+     * @param {RoleSkillRequirementCreateManyArgs} args - Arguments to create many RoleSkillRequirements.
+     * @example
+     * // Create many RoleSkillRequirements
+     * const roleSkillRequirement = await prisma.roleSkillRequirement.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RoleSkillRequirementCreateManyArgs>(args?: SelectSubset<T, RoleSkillRequirementCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RoleSkillRequirements and returns the data saved in the database.
+     * @param {RoleSkillRequirementCreateManyAndReturnArgs} args - Arguments to create many RoleSkillRequirements.
+     * @example
+     * // Create many RoleSkillRequirements
+     * const roleSkillRequirement = await prisma.roleSkillRequirement.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RoleSkillRequirements and only return the `id`
+     * const roleSkillRequirementWithIdOnly = await prisma.roleSkillRequirement.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RoleSkillRequirementCreateManyAndReturnArgs>(args?: SelectSubset<T, RoleSkillRequirementCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RoleSkillRequirement.
+     * @param {RoleSkillRequirementDeleteArgs} args - Arguments to delete one RoleSkillRequirement.
+     * @example
+     * // Delete one RoleSkillRequirement
+     * const RoleSkillRequirement = await prisma.roleSkillRequirement.delete({
+     *   where: {
+     *     // ... filter to delete one RoleSkillRequirement
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RoleSkillRequirementDeleteArgs>(args: SelectSubset<T, RoleSkillRequirementDeleteArgs<ExtArgs>>): Prisma__RoleSkillRequirementClient<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RoleSkillRequirement.
+     * @param {RoleSkillRequirementUpdateArgs} args - Arguments to update one RoleSkillRequirement.
+     * @example
+     * // Update one RoleSkillRequirement
+     * const roleSkillRequirement = await prisma.roleSkillRequirement.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RoleSkillRequirementUpdateArgs>(args: SelectSubset<T, RoleSkillRequirementUpdateArgs<ExtArgs>>): Prisma__RoleSkillRequirementClient<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RoleSkillRequirements.
+     * @param {RoleSkillRequirementDeleteManyArgs} args - Arguments to filter RoleSkillRequirements to delete.
+     * @example
+     * // Delete a few RoleSkillRequirements
+     * const { count } = await prisma.roleSkillRequirement.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RoleSkillRequirementDeleteManyArgs>(args?: SelectSubset<T, RoleSkillRequirementDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoleSkillRequirements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleSkillRequirementUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RoleSkillRequirements
+     * const roleSkillRequirement = await prisma.roleSkillRequirement.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RoleSkillRequirementUpdateManyArgs>(args: SelectSubset<T, RoleSkillRequirementUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoleSkillRequirements and returns the data updated in the database.
+     * @param {RoleSkillRequirementUpdateManyAndReturnArgs} args - Arguments to update many RoleSkillRequirements.
+     * @example
+     * // Update many RoleSkillRequirements
+     * const roleSkillRequirement = await prisma.roleSkillRequirement.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RoleSkillRequirements and only return the `id`
+     * const roleSkillRequirementWithIdOnly = await prisma.roleSkillRequirement.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RoleSkillRequirementUpdateManyAndReturnArgs>(args: SelectSubset<T, RoleSkillRequirementUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RoleSkillRequirement.
+     * @param {RoleSkillRequirementUpsertArgs} args - Arguments to update or create a RoleSkillRequirement.
+     * @example
+     * // Update or create a RoleSkillRequirement
+     * const roleSkillRequirement = await prisma.roleSkillRequirement.upsert({
+     *   create: {
+     *     // ... data to create a RoleSkillRequirement
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RoleSkillRequirement we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RoleSkillRequirementUpsertArgs>(args: SelectSubset<T, RoleSkillRequirementUpsertArgs<ExtArgs>>): Prisma__RoleSkillRequirementClient<$Result.GetResult<Prisma.$RoleSkillRequirementPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RoleSkillRequirements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleSkillRequirementCountArgs} args - Arguments to filter RoleSkillRequirements to count.
+     * @example
+     * // Count the number of RoleSkillRequirements
+     * const count = await prisma.roleSkillRequirement.count({
+     *   where: {
+     *     // ... the filter for the RoleSkillRequirements we want to count
+     *   }
+     * })
+    **/
+    count<T extends RoleSkillRequirementCountArgs>(
+      args?: Subset<T, RoleSkillRequirementCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RoleSkillRequirementCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RoleSkillRequirement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleSkillRequirementAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RoleSkillRequirementAggregateArgs>(args: Subset<T, RoleSkillRequirementAggregateArgs>): Prisma.PrismaPromise<GetRoleSkillRequirementAggregateType<T>>
+
+    /**
+     * Group by RoleSkillRequirement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoleSkillRequirementGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RoleSkillRequirementGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RoleSkillRequirementGroupByArgs['orderBy'] }
+        : { orderBy?: RoleSkillRequirementGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RoleSkillRequirementGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRoleSkillRequirementGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RoleSkillRequirement model
+   */
+  readonly fields: RoleSkillRequirementFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RoleSkillRequirement.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RoleSkillRequirementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    role<T extends RoleDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RoleDefaultArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    skill<T extends SkillDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SkillDefaultArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RoleSkillRequirement model
+   */
+  interface RoleSkillRequirementFieldRefs {
+    readonly id: FieldRef<"RoleSkillRequirement", 'String'>
+    readonly roleId: FieldRef<"RoleSkillRequirement", 'String'>
+    readonly skillId: FieldRef<"RoleSkillRequirement", 'String'>
+    readonly importance: FieldRef<"RoleSkillRequirement", 'SkillImportance'>
+    readonly rationale: FieldRef<"RoleSkillRequirement", 'String'>
+    readonly createdAt: FieldRef<"RoleSkillRequirement", 'DateTime'>
+    readonly updatedAt: FieldRef<"RoleSkillRequirement", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RoleSkillRequirement findUnique
+   */
+  export type RoleSkillRequirementFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementInclude<ExtArgs> | null
+    /**
+     * Filter, which RoleSkillRequirement to fetch.
+     */
+    where: RoleSkillRequirementWhereUniqueInput
+  }
+
+  /**
+   * RoleSkillRequirement findUniqueOrThrow
+   */
+  export type RoleSkillRequirementFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementInclude<ExtArgs> | null
+    /**
+     * Filter, which RoleSkillRequirement to fetch.
+     */
+    where: RoleSkillRequirementWhereUniqueInput
+  }
+
+  /**
+   * RoleSkillRequirement findFirst
+   */
+  export type RoleSkillRequirementFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementInclude<ExtArgs> | null
+    /**
+     * Filter, which RoleSkillRequirement to fetch.
+     */
+    where?: RoleSkillRequirementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoleSkillRequirements to fetch.
+     */
+    orderBy?: RoleSkillRequirementOrderByWithRelationInput | RoleSkillRequirementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoleSkillRequirements.
+     */
+    cursor?: RoleSkillRequirementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoleSkillRequirements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoleSkillRequirements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoleSkillRequirements.
+     */
+    distinct?: RoleSkillRequirementScalarFieldEnum | RoleSkillRequirementScalarFieldEnum[]
+  }
+
+  /**
+   * RoleSkillRequirement findFirstOrThrow
+   */
+  export type RoleSkillRequirementFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementInclude<ExtArgs> | null
+    /**
+     * Filter, which RoleSkillRequirement to fetch.
+     */
+    where?: RoleSkillRequirementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoleSkillRequirements to fetch.
+     */
+    orderBy?: RoleSkillRequirementOrderByWithRelationInput | RoleSkillRequirementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoleSkillRequirements.
+     */
+    cursor?: RoleSkillRequirementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoleSkillRequirements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoleSkillRequirements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoleSkillRequirements.
+     */
+    distinct?: RoleSkillRequirementScalarFieldEnum | RoleSkillRequirementScalarFieldEnum[]
+  }
+
+  /**
+   * RoleSkillRequirement findMany
+   */
+  export type RoleSkillRequirementFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementInclude<ExtArgs> | null
+    /**
+     * Filter, which RoleSkillRequirements to fetch.
+     */
+    where?: RoleSkillRequirementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoleSkillRequirements to fetch.
+     */
+    orderBy?: RoleSkillRequirementOrderByWithRelationInput | RoleSkillRequirementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RoleSkillRequirements.
+     */
+    cursor?: RoleSkillRequirementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoleSkillRequirements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoleSkillRequirements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoleSkillRequirements.
+     */
+    distinct?: RoleSkillRequirementScalarFieldEnum | RoleSkillRequirementScalarFieldEnum[]
+  }
+
+  /**
+   * RoleSkillRequirement create
+   */
+  export type RoleSkillRequirementCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RoleSkillRequirement.
+     */
+    data: XOR<RoleSkillRequirementCreateInput, RoleSkillRequirementUncheckedCreateInput>
+  }
+
+  /**
+   * RoleSkillRequirement createMany
+   */
+  export type RoleSkillRequirementCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RoleSkillRequirements.
+     */
+    data: RoleSkillRequirementCreateManyInput | RoleSkillRequirementCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RoleSkillRequirement createManyAndReturn
+   */
+  export type RoleSkillRequirementCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * The data used to create many RoleSkillRequirements.
+     */
+    data: RoleSkillRequirementCreateManyInput | RoleSkillRequirementCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RoleSkillRequirement update
+   */
+  export type RoleSkillRequirementUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RoleSkillRequirement.
+     */
+    data: XOR<RoleSkillRequirementUpdateInput, RoleSkillRequirementUncheckedUpdateInput>
+    /**
+     * Choose, which RoleSkillRequirement to update.
+     */
+    where: RoleSkillRequirementWhereUniqueInput
+  }
+
+  /**
+   * RoleSkillRequirement updateMany
+   */
+  export type RoleSkillRequirementUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RoleSkillRequirements.
+     */
+    data: XOR<RoleSkillRequirementUpdateManyMutationInput, RoleSkillRequirementUncheckedUpdateManyInput>
+    /**
+     * Filter which RoleSkillRequirements to update
+     */
+    where?: RoleSkillRequirementWhereInput
+    /**
+     * Limit how many RoleSkillRequirements to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoleSkillRequirement updateManyAndReturn
+   */
+  export type RoleSkillRequirementUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * The data used to update RoleSkillRequirements.
+     */
+    data: XOR<RoleSkillRequirementUpdateManyMutationInput, RoleSkillRequirementUncheckedUpdateManyInput>
+    /**
+     * Filter which RoleSkillRequirements to update
+     */
+    where?: RoleSkillRequirementWhereInput
+    /**
+     * Limit how many RoleSkillRequirements to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RoleSkillRequirement upsert
+   */
+  export type RoleSkillRequirementUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RoleSkillRequirement to update in case it exists.
+     */
+    where: RoleSkillRequirementWhereUniqueInput
+    /**
+     * In case the RoleSkillRequirement found by the `where` argument doesn't exist, create a new RoleSkillRequirement with this data.
+     */
+    create: XOR<RoleSkillRequirementCreateInput, RoleSkillRequirementUncheckedCreateInput>
+    /**
+     * In case the RoleSkillRequirement was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RoleSkillRequirementUpdateInput, RoleSkillRequirementUncheckedUpdateInput>
+  }
+
+  /**
+   * RoleSkillRequirement delete
+   */
+  export type RoleSkillRequirementDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementInclude<ExtArgs> | null
+    /**
+     * Filter which RoleSkillRequirement to delete.
+     */
+    where: RoleSkillRequirementWhereUniqueInput
+  }
+
+  /**
+   * RoleSkillRequirement deleteMany
+   */
+  export type RoleSkillRequirementDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoleSkillRequirements to delete
+     */
+    where?: RoleSkillRequirementWhereInput
+    /**
+     * Limit how many RoleSkillRequirements to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoleSkillRequirement without action
+   */
+  export type RoleSkillRequirementDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoleSkillRequirement
+     */
+    select?: RoleSkillRequirementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoleSkillRequirement
+     */
+    omit?: RoleSkillRequirementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleSkillRequirementInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CareerAnalysis
+   */
+
+  export type AggregateCareerAnalysis = {
+    _count: CareerAnalysisCountAggregateOutputType | null
+    _avg: CareerAnalysisAvgAggregateOutputType | null
+    _sum: CareerAnalysisSumAggregateOutputType | null
+    _min: CareerAnalysisMinAggregateOutputType | null
+    _max: CareerAnalysisMaxAggregateOutputType | null
+  }
+
+  export type CareerAnalysisAvgAggregateOutputType = {
+    readinessScore: number | null
+  }
+
+  export type CareerAnalysisSumAggregateOutputType = {
+    readinessScore: number | null
+  }
+
+  export type CareerAnalysisMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    status: $Enums.CareerAnalysisStatus | null
+    resumeId: string | null
+    roleId: string | null
+    readinessScore: number | null
+    failureReason: string | null
+    createdAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type CareerAnalysisMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    status: $Enums.CareerAnalysisStatus | null
+    resumeId: string | null
+    roleId: string | null
+    readinessScore: number | null
+    failureReason: string | null
+    createdAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type CareerAnalysisCountAggregateOutputType = {
+    id: number
     userId: number
-    jobDescription: number
-    parsedJob: number
-    resumeSnapshot: number
-    analysisResult: number
-    createdAt: number
-    exportedAt: number
-    _all: number
-  }
-
-
-  export type AnalysisMinAggregateInputType = {
-    id?: true
-    resumeId?: true
-    userId?: true
-    jobDescription?: true
-    createdAt?: true
-    exportedAt?: true
-  }
-
-  export type AnalysisMaxAggregateInputType = {
-    id?: true
-    resumeId?: true
-    userId?: true
-    jobDescription?: true
-    createdAt?: true
-    exportedAt?: true
-  }
-
-  export type AnalysisCountAggregateInputType = {
-    id?: true
-    resumeId?: true
-    userId?: true
-    jobDescription?: true
-    parsedJob?: true
-    resumeSnapshot?: true
-    analysisResult?: true
-    createdAt?: true
-    exportedAt?: true
-    _all?: true
-  }
-
-  export type AnalysisAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Analysis to aggregate.
-     */
-    where?: AnalysisWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Analyses to fetch.
-     */
-    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: AnalysisWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Analyses from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Analyses.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Analyses
-    **/
-    _count?: true | AnalysisCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: AnalysisMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: AnalysisMaxAggregateInputType
-  }
-
-  export type GetAnalysisAggregateType<T extends AnalysisAggregateArgs> = {
-        [P in keyof T & keyof AggregateAnalysis]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateAnalysis[P]>
-      : GetScalarType<T[P], AggregateAnalysis[P]>
-  }
-
-
-
-
-  export type AnalysisGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AnalysisWhereInput
-    orderBy?: AnalysisOrderByWithAggregationInput | AnalysisOrderByWithAggregationInput[]
-    by: AnalysisScalarFieldEnum[] | AnalysisScalarFieldEnum
-    having?: AnalysisScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: AnalysisCountAggregateInputType | true
-    _min?: AnalysisMinAggregateInputType
-    _max?: AnalysisMaxAggregateInputType
-  }
-
-  export type AnalysisGroupByOutputType = {
-    id: string
-    resumeId: string
-    userId: string
-    jobDescription: string
-    parsedJob: JsonValue
-    resumeSnapshot: JsonValue
-    analysisResult: JsonValue
-    createdAt: Date
-    exportedAt: Date | null
-    _count: AnalysisCountAggregateOutputType | null
-    _min: AnalysisMinAggregateOutputType | null
-    _max: AnalysisMaxAggregateOutputType | null
-  }
-
-  type GetAnalysisGroupByPayload<T extends AnalysisGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<AnalysisGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof AnalysisGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], AnalysisGroupByOutputType[P]>
-            : GetScalarType<T[P], AnalysisGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type AnalysisSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    resumeId?: boolean
-    userId?: boolean
-    jobDescription?: boolean
-    parsedJob?: boolean
-    resumeSnapshot?: boolean
-    analysisResult?: boolean
-    createdAt?: boolean
-    exportedAt?: boolean
-    resume?: boolean | ResumeDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    suggestions?: boolean | Analysis$suggestionsArgs<ExtArgs>
-    _count?: boolean | AnalysisCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["analysis"]>
-
-  export type AnalysisSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    resumeId?: boolean
-    userId?: boolean
-    jobDescription?: boolean
-    parsedJob?: boolean
-    resumeSnapshot?: boolean
-    analysisResult?: boolean
-    createdAt?: boolean
-    exportedAt?: boolean
-    resume?: boolean | ResumeDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["analysis"]>
-
-  export type AnalysisSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    resumeId?: boolean
-    userId?: boolean
-    jobDescription?: boolean
-    parsedJob?: boolean
-    resumeSnapshot?: boolean
-    analysisResult?: boolean
-    createdAt?: boolean
-    exportedAt?: boolean
-    resume?: boolean | ResumeDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["analysis"]>
-
-  export type AnalysisSelectScalar = {
-    id?: boolean
-    resumeId?: boolean
-    userId?: boolean
-    jobDescription?: boolean
-    parsedJob?: boolean
-    resumeSnapshot?: boolean
-    analysisResult?: boolean
-    createdAt?: boolean
-    exportedAt?: boolean
-  }
-
-  export type AnalysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "resumeId" | "userId" | "jobDescription" | "parsedJob" | "resumeSnapshot" | "analysisResult" | "createdAt" | "exportedAt", ExtArgs["result"]["analysis"]>
-  export type AnalysisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    resume?: boolean | ResumeDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    suggestions?: boolean | Analysis$suggestionsArgs<ExtArgs>
-    _count?: boolean | AnalysisCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type AnalysisIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    resume?: boolean | ResumeDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type AnalysisIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    resume?: boolean | ResumeDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-
-  export type $AnalysisPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Analysis"
-    objects: {
-      resume: Prisma.$ResumePayload<ExtArgs>
-      user: Prisma.$UserPayload<ExtArgs>
-      suggestions: Prisma.$SuggestionPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      resumeId: string
-      userId: string
-      jobDescription: string
-      parsedJob: Prisma.JsonValue
-      resumeSnapshot: Prisma.JsonValue
-      analysisResult: Prisma.JsonValue
-      createdAt: Date
-      exportedAt: Date | null
-    }, ExtArgs["result"]["analysis"]>
-    composites: {}
-  }
-
-  type AnalysisGetPayload<S extends boolean | null | undefined | AnalysisDefaultArgs> = $Result.GetResult<Prisma.$AnalysisPayload, S>
-
-  type AnalysisCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<AnalysisFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: AnalysisCountAggregateInputType | true
-    }
-
-  export interface AnalysisDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Analysis'], meta: { name: 'Analysis' } }
-    /**
-     * Find zero or one Analysis that matches the filter.
-     * @param {AnalysisFindUniqueArgs} args - Arguments to find a Analysis
-     * @example
-     * // Get one Analysis
-     * const analysis = await prisma.analysis.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends AnalysisFindUniqueArgs>(args: SelectSubset<T, AnalysisFindUniqueArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Analysis that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {AnalysisFindUniqueOrThrowArgs} args - Arguments to find a Analysis
-     * @example
-     * // Get one Analysis
-     * const analysis = await prisma.analysis.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends AnalysisFindUniqueOrThrowArgs>(args: SelectSubset<T, AnalysisFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Analysis that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AnalysisFindFirstArgs} args - Arguments to find a Analysis
-     * @example
-     * // Get one Analysis
-     * const analysis = await prisma.analysis.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends AnalysisFindFirstArgs>(args?: SelectSubset<T, AnalysisFindFirstArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Analysis that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AnalysisFindFirstOrThrowArgs} args - Arguments to find a Analysis
-     * @example
-     * // Get one Analysis
-     * const analysis = await prisma.analysis.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends AnalysisFindFirstOrThrowArgs>(args?: SelectSubset<T, AnalysisFindFirstOrThrowArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Analyses that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AnalysisFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Analyses
-     * const analyses = await prisma.analysis.findMany()
-     * 
-     * // Get first 10 Analyses
-     * const analyses = await prisma.analysis.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const analysisWithIdOnly = await prisma.analysis.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends AnalysisFindManyArgs>(args?: SelectSubset<T, AnalysisFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Analysis.
-     * @param {AnalysisCreateArgs} args - Arguments to create a Analysis.
-     * @example
-     * // Create one Analysis
-     * const Analysis = await prisma.analysis.create({
-     *   data: {
-     *     // ... data to create a Analysis
-     *   }
-     * })
-     * 
-     */
-    create<T extends AnalysisCreateArgs>(args: SelectSubset<T, AnalysisCreateArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Analyses.
-     * @param {AnalysisCreateManyArgs} args - Arguments to create many Analyses.
-     * @example
-     * // Create many Analyses
-     * const analysis = await prisma.analysis.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends AnalysisCreateManyArgs>(args?: SelectSubset<T, AnalysisCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Analyses and returns the data saved in the database.
-     * @param {AnalysisCreateManyAndReturnArgs} args - Arguments to create many Analyses.
-     * @example
-     * // Create many Analyses
-     * const analysis = await prisma.analysis.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Analyses and only return the `id`
-     * const analysisWithIdOnly = await prisma.analysis.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends AnalysisCreateManyAndReturnArgs>(args?: SelectSubset<T, AnalysisCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Analysis.
-     * @param {AnalysisDeleteArgs} args - Arguments to delete one Analysis.
-     * @example
-     * // Delete one Analysis
-     * const Analysis = await prisma.analysis.delete({
-     *   where: {
-     *     // ... filter to delete one Analysis
-     *   }
-     * })
-     * 
-     */
-    delete<T extends AnalysisDeleteArgs>(args: SelectSubset<T, AnalysisDeleteArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Analysis.
-     * @param {AnalysisUpdateArgs} args - Arguments to update one Analysis.
-     * @example
-     * // Update one Analysis
-     * const analysis = await prisma.analysis.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends AnalysisUpdateArgs>(args: SelectSubset<T, AnalysisUpdateArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Analyses.
-     * @param {AnalysisDeleteManyArgs} args - Arguments to filter Analyses to delete.
-     * @example
-     * // Delete a few Analyses
-     * const { count } = await prisma.analysis.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends AnalysisDeleteManyArgs>(args?: SelectSubset<T, AnalysisDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Analyses.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AnalysisUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Analyses
-     * const analysis = await prisma.analysis.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends AnalysisUpdateManyArgs>(args: SelectSubset<T, AnalysisUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Analyses and returns the data updated in the database.
-     * @param {AnalysisUpdateManyAndReturnArgs} args - Arguments to update many Analyses.
-     * @example
-     * // Update many Analyses
-     * const analysis = await prisma.analysis.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Analyses and only return the `id`
-     * const analysisWithIdOnly = await prisma.analysis.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends AnalysisUpdateManyAndReturnArgs>(args: SelectSubset<T, AnalysisUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Analysis.
-     * @param {AnalysisUpsertArgs} args - Arguments to update or create a Analysis.
-     * @example
-     * // Update or create a Analysis
-     * const analysis = await prisma.analysis.upsert({
-     *   create: {
-     *     // ... data to create a Analysis
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Analysis we want to update
-     *   }
-     * })
-     */
-    upsert<T extends AnalysisUpsertArgs>(args: SelectSubset<T, AnalysisUpsertArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Analyses.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AnalysisCountArgs} args - Arguments to filter Analyses to count.
-     * @example
-     * // Count the number of Analyses
-     * const count = await prisma.analysis.count({
-     *   where: {
-     *     // ... the filter for the Analyses we want to count
-     *   }
-     * })
-    **/
-    count<T extends AnalysisCountArgs>(
-      args?: Subset<T, AnalysisCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], AnalysisCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Analysis.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AnalysisAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends AnalysisAggregateArgs>(args: Subset<T, AnalysisAggregateArgs>): Prisma.PrismaPromise<GetAnalysisAggregateType<T>>
-
-    /**
-     * Group by Analysis.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AnalysisGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends AnalysisGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: AnalysisGroupByArgs['orderBy'] }
-        : { orderBy?: AnalysisGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, AnalysisGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAnalysisGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Analysis model
-   */
-  readonly fields: AnalysisFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Analysis.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__AnalysisClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    resume<T extends ResumeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ResumeDefaultArgs<ExtArgs>>): Prisma__ResumeClient<$Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    suggestions<T extends Analysis$suggestionsArgs<ExtArgs> = {}>(args?: Subset<T, Analysis$suggestionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Analysis model
-   */
-  interface AnalysisFieldRefs {
-    readonly id: FieldRef<"Analysis", 'String'>
-    readonly resumeId: FieldRef<"Analysis", 'String'>
-    readonly userId: FieldRef<"Analysis", 'String'>
-    readonly jobDescription: FieldRef<"Analysis", 'String'>
-    readonly parsedJob: FieldRef<"Analysis", 'Json'>
-    readonly resumeSnapshot: FieldRef<"Analysis", 'Json'>
-    readonly analysisResult: FieldRef<"Analysis", 'Json'>
-    readonly createdAt: FieldRef<"Analysis", 'DateTime'>
-    readonly exportedAt: FieldRef<"Analysis", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Analysis findUnique
-   */
-  export type AnalysisFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analysis
-     */
-    select?: AnalysisSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analysis
-     */
-    omit?: AnalysisOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalysisInclude<ExtArgs> | null
-    /**
-     * Filter, which Analysis to fetch.
-     */
-    where: AnalysisWhereUniqueInput
-  }
-
-  /**
-   * Analysis findUniqueOrThrow
-   */
-  export type AnalysisFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analysis
-     */
-    select?: AnalysisSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analysis
-     */
-    omit?: AnalysisOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalysisInclude<ExtArgs> | null
-    /**
-     * Filter, which Analysis to fetch.
-     */
-    where: AnalysisWhereUniqueInput
-  }
-
-  /**
-   * Analysis findFirst
-   */
-  export type AnalysisFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analysis
-     */
-    select?: AnalysisSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analysis
-     */
-    omit?: AnalysisOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalysisInclude<ExtArgs> | null
-    /**
-     * Filter, which Analysis to fetch.
-     */
-    where?: AnalysisWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Analyses to fetch.
-     */
-    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Analyses.
-     */
-    cursor?: AnalysisWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Analyses from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Analyses.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Analyses.
-     */
-    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
-  }
-
-  /**
-   * Analysis findFirstOrThrow
-   */
-  export type AnalysisFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analysis
-     */
-    select?: AnalysisSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analysis
-     */
-    omit?: AnalysisOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalysisInclude<ExtArgs> | null
-    /**
-     * Filter, which Analysis to fetch.
-     */
-    where?: AnalysisWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Analyses to fetch.
-     */
-    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Analyses.
-     */
-    cursor?: AnalysisWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Analyses from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Analyses.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Analyses.
-     */
-    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
-  }
-
-  /**
-   * Analysis findMany
-   */
-  export type AnalysisFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analysis
-     */
-    select?: AnalysisSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analysis
-     */
-    omit?: AnalysisOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalysisInclude<ExtArgs> | null
-    /**
-     * Filter, which Analyses to fetch.
-     */
-    where?: AnalysisWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Analyses to fetch.
-     */
-    orderBy?: AnalysisOrderByWithRelationInput | AnalysisOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Analyses.
-     */
-    cursor?: AnalysisWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Analyses from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Analyses.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Analyses.
-     */
-    distinct?: AnalysisScalarFieldEnum | AnalysisScalarFieldEnum[]
-  }
-
-  /**
-   * Analysis create
-   */
-  export type AnalysisCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analysis
-     */
-    select?: AnalysisSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analysis
-     */
-    omit?: AnalysisOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalysisInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Analysis.
-     */
-    data: XOR<AnalysisCreateInput, AnalysisUncheckedCreateInput>
-  }
-
-  /**
-   * Analysis createMany
-   */
-  export type AnalysisCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Analyses.
-     */
-    data: AnalysisCreateManyInput | AnalysisCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Analysis createManyAndReturn
-   */
-  export type AnalysisCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analysis
-     */
-    select?: AnalysisSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analysis
-     */
-    omit?: AnalysisOmit<ExtArgs> | null
-    /**
-     * The data used to create many Analyses.
-     */
-    data: AnalysisCreateManyInput | AnalysisCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalysisIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Analysis update
-   */
-  export type AnalysisUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analysis
-     */
-    select?: AnalysisSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analysis
-     */
-    omit?: AnalysisOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalysisInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Analysis.
-     */
-    data: XOR<AnalysisUpdateInput, AnalysisUncheckedUpdateInput>
-    /**
-     * Choose, which Analysis to update.
-     */
-    where: AnalysisWhereUniqueInput
-  }
-
-  /**
-   * Analysis updateMany
-   */
-  export type AnalysisUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Analyses.
-     */
-    data: XOR<AnalysisUpdateManyMutationInput, AnalysisUncheckedUpdateManyInput>
-    /**
-     * Filter which Analyses to update
-     */
-    where?: AnalysisWhereInput
-    /**
-     * Limit how many Analyses to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Analysis updateManyAndReturn
-   */
-  export type AnalysisUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analysis
-     */
-    select?: AnalysisSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analysis
-     */
-    omit?: AnalysisOmit<ExtArgs> | null
-    /**
-     * The data used to update Analyses.
-     */
-    data: XOR<AnalysisUpdateManyMutationInput, AnalysisUncheckedUpdateManyInput>
-    /**
-     * Filter which Analyses to update
-     */
-    where?: AnalysisWhereInput
-    /**
-     * Limit how many Analyses to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalysisIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Analysis upsert
-   */
-  export type AnalysisUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analysis
-     */
-    select?: AnalysisSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analysis
-     */
-    omit?: AnalysisOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalysisInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Analysis to update in case it exists.
-     */
-    where: AnalysisWhereUniqueInput
-    /**
-     * In case the Analysis found by the `where` argument doesn't exist, create a new Analysis with this data.
-     */
-    create: XOR<AnalysisCreateInput, AnalysisUncheckedCreateInput>
-    /**
-     * In case the Analysis was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<AnalysisUpdateInput, AnalysisUncheckedUpdateInput>
-  }
-
-  /**
-   * Analysis delete
-   */
-  export type AnalysisDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analysis
-     */
-    select?: AnalysisSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analysis
-     */
-    omit?: AnalysisOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalysisInclude<ExtArgs> | null
-    /**
-     * Filter which Analysis to delete.
-     */
-    where: AnalysisWhereUniqueInput
-  }
-
-  /**
-   * Analysis deleteMany
-   */
-  export type AnalysisDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Analyses to delete
-     */
-    where?: AnalysisWhereInput
-    /**
-     * Limit how many Analyses to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Analysis.suggestions
-   */
-  export type Analysis$suggestionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Suggestion
-     */
-    select?: SuggestionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Suggestion
-     */
-    omit?: SuggestionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SuggestionInclude<ExtArgs> | null
-    where?: SuggestionWhereInput
-    orderBy?: SuggestionOrderByWithRelationInput | SuggestionOrderByWithRelationInput[]
-    cursor?: SuggestionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SuggestionScalarFieldEnum | SuggestionScalarFieldEnum[]
-  }
-
-  /**
-   * Analysis without action
-   */
-  export type AnalysisDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analysis
-     */
-    select?: AnalysisSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analysis
-     */
-    omit?: AnalysisOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalysisInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Suggestion
-   */
-
-  export type AggregateSuggestion = {
-    _count: SuggestionCountAggregateOutputType | null
-    _min: SuggestionMinAggregateOutputType | null
-    _max: SuggestionMaxAggregateOutputType | null
-  }
-
-  export type SuggestionMinAggregateOutputType = {
-    id: string | null
-    analysisId: string | null
-    original: string | null
-    suggested: string | null
-    section: string | null
-    status: $Enums.SuggestionStatus | null
-    rejectionReason: string | null
-    createdAt: Date | null
-  }
-
-  export type SuggestionMaxAggregateOutputType = {
-    id: string | null
-    analysisId: string | null
-    original: string | null
-    suggested: string | null
-    section: string | null
-    status: $Enums.SuggestionStatus | null
-    rejectionReason: string | null
-    createdAt: Date | null
-  }
-
-  export type SuggestionCountAggregateOutputType = {
-    id: number
-    analysisId: number
-    original: number
-    suggested: number
-    section: number
     status: number
-    rejectionReason: number
+    resumeId: number
+    roleId: number
+    resumeSnapshot: number
+    roleSnapshot: number
+    readinessScore: number
+    readinessBreakdown: number
+    failureReason: number
     createdAt: number
+    completedAt: number
     _all: number
   }
 
 
-  export type SuggestionMinAggregateInputType = {
-    id?: true
-    analysisId?: true
-    original?: true
-    suggested?: true
-    section?: true
-    status?: true
-    rejectionReason?: true
-    createdAt?: true
+  export type CareerAnalysisAvgAggregateInputType = {
+    readinessScore?: true
   }
 
-  export type SuggestionMaxAggregateInputType = {
-    id?: true
-    analysisId?: true
-    original?: true
-    suggested?: true
-    section?: true
-    status?: true
-    rejectionReason?: true
-    createdAt?: true
+  export type CareerAnalysisSumAggregateInputType = {
+    readinessScore?: true
   }
 
-  export type SuggestionCountAggregateInputType = {
+  export type CareerAnalysisMinAggregateInputType = {
     id?: true
-    analysisId?: true
-    original?: true
-    suggested?: true
-    section?: true
+    userId?: true
     status?: true
-    rejectionReason?: true
+    resumeId?: true
+    roleId?: true
+    readinessScore?: true
+    failureReason?: true
     createdAt?: true
+    completedAt?: true
+  }
+
+  export type CareerAnalysisMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    status?: true
+    resumeId?: true
+    roleId?: true
+    readinessScore?: true
+    failureReason?: true
+    createdAt?: true
+    completedAt?: true
+  }
+
+  export type CareerAnalysisCountAggregateInputType = {
+    id?: true
+    userId?: true
+    status?: true
+    resumeId?: true
+    roleId?: true
+    resumeSnapshot?: true
+    roleSnapshot?: true
+    readinessScore?: true
+    readinessBreakdown?: true
+    failureReason?: true
+    createdAt?: true
+    completedAt?: true
     _all?: true
   }
 
-  export type SuggestionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Suggestion to aggregate.
+     * Filter which CareerAnalysis to aggregate.
      */
-    where?: SuggestionWhereInput
+    where?: CareerAnalysisWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Suggestions to fetch.
+     * Determine the order of CareerAnalyses to fetch.
      */
-    orderBy?: SuggestionOrderByWithRelationInput | SuggestionOrderByWithRelationInput[]
+    orderBy?: CareerAnalysisOrderByWithRelationInput | CareerAnalysisOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: SuggestionWhereUniqueInput
+    cursor?: CareerAnalysisWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Suggestions from the position of the cursor.
+     * Take `±n` CareerAnalyses from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Suggestions.
+     * Skip the first `n` CareerAnalyses.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned Suggestions
+     * Count returned CareerAnalyses
     **/
-    _count?: true | SuggestionCountAggregateInputType
+    _count?: true | CareerAnalysisCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CareerAnalysisAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CareerAnalysisSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: SuggestionMinAggregateInputType
+    _min?: CareerAnalysisMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: SuggestionMaxAggregateInputType
+    _max?: CareerAnalysisMaxAggregateInputType
   }
 
-  export type GetSuggestionAggregateType<T extends SuggestionAggregateArgs> = {
-        [P in keyof T & keyof AggregateSuggestion]: P extends '_count' | 'count'
+  export type GetCareerAnalysisAggregateType<T extends CareerAnalysisAggregateArgs> = {
+        [P in keyof T & keyof AggregateCareerAnalysis]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateSuggestion[P]>
-      : GetScalarType<T[P], AggregateSuggestion[P]>
+        : GetScalarType<T[P], AggregateCareerAnalysis[P]>
+      : GetScalarType<T[P], AggregateCareerAnalysis[P]>
   }
 
 
 
 
-  export type SuggestionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SuggestionWhereInput
-    orderBy?: SuggestionOrderByWithAggregationInput | SuggestionOrderByWithAggregationInput[]
-    by: SuggestionScalarFieldEnum[] | SuggestionScalarFieldEnum
-    having?: SuggestionScalarWhereWithAggregatesInput
+  export type CareerAnalysisGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CareerAnalysisWhereInput
+    orderBy?: CareerAnalysisOrderByWithAggregationInput | CareerAnalysisOrderByWithAggregationInput[]
+    by: CareerAnalysisScalarFieldEnum[] | CareerAnalysisScalarFieldEnum
+    having?: CareerAnalysisScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: SuggestionCountAggregateInputType | true
-    _min?: SuggestionMinAggregateInputType
-    _max?: SuggestionMaxAggregateInputType
+    _count?: CareerAnalysisCountAggregateInputType | true
+    _avg?: CareerAnalysisAvgAggregateInputType
+    _sum?: CareerAnalysisSumAggregateInputType
+    _min?: CareerAnalysisMinAggregateInputType
+    _max?: CareerAnalysisMaxAggregateInputType
   }
 
-  export type SuggestionGroupByOutputType = {
+  export type CareerAnalysisGroupByOutputType = {
     id: string
-    analysisId: string
-    original: string
-    suggested: string
-    section: string | null
-    status: $Enums.SuggestionStatus
-    rejectionReason: string | null
+    userId: string
+    status: $Enums.CareerAnalysisStatus
+    resumeId: string
+    roleId: string
+    resumeSnapshot: JsonValue
+    roleSnapshot: JsonValue
+    readinessScore: number | null
+    readinessBreakdown: JsonValue | null
+    failureReason: string | null
     createdAt: Date
-    _count: SuggestionCountAggregateOutputType | null
-    _min: SuggestionMinAggregateOutputType | null
-    _max: SuggestionMaxAggregateOutputType | null
+    completedAt: Date | null
+    _count: CareerAnalysisCountAggregateOutputType | null
+    _avg: CareerAnalysisAvgAggregateOutputType | null
+    _sum: CareerAnalysisSumAggregateOutputType | null
+    _min: CareerAnalysisMinAggregateOutputType | null
+    _max: CareerAnalysisMaxAggregateOutputType | null
   }
 
-  type GetSuggestionGroupByPayload<T extends SuggestionGroupByArgs> = Prisma.PrismaPromise<
+  type GetCareerAnalysisGroupByPayload<T extends CareerAnalysisGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<SuggestionGroupByOutputType, T['by']> &
+      PickEnumerable<CareerAnalysisGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof SuggestionGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof CareerAnalysisGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], SuggestionGroupByOutputType[P]>
-            : GetScalarType<T[P], SuggestionGroupByOutputType[P]>
+              : GetScalarType<T[P], CareerAnalysisGroupByOutputType[P]>
+            : GetScalarType<T[P], CareerAnalysisGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type SuggestionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type CareerAnalysisSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    analysisId?: boolean
-    original?: boolean
-    suggested?: boolean
-    section?: boolean
+    userId?: boolean
     status?: boolean
-    rejectionReason?: boolean
+    resumeId?: boolean
+    roleId?: boolean
+    resumeSnapshot?: boolean
+    roleSnapshot?: boolean
+    readinessScore?: boolean
+    readinessBreakdown?: boolean
+    failureReason?: boolean
     createdAt?: boolean
-    analysis?: boolean | AnalysisDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["suggestion"]>
+    completedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    resume?: boolean | ResumeDefaultArgs<ExtArgs>
+    role?: boolean | RoleDefaultArgs<ExtArgs>
+    evidence?: boolean | CareerAnalysis$evidenceArgs<ExtArgs>
+    gaps?: boolean | CareerAnalysis$gapsArgs<ExtArgs>
+    roadmap?: boolean | CareerAnalysis$roadmapArgs<ExtArgs>
+    events?: boolean | CareerAnalysis$eventsArgs<ExtArgs>
+    _count?: boolean | CareerAnalysisCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["careerAnalysis"]>
 
-  export type SuggestionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type CareerAnalysisSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    analysisId?: boolean
-    original?: boolean
-    suggested?: boolean
-    section?: boolean
+    userId?: boolean
     status?: boolean
-    rejectionReason?: boolean
+    resumeId?: boolean
+    roleId?: boolean
+    resumeSnapshot?: boolean
+    roleSnapshot?: boolean
+    readinessScore?: boolean
+    readinessBreakdown?: boolean
+    failureReason?: boolean
     createdAt?: boolean
-    analysis?: boolean | AnalysisDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["suggestion"]>
+    completedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    resume?: boolean | ResumeDefaultArgs<ExtArgs>
+    role?: boolean | RoleDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["careerAnalysis"]>
 
-  export type SuggestionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type CareerAnalysisSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    analysisId?: boolean
-    original?: boolean
-    suggested?: boolean
-    section?: boolean
+    userId?: boolean
     status?: boolean
-    rejectionReason?: boolean
+    resumeId?: boolean
+    roleId?: boolean
+    resumeSnapshot?: boolean
+    roleSnapshot?: boolean
+    readinessScore?: boolean
+    readinessBreakdown?: boolean
+    failureReason?: boolean
     createdAt?: boolean
-    analysis?: boolean | AnalysisDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["suggestion"]>
+    completedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    resume?: boolean | ResumeDefaultArgs<ExtArgs>
+    role?: boolean | RoleDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["careerAnalysis"]>
 
-  export type SuggestionSelectScalar = {
+  export type CareerAnalysisSelectScalar = {
     id?: boolean
-    analysisId?: boolean
-    original?: boolean
-    suggested?: boolean
-    section?: boolean
+    userId?: boolean
     status?: boolean
-    rejectionReason?: boolean
+    resumeId?: boolean
+    roleId?: boolean
+    resumeSnapshot?: boolean
+    roleSnapshot?: boolean
+    readinessScore?: boolean
+    readinessBreakdown?: boolean
+    failureReason?: boolean
     createdAt?: boolean
+    completedAt?: boolean
   }
 
-  export type SuggestionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "analysisId" | "original" | "suggested" | "section" | "status" | "rejectionReason" | "createdAt", ExtArgs["result"]["suggestion"]>
-  export type SuggestionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    analysis?: boolean | AnalysisDefaultArgs<ExtArgs>
+  export type CareerAnalysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "status" | "resumeId" | "roleId" | "resumeSnapshot" | "roleSnapshot" | "readinessScore" | "readinessBreakdown" | "failureReason" | "createdAt" | "completedAt", ExtArgs["result"]["careerAnalysis"]>
+  export type CareerAnalysisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    resume?: boolean | ResumeDefaultArgs<ExtArgs>
+    role?: boolean | RoleDefaultArgs<ExtArgs>
+    evidence?: boolean | CareerAnalysis$evidenceArgs<ExtArgs>
+    gaps?: boolean | CareerAnalysis$gapsArgs<ExtArgs>
+    roadmap?: boolean | CareerAnalysis$roadmapArgs<ExtArgs>
+    events?: boolean | CareerAnalysis$eventsArgs<ExtArgs>
+    _count?: boolean | CareerAnalysisCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type SuggestionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    analysis?: boolean | AnalysisDefaultArgs<ExtArgs>
+  export type CareerAnalysisIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    resume?: boolean | ResumeDefaultArgs<ExtArgs>
+    role?: boolean | RoleDefaultArgs<ExtArgs>
   }
-  export type SuggestionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    analysis?: boolean | AnalysisDefaultArgs<ExtArgs>
+  export type CareerAnalysisIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    resume?: boolean | ResumeDefaultArgs<ExtArgs>
+    role?: boolean | RoleDefaultArgs<ExtArgs>
   }
 
-  export type $SuggestionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Suggestion"
+  export type $CareerAnalysisPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CareerAnalysis"
     objects: {
-      analysis: Prisma.$AnalysisPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+      resume: Prisma.$ResumePayload<ExtArgs>
+      role: Prisma.$RolePayload<ExtArgs>
+      evidence: Prisma.$CandidateSkillEvidencePayload<ExtArgs>[]
+      gaps: Prisma.$SkillGapPayload<ExtArgs>[]
+      roadmap: Prisma.$RoadmapPayload<ExtArgs> | null
+      events: Prisma.$AnalysisEventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      analysisId: string
-      original: string
-      suggested: string
-      section: string | null
-      status: $Enums.SuggestionStatus
-      rejectionReason: string | null
+      userId: string
+      status: $Enums.CareerAnalysisStatus
+      resumeId: string
+      roleId: string
+      resumeSnapshot: Prisma.JsonValue
+      roleSnapshot: Prisma.JsonValue
+      readinessScore: number | null
+      readinessBreakdown: Prisma.JsonValue | null
+      failureReason: string | null
       createdAt: Date
-    }, ExtArgs["result"]["suggestion"]>
+      completedAt: Date | null
+    }, ExtArgs["result"]["careerAnalysis"]>
     composites: {}
   }
 
-  type SuggestionGetPayload<S extends boolean | null | undefined | SuggestionDefaultArgs> = $Result.GetResult<Prisma.$SuggestionPayload, S>
+  type CareerAnalysisGetPayload<S extends boolean | null | undefined | CareerAnalysisDefaultArgs> = $Result.GetResult<Prisma.$CareerAnalysisPayload, S>
 
-  type SuggestionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<SuggestionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: SuggestionCountAggregateInputType | true
+  type CareerAnalysisCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CareerAnalysisFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CareerAnalysisCountAggregateInputType | true
     }
 
-  export interface SuggestionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Suggestion'], meta: { name: 'Suggestion' } }
+  export interface CareerAnalysisDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CareerAnalysis'], meta: { name: 'CareerAnalysis' } }
     /**
-     * Find zero or one Suggestion that matches the filter.
-     * @param {SuggestionFindUniqueArgs} args - Arguments to find a Suggestion
+     * Find zero or one CareerAnalysis that matches the filter.
+     * @param {CareerAnalysisFindUniqueArgs} args - Arguments to find a CareerAnalysis
      * @example
-     * // Get one Suggestion
-     * const suggestion = await prisma.suggestion.findUnique({
+     * // Get one CareerAnalysis
+     * const careerAnalysis = await prisma.careerAnalysis.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends SuggestionFindUniqueArgs>(args: SelectSubset<T, SuggestionFindUniqueArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends CareerAnalysisFindUniqueArgs>(args: SelectSubset<T, CareerAnalysisFindUniqueArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one Suggestion that matches the filter or throw an error with `error.code='P2025'`
+     * Find one CareerAnalysis that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {SuggestionFindUniqueOrThrowArgs} args - Arguments to find a Suggestion
+     * @param {CareerAnalysisFindUniqueOrThrowArgs} args - Arguments to find a CareerAnalysis
      * @example
-     * // Get one Suggestion
-     * const suggestion = await prisma.suggestion.findUniqueOrThrow({
+     * // Get one CareerAnalysis
+     * const careerAnalysis = await prisma.careerAnalysis.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends SuggestionFindUniqueOrThrowArgs>(args: SelectSubset<T, SuggestionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends CareerAnalysisFindUniqueOrThrowArgs>(args: SelectSubset<T, CareerAnalysisFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Suggestion that matches the filter.
+     * Find the first CareerAnalysis that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SuggestionFindFirstArgs} args - Arguments to find a Suggestion
+     * @param {CareerAnalysisFindFirstArgs} args - Arguments to find a CareerAnalysis
      * @example
-     * // Get one Suggestion
-     * const suggestion = await prisma.suggestion.findFirst({
+     * // Get one CareerAnalysis
+     * const careerAnalysis = await prisma.careerAnalysis.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends SuggestionFindFirstArgs>(args?: SelectSubset<T, SuggestionFindFirstArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends CareerAnalysisFindFirstArgs>(args?: SelectSubset<T, CareerAnalysisFindFirstArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Suggestion that matches the filter or
+     * Find the first CareerAnalysis that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SuggestionFindFirstOrThrowArgs} args - Arguments to find a Suggestion
+     * @param {CareerAnalysisFindFirstOrThrowArgs} args - Arguments to find a CareerAnalysis
      * @example
-     * // Get one Suggestion
-     * const suggestion = await prisma.suggestion.findFirstOrThrow({
+     * // Get one CareerAnalysis
+     * const careerAnalysis = await prisma.careerAnalysis.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends SuggestionFindFirstOrThrowArgs>(args?: SelectSubset<T, SuggestionFindFirstOrThrowArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends CareerAnalysisFindFirstOrThrowArgs>(args?: SelectSubset<T, CareerAnalysisFindFirstOrThrowArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more Suggestions that matches the filter.
+     * Find zero or more CareerAnalyses that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SuggestionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {CareerAnalysisFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all Suggestions
-     * const suggestions = await prisma.suggestion.findMany()
+     * // Get all CareerAnalyses
+     * const careerAnalyses = await prisma.careerAnalysis.findMany()
      * 
-     * // Get first 10 Suggestions
-     * const suggestions = await prisma.suggestion.findMany({ take: 10 })
+     * // Get first 10 CareerAnalyses
+     * const careerAnalyses = await prisma.careerAnalysis.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const suggestionWithIdOnly = await prisma.suggestion.findMany({ select: { id: true } })
+     * const careerAnalysisWithIdOnly = await prisma.careerAnalysis.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends SuggestionFindManyArgs>(args?: SelectSubset<T, SuggestionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends CareerAnalysisFindManyArgs>(args?: SelectSubset<T, CareerAnalysisFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a Suggestion.
-     * @param {SuggestionCreateArgs} args - Arguments to create a Suggestion.
+     * Create a CareerAnalysis.
+     * @param {CareerAnalysisCreateArgs} args - Arguments to create a CareerAnalysis.
      * @example
-     * // Create one Suggestion
-     * const Suggestion = await prisma.suggestion.create({
+     * // Create one CareerAnalysis
+     * const CareerAnalysis = await prisma.careerAnalysis.create({
      *   data: {
-     *     // ... data to create a Suggestion
+     *     // ... data to create a CareerAnalysis
      *   }
      * })
      * 
      */
-    create<T extends SuggestionCreateArgs>(args: SelectSubset<T, SuggestionCreateArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends CareerAnalysisCreateArgs>(args: SelectSubset<T, CareerAnalysisCreateArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many Suggestions.
-     * @param {SuggestionCreateManyArgs} args - Arguments to create many Suggestions.
+     * Create many CareerAnalyses.
+     * @param {CareerAnalysisCreateManyArgs} args - Arguments to create many CareerAnalyses.
      * @example
-     * // Create many Suggestions
-     * const suggestion = await prisma.suggestion.createMany({
+     * // Create many CareerAnalyses
+     * const careerAnalysis = await prisma.careerAnalysis.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends SuggestionCreateManyArgs>(args?: SelectSubset<T, SuggestionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends CareerAnalysisCreateManyArgs>(args?: SelectSubset<T, CareerAnalysisCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many Suggestions and returns the data saved in the database.
-     * @param {SuggestionCreateManyAndReturnArgs} args - Arguments to create many Suggestions.
+     * Create many CareerAnalyses and returns the data saved in the database.
+     * @param {CareerAnalysisCreateManyAndReturnArgs} args - Arguments to create many CareerAnalyses.
      * @example
-     * // Create many Suggestions
-     * const suggestion = await prisma.suggestion.createManyAndReturn({
+     * // Create many CareerAnalyses
+     * const careerAnalysis = await prisma.careerAnalysis.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many Suggestions and only return the `id`
-     * const suggestionWithIdOnly = await prisma.suggestion.createManyAndReturn({
+     * // Create many CareerAnalyses and only return the `id`
+     * const careerAnalysisWithIdOnly = await prisma.careerAnalysis.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -6345,28 +9535,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends SuggestionCreateManyAndReturnArgs>(args?: SelectSubset<T, SuggestionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends CareerAnalysisCreateManyAndReturnArgs>(args?: SelectSubset<T, CareerAnalysisCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a Suggestion.
-     * @param {SuggestionDeleteArgs} args - Arguments to delete one Suggestion.
+     * Delete a CareerAnalysis.
+     * @param {CareerAnalysisDeleteArgs} args - Arguments to delete one CareerAnalysis.
      * @example
-     * // Delete one Suggestion
-     * const Suggestion = await prisma.suggestion.delete({
+     * // Delete one CareerAnalysis
+     * const CareerAnalysis = await prisma.careerAnalysis.delete({
      *   where: {
-     *     // ... filter to delete one Suggestion
+     *     // ... filter to delete one CareerAnalysis
      *   }
      * })
      * 
      */
-    delete<T extends SuggestionDeleteArgs>(args: SelectSubset<T, SuggestionDeleteArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends CareerAnalysisDeleteArgs>(args: SelectSubset<T, CareerAnalysisDeleteArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one Suggestion.
-     * @param {SuggestionUpdateArgs} args - Arguments to update one Suggestion.
+     * Update one CareerAnalysis.
+     * @param {CareerAnalysisUpdateArgs} args - Arguments to update one CareerAnalysis.
      * @example
-     * // Update one Suggestion
-     * const suggestion = await prisma.suggestion.update({
+     * // Update one CareerAnalysis
+     * const careerAnalysis = await prisma.careerAnalysis.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -6376,30 +9566,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends SuggestionUpdateArgs>(args: SelectSubset<T, SuggestionUpdateArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends CareerAnalysisUpdateArgs>(args: SelectSubset<T, CareerAnalysisUpdateArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more Suggestions.
-     * @param {SuggestionDeleteManyArgs} args - Arguments to filter Suggestions to delete.
+     * Delete zero or more CareerAnalyses.
+     * @param {CareerAnalysisDeleteManyArgs} args - Arguments to filter CareerAnalyses to delete.
      * @example
-     * // Delete a few Suggestions
-     * const { count } = await prisma.suggestion.deleteMany({
+     * // Delete a few CareerAnalyses
+     * const { count } = await prisma.careerAnalysis.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends SuggestionDeleteManyArgs>(args?: SelectSubset<T, SuggestionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends CareerAnalysisDeleteManyArgs>(args?: SelectSubset<T, CareerAnalysisDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Suggestions.
+     * Update zero or more CareerAnalyses.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SuggestionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {CareerAnalysisUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many Suggestions
-     * const suggestion = await prisma.suggestion.updateMany({
+     * // Update many CareerAnalyses
+     * const careerAnalysis = await prisma.careerAnalysis.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -6409,14 +9599,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends SuggestionUpdateManyArgs>(args: SelectSubset<T, SuggestionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends CareerAnalysisUpdateManyArgs>(args: SelectSubset<T, CareerAnalysisUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Suggestions and returns the data updated in the database.
-     * @param {SuggestionUpdateManyAndReturnArgs} args - Arguments to update many Suggestions.
+     * Update zero or more CareerAnalyses and returns the data updated in the database.
+     * @param {CareerAnalysisUpdateManyAndReturnArgs} args - Arguments to update many CareerAnalyses.
      * @example
-     * // Update many Suggestions
-     * const suggestion = await prisma.suggestion.updateManyAndReturn({
+     * // Update many CareerAnalyses
+     * const careerAnalysis = await prisma.careerAnalysis.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -6425,8 +9615,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more Suggestions and only return the `id`
-     * const suggestionWithIdOnly = await prisma.suggestion.updateManyAndReturn({
+     * // Update zero or more CareerAnalyses and only return the `id`
+     * const careerAnalysisWithIdOnly = await prisma.careerAnalysis.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -6439,56 +9629,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends SuggestionUpdateManyAndReturnArgs>(args: SelectSubset<T, SuggestionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends CareerAnalysisUpdateManyAndReturnArgs>(args: SelectSubset<T, CareerAnalysisUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one Suggestion.
-     * @param {SuggestionUpsertArgs} args - Arguments to update or create a Suggestion.
+     * Create or update one CareerAnalysis.
+     * @param {CareerAnalysisUpsertArgs} args - Arguments to update or create a CareerAnalysis.
      * @example
-     * // Update or create a Suggestion
-     * const suggestion = await prisma.suggestion.upsert({
+     * // Update or create a CareerAnalysis
+     * const careerAnalysis = await prisma.careerAnalysis.upsert({
      *   create: {
-     *     // ... data to create a Suggestion
+     *     // ... data to create a CareerAnalysis
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the Suggestion we want to update
+     *     // ... the filter for the CareerAnalysis we want to update
      *   }
      * })
      */
-    upsert<T extends SuggestionUpsertArgs>(args: SelectSubset<T, SuggestionUpsertArgs<ExtArgs>>): Prisma__SuggestionClient<$Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends CareerAnalysisUpsertArgs>(args: SelectSubset<T, CareerAnalysisUpsertArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of Suggestions.
+     * Count the number of CareerAnalyses.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SuggestionCountArgs} args - Arguments to filter Suggestions to count.
+     * @param {CareerAnalysisCountArgs} args - Arguments to filter CareerAnalyses to count.
      * @example
-     * // Count the number of Suggestions
-     * const count = await prisma.suggestion.count({
+     * // Count the number of CareerAnalyses
+     * const count = await prisma.careerAnalysis.count({
      *   where: {
-     *     // ... the filter for the Suggestions we want to count
+     *     // ... the filter for the CareerAnalyses we want to count
      *   }
      * })
     **/
-    count<T extends SuggestionCountArgs>(
-      args?: Subset<T, SuggestionCountArgs>,
+    count<T extends CareerAnalysisCountArgs>(
+      args?: Subset<T, CareerAnalysisCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], SuggestionCountAggregateOutputType>
+          : GetScalarType<T['select'], CareerAnalysisCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a Suggestion.
+     * Allows you to perform aggregations operations on a CareerAnalysis.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SuggestionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {CareerAnalysisAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -6508,13 +9698,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends SuggestionAggregateArgs>(args: Subset<T, SuggestionAggregateArgs>): Prisma.PrismaPromise<GetSuggestionAggregateType<T>>
+    aggregate<T extends CareerAnalysisAggregateArgs>(args: Subset<T, CareerAnalysisAggregateArgs>): Prisma.PrismaPromise<GetCareerAnalysisAggregateType<T>>
 
     /**
-     * Group by Suggestion.
+     * Group by CareerAnalysis.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SuggestionGroupByArgs} args - Group by arguments.
+     * @param {CareerAnalysisGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -6529,14 +9719,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends SuggestionGroupByArgs,
+      T extends CareerAnalysisGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: SuggestionGroupByArgs['orderBy'] }
-        : { orderBy?: SuggestionGroupByArgs['orderBy'] },
+        ? { orderBy: CareerAnalysisGroupByArgs['orderBy'] }
+        : { orderBy?: CareerAnalysisGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -6585,22 +9775,28 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, SuggestionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSuggestionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, CareerAnalysisGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCareerAnalysisGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the Suggestion model
+   * Fields of the CareerAnalysis model
    */
-  readonly fields: SuggestionFieldRefs;
+  readonly fields: CareerAnalysisFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for Suggestion.
+   * The delegate class that acts as a "Promise-like" for CareerAnalysis.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__SuggestionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__CareerAnalysisClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    analysis<T extends AnalysisDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AnalysisDefaultArgs<ExtArgs>>): Prisma__AnalysisClient<$Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    resume<T extends ResumeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ResumeDefaultArgs<ExtArgs>>): Prisma__ResumeClient<$Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    role<T extends RoleDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RoleDefaultArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    evidence<T extends CareerAnalysis$evidenceArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysis$evidenceArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    gaps<T extends CareerAnalysis$gapsArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysis$gapsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    roadmap<T extends CareerAnalysis$roadmapArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysis$roadmapArgs<ExtArgs>>): Prisma__RoadmapClient<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    events<T extends CareerAnalysis$eventsArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysis$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6627,433 +9823,6174 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the Suggestion model
+   * Fields of the CareerAnalysis model
    */
-  interface SuggestionFieldRefs {
-    readonly id: FieldRef<"Suggestion", 'String'>
-    readonly analysisId: FieldRef<"Suggestion", 'String'>
-    readonly original: FieldRef<"Suggestion", 'String'>
-    readonly suggested: FieldRef<"Suggestion", 'String'>
-    readonly section: FieldRef<"Suggestion", 'String'>
-    readonly status: FieldRef<"Suggestion", 'SuggestionStatus'>
-    readonly rejectionReason: FieldRef<"Suggestion", 'String'>
-    readonly createdAt: FieldRef<"Suggestion", 'DateTime'>
+  interface CareerAnalysisFieldRefs {
+    readonly id: FieldRef<"CareerAnalysis", 'String'>
+    readonly userId: FieldRef<"CareerAnalysis", 'String'>
+    readonly status: FieldRef<"CareerAnalysis", 'CareerAnalysisStatus'>
+    readonly resumeId: FieldRef<"CareerAnalysis", 'String'>
+    readonly roleId: FieldRef<"CareerAnalysis", 'String'>
+    readonly resumeSnapshot: FieldRef<"CareerAnalysis", 'Json'>
+    readonly roleSnapshot: FieldRef<"CareerAnalysis", 'Json'>
+    readonly readinessScore: FieldRef<"CareerAnalysis", 'Int'>
+    readonly readinessBreakdown: FieldRef<"CareerAnalysis", 'Json'>
+    readonly failureReason: FieldRef<"CareerAnalysis", 'String'>
+    readonly createdAt: FieldRef<"CareerAnalysis", 'DateTime'>
+    readonly completedAt: FieldRef<"CareerAnalysis", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * Suggestion findUnique
+   * CareerAnalysis findUnique
    */
-  export type SuggestionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Suggestion
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: SuggestionSelect<ExtArgs> | null
+    select?: CareerAnalysisSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Suggestion
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: SuggestionOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SuggestionInclude<ExtArgs> | null
+    include?: CareerAnalysisInclude<ExtArgs> | null
     /**
-     * Filter, which Suggestion to fetch.
+     * Filter, which CareerAnalysis to fetch.
      */
-    where: SuggestionWhereUniqueInput
+    where: CareerAnalysisWhereUniqueInput
   }
 
   /**
-   * Suggestion findUniqueOrThrow
+   * CareerAnalysis findUniqueOrThrow
    */
-  export type SuggestionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Suggestion
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: SuggestionSelect<ExtArgs> | null
+    select?: CareerAnalysisSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Suggestion
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: SuggestionOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SuggestionInclude<ExtArgs> | null
+    include?: CareerAnalysisInclude<ExtArgs> | null
     /**
-     * Filter, which Suggestion to fetch.
+     * Filter, which CareerAnalysis to fetch.
      */
-    where: SuggestionWhereUniqueInput
+    where: CareerAnalysisWhereUniqueInput
   }
 
   /**
-   * Suggestion findFirst
+   * CareerAnalysis findFirst
    */
-  export type SuggestionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Suggestion
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: SuggestionSelect<ExtArgs> | null
+    select?: CareerAnalysisSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Suggestion
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: SuggestionOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SuggestionInclude<ExtArgs> | null
+    include?: CareerAnalysisInclude<ExtArgs> | null
     /**
-     * Filter, which Suggestion to fetch.
+     * Filter, which CareerAnalysis to fetch.
      */
-    where?: SuggestionWhereInput
+    where?: CareerAnalysisWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Suggestions to fetch.
+     * Determine the order of CareerAnalyses to fetch.
      */
-    orderBy?: SuggestionOrderByWithRelationInput | SuggestionOrderByWithRelationInput[]
+    orderBy?: CareerAnalysisOrderByWithRelationInput | CareerAnalysisOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Suggestions.
+     * Sets the position for searching for CareerAnalyses.
      */
-    cursor?: SuggestionWhereUniqueInput
+    cursor?: CareerAnalysisWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Suggestions from the position of the cursor.
+     * Take `±n` CareerAnalyses from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Suggestions.
+     * Skip the first `n` CareerAnalyses.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Suggestions.
+     * Filter by unique combinations of CareerAnalyses.
      */
-    distinct?: SuggestionScalarFieldEnum | SuggestionScalarFieldEnum[]
+    distinct?: CareerAnalysisScalarFieldEnum | CareerAnalysisScalarFieldEnum[]
   }
 
   /**
-   * Suggestion findFirstOrThrow
+   * CareerAnalysis findFirstOrThrow
    */
-  export type SuggestionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Suggestion
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: SuggestionSelect<ExtArgs> | null
+    select?: CareerAnalysisSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Suggestion
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: SuggestionOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SuggestionInclude<ExtArgs> | null
+    include?: CareerAnalysisInclude<ExtArgs> | null
     /**
-     * Filter, which Suggestion to fetch.
+     * Filter, which CareerAnalysis to fetch.
      */
-    where?: SuggestionWhereInput
+    where?: CareerAnalysisWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Suggestions to fetch.
+     * Determine the order of CareerAnalyses to fetch.
      */
-    orderBy?: SuggestionOrderByWithRelationInput | SuggestionOrderByWithRelationInput[]
+    orderBy?: CareerAnalysisOrderByWithRelationInput | CareerAnalysisOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Suggestions.
+     * Sets the position for searching for CareerAnalyses.
      */
-    cursor?: SuggestionWhereUniqueInput
+    cursor?: CareerAnalysisWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Suggestions from the position of the cursor.
+     * Take `±n` CareerAnalyses from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Suggestions.
+     * Skip the first `n` CareerAnalyses.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Suggestions.
+     * Filter by unique combinations of CareerAnalyses.
      */
-    distinct?: SuggestionScalarFieldEnum | SuggestionScalarFieldEnum[]
+    distinct?: CareerAnalysisScalarFieldEnum | CareerAnalysisScalarFieldEnum[]
   }
 
   /**
-   * Suggestion findMany
+   * CareerAnalysis findMany
    */
-  export type SuggestionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Suggestion
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: SuggestionSelect<ExtArgs> | null
+    select?: CareerAnalysisSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Suggestion
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: SuggestionOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SuggestionInclude<ExtArgs> | null
+    include?: CareerAnalysisInclude<ExtArgs> | null
     /**
-     * Filter, which Suggestions to fetch.
+     * Filter, which CareerAnalyses to fetch.
      */
-    where?: SuggestionWhereInput
+    where?: CareerAnalysisWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Suggestions to fetch.
+     * Determine the order of CareerAnalyses to fetch.
      */
-    orderBy?: SuggestionOrderByWithRelationInput | SuggestionOrderByWithRelationInput[]
+    orderBy?: CareerAnalysisOrderByWithRelationInput | CareerAnalysisOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Suggestions.
+     * Sets the position for listing CareerAnalyses.
      */
-    cursor?: SuggestionWhereUniqueInput
+    cursor?: CareerAnalysisWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Suggestions from the position of the cursor.
+     * Take `±n` CareerAnalyses from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Suggestions.
+     * Skip the first `n` CareerAnalyses.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Suggestions.
+     * Filter by unique combinations of CareerAnalyses.
      */
-    distinct?: SuggestionScalarFieldEnum | SuggestionScalarFieldEnum[]
+    distinct?: CareerAnalysisScalarFieldEnum | CareerAnalysisScalarFieldEnum[]
   }
 
   /**
-   * Suggestion create
+   * CareerAnalysis create
    */
-  export type SuggestionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Suggestion
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: SuggestionSelect<ExtArgs> | null
+    select?: CareerAnalysisSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Suggestion
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: SuggestionOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SuggestionInclude<ExtArgs> | null
+    include?: CareerAnalysisInclude<ExtArgs> | null
     /**
-     * The data needed to create a Suggestion.
+     * The data needed to create a CareerAnalysis.
      */
-    data: XOR<SuggestionCreateInput, SuggestionUncheckedCreateInput>
+    data: XOR<CareerAnalysisCreateInput, CareerAnalysisUncheckedCreateInput>
   }
 
   /**
-   * Suggestion createMany
+   * CareerAnalysis createMany
    */
-  export type SuggestionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many Suggestions.
+     * The data used to create many CareerAnalyses.
      */
-    data: SuggestionCreateManyInput | SuggestionCreateManyInput[]
+    data: CareerAnalysisCreateManyInput | CareerAnalysisCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * Suggestion createManyAndReturn
+   * CareerAnalysis createManyAndReturn
    */
-  export type SuggestionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Suggestion
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: SuggestionSelectCreateManyAndReturn<ExtArgs> | null
+    select?: CareerAnalysisSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Suggestion
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: SuggestionOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
-     * The data used to create many Suggestions.
+     * The data used to create many CareerAnalyses.
      */
-    data: SuggestionCreateManyInput | SuggestionCreateManyInput[]
+    data: CareerAnalysisCreateManyInput | CareerAnalysisCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SuggestionIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: CareerAnalysisIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Suggestion update
+   * CareerAnalysis update
    */
-  export type SuggestionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Suggestion
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: SuggestionSelect<ExtArgs> | null
+    select?: CareerAnalysisSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Suggestion
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: SuggestionOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SuggestionInclude<ExtArgs> | null
+    include?: CareerAnalysisInclude<ExtArgs> | null
     /**
-     * The data needed to update a Suggestion.
+     * The data needed to update a CareerAnalysis.
      */
-    data: XOR<SuggestionUpdateInput, SuggestionUncheckedUpdateInput>
+    data: XOR<CareerAnalysisUpdateInput, CareerAnalysisUncheckedUpdateInput>
     /**
-     * Choose, which Suggestion to update.
+     * Choose, which CareerAnalysis to update.
      */
-    where: SuggestionWhereUniqueInput
+    where: CareerAnalysisWhereUniqueInput
   }
 
   /**
-   * Suggestion updateMany
+   * CareerAnalysis updateMany
    */
-  export type SuggestionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update Suggestions.
+     * The data used to update CareerAnalyses.
      */
-    data: XOR<SuggestionUpdateManyMutationInput, SuggestionUncheckedUpdateManyInput>
+    data: XOR<CareerAnalysisUpdateManyMutationInput, CareerAnalysisUncheckedUpdateManyInput>
     /**
-     * Filter which Suggestions to update
+     * Filter which CareerAnalyses to update
      */
-    where?: SuggestionWhereInput
+    where?: CareerAnalysisWhereInput
     /**
-     * Limit how many Suggestions to update.
+     * Limit how many CareerAnalyses to update.
      */
     limit?: number
   }
 
   /**
-   * Suggestion updateManyAndReturn
+   * CareerAnalysis updateManyAndReturn
    */
-  export type SuggestionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Suggestion
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: SuggestionSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: CareerAnalysisSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Suggestion
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: SuggestionOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
-     * The data used to update Suggestions.
+     * The data used to update CareerAnalyses.
      */
-    data: XOR<SuggestionUpdateManyMutationInput, SuggestionUncheckedUpdateManyInput>
+    data: XOR<CareerAnalysisUpdateManyMutationInput, CareerAnalysisUncheckedUpdateManyInput>
     /**
-     * Filter which Suggestions to update
+     * Filter which CareerAnalyses to update
      */
-    where?: SuggestionWhereInput
+    where?: CareerAnalysisWhereInput
     /**
-     * Limit how many Suggestions to update.
+     * Limit how many CareerAnalyses to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SuggestionIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: CareerAnalysisIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Suggestion upsert
+   * CareerAnalysis upsert
    */
-  export type SuggestionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Suggestion
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: SuggestionSelect<ExtArgs> | null
+    select?: CareerAnalysisSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Suggestion
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: SuggestionOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SuggestionInclude<ExtArgs> | null
+    include?: CareerAnalysisInclude<ExtArgs> | null
     /**
-     * The filter to search for the Suggestion to update in case it exists.
+     * The filter to search for the CareerAnalysis to update in case it exists.
      */
-    where: SuggestionWhereUniqueInput
+    where: CareerAnalysisWhereUniqueInput
     /**
-     * In case the Suggestion found by the `where` argument doesn't exist, create a new Suggestion with this data.
+     * In case the CareerAnalysis found by the `where` argument doesn't exist, create a new CareerAnalysis with this data.
      */
-    create: XOR<SuggestionCreateInput, SuggestionUncheckedCreateInput>
+    create: XOR<CareerAnalysisCreateInput, CareerAnalysisUncheckedCreateInput>
     /**
-     * In case the Suggestion was found with the provided `where` argument, update it with this data.
+     * In case the CareerAnalysis was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<SuggestionUpdateInput, SuggestionUncheckedUpdateInput>
+    update: XOR<CareerAnalysisUpdateInput, CareerAnalysisUncheckedUpdateInput>
   }
 
   /**
-   * Suggestion delete
+   * CareerAnalysis delete
    */
-  export type SuggestionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Suggestion
+     * Select specific fields to fetch from the CareerAnalysis
      */
-    select?: SuggestionSelect<ExtArgs> | null
+    select?: CareerAnalysisSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Suggestion
+     * Omit specific fields from the CareerAnalysis
      */
-    omit?: SuggestionOmit<ExtArgs> | null
+    omit?: CareerAnalysisOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SuggestionInclude<ExtArgs> | null
+    include?: CareerAnalysisInclude<ExtArgs> | null
     /**
-     * Filter which Suggestion to delete.
+     * Filter which CareerAnalysis to delete.
      */
-    where: SuggestionWhereUniqueInput
+    where: CareerAnalysisWhereUniqueInput
   }
 
   /**
-   * Suggestion deleteMany
+   * CareerAnalysis deleteMany
    */
-  export type SuggestionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysisDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Suggestions to delete
+     * Filter which CareerAnalyses to delete
      */
-    where?: SuggestionWhereInput
+    where?: CareerAnalysisWhereInput
     /**
-     * Limit how many Suggestions to delete.
+     * Limit how many CareerAnalyses to delete.
      */
     limit?: number
   }
 
   /**
-   * Suggestion without action
+   * CareerAnalysis.evidence
    */
-  export type SuggestionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CareerAnalysis$evidenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Suggestion
+     * Select specific fields to fetch from the CandidateSkillEvidence
      */
-    select?: SuggestionSelect<ExtArgs> | null
+    select?: CandidateSkillEvidenceSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Suggestion
+     * Omit specific fields from the CandidateSkillEvidence
      */
-    omit?: SuggestionOmit<ExtArgs> | null
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SuggestionInclude<ExtArgs> | null
+    include?: CandidateSkillEvidenceInclude<ExtArgs> | null
+    where?: CandidateSkillEvidenceWhereInput
+    orderBy?: CandidateSkillEvidenceOrderByWithRelationInput | CandidateSkillEvidenceOrderByWithRelationInput[]
+    cursor?: CandidateSkillEvidenceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CandidateSkillEvidenceScalarFieldEnum | CandidateSkillEvidenceScalarFieldEnum[]
+  }
+
+  /**
+   * CareerAnalysis.gaps
+   */
+  export type CareerAnalysis$gapsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+    where?: SkillGapWhereInput
+    orderBy?: SkillGapOrderByWithRelationInput | SkillGapOrderByWithRelationInput[]
+    cursor?: SkillGapWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SkillGapScalarFieldEnum | SkillGapScalarFieldEnum[]
+  }
+
+  /**
+   * CareerAnalysis.roadmap
+   */
+  export type CareerAnalysis$roadmapArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapInclude<ExtArgs> | null
+    where?: RoadmapWhereInput
+  }
+
+  /**
+   * CareerAnalysis.events
+   */
+  export type CareerAnalysis$eventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventInclude<ExtArgs> | null
+    where?: AnalysisEventWhereInput
+    orderBy?: AnalysisEventOrderByWithRelationInput | AnalysisEventOrderByWithRelationInput[]
+    cursor?: AnalysisEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnalysisEventScalarFieldEnum | AnalysisEventScalarFieldEnum[]
+  }
+
+  /**
+   * CareerAnalysis without action
+   */
+  export type CareerAnalysisDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CareerAnalysis
+     */
+    select?: CareerAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CareerAnalysis
+     */
+    omit?: CareerAnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CareerAnalysisInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CandidateSkillEvidence
+   */
+
+  export type AggregateCandidateSkillEvidence = {
+    _count: CandidateSkillEvidenceCountAggregateOutputType | null
+    _min: CandidateSkillEvidenceMinAggregateOutputType | null
+    _max: CandidateSkillEvidenceMaxAggregateOutputType | null
+  }
+
+  export type CandidateSkillEvidenceMinAggregateOutputType = {
+    id: string | null
+    careerAnalysisId: string | null
+    skillId: string | null
+    strength: $Enums.EvidenceStrength | null
+    quote: string | null
+    sourceSection: string | null
+    sourceLabel: string | null
+    createdAt: Date | null
+  }
+
+  export type CandidateSkillEvidenceMaxAggregateOutputType = {
+    id: string | null
+    careerAnalysisId: string | null
+    skillId: string | null
+    strength: $Enums.EvidenceStrength | null
+    quote: string | null
+    sourceSection: string | null
+    sourceLabel: string | null
+    createdAt: Date | null
+  }
+
+  export type CandidateSkillEvidenceCountAggregateOutputType = {
+    id: number
+    careerAnalysisId: number
+    skillId: number
+    strength: number
+    quote: number
+    sourceSection: number
+    sourceLabel: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CandidateSkillEvidenceMinAggregateInputType = {
+    id?: true
+    careerAnalysisId?: true
+    skillId?: true
+    strength?: true
+    quote?: true
+    sourceSection?: true
+    sourceLabel?: true
+    createdAt?: true
+  }
+
+  export type CandidateSkillEvidenceMaxAggregateInputType = {
+    id?: true
+    careerAnalysisId?: true
+    skillId?: true
+    strength?: true
+    quote?: true
+    sourceSection?: true
+    sourceLabel?: true
+    createdAt?: true
+  }
+
+  export type CandidateSkillEvidenceCountAggregateInputType = {
+    id?: true
+    careerAnalysisId?: true
+    skillId?: true
+    strength?: true
+    quote?: true
+    sourceSection?: true
+    sourceLabel?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CandidateSkillEvidenceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidateSkillEvidence to aggregate.
+     */
+    where?: CandidateSkillEvidenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateSkillEvidences to fetch.
+     */
+    orderBy?: CandidateSkillEvidenceOrderByWithRelationInput | CandidateSkillEvidenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CandidateSkillEvidenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateSkillEvidences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateSkillEvidences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CandidateSkillEvidences
+    **/
+    _count?: true | CandidateSkillEvidenceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CandidateSkillEvidenceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CandidateSkillEvidenceMaxAggregateInputType
+  }
+
+  export type GetCandidateSkillEvidenceAggregateType<T extends CandidateSkillEvidenceAggregateArgs> = {
+        [P in keyof T & keyof AggregateCandidateSkillEvidence]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCandidateSkillEvidence[P]>
+      : GetScalarType<T[P], AggregateCandidateSkillEvidence[P]>
+  }
+
+
+
+
+  export type CandidateSkillEvidenceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateSkillEvidenceWhereInput
+    orderBy?: CandidateSkillEvidenceOrderByWithAggregationInput | CandidateSkillEvidenceOrderByWithAggregationInput[]
+    by: CandidateSkillEvidenceScalarFieldEnum[] | CandidateSkillEvidenceScalarFieldEnum
+    having?: CandidateSkillEvidenceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CandidateSkillEvidenceCountAggregateInputType | true
+    _min?: CandidateSkillEvidenceMinAggregateInputType
+    _max?: CandidateSkillEvidenceMaxAggregateInputType
+  }
+
+  export type CandidateSkillEvidenceGroupByOutputType = {
+    id: string
+    careerAnalysisId: string
+    skillId: string
+    strength: $Enums.EvidenceStrength
+    quote: string
+    sourceSection: string
+    sourceLabel: string
+    createdAt: Date
+    _count: CandidateSkillEvidenceCountAggregateOutputType | null
+    _min: CandidateSkillEvidenceMinAggregateOutputType | null
+    _max: CandidateSkillEvidenceMaxAggregateOutputType | null
+  }
+
+  type GetCandidateSkillEvidenceGroupByPayload<T extends CandidateSkillEvidenceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CandidateSkillEvidenceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CandidateSkillEvidenceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CandidateSkillEvidenceGroupByOutputType[P]>
+            : GetScalarType<T[P], CandidateSkillEvidenceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CandidateSkillEvidenceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    careerAnalysisId?: boolean
+    skillId?: boolean
+    strength?: boolean
+    quote?: boolean
+    sourceSection?: boolean
+    sourceLabel?: boolean
+    createdAt?: boolean
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateSkillEvidence"]>
+
+  export type CandidateSkillEvidenceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    careerAnalysisId?: boolean
+    skillId?: boolean
+    strength?: boolean
+    quote?: boolean
+    sourceSection?: boolean
+    sourceLabel?: boolean
+    createdAt?: boolean
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateSkillEvidence"]>
+
+  export type CandidateSkillEvidenceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    careerAnalysisId?: boolean
+    skillId?: boolean
+    strength?: boolean
+    quote?: boolean
+    sourceSection?: boolean
+    sourceLabel?: boolean
+    createdAt?: boolean
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateSkillEvidence"]>
+
+  export type CandidateSkillEvidenceSelectScalar = {
+    id?: boolean
+    careerAnalysisId?: boolean
+    skillId?: boolean
+    strength?: boolean
+    quote?: boolean
+    sourceSection?: boolean
+    sourceLabel?: boolean
+    createdAt?: boolean
+  }
+
+  export type CandidateSkillEvidenceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "careerAnalysisId" | "skillId" | "strength" | "quote" | "sourceSection" | "sourceLabel" | "createdAt", ExtArgs["result"]["candidateSkillEvidence"]>
+  export type CandidateSkillEvidenceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }
+  export type CandidateSkillEvidenceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }
+  export type CandidateSkillEvidenceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }
+
+  export type $CandidateSkillEvidencePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CandidateSkillEvidence"
+    objects: {
+      careerAnalysis: Prisma.$CareerAnalysisPayload<ExtArgs>
+      skill: Prisma.$SkillPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      careerAnalysisId: string
+      skillId: string
+      strength: $Enums.EvidenceStrength
+      quote: string
+      sourceSection: string
+      sourceLabel: string
+      createdAt: Date
+    }, ExtArgs["result"]["candidateSkillEvidence"]>
+    composites: {}
+  }
+
+  type CandidateSkillEvidenceGetPayload<S extends boolean | null | undefined | CandidateSkillEvidenceDefaultArgs> = $Result.GetResult<Prisma.$CandidateSkillEvidencePayload, S>
+
+  type CandidateSkillEvidenceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CandidateSkillEvidenceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CandidateSkillEvidenceCountAggregateInputType | true
+    }
+
+  export interface CandidateSkillEvidenceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CandidateSkillEvidence'], meta: { name: 'CandidateSkillEvidence' } }
+    /**
+     * Find zero or one CandidateSkillEvidence that matches the filter.
+     * @param {CandidateSkillEvidenceFindUniqueArgs} args - Arguments to find a CandidateSkillEvidence
+     * @example
+     * // Get one CandidateSkillEvidence
+     * const candidateSkillEvidence = await prisma.candidateSkillEvidence.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CandidateSkillEvidenceFindUniqueArgs>(args: SelectSubset<T, CandidateSkillEvidenceFindUniqueArgs<ExtArgs>>): Prisma__CandidateSkillEvidenceClient<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CandidateSkillEvidence that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CandidateSkillEvidenceFindUniqueOrThrowArgs} args - Arguments to find a CandidateSkillEvidence
+     * @example
+     * // Get one CandidateSkillEvidence
+     * const candidateSkillEvidence = await prisma.candidateSkillEvidence.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CandidateSkillEvidenceFindUniqueOrThrowArgs>(args: SelectSubset<T, CandidateSkillEvidenceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CandidateSkillEvidenceClient<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CandidateSkillEvidence that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateSkillEvidenceFindFirstArgs} args - Arguments to find a CandidateSkillEvidence
+     * @example
+     * // Get one CandidateSkillEvidence
+     * const candidateSkillEvidence = await prisma.candidateSkillEvidence.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CandidateSkillEvidenceFindFirstArgs>(args?: SelectSubset<T, CandidateSkillEvidenceFindFirstArgs<ExtArgs>>): Prisma__CandidateSkillEvidenceClient<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CandidateSkillEvidence that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateSkillEvidenceFindFirstOrThrowArgs} args - Arguments to find a CandidateSkillEvidence
+     * @example
+     * // Get one CandidateSkillEvidence
+     * const candidateSkillEvidence = await prisma.candidateSkillEvidence.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CandidateSkillEvidenceFindFirstOrThrowArgs>(args?: SelectSubset<T, CandidateSkillEvidenceFindFirstOrThrowArgs<ExtArgs>>): Prisma__CandidateSkillEvidenceClient<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CandidateSkillEvidences that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateSkillEvidenceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CandidateSkillEvidences
+     * const candidateSkillEvidences = await prisma.candidateSkillEvidence.findMany()
+     * 
+     * // Get first 10 CandidateSkillEvidences
+     * const candidateSkillEvidences = await prisma.candidateSkillEvidence.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const candidateSkillEvidenceWithIdOnly = await prisma.candidateSkillEvidence.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CandidateSkillEvidenceFindManyArgs>(args?: SelectSubset<T, CandidateSkillEvidenceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CandidateSkillEvidence.
+     * @param {CandidateSkillEvidenceCreateArgs} args - Arguments to create a CandidateSkillEvidence.
+     * @example
+     * // Create one CandidateSkillEvidence
+     * const CandidateSkillEvidence = await prisma.candidateSkillEvidence.create({
+     *   data: {
+     *     // ... data to create a CandidateSkillEvidence
+     *   }
+     * })
+     * 
+     */
+    create<T extends CandidateSkillEvidenceCreateArgs>(args: SelectSubset<T, CandidateSkillEvidenceCreateArgs<ExtArgs>>): Prisma__CandidateSkillEvidenceClient<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CandidateSkillEvidences.
+     * @param {CandidateSkillEvidenceCreateManyArgs} args - Arguments to create many CandidateSkillEvidences.
+     * @example
+     * // Create many CandidateSkillEvidences
+     * const candidateSkillEvidence = await prisma.candidateSkillEvidence.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CandidateSkillEvidenceCreateManyArgs>(args?: SelectSubset<T, CandidateSkillEvidenceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CandidateSkillEvidences and returns the data saved in the database.
+     * @param {CandidateSkillEvidenceCreateManyAndReturnArgs} args - Arguments to create many CandidateSkillEvidences.
+     * @example
+     * // Create many CandidateSkillEvidences
+     * const candidateSkillEvidence = await prisma.candidateSkillEvidence.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CandidateSkillEvidences and only return the `id`
+     * const candidateSkillEvidenceWithIdOnly = await prisma.candidateSkillEvidence.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CandidateSkillEvidenceCreateManyAndReturnArgs>(args?: SelectSubset<T, CandidateSkillEvidenceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CandidateSkillEvidence.
+     * @param {CandidateSkillEvidenceDeleteArgs} args - Arguments to delete one CandidateSkillEvidence.
+     * @example
+     * // Delete one CandidateSkillEvidence
+     * const CandidateSkillEvidence = await prisma.candidateSkillEvidence.delete({
+     *   where: {
+     *     // ... filter to delete one CandidateSkillEvidence
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CandidateSkillEvidenceDeleteArgs>(args: SelectSubset<T, CandidateSkillEvidenceDeleteArgs<ExtArgs>>): Prisma__CandidateSkillEvidenceClient<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CandidateSkillEvidence.
+     * @param {CandidateSkillEvidenceUpdateArgs} args - Arguments to update one CandidateSkillEvidence.
+     * @example
+     * // Update one CandidateSkillEvidence
+     * const candidateSkillEvidence = await prisma.candidateSkillEvidence.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CandidateSkillEvidenceUpdateArgs>(args: SelectSubset<T, CandidateSkillEvidenceUpdateArgs<ExtArgs>>): Prisma__CandidateSkillEvidenceClient<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CandidateSkillEvidences.
+     * @param {CandidateSkillEvidenceDeleteManyArgs} args - Arguments to filter CandidateSkillEvidences to delete.
+     * @example
+     * // Delete a few CandidateSkillEvidences
+     * const { count } = await prisma.candidateSkillEvidence.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CandidateSkillEvidenceDeleteManyArgs>(args?: SelectSubset<T, CandidateSkillEvidenceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CandidateSkillEvidences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateSkillEvidenceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CandidateSkillEvidences
+     * const candidateSkillEvidence = await prisma.candidateSkillEvidence.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CandidateSkillEvidenceUpdateManyArgs>(args: SelectSubset<T, CandidateSkillEvidenceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CandidateSkillEvidences and returns the data updated in the database.
+     * @param {CandidateSkillEvidenceUpdateManyAndReturnArgs} args - Arguments to update many CandidateSkillEvidences.
+     * @example
+     * // Update many CandidateSkillEvidences
+     * const candidateSkillEvidence = await prisma.candidateSkillEvidence.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CandidateSkillEvidences and only return the `id`
+     * const candidateSkillEvidenceWithIdOnly = await prisma.candidateSkillEvidence.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CandidateSkillEvidenceUpdateManyAndReturnArgs>(args: SelectSubset<T, CandidateSkillEvidenceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CandidateSkillEvidence.
+     * @param {CandidateSkillEvidenceUpsertArgs} args - Arguments to update or create a CandidateSkillEvidence.
+     * @example
+     * // Update or create a CandidateSkillEvidence
+     * const candidateSkillEvidence = await prisma.candidateSkillEvidence.upsert({
+     *   create: {
+     *     // ... data to create a CandidateSkillEvidence
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CandidateSkillEvidence we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CandidateSkillEvidenceUpsertArgs>(args: SelectSubset<T, CandidateSkillEvidenceUpsertArgs<ExtArgs>>): Prisma__CandidateSkillEvidenceClient<$Result.GetResult<Prisma.$CandidateSkillEvidencePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CandidateSkillEvidences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateSkillEvidenceCountArgs} args - Arguments to filter CandidateSkillEvidences to count.
+     * @example
+     * // Count the number of CandidateSkillEvidences
+     * const count = await prisma.candidateSkillEvidence.count({
+     *   where: {
+     *     // ... the filter for the CandidateSkillEvidences we want to count
+     *   }
+     * })
+    **/
+    count<T extends CandidateSkillEvidenceCountArgs>(
+      args?: Subset<T, CandidateSkillEvidenceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CandidateSkillEvidenceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CandidateSkillEvidence.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateSkillEvidenceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CandidateSkillEvidenceAggregateArgs>(args: Subset<T, CandidateSkillEvidenceAggregateArgs>): Prisma.PrismaPromise<GetCandidateSkillEvidenceAggregateType<T>>
+
+    /**
+     * Group by CandidateSkillEvidence.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateSkillEvidenceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CandidateSkillEvidenceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CandidateSkillEvidenceGroupByArgs['orderBy'] }
+        : { orderBy?: CandidateSkillEvidenceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CandidateSkillEvidenceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCandidateSkillEvidenceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CandidateSkillEvidence model
+   */
+  readonly fields: CandidateSkillEvidenceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CandidateSkillEvidence.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CandidateSkillEvidenceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    careerAnalysis<T extends CareerAnalysisDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysisDefaultArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    skill<T extends SkillDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SkillDefaultArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CandidateSkillEvidence model
+   */
+  interface CandidateSkillEvidenceFieldRefs {
+    readonly id: FieldRef<"CandidateSkillEvidence", 'String'>
+    readonly careerAnalysisId: FieldRef<"CandidateSkillEvidence", 'String'>
+    readonly skillId: FieldRef<"CandidateSkillEvidence", 'String'>
+    readonly strength: FieldRef<"CandidateSkillEvidence", 'EvidenceStrength'>
+    readonly quote: FieldRef<"CandidateSkillEvidence", 'String'>
+    readonly sourceSection: FieldRef<"CandidateSkillEvidence", 'String'>
+    readonly sourceLabel: FieldRef<"CandidateSkillEvidence", 'String'>
+    readonly createdAt: FieldRef<"CandidateSkillEvidence", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CandidateSkillEvidence findUnique
+   */
+  export type CandidateSkillEvidenceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateSkillEvidence to fetch.
+     */
+    where: CandidateSkillEvidenceWhereUniqueInput
+  }
+
+  /**
+   * CandidateSkillEvidence findUniqueOrThrow
+   */
+  export type CandidateSkillEvidenceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateSkillEvidence to fetch.
+     */
+    where: CandidateSkillEvidenceWhereUniqueInput
+  }
+
+  /**
+   * CandidateSkillEvidence findFirst
+   */
+  export type CandidateSkillEvidenceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateSkillEvidence to fetch.
+     */
+    where?: CandidateSkillEvidenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateSkillEvidences to fetch.
+     */
+    orderBy?: CandidateSkillEvidenceOrderByWithRelationInput | CandidateSkillEvidenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidateSkillEvidences.
+     */
+    cursor?: CandidateSkillEvidenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateSkillEvidences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateSkillEvidences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateSkillEvidences.
+     */
+    distinct?: CandidateSkillEvidenceScalarFieldEnum | CandidateSkillEvidenceScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateSkillEvidence findFirstOrThrow
+   */
+  export type CandidateSkillEvidenceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateSkillEvidence to fetch.
+     */
+    where?: CandidateSkillEvidenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateSkillEvidences to fetch.
+     */
+    orderBy?: CandidateSkillEvidenceOrderByWithRelationInput | CandidateSkillEvidenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidateSkillEvidences.
+     */
+    cursor?: CandidateSkillEvidenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateSkillEvidences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateSkillEvidences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateSkillEvidences.
+     */
+    distinct?: CandidateSkillEvidenceScalarFieldEnum | CandidateSkillEvidenceScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateSkillEvidence findMany
+   */
+  export type CandidateSkillEvidenceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateSkillEvidences to fetch.
+     */
+    where?: CandidateSkillEvidenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateSkillEvidences to fetch.
+     */
+    orderBy?: CandidateSkillEvidenceOrderByWithRelationInput | CandidateSkillEvidenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CandidateSkillEvidences.
+     */
+    cursor?: CandidateSkillEvidenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateSkillEvidences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateSkillEvidences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateSkillEvidences.
+     */
+    distinct?: CandidateSkillEvidenceScalarFieldEnum | CandidateSkillEvidenceScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateSkillEvidence create
+   */
+  export type CandidateSkillEvidenceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CandidateSkillEvidence.
+     */
+    data: XOR<CandidateSkillEvidenceCreateInput, CandidateSkillEvidenceUncheckedCreateInput>
+  }
+
+  /**
+   * CandidateSkillEvidence createMany
+   */
+  export type CandidateSkillEvidenceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CandidateSkillEvidences.
+     */
+    data: CandidateSkillEvidenceCreateManyInput | CandidateSkillEvidenceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CandidateSkillEvidence createManyAndReturn
+   */
+  export type CandidateSkillEvidenceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * The data used to create many CandidateSkillEvidences.
+     */
+    data: CandidateSkillEvidenceCreateManyInput | CandidateSkillEvidenceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CandidateSkillEvidence update
+   */
+  export type CandidateSkillEvidenceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CandidateSkillEvidence.
+     */
+    data: XOR<CandidateSkillEvidenceUpdateInput, CandidateSkillEvidenceUncheckedUpdateInput>
+    /**
+     * Choose, which CandidateSkillEvidence to update.
+     */
+    where: CandidateSkillEvidenceWhereUniqueInput
+  }
+
+  /**
+   * CandidateSkillEvidence updateMany
+   */
+  export type CandidateSkillEvidenceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CandidateSkillEvidences.
+     */
+    data: XOR<CandidateSkillEvidenceUpdateManyMutationInput, CandidateSkillEvidenceUncheckedUpdateManyInput>
+    /**
+     * Filter which CandidateSkillEvidences to update
+     */
+    where?: CandidateSkillEvidenceWhereInput
+    /**
+     * Limit how many CandidateSkillEvidences to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CandidateSkillEvidence updateManyAndReturn
+   */
+  export type CandidateSkillEvidenceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * The data used to update CandidateSkillEvidences.
+     */
+    data: XOR<CandidateSkillEvidenceUpdateManyMutationInput, CandidateSkillEvidenceUncheckedUpdateManyInput>
+    /**
+     * Filter which CandidateSkillEvidences to update
+     */
+    where?: CandidateSkillEvidenceWhereInput
+    /**
+     * Limit how many CandidateSkillEvidences to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CandidateSkillEvidence upsert
+   */
+  export type CandidateSkillEvidenceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CandidateSkillEvidence to update in case it exists.
+     */
+    where: CandidateSkillEvidenceWhereUniqueInput
+    /**
+     * In case the CandidateSkillEvidence found by the `where` argument doesn't exist, create a new CandidateSkillEvidence with this data.
+     */
+    create: XOR<CandidateSkillEvidenceCreateInput, CandidateSkillEvidenceUncheckedCreateInput>
+    /**
+     * In case the CandidateSkillEvidence was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CandidateSkillEvidenceUpdateInput, CandidateSkillEvidenceUncheckedUpdateInput>
+  }
+
+  /**
+   * CandidateSkillEvidence delete
+   */
+  export type CandidateSkillEvidenceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceInclude<ExtArgs> | null
+    /**
+     * Filter which CandidateSkillEvidence to delete.
+     */
+    where: CandidateSkillEvidenceWhereUniqueInput
+  }
+
+  /**
+   * CandidateSkillEvidence deleteMany
+   */
+  export type CandidateSkillEvidenceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidateSkillEvidences to delete
+     */
+    where?: CandidateSkillEvidenceWhereInput
+    /**
+     * Limit how many CandidateSkillEvidences to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CandidateSkillEvidence without action
+   */
+  export type CandidateSkillEvidenceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateSkillEvidence
+     */
+    select?: CandidateSkillEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidateSkillEvidence
+     */
+    omit?: CandidateSkillEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateSkillEvidenceInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SkillGap
+   */
+
+  export type AggregateSkillGap = {
+    _count: SkillGapCountAggregateOutputType | null
+    _avg: SkillGapAvgAggregateOutputType | null
+    _sum: SkillGapSumAggregateOutputType | null
+    _min: SkillGapMinAggregateOutputType | null
+    _max: SkillGapMaxAggregateOutputType | null
+  }
+
+  export type SkillGapAvgAggregateOutputType = {
+    priority: number | null
+  }
+
+  export type SkillGapSumAggregateOutputType = {
+    priority: number | null
+  }
+
+  export type SkillGapMinAggregateOutputType = {
+    id: string | null
+    careerAnalysisId: string | null
+    skillId: string | null
+    status: $Enums.GapStatus | null
+    priority: number | null
+    reasoning: string | null
+    createdAt: Date | null
+  }
+
+  export type SkillGapMaxAggregateOutputType = {
+    id: string | null
+    careerAnalysisId: string | null
+    skillId: string | null
+    status: $Enums.GapStatus | null
+    priority: number | null
+    reasoning: string | null
+    createdAt: Date | null
+  }
+
+  export type SkillGapCountAggregateOutputType = {
+    id: number
+    careerAnalysisId: number
+    skillId: number
+    status: number
+    priority: number
+    reasoning: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SkillGapAvgAggregateInputType = {
+    priority?: true
+  }
+
+  export type SkillGapSumAggregateInputType = {
+    priority?: true
+  }
+
+  export type SkillGapMinAggregateInputType = {
+    id?: true
+    careerAnalysisId?: true
+    skillId?: true
+    status?: true
+    priority?: true
+    reasoning?: true
+    createdAt?: true
+  }
+
+  export type SkillGapMaxAggregateInputType = {
+    id?: true
+    careerAnalysisId?: true
+    skillId?: true
+    status?: true
+    priority?: true
+    reasoning?: true
+    createdAt?: true
+  }
+
+  export type SkillGapCountAggregateInputType = {
+    id?: true
+    careerAnalysisId?: true
+    skillId?: true
+    status?: true
+    priority?: true
+    reasoning?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SkillGapAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SkillGap to aggregate.
+     */
+    where?: SkillGapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SkillGaps to fetch.
+     */
+    orderBy?: SkillGapOrderByWithRelationInput | SkillGapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SkillGapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SkillGaps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SkillGaps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SkillGaps
+    **/
+    _count?: true | SkillGapCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SkillGapAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SkillGapSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SkillGapMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SkillGapMaxAggregateInputType
+  }
+
+  export type GetSkillGapAggregateType<T extends SkillGapAggregateArgs> = {
+        [P in keyof T & keyof AggregateSkillGap]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSkillGap[P]>
+      : GetScalarType<T[P], AggregateSkillGap[P]>
+  }
+
+
+
+
+  export type SkillGapGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SkillGapWhereInput
+    orderBy?: SkillGapOrderByWithAggregationInput | SkillGapOrderByWithAggregationInput[]
+    by: SkillGapScalarFieldEnum[] | SkillGapScalarFieldEnum
+    having?: SkillGapScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SkillGapCountAggregateInputType | true
+    _avg?: SkillGapAvgAggregateInputType
+    _sum?: SkillGapSumAggregateInputType
+    _min?: SkillGapMinAggregateInputType
+    _max?: SkillGapMaxAggregateInputType
+  }
+
+  export type SkillGapGroupByOutputType = {
+    id: string
+    careerAnalysisId: string
+    skillId: string
+    status: $Enums.GapStatus
+    priority: number
+    reasoning: string
+    createdAt: Date
+    _count: SkillGapCountAggregateOutputType | null
+    _avg: SkillGapAvgAggregateOutputType | null
+    _sum: SkillGapSumAggregateOutputType | null
+    _min: SkillGapMinAggregateOutputType | null
+    _max: SkillGapMaxAggregateOutputType | null
+  }
+
+  type GetSkillGapGroupByPayload<T extends SkillGapGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SkillGapGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SkillGapGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SkillGapGroupByOutputType[P]>
+            : GetScalarType<T[P], SkillGapGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SkillGapSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    careerAnalysisId?: boolean
+    skillId?: boolean
+    status?: boolean
+    priority?: boolean
+    reasoning?: boolean
+    createdAt?: boolean
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+    tasks?: boolean | SkillGap$tasksArgs<ExtArgs>
+    _count?: boolean | SkillGapCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["skillGap"]>
+
+  export type SkillGapSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    careerAnalysisId?: boolean
+    skillId?: boolean
+    status?: boolean
+    priority?: boolean
+    reasoning?: boolean
+    createdAt?: boolean
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["skillGap"]>
+
+  export type SkillGapSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    careerAnalysisId?: boolean
+    skillId?: boolean
+    status?: boolean
+    priority?: boolean
+    reasoning?: boolean
+    createdAt?: boolean
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["skillGap"]>
+
+  export type SkillGapSelectScalar = {
+    id?: boolean
+    careerAnalysisId?: boolean
+    skillId?: boolean
+    status?: boolean
+    priority?: boolean
+    reasoning?: boolean
+    createdAt?: boolean
+  }
+
+  export type SkillGapOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "careerAnalysisId" | "skillId" | "status" | "priority" | "reasoning" | "createdAt", ExtArgs["result"]["skillGap"]>
+  export type SkillGapInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+    tasks?: boolean | SkillGap$tasksArgs<ExtArgs>
+    _count?: boolean | SkillGapCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SkillGapIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }
+  export type SkillGapIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    skill?: boolean | SkillDefaultArgs<ExtArgs>
+  }
+
+  export type $SkillGapPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SkillGap"
+    objects: {
+      careerAnalysis: Prisma.$CareerAnalysisPayload<ExtArgs>
+      skill: Prisma.$SkillPayload<ExtArgs>
+      tasks: Prisma.$RoadmapTaskPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      careerAnalysisId: string
+      skillId: string
+      status: $Enums.GapStatus
+      priority: number
+      reasoning: string
+      createdAt: Date
+    }, ExtArgs["result"]["skillGap"]>
+    composites: {}
+  }
+
+  type SkillGapGetPayload<S extends boolean | null | undefined | SkillGapDefaultArgs> = $Result.GetResult<Prisma.$SkillGapPayload, S>
+
+  type SkillGapCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SkillGapFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SkillGapCountAggregateInputType | true
+    }
+
+  export interface SkillGapDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SkillGap'], meta: { name: 'SkillGap' } }
+    /**
+     * Find zero or one SkillGap that matches the filter.
+     * @param {SkillGapFindUniqueArgs} args - Arguments to find a SkillGap
+     * @example
+     * // Get one SkillGap
+     * const skillGap = await prisma.skillGap.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SkillGapFindUniqueArgs>(args: SelectSubset<T, SkillGapFindUniqueArgs<ExtArgs>>): Prisma__SkillGapClient<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SkillGap that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SkillGapFindUniqueOrThrowArgs} args - Arguments to find a SkillGap
+     * @example
+     * // Get one SkillGap
+     * const skillGap = await prisma.skillGap.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SkillGapFindUniqueOrThrowArgs>(args: SelectSubset<T, SkillGapFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SkillGapClient<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SkillGap that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGapFindFirstArgs} args - Arguments to find a SkillGap
+     * @example
+     * // Get one SkillGap
+     * const skillGap = await prisma.skillGap.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SkillGapFindFirstArgs>(args?: SelectSubset<T, SkillGapFindFirstArgs<ExtArgs>>): Prisma__SkillGapClient<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SkillGap that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGapFindFirstOrThrowArgs} args - Arguments to find a SkillGap
+     * @example
+     * // Get one SkillGap
+     * const skillGap = await prisma.skillGap.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SkillGapFindFirstOrThrowArgs>(args?: SelectSubset<T, SkillGapFindFirstOrThrowArgs<ExtArgs>>): Prisma__SkillGapClient<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SkillGaps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGapFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SkillGaps
+     * const skillGaps = await prisma.skillGap.findMany()
+     * 
+     * // Get first 10 SkillGaps
+     * const skillGaps = await prisma.skillGap.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const skillGapWithIdOnly = await prisma.skillGap.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SkillGapFindManyArgs>(args?: SelectSubset<T, SkillGapFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SkillGap.
+     * @param {SkillGapCreateArgs} args - Arguments to create a SkillGap.
+     * @example
+     * // Create one SkillGap
+     * const SkillGap = await prisma.skillGap.create({
+     *   data: {
+     *     // ... data to create a SkillGap
+     *   }
+     * })
+     * 
+     */
+    create<T extends SkillGapCreateArgs>(args: SelectSubset<T, SkillGapCreateArgs<ExtArgs>>): Prisma__SkillGapClient<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SkillGaps.
+     * @param {SkillGapCreateManyArgs} args - Arguments to create many SkillGaps.
+     * @example
+     * // Create many SkillGaps
+     * const skillGap = await prisma.skillGap.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SkillGapCreateManyArgs>(args?: SelectSubset<T, SkillGapCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SkillGaps and returns the data saved in the database.
+     * @param {SkillGapCreateManyAndReturnArgs} args - Arguments to create many SkillGaps.
+     * @example
+     * // Create many SkillGaps
+     * const skillGap = await prisma.skillGap.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SkillGaps and only return the `id`
+     * const skillGapWithIdOnly = await prisma.skillGap.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SkillGapCreateManyAndReturnArgs>(args?: SelectSubset<T, SkillGapCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SkillGap.
+     * @param {SkillGapDeleteArgs} args - Arguments to delete one SkillGap.
+     * @example
+     * // Delete one SkillGap
+     * const SkillGap = await prisma.skillGap.delete({
+     *   where: {
+     *     // ... filter to delete one SkillGap
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SkillGapDeleteArgs>(args: SelectSubset<T, SkillGapDeleteArgs<ExtArgs>>): Prisma__SkillGapClient<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SkillGap.
+     * @param {SkillGapUpdateArgs} args - Arguments to update one SkillGap.
+     * @example
+     * // Update one SkillGap
+     * const skillGap = await prisma.skillGap.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SkillGapUpdateArgs>(args: SelectSubset<T, SkillGapUpdateArgs<ExtArgs>>): Prisma__SkillGapClient<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SkillGaps.
+     * @param {SkillGapDeleteManyArgs} args - Arguments to filter SkillGaps to delete.
+     * @example
+     * // Delete a few SkillGaps
+     * const { count } = await prisma.skillGap.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SkillGapDeleteManyArgs>(args?: SelectSubset<T, SkillGapDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SkillGaps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGapUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SkillGaps
+     * const skillGap = await prisma.skillGap.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SkillGapUpdateManyArgs>(args: SelectSubset<T, SkillGapUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SkillGaps and returns the data updated in the database.
+     * @param {SkillGapUpdateManyAndReturnArgs} args - Arguments to update many SkillGaps.
+     * @example
+     * // Update many SkillGaps
+     * const skillGap = await prisma.skillGap.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SkillGaps and only return the `id`
+     * const skillGapWithIdOnly = await prisma.skillGap.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SkillGapUpdateManyAndReturnArgs>(args: SelectSubset<T, SkillGapUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SkillGap.
+     * @param {SkillGapUpsertArgs} args - Arguments to update or create a SkillGap.
+     * @example
+     * // Update or create a SkillGap
+     * const skillGap = await prisma.skillGap.upsert({
+     *   create: {
+     *     // ... data to create a SkillGap
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SkillGap we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SkillGapUpsertArgs>(args: SelectSubset<T, SkillGapUpsertArgs<ExtArgs>>): Prisma__SkillGapClient<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SkillGaps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGapCountArgs} args - Arguments to filter SkillGaps to count.
+     * @example
+     * // Count the number of SkillGaps
+     * const count = await prisma.skillGap.count({
+     *   where: {
+     *     // ... the filter for the SkillGaps we want to count
+     *   }
+     * })
+    **/
+    count<T extends SkillGapCountArgs>(
+      args?: Subset<T, SkillGapCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SkillGapCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SkillGap.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGapAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SkillGapAggregateArgs>(args: Subset<T, SkillGapAggregateArgs>): Prisma.PrismaPromise<GetSkillGapAggregateType<T>>
+
+    /**
+     * Group by SkillGap.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGapGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SkillGapGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SkillGapGroupByArgs['orderBy'] }
+        : { orderBy?: SkillGapGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SkillGapGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSkillGapGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SkillGap model
+   */
+  readonly fields: SkillGapFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SkillGap.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SkillGapClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    careerAnalysis<T extends CareerAnalysisDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysisDefaultArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    skill<T extends SkillDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SkillDefaultArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    tasks<T extends SkillGap$tasksArgs<ExtArgs> = {}>(args?: Subset<T, SkillGap$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SkillGap model
+   */
+  interface SkillGapFieldRefs {
+    readonly id: FieldRef<"SkillGap", 'String'>
+    readonly careerAnalysisId: FieldRef<"SkillGap", 'String'>
+    readonly skillId: FieldRef<"SkillGap", 'String'>
+    readonly status: FieldRef<"SkillGap", 'GapStatus'>
+    readonly priority: FieldRef<"SkillGap", 'Int'>
+    readonly reasoning: FieldRef<"SkillGap", 'String'>
+    readonly createdAt: FieldRef<"SkillGap", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SkillGap findUnique
+   */
+  export type SkillGapFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+    /**
+     * Filter, which SkillGap to fetch.
+     */
+    where: SkillGapWhereUniqueInput
+  }
+
+  /**
+   * SkillGap findUniqueOrThrow
+   */
+  export type SkillGapFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+    /**
+     * Filter, which SkillGap to fetch.
+     */
+    where: SkillGapWhereUniqueInput
+  }
+
+  /**
+   * SkillGap findFirst
+   */
+  export type SkillGapFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+    /**
+     * Filter, which SkillGap to fetch.
+     */
+    where?: SkillGapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SkillGaps to fetch.
+     */
+    orderBy?: SkillGapOrderByWithRelationInput | SkillGapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SkillGaps.
+     */
+    cursor?: SkillGapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SkillGaps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SkillGaps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SkillGaps.
+     */
+    distinct?: SkillGapScalarFieldEnum | SkillGapScalarFieldEnum[]
+  }
+
+  /**
+   * SkillGap findFirstOrThrow
+   */
+  export type SkillGapFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+    /**
+     * Filter, which SkillGap to fetch.
+     */
+    where?: SkillGapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SkillGaps to fetch.
+     */
+    orderBy?: SkillGapOrderByWithRelationInput | SkillGapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SkillGaps.
+     */
+    cursor?: SkillGapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SkillGaps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SkillGaps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SkillGaps.
+     */
+    distinct?: SkillGapScalarFieldEnum | SkillGapScalarFieldEnum[]
+  }
+
+  /**
+   * SkillGap findMany
+   */
+  export type SkillGapFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+    /**
+     * Filter, which SkillGaps to fetch.
+     */
+    where?: SkillGapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SkillGaps to fetch.
+     */
+    orderBy?: SkillGapOrderByWithRelationInput | SkillGapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SkillGaps.
+     */
+    cursor?: SkillGapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SkillGaps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SkillGaps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SkillGaps.
+     */
+    distinct?: SkillGapScalarFieldEnum | SkillGapScalarFieldEnum[]
+  }
+
+  /**
+   * SkillGap create
+   */
+  export type SkillGapCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SkillGap.
+     */
+    data: XOR<SkillGapCreateInput, SkillGapUncheckedCreateInput>
+  }
+
+  /**
+   * SkillGap createMany
+   */
+  export type SkillGapCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SkillGaps.
+     */
+    data: SkillGapCreateManyInput | SkillGapCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SkillGap createManyAndReturn
+   */
+  export type SkillGapCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * The data used to create many SkillGaps.
+     */
+    data: SkillGapCreateManyInput | SkillGapCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SkillGap update
+   */
+  export type SkillGapUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SkillGap.
+     */
+    data: XOR<SkillGapUpdateInput, SkillGapUncheckedUpdateInput>
+    /**
+     * Choose, which SkillGap to update.
+     */
+    where: SkillGapWhereUniqueInput
+  }
+
+  /**
+   * SkillGap updateMany
+   */
+  export type SkillGapUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SkillGaps.
+     */
+    data: XOR<SkillGapUpdateManyMutationInput, SkillGapUncheckedUpdateManyInput>
+    /**
+     * Filter which SkillGaps to update
+     */
+    where?: SkillGapWhereInput
+    /**
+     * Limit how many SkillGaps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SkillGap updateManyAndReturn
+   */
+  export type SkillGapUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * The data used to update SkillGaps.
+     */
+    data: XOR<SkillGapUpdateManyMutationInput, SkillGapUncheckedUpdateManyInput>
+    /**
+     * Filter which SkillGaps to update
+     */
+    where?: SkillGapWhereInput
+    /**
+     * Limit how many SkillGaps to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SkillGap upsert
+   */
+  export type SkillGapUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SkillGap to update in case it exists.
+     */
+    where: SkillGapWhereUniqueInput
+    /**
+     * In case the SkillGap found by the `where` argument doesn't exist, create a new SkillGap with this data.
+     */
+    create: XOR<SkillGapCreateInput, SkillGapUncheckedCreateInput>
+    /**
+     * In case the SkillGap was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SkillGapUpdateInput, SkillGapUncheckedUpdateInput>
+  }
+
+  /**
+   * SkillGap delete
+   */
+  export type SkillGapDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+    /**
+     * Filter which SkillGap to delete.
+     */
+    where: SkillGapWhereUniqueInput
+  }
+
+  /**
+   * SkillGap deleteMany
+   */
+  export type SkillGapDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SkillGaps to delete
+     */
+    where?: SkillGapWhereInput
+    /**
+     * Limit how many SkillGaps to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SkillGap.tasks
+   */
+  export type SkillGap$tasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskInclude<ExtArgs> | null
+    where?: RoadmapTaskWhereInput
+    orderBy?: RoadmapTaskOrderByWithRelationInput | RoadmapTaskOrderByWithRelationInput[]
+    cursor?: RoadmapTaskWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoadmapTaskScalarFieldEnum | RoadmapTaskScalarFieldEnum[]
+  }
+
+  /**
+   * SkillGap without action
+   */
+  export type SkillGapDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Roadmap
+   */
+
+  export type AggregateRoadmap = {
+    _count: RoadmapCountAggregateOutputType | null
+    _avg: RoadmapAvgAggregateOutputType | null
+    _sum: RoadmapSumAggregateOutputType | null
+    _min: RoadmapMinAggregateOutputType | null
+    _max: RoadmapMaxAggregateOutputType | null
+  }
+
+  export type RoadmapAvgAggregateOutputType = {
+    weekCount: number | null
+  }
+
+  export type RoadmapSumAggregateOutputType = {
+    weekCount: number | null
+  }
+
+  export type RoadmapMinAggregateOutputType = {
+    id: string | null
+    careerAnalysisId: string | null
+    weekCount: number | null
+    createdAt: Date | null
+  }
+
+  export type RoadmapMaxAggregateOutputType = {
+    id: string | null
+    careerAnalysisId: string | null
+    weekCount: number | null
+    createdAt: Date | null
+  }
+
+  export type RoadmapCountAggregateOutputType = {
+    id: number
+    careerAnalysisId: number
+    weekCount: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type RoadmapAvgAggregateInputType = {
+    weekCount?: true
+  }
+
+  export type RoadmapSumAggregateInputType = {
+    weekCount?: true
+  }
+
+  export type RoadmapMinAggregateInputType = {
+    id?: true
+    careerAnalysisId?: true
+    weekCount?: true
+    createdAt?: true
+  }
+
+  export type RoadmapMaxAggregateInputType = {
+    id?: true
+    careerAnalysisId?: true
+    weekCount?: true
+    createdAt?: true
+  }
+
+  export type RoadmapCountAggregateInputType = {
+    id?: true
+    careerAnalysisId?: true
+    weekCount?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type RoadmapAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Roadmap to aggregate.
+     */
+    where?: RoadmapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Roadmaps to fetch.
+     */
+    orderBy?: RoadmapOrderByWithRelationInput | RoadmapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RoadmapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Roadmaps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Roadmaps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Roadmaps
+    **/
+    _count?: true | RoadmapCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RoadmapAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RoadmapSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RoadmapMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RoadmapMaxAggregateInputType
+  }
+
+  export type GetRoadmapAggregateType<T extends RoadmapAggregateArgs> = {
+        [P in keyof T & keyof AggregateRoadmap]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRoadmap[P]>
+      : GetScalarType<T[P], AggregateRoadmap[P]>
+  }
+
+
+
+
+  export type RoadmapGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoadmapWhereInput
+    orderBy?: RoadmapOrderByWithAggregationInput | RoadmapOrderByWithAggregationInput[]
+    by: RoadmapScalarFieldEnum[] | RoadmapScalarFieldEnum
+    having?: RoadmapScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RoadmapCountAggregateInputType | true
+    _avg?: RoadmapAvgAggregateInputType
+    _sum?: RoadmapSumAggregateInputType
+    _min?: RoadmapMinAggregateInputType
+    _max?: RoadmapMaxAggregateInputType
+  }
+
+  export type RoadmapGroupByOutputType = {
+    id: string
+    careerAnalysisId: string
+    weekCount: number
+    createdAt: Date
+    _count: RoadmapCountAggregateOutputType | null
+    _avg: RoadmapAvgAggregateOutputType | null
+    _sum: RoadmapSumAggregateOutputType | null
+    _min: RoadmapMinAggregateOutputType | null
+    _max: RoadmapMaxAggregateOutputType | null
+  }
+
+  type GetRoadmapGroupByPayload<T extends RoadmapGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RoadmapGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RoadmapGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RoadmapGroupByOutputType[P]>
+            : GetScalarType<T[P], RoadmapGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RoadmapSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    careerAnalysisId?: boolean
+    weekCount?: boolean
+    createdAt?: boolean
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    tasks?: boolean | Roadmap$tasksArgs<ExtArgs>
+    _count?: boolean | RoadmapCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roadmap"]>
+
+  export type RoadmapSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    careerAnalysisId?: boolean
+    weekCount?: boolean
+    createdAt?: boolean
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roadmap"]>
+
+  export type RoadmapSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    careerAnalysisId?: boolean
+    weekCount?: boolean
+    createdAt?: boolean
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roadmap"]>
+
+  export type RoadmapSelectScalar = {
+    id?: boolean
+    careerAnalysisId?: boolean
+    weekCount?: boolean
+    createdAt?: boolean
+  }
+
+  export type RoadmapOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "careerAnalysisId" | "weekCount" | "createdAt", ExtArgs["result"]["roadmap"]>
+  export type RoadmapInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+    tasks?: boolean | Roadmap$tasksArgs<ExtArgs>
+    _count?: boolean | RoadmapCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type RoadmapIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+  }
+  export type RoadmapIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+  }
+
+  export type $RoadmapPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Roadmap"
+    objects: {
+      careerAnalysis: Prisma.$CareerAnalysisPayload<ExtArgs>
+      tasks: Prisma.$RoadmapTaskPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      careerAnalysisId: string
+      weekCount: number
+      createdAt: Date
+    }, ExtArgs["result"]["roadmap"]>
+    composites: {}
+  }
+
+  type RoadmapGetPayload<S extends boolean | null | undefined | RoadmapDefaultArgs> = $Result.GetResult<Prisma.$RoadmapPayload, S>
+
+  type RoadmapCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RoadmapFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RoadmapCountAggregateInputType | true
+    }
+
+  export interface RoadmapDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Roadmap'], meta: { name: 'Roadmap' } }
+    /**
+     * Find zero or one Roadmap that matches the filter.
+     * @param {RoadmapFindUniqueArgs} args - Arguments to find a Roadmap
+     * @example
+     * // Get one Roadmap
+     * const roadmap = await prisma.roadmap.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RoadmapFindUniqueArgs>(args: SelectSubset<T, RoadmapFindUniqueArgs<ExtArgs>>): Prisma__RoadmapClient<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Roadmap that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RoadmapFindUniqueOrThrowArgs} args - Arguments to find a Roadmap
+     * @example
+     * // Get one Roadmap
+     * const roadmap = await prisma.roadmap.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RoadmapFindUniqueOrThrowArgs>(args: SelectSubset<T, RoadmapFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RoadmapClient<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Roadmap that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapFindFirstArgs} args - Arguments to find a Roadmap
+     * @example
+     * // Get one Roadmap
+     * const roadmap = await prisma.roadmap.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RoadmapFindFirstArgs>(args?: SelectSubset<T, RoadmapFindFirstArgs<ExtArgs>>): Prisma__RoadmapClient<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Roadmap that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapFindFirstOrThrowArgs} args - Arguments to find a Roadmap
+     * @example
+     * // Get one Roadmap
+     * const roadmap = await prisma.roadmap.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RoadmapFindFirstOrThrowArgs>(args?: SelectSubset<T, RoadmapFindFirstOrThrowArgs<ExtArgs>>): Prisma__RoadmapClient<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Roadmaps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Roadmaps
+     * const roadmaps = await prisma.roadmap.findMany()
+     * 
+     * // Get first 10 Roadmaps
+     * const roadmaps = await prisma.roadmap.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const roadmapWithIdOnly = await prisma.roadmap.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RoadmapFindManyArgs>(args?: SelectSubset<T, RoadmapFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Roadmap.
+     * @param {RoadmapCreateArgs} args - Arguments to create a Roadmap.
+     * @example
+     * // Create one Roadmap
+     * const Roadmap = await prisma.roadmap.create({
+     *   data: {
+     *     // ... data to create a Roadmap
+     *   }
+     * })
+     * 
+     */
+    create<T extends RoadmapCreateArgs>(args: SelectSubset<T, RoadmapCreateArgs<ExtArgs>>): Prisma__RoadmapClient<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Roadmaps.
+     * @param {RoadmapCreateManyArgs} args - Arguments to create many Roadmaps.
+     * @example
+     * // Create many Roadmaps
+     * const roadmap = await prisma.roadmap.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RoadmapCreateManyArgs>(args?: SelectSubset<T, RoadmapCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Roadmaps and returns the data saved in the database.
+     * @param {RoadmapCreateManyAndReturnArgs} args - Arguments to create many Roadmaps.
+     * @example
+     * // Create many Roadmaps
+     * const roadmap = await prisma.roadmap.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Roadmaps and only return the `id`
+     * const roadmapWithIdOnly = await prisma.roadmap.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RoadmapCreateManyAndReturnArgs>(args?: SelectSubset<T, RoadmapCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Roadmap.
+     * @param {RoadmapDeleteArgs} args - Arguments to delete one Roadmap.
+     * @example
+     * // Delete one Roadmap
+     * const Roadmap = await prisma.roadmap.delete({
+     *   where: {
+     *     // ... filter to delete one Roadmap
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RoadmapDeleteArgs>(args: SelectSubset<T, RoadmapDeleteArgs<ExtArgs>>): Prisma__RoadmapClient<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Roadmap.
+     * @param {RoadmapUpdateArgs} args - Arguments to update one Roadmap.
+     * @example
+     * // Update one Roadmap
+     * const roadmap = await prisma.roadmap.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RoadmapUpdateArgs>(args: SelectSubset<T, RoadmapUpdateArgs<ExtArgs>>): Prisma__RoadmapClient<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Roadmaps.
+     * @param {RoadmapDeleteManyArgs} args - Arguments to filter Roadmaps to delete.
+     * @example
+     * // Delete a few Roadmaps
+     * const { count } = await prisma.roadmap.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RoadmapDeleteManyArgs>(args?: SelectSubset<T, RoadmapDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Roadmaps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Roadmaps
+     * const roadmap = await prisma.roadmap.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RoadmapUpdateManyArgs>(args: SelectSubset<T, RoadmapUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Roadmaps and returns the data updated in the database.
+     * @param {RoadmapUpdateManyAndReturnArgs} args - Arguments to update many Roadmaps.
+     * @example
+     * // Update many Roadmaps
+     * const roadmap = await prisma.roadmap.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Roadmaps and only return the `id`
+     * const roadmapWithIdOnly = await prisma.roadmap.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RoadmapUpdateManyAndReturnArgs>(args: SelectSubset<T, RoadmapUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Roadmap.
+     * @param {RoadmapUpsertArgs} args - Arguments to update or create a Roadmap.
+     * @example
+     * // Update or create a Roadmap
+     * const roadmap = await prisma.roadmap.upsert({
+     *   create: {
+     *     // ... data to create a Roadmap
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Roadmap we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RoadmapUpsertArgs>(args: SelectSubset<T, RoadmapUpsertArgs<ExtArgs>>): Prisma__RoadmapClient<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Roadmaps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapCountArgs} args - Arguments to filter Roadmaps to count.
+     * @example
+     * // Count the number of Roadmaps
+     * const count = await prisma.roadmap.count({
+     *   where: {
+     *     // ... the filter for the Roadmaps we want to count
+     *   }
+     * })
+    **/
+    count<T extends RoadmapCountArgs>(
+      args?: Subset<T, RoadmapCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RoadmapCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Roadmap.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RoadmapAggregateArgs>(args: Subset<T, RoadmapAggregateArgs>): Prisma.PrismaPromise<GetRoadmapAggregateType<T>>
+
+    /**
+     * Group by Roadmap.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RoadmapGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RoadmapGroupByArgs['orderBy'] }
+        : { orderBy?: RoadmapGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RoadmapGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRoadmapGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Roadmap model
+   */
+  readonly fields: RoadmapFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Roadmap.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RoadmapClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    careerAnalysis<T extends CareerAnalysisDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysisDefaultArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    tasks<T extends Roadmap$tasksArgs<ExtArgs> = {}>(args?: Subset<T, Roadmap$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Roadmap model
+   */
+  interface RoadmapFieldRefs {
+    readonly id: FieldRef<"Roadmap", 'String'>
+    readonly careerAnalysisId: FieldRef<"Roadmap", 'String'>
+    readonly weekCount: FieldRef<"Roadmap", 'Int'>
+    readonly createdAt: FieldRef<"Roadmap", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Roadmap findUnique
+   */
+  export type RoadmapFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapInclude<ExtArgs> | null
+    /**
+     * Filter, which Roadmap to fetch.
+     */
+    where: RoadmapWhereUniqueInput
+  }
+
+  /**
+   * Roadmap findUniqueOrThrow
+   */
+  export type RoadmapFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapInclude<ExtArgs> | null
+    /**
+     * Filter, which Roadmap to fetch.
+     */
+    where: RoadmapWhereUniqueInput
+  }
+
+  /**
+   * Roadmap findFirst
+   */
+  export type RoadmapFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapInclude<ExtArgs> | null
+    /**
+     * Filter, which Roadmap to fetch.
+     */
+    where?: RoadmapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Roadmaps to fetch.
+     */
+    orderBy?: RoadmapOrderByWithRelationInput | RoadmapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Roadmaps.
+     */
+    cursor?: RoadmapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Roadmaps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Roadmaps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Roadmaps.
+     */
+    distinct?: RoadmapScalarFieldEnum | RoadmapScalarFieldEnum[]
+  }
+
+  /**
+   * Roadmap findFirstOrThrow
+   */
+  export type RoadmapFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapInclude<ExtArgs> | null
+    /**
+     * Filter, which Roadmap to fetch.
+     */
+    where?: RoadmapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Roadmaps to fetch.
+     */
+    orderBy?: RoadmapOrderByWithRelationInput | RoadmapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Roadmaps.
+     */
+    cursor?: RoadmapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Roadmaps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Roadmaps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Roadmaps.
+     */
+    distinct?: RoadmapScalarFieldEnum | RoadmapScalarFieldEnum[]
+  }
+
+  /**
+   * Roadmap findMany
+   */
+  export type RoadmapFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapInclude<ExtArgs> | null
+    /**
+     * Filter, which Roadmaps to fetch.
+     */
+    where?: RoadmapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Roadmaps to fetch.
+     */
+    orderBy?: RoadmapOrderByWithRelationInput | RoadmapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Roadmaps.
+     */
+    cursor?: RoadmapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Roadmaps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Roadmaps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Roadmaps.
+     */
+    distinct?: RoadmapScalarFieldEnum | RoadmapScalarFieldEnum[]
+  }
+
+  /**
+   * Roadmap create
+   */
+  export type RoadmapCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Roadmap.
+     */
+    data: XOR<RoadmapCreateInput, RoadmapUncheckedCreateInput>
+  }
+
+  /**
+   * Roadmap createMany
+   */
+  export type RoadmapCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Roadmaps.
+     */
+    data: RoadmapCreateManyInput | RoadmapCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Roadmap createManyAndReturn
+   */
+  export type RoadmapCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * The data used to create many Roadmaps.
+     */
+    data: RoadmapCreateManyInput | RoadmapCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Roadmap update
+   */
+  export type RoadmapUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Roadmap.
+     */
+    data: XOR<RoadmapUpdateInput, RoadmapUncheckedUpdateInput>
+    /**
+     * Choose, which Roadmap to update.
+     */
+    where: RoadmapWhereUniqueInput
+  }
+
+  /**
+   * Roadmap updateMany
+   */
+  export type RoadmapUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Roadmaps.
+     */
+    data: XOR<RoadmapUpdateManyMutationInput, RoadmapUncheckedUpdateManyInput>
+    /**
+     * Filter which Roadmaps to update
+     */
+    where?: RoadmapWhereInput
+    /**
+     * Limit how many Roadmaps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Roadmap updateManyAndReturn
+   */
+  export type RoadmapUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * The data used to update Roadmaps.
+     */
+    data: XOR<RoadmapUpdateManyMutationInput, RoadmapUncheckedUpdateManyInput>
+    /**
+     * Filter which Roadmaps to update
+     */
+    where?: RoadmapWhereInput
+    /**
+     * Limit how many Roadmaps to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Roadmap upsert
+   */
+  export type RoadmapUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Roadmap to update in case it exists.
+     */
+    where: RoadmapWhereUniqueInput
+    /**
+     * In case the Roadmap found by the `where` argument doesn't exist, create a new Roadmap with this data.
+     */
+    create: XOR<RoadmapCreateInput, RoadmapUncheckedCreateInput>
+    /**
+     * In case the Roadmap was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RoadmapUpdateInput, RoadmapUncheckedUpdateInput>
+  }
+
+  /**
+   * Roadmap delete
+   */
+  export type RoadmapDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapInclude<ExtArgs> | null
+    /**
+     * Filter which Roadmap to delete.
+     */
+    where: RoadmapWhereUniqueInput
+  }
+
+  /**
+   * Roadmap deleteMany
+   */
+  export type RoadmapDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Roadmaps to delete
+     */
+    where?: RoadmapWhereInput
+    /**
+     * Limit how many Roadmaps to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Roadmap.tasks
+   */
+  export type Roadmap$tasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskInclude<ExtArgs> | null
+    where?: RoadmapTaskWhereInput
+    orderBy?: RoadmapTaskOrderByWithRelationInput | RoadmapTaskOrderByWithRelationInput[]
+    cursor?: RoadmapTaskWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoadmapTaskScalarFieldEnum | RoadmapTaskScalarFieldEnum[]
+  }
+
+  /**
+   * Roadmap without action
+   */
+  export type RoadmapDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Roadmap
+     */
+    select?: RoadmapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Roadmap
+     */
+    omit?: RoadmapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RoadmapTask
+   */
+
+  export type AggregateRoadmapTask = {
+    _count: RoadmapTaskCountAggregateOutputType | null
+    _avg: RoadmapTaskAvgAggregateOutputType | null
+    _sum: RoadmapTaskSumAggregateOutputType | null
+    _min: RoadmapTaskMinAggregateOutputType | null
+    _max: RoadmapTaskMaxAggregateOutputType | null
+  }
+
+  export type RoadmapTaskAvgAggregateOutputType = {
+    weekNumber: number | null
+    orderInWeek: number | null
+  }
+
+  export type RoadmapTaskSumAggregateOutputType = {
+    weekNumber: number | null
+    orderInWeek: number | null
+  }
+
+  export type RoadmapTaskMinAggregateOutputType = {
+    id: string | null
+    roadmapId: string | null
+    skillGapId: string | null
+    weekNumber: number | null
+    orderInWeek: number | null
+    title: string | null
+    description: string | null
+    completed: boolean | null
+    completedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type RoadmapTaskMaxAggregateOutputType = {
+    id: string | null
+    roadmapId: string | null
+    skillGapId: string | null
+    weekNumber: number | null
+    orderInWeek: number | null
+    title: string | null
+    description: string | null
+    completed: boolean | null
+    completedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type RoadmapTaskCountAggregateOutputType = {
+    id: number
+    roadmapId: number
+    skillGapId: number
+    weekNumber: number
+    orderInWeek: number
+    title: number
+    description: number
+    resources: number
+    completed: number
+    completedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type RoadmapTaskAvgAggregateInputType = {
+    weekNumber?: true
+    orderInWeek?: true
+  }
+
+  export type RoadmapTaskSumAggregateInputType = {
+    weekNumber?: true
+    orderInWeek?: true
+  }
+
+  export type RoadmapTaskMinAggregateInputType = {
+    id?: true
+    roadmapId?: true
+    skillGapId?: true
+    weekNumber?: true
+    orderInWeek?: true
+    title?: true
+    description?: true
+    completed?: true
+    completedAt?: true
+    createdAt?: true
+  }
+
+  export type RoadmapTaskMaxAggregateInputType = {
+    id?: true
+    roadmapId?: true
+    skillGapId?: true
+    weekNumber?: true
+    orderInWeek?: true
+    title?: true
+    description?: true
+    completed?: true
+    completedAt?: true
+    createdAt?: true
+  }
+
+  export type RoadmapTaskCountAggregateInputType = {
+    id?: true
+    roadmapId?: true
+    skillGapId?: true
+    weekNumber?: true
+    orderInWeek?: true
+    title?: true
+    description?: true
+    resources?: true
+    completed?: true
+    completedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type RoadmapTaskAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoadmapTask to aggregate.
+     */
+    where?: RoadmapTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoadmapTasks to fetch.
+     */
+    orderBy?: RoadmapTaskOrderByWithRelationInput | RoadmapTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RoadmapTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoadmapTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoadmapTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RoadmapTasks
+    **/
+    _count?: true | RoadmapTaskCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RoadmapTaskAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RoadmapTaskSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RoadmapTaskMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RoadmapTaskMaxAggregateInputType
+  }
+
+  export type GetRoadmapTaskAggregateType<T extends RoadmapTaskAggregateArgs> = {
+        [P in keyof T & keyof AggregateRoadmapTask]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRoadmapTask[P]>
+      : GetScalarType<T[P], AggregateRoadmapTask[P]>
+  }
+
+
+
+
+  export type RoadmapTaskGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoadmapTaskWhereInput
+    orderBy?: RoadmapTaskOrderByWithAggregationInput | RoadmapTaskOrderByWithAggregationInput[]
+    by: RoadmapTaskScalarFieldEnum[] | RoadmapTaskScalarFieldEnum
+    having?: RoadmapTaskScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RoadmapTaskCountAggregateInputType | true
+    _avg?: RoadmapTaskAvgAggregateInputType
+    _sum?: RoadmapTaskSumAggregateInputType
+    _min?: RoadmapTaskMinAggregateInputType
+    _max?: RoadmapTaskMaxAggregateInputType
+  }
+
+  export type RoadmapTaskGroupByOutputType = {
+    id: string
+    roadmapId: string
+    skillGapId: string | null
+    weekNumber: number
+    orderInWeek: number
+    title: string
+    description: string
+    resources: JsonValue | null
+    completed: boolean
+    completedAt: Date | null
+    createdAt: Date
+    _count: RoadmapTaskCountAggregateOutputType | null
+    _avg: RoadmapTaskAvgAggregateOutputType | null
+    _sum: RoadmapTaskSumAggregateOutputType | null
+    _min: RoadmapTaskMinAggregateOutputType | null
+    _max: RoadmapTaskMaxAggregateOutputType | null
+  }
+
+  type GetRoadmapTaskGroupByPayload<T extends RoadmapTaskGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RoadmapTaskGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RoadmapTaskGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RoadmapTaskGroupByOutputType[P]>
+            : GetScalarType<T[P], RoadmapTaskGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RoadmapTaskSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roadmapId?: boolean
+    skillGapId?: boolean
+    weekNumber?: boolean
+    orderInWeek?: boolean
+    title?: boolean
+    description?: boolean
+    resources?: boolean
+    completed?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    roadmap?: boolean | RoadmapDefaultArgs<ExtArgs>
+    skillGap?: boolean | RoadmapTask$skillGapArgs<ExtArgs>
+  }, ExtArgs["result"]["roadmapTask"]>
+
+  export type RoadmapTaskSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roadmapId?: boolean
+    skillGapId?: boolean
+    weekNumber?: boolean
+    orderInWeek?: boolean
+    title?: boolean
+    description?: boolean
+    resources?: boolean
+    completed?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    roadmap?: boolean | RoadmapDefaultArgs<ExtArgs>
+    skillGap?: boolean | RoadmapTask$skillGapArgs<ExtArgs>
+  }, ExtArgs["result"]["roadmapTask"]>
+
+  export type RoadmapTaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roadmapId?: boolean
+    skillGapId?: boolean
+    weekNumber?: boolean
+    orderInWeek?: boolean
+    title?: boolean
+    description?: boolean
+    resources?: boolean
+    completed?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    roadmap?: boolean | RoadmapDefaultArgs<ExtArgs>
+    skillGap?: boolean | RoadmapTask$skillGapArgs<ExtArgs>
+  }, ExtArgs["result"]["roadmapTask"]>
+
+  export type RoadmapTaskSelectScalar = {
+    id?: boolean
+    roadmapId?: boolean
+    skillGapId?: boolean
+    weekNumber?: boolean
+    orderInWeek?: boolean
+    title?: boolean
+    description?: boolean
+    resources?: boolean
+    completed?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type RoadmapTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roadmapId" | "skillGapId" | "weekNumber" | "orderInWeek" | "title" | "description" | "resources" | "completed" | "completedAt" | "createdAt", ExtArgs["result"]["roadmapTask"]>
+  export type RoadmapTaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    roadmap?: boolean | RoadmapDefaultArgs<ExtArgs>
+    skillGap?: boolean | RoadmapTask$skillGapArgs<ExtArgs>
+  }
+  export type RoadmapTaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    roadmap?: boolean | RoadmapDefaultArgs<ExtArgs>
+    skillGap?: boolean | RoadmapTask$skillGapArgs<ExtArgs>
+  }
+  export type RoadmapTaskIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    roadmap?: boolean | RoadmapDefaultArgs<ExtArgs>
+    skillGap?: boolean | RoadmapTask$skillGapArgs<ExtArgs>
+  }
+
+  export type $RoadmapTaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RoadmapTask"
+    objects: {
+      roadmap: Prisma.$RoadmapPayload<ExtArgs>
+      skillGap: Prisma.$SkillGapPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      roadmapId: string
+      skillGapId: string | null
+      weekNumber: number
+      orderInWeek: number
+      title: string
+      description: string
+      resources: Prisma.JsonValue | null
+      completed: boolean
+      completedAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["roadmapTask"]>
+    composites: {}
+  }
+
+  type RoadmapTaskGetPayload<S extends boolean | null | undefined | RoadmapTaskDefaultArgs> = $Result.GetResult<Prisma.$RoadmapTaskPayload, S>
+
+  type RoadmapTaskCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RoadmapTaskFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RoadmapTaskCountAggregateInputType | true
+    }
+
+  export interface RoadmapTaskDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RoadmapTask'], meta: { name: 'RoadmapTask' } }
+    /**
+     * Find zero or one RoadmapTask that matches the filter.
+     * @param {RoadmapTaskFindUniqueArgs} args - Arguments to find a RoadmapTask
+     * @example
+     * // Get one RoadmapTask
+     * const roadmapTask = await prisma.roadmapTask.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RoadmapTaskFindUniqueArgs>(args: SelectSubset<T, RoadmapTaskFindUniqueArgs<ExtArgs>>): Prisma__RoadmapTaskClient<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RoadmapTask that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RoadmapTaskFindUniqueOrThrowArgs} args - Arguments to find a RoadmapTask
+     * @example
+     * // Get one RoadmapTask
+     * const roadmapTask = await prisma.roadmapTask.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RoadmapTaskFindUniqueOrThrowArgs>(args: SelectSubset<T, RoadmapTaskFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RoadmapTaskClient<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoadmapTask that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapTaskFindFirstArgs} args - Arguments to find a RoadmapTask
+     * @example
+     * // Get one RoadmapTask
+     * const roadmapTask = await prisma.roadmapTask.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RoadmapTaskFindFirstArgs>(args?: SelectSubset<T, RoadmapTaskFindFirstArgs<ExtArgs>>): Prisma__RoadmapTaskClient<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoadmapTask that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapTaskFindFirstOrThrowArgs} args - Arguments to find a RoadmapTask
+     * @example
+     * // Get one RoadmapTask
+     * const roadmapTask = await prisma.roadmapTask.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RoadmapTaskFindFirstOrThrowArgs>(args?: SelectSubset<T, RoadmapTaskFindFirstOrThrowArgs<ExtArgs>>): Prisma__RoadmapTaskClient<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RoadmapTasks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapTaskFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RoadmapTasks
+     * const roadmapTasks = await prisma.roadmapTask.findMany()
+     * 
+     * // Get first 10 RoadmapTasks
+     * const roadmapTasks = await prisma.roadmapTask.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const roadmapTaskWithIdOnly = await prisma.roadmapTask.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RoadmapTaskFindManyArgs>(args?: SelectSubset<T, RoadmapTaskFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RoadmapTask.
+     * @param {RoadmapTaskCreateArgs} args - Arguments to create a RoadmapTask.
+     * @example
+     * // Create one RoadmapTask
+     * const RoadmapTask = await prisma.roadmapTask.create({
+     *   data: {
+     *     // ... data to create a RoadmapTask
+     *   }
+     * })
+     * 
+     */
+    create<T extends RoadmapTaskCreateArgs>(args: SelectSubset<T, RoadmapTaskCreateArgs<ExtArgs>>): Prisma__RoadmapTaskClient<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RoadmapTasks.
+     * @param {RoadmapTaskCreateManyArgs} args - Arguments to create many RoadmapTasks.
+     * @example
+     * // Create many RoadmapTasks
+     * const roadmapTask = await prisma.roadmapTask.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RoadmapTaskCreateManyArgs>(args?: SelectSubset<T, RoadmapTaskCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RoadmapTasks and returns the data saved in the database.
+     * @param {RoadmapTaskCreateManyAndReturnArgs} args - Arguments to create many RoadmapTasks.
+     * @example
+     * // Create many RoadmapTasks
+     * const roadmapTask = await prisma.roadmapTask.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RoadmapTasks and only return the `id`
+     * const roadmapTaskWithIdOnly = await prisma.roadmapTask.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RoadmapTaskCreateManyAndReturnArgs>(args?: SelectSubset<T, RoadmapTaskCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RoadmapTask.
+     * @param {RoadmapTaskDeleteArgs} args - Arguments to delete one RoadmapTask.
+     * @example
+     * // Delete one RoadmapTask
+     * const RoadmapTask = await prisma.roadmapTask.delete({
+     *   where: {
+     *     // ... filter to delete one RoadmapTask
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RoadmapTaskDeleteArgs>(args: SelectSubset<T, RoadmapTaskDeleteArgs<ExtArgs>>): Prisma__RoadmapTaskClient<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RoadmapTask.
+     * @param {RoadmapTaskUpdateArgs} args - Arguments to update one RoadmapTask.
+     * @example
+     * // Update one RoadmapTask
+     * const roadmapTask = await prisma.roadmapTask.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RoadmapTaskUpdateArgs>(args: SelectSubset<T, RoadmapTaskUpdateArgs<ExtArgs>>): Prisma__RoadmapTaskClient<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RoadmapTasks.
+     * @param {RoadmapTaskDeleteManyArgs} args - Arguments to filter RoadmapTasks to delete.
+     * @example
+     * // Delete a few RoadmapTasks
+     * const { count } = await prisma.roadmapTask.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RoadmapTaskDeleteManyArgs>(args?: SelectSubset<T, RoadmapTaskDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoadmapTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapTaskUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RoadmapTasks
+     * const roadmapTask = await prisma.roadmapTask.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RoadmapTaskUpdateManyArgs>(args: SelectSubset<T, RoadmapTaskUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoadmapTasks and returns the data updated in the database.
+     * @param {RoadmapTaskUpdateManyAndReturnArgs} args - Arguments to update many RoadmapTasks.
+     * @example
+     * // Update many RoadmapTasks
+     * const roadmapTask = await prisma.roadmapTask.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RoadmapTasks and only return the `id`
+     * const roadmapTaskWithIdOnly = await prisma.roadmapTask.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RoadmapTaskUpdateManyAndReturnArgs>(args: SelectSubset<T, RoadmapTaskUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RoadmapTask.
+     * @param {RoadmapTaskUpsertArgs} args - Arguments to update or create a RoadmapTask.
+     * @example
+     * // Update or create a RoadmapTask
+     * const roadmapTask = await prisma.roadmapTask.upsert({
+     *   create: {
+     *     // ... data to create a RoadmapTask
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RoadmapTask we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RoadmapTaskUpsertArgs>(args: SelectSubset<T, RoadmapTaskUpsertArgs<ExtArgs>>): Prisma__RoadmapTaskClient<$Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RoadmapTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapTaskCountArgs} args - Arguments to filter RoadmapTasks to count.
+     * @example
+     * // Count the number of RoadmapTasks
+     * const count = await prisma.roadmapTask.count({
+     *   where: {
+     *     // ... the filter for the RoadmapTasks we want to count
+     *   }
+     * })
+    **/
+    count<T extends RoadmapTaskCountArgs>(
+      args?: Subset<T, RoadmapTaskCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RoadmapTaskCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RoadmapTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapTaskAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RoadmapTaskAggregateArgs>(args: Subset<T, RoadmapTaskAggregateArgs>): Prisma.PrismaPromise<GetRoadmapTaskAggregateType<T>>
+
+    /**
+     * Group by RoadmapTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoadmapTaskGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RoadmapTaskGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RoadmapTaskGroupByArgs['orderBy'] }
+        : { orderBy?: RoadmapTaskGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RoadmapTaskGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRoadmapTaskGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RoadmapTask model
+   */
+  readonly fields: RoadmapTaskFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RoadmapTask.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RoadmapTaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    roadmap<T extends RoadmapDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RoadmapDefaultArgs<ExtArgs>>): Prisma__RoadmapClient<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    skillGap<T extends RoadmapTask$skillGapArgs<ExtArgs> = {}>(args?: Subset<T, RoadmapTask$skillGapArgs<ExtArgs>>): Prisma__SkillGapClient<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RoadmapTask model
+   */
+  interface RoadmapTaskFieldRefs {
+    readonly id: FieldRef<"RoadmapTask", 'String'>
+    readonly roadmapId: FieldRef<"RoadmapTask", 'String'>
+    readonly skillGapId: FieldRef<"RoadmapTask", 'String'>
+    readonly weekNumber: FieldRef<"RoadmapTask", 'Int'>
+    readonly orderInWeek: FieldRef<"RoadmapTask", 'Int'>
+    readonly title: FieldRef<"RoadmapTask", 'String'>
+    readonly description: FieldRef<"RoadmapTask", 'String'>
+    readonly resources: FieldRef<"RoadmapTask", 'Json'>
+    readonly completed: FieldRef<"RoadmapTask", 'Boolean'>
+    readonly completedAt: FieldRef<"RoadmapTask", 'DateTime'>
+    readonly createdAt: FieldRef<"RoadmapTask", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RoadmapTask findUnique
+   */
+  export type RoadmapTaskFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which RoadmapTask to fetch.
+     */
+    where: RoadmapTaskWhereUniqueInput
+  }
+
+  /**
+   * RoadmapTask findUniqueOrThrow
+   */
+  export type RoadmapTaskFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which RoadmapTask to fetch.
+     */
+    where: RoadmapTaskWhereUniqueInput
+  }
+
+  /**
+   * RoadmapTask findFirst
+   */
+  export type RoadmapTaskFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which RoadmapTask to fetch.
+     */
+    where?: RoadmapTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoadmapTasks to fetch.
+     */
+    orderBy?: RoadmapTaskOrderByWithRelationInput | RoadmapTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoadmapTasks.
+     */
+    cursor?: RoadmapTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoadmapTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoadmapTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoadmapTasks.
+     */
+    distinct?: RoadmapTaskScalarFieldEnum | RoadmapTaskScalarFieldEnum[]
+  }
+
+  /**
+   * RoadmapTask findFirstOrThrow
+   */
+  export type RoadmapTaskFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which RoadmapTask to fetch.
+     */
+    where?: RoadmapTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoadmapTasks to fetch.
+     */
+    orderBy?: RoadmapTaskOrderByWithRelationInput | RoadmapTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoadmapTasks.
+     */
+    cursor?: RoadmapTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoadmapTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoadmapTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoadmapTasks.
+     */
+    distinct?: RoadmapTaskScalarFieldEnum | RoadmapTaskScalarFieldEnum[]
+  }
+
+  /**
+   * RoadmapTask findMany
+   */
+  export type RoadmapTaskFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which RoadmapTasks to fetch.
+     */
+    where?: RoadmapTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoadmapTasks to fetch.
+     */
+    orderBy?: RoadmapTaskOrderByWithRelationInput | RoadmapTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RoadmapTasks.
+     */
+    cursor?: RoadmapTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoadmapTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoadmapTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoadmapTasks.
+     */
+    distinct?: RoadmapTaskScalarFieldEnum | RoadmapTaskScalarFieldEnum[]
+  }
+
+  /**
+   * RoadmapTask create
+   */
+  export type RoadmapTaskCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RoadmapTask.
+     */
+    data: XOR<RoadmapTaskCreateInput, RoadmapTaskUncheckedCreateInput>
+  }
+
+  /**
+   * RoadmapTask createMany
+   */
+  export type RoadmapTaskCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RoadmapTasks.
+     */
+    data: RoadmapTaskCreateManyInput | RoadmapTaskCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RoadmapTask createManyAndReturn
+   */
+  export type RoadmapTaskCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * The data used to create many RoadmapTasks.
+     */
+    data: RoadmapTaskCreateManyInput | RoadmapTaskCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RoadmapTask update
+   */
+  export type RoadmapTaskUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RoadmapTask.
+     */
+    data: XOR<RoadmapTaskUpdateInput, RoadmapTaskUncheckedUpdateInput>
+    /**
+     * Choose, which RoadmapTask to update.
+     */
+    where: RoadmapTaskWhereUniqueInput
+  }
+
+  /**
+   * RoadmapTask updateMany
+   */
+  export type RoadmapTaskUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RoadmapTasks.
+     */
+    data: XOR<RoadmapTaskUpdateManyMutationInput, RoadmapTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which RoadmapTasks to update
+     */
+    where?: RoadmapTaskWhereInput
+    /**
+     * Limit how many RoadmapTasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoadmapTask updateManyAndReturn
+   */
+  export type RoadmapTaskUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * The data used to update RoadmapTasks.
+     */
+    data: XOR<RoadmapTaskUpdateManyMutationInput, RoadmapTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which RoadmapTasks to update
+     */
+    where?: RoadmapTaskWhereInput
+    /**
+     * Limit how many RoadmapTasks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RoadmapTask upsert
+   */
+  export type RoadmapTaskUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RoadmapTask to update in case it exists.
+     */
+    where: RoadmapTaskWhereUniqueInput
+    /**
+     * In case the RoadmapTask found by the `where` argument doesn't exist, create a new RoadmapTask with this data.
+     */
+    create: XOR<RoadmapTaskCreateInput, RoadmapTaskUncheckedCreateInput>
+    /**
+     * In case the RoadmapTask was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RoadmapTaskUpdateInput, RoadmapTaskUncheckedUpdateInput>
+  }
+
+  /**
+   * RoadmapTask delete
+   */
+  export type RoadmapTaskDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskInclude<ExtArgs> | null
+    /**
+     * Filter which RoadmapTask to delete.
+     */
+    where: RoadmapTaskWhereUniqueInput
+  }
+
+  /**
+   * RoadmapTask deleteMany
+   */
+  export type RoadmapTaskDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoadmapTasks to delete
+     */
+    where?: RoadmapTaskWhereInput
+    /**
+     * Limit how many RoadmapTasks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoadmapTask.skillGap
+   */
+  export type RoadmapTask$skillGapArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillGap
+     */
+    select?: SkillGapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SkillGap
+     */
+    omit?: SkillGapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillGapInclude<ExtArgs> | null
+    where?: SkillGapWhereInput
+  }
+
+  /**
+   * RoadmapTask without action
+   */
+  export type RoadmapTaskDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoadmapTask
+     */
+    select?: RoadmapTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoadmapTask
+     */
+    omit?: RoadmapTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoadmapTaskInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AnalysisEvent
+   */
+
+  export type AggregateAnalysisEvent = {
+    _count: AnalysisEventCountAggregateOutputType | null
+    _min: AnalysisEventMinAggregateOutputType | null
+    _max: AnalysisEventMaxAggregateOutputType | null
+  }
+
+  export type AnalysisEventMinAggregateOutputType = {
+    id: string | null
+    careerAnalysisId: string | null
+    type: $Enums.AnalysisEventType | null
+    createdAt: Date | null
+  }
+
+  export type AnalysisEventMaxAggregateOutputType = {
+    id: string | null
+    careerAnalysisId: string | null
+    type: $Enums.AnalysisEventType | null
+    createdAt: Date | null
+  }
+
+  export type AnalysisEventCountAggregateOutputType = {
+    id: number
+    careerAnalysisId: number
+    type: number
+    payload: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AnalysisEventMinAggregateInputType = {
+    id?: true
+    careerAnalysisId?: true
+    type?: true
+    createdAt?: true
+  }
+
+  export type AnalysisEventMaxAggregateInputType = {
+    id?: true
+    careerAnalysisId?: true
+    type?: true
+    createdAt?: true
+  }
+
+  export type AnalysisEventCountAggregateInputType = {
+    id?: true
+    careerAnalysisId?: true
+    type?: true
+    payload?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AnalysisEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AnalysisEvent to aggregate.
+     */
+    where?: AnalysisEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnalysisEvents to fetch.
+     */
+    orderBy?: AnalysisEventOrderByWithRelationInput | AnalysisEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AnalysisEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnalysisEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnalysisEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AnalysisEvents
+    **/
+    _count?: true | AnalysisEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AnalysisEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AnalysisEventMaxAggregateInputType
+  }
+
+  export type GetAnalysisEventAggregateType<T extends AnalysisEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateAnalysisEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAnalysisEvent[P]>
+      : GetScalarType<T[P], AggregateAnalysisEvent[P]>
+  }
+
+
+
+
+  export type AnalysisEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnalysisEventWhereInput
+    orderBy?: AnalysisEventOrderByWithAggregationInput | AnalysisEventOrderByWithAggregationInput[]
+    by: AnalysisEventScalarFieldEnum[] | AnalysisEventScalarFieldEnum
+    having?: AnalysisEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AnalysisEventCountAggregateInputType | true
+    _min?: AnalysisEventMinAggregateInputType
+    _max?: AnalysisEventMaxAggregateInputType
+  }
+
+  export type AnalysisEventGroupByOutputType = {
+    id: string
+    careerAnalysisId: string
+    type: $Enums.AnalysisEventType
+    payload: JsonValue | null
+    createdAt: Date
+    _count: AnalysisEventCountAggregateOutputType | null
+    _min: AnalysisEventMinAggregateOutputType | null
+    _max: AnalysisEventMaxAggregateOutputType | null
+  }
+
+  type GetAnalysisEventGroupByPayload<T extends AnalysisEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AnalysisEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AnalysisEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AnalysisEventGroupByOutputType[P]>
+            : GetScalarType<T[P], AnalysisEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AnalysisEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    careerAnalysisId?: boolean
+    type?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["analysisEvent"]>
+
+  export type AnalysisEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    careerAnalysisId?: boolean
+    type?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["analysisEvent"]>
+
+  export type AnalysisEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    careerAnalysisId?: boolean
+    type?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["analysisEvent"]>
+
+  export type AnalysisEventSelectScalar = {
+    id?: boolean
+    careerAnalysisId?: boolean
+    type?: boolean
+    payload?: boolean
+    createdAt?: boolean
+  }
+
+  export type AnalysisEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "careerAnalysisId" | "type" | "payload" | "createdAt", ExtArgs["result"]["analysisEvent"]>
+  export type AnalysisEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+  }
+  export type AnalysisEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+  }
+  export type AnalysisEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    careerAnalysis?: boolean | CareerAnalysisDefaultArgs<ExtArgs>
+  }
+
+  export type $AnalysisEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AnalysisEvent"
+    objects: {
+      careerAnalysis: Prisma.$CareerAnalysisPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      careerAnalysisId: string
+      type: $Enums.AnalysisEventType
+      payload: Prisma.JsonValue | null
+      createdAt: Date
+    }, ExtArgs["result"]["analysisEvent"]>
+    composites: {}
+  }
+
+  type AnalysisEventGetPayload<S extends boolean | null | undefined | AnalysisEventDefaultArgs> = $Result.GetResult<Prisma.$AnalysisEventPayload, S>
+
+  type AnalysisEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AnalysisEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AnalysisEventCountAggregateInputType | true
+    }
+
+  export interface AnalysisEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AnalysisEvent'], meta: { name: 'AnalysisEvent' } }
+    /**
+     * Find zero or one AnalysisEvent that matches the filter.
+     * @param {AnalysisEventFindUniqueArgs} args - Arguments to find a AnalysisEvent
+     * @example
+     * // Get one AnalysisEvent
+     * const analysisEvent = await prisma.analysisEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AnalysisEventFindUniqueArgs>(args: SelectSubset<T, AnalysisEventFindUniqueArgs<ExtArgs>>): Prisma__AnalysisEventClient<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AnalysisEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AnalysisEventFindUniqueOrThrowArgs} args - Arguments to find a AnalysisEvent
+     * @example
+     * // Get one AnalysisEvent
+     * const analysisEvent = await prisma.analysisEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AnalysisEventFindUniqueOrThrowArgs>(args: SelectSubset<T, AnalysisEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AnalysisEventClient<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AnalysisEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisEventFindFirstArgs} args - Arguments to find a AnalysisEvent
+     * @example
+     * // Get one AnalysisEvent
+     * const analysisEvent = await prisma.analysisEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AnalysisEventFindFirstArgs>(args?: SelectSubset<T, AnalysisEventFindFirstArgs<ExtArgs>>): Prisma__AnalysisEventClient<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AnalysisEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisEventFindFirstOrThrowArgs} args - Arguments to find a AnalysisEvent
+     * @example
+     * // Get one AnalysisEvent
+     * const analysisEvent = await prisma.analysisEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AnalysisEventFindFirstOrThrowArgs>(args?: SelectSubset<T, AnalysisEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__AnalysisEventClient<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AnalysisEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AnalysisEvents
+     * const analysisEvents = await prisma.analysisEvent.findMany()
+     * 
+     * // Get first 10 AnalysisEvents
+     * const analysisEvents = await prisma.analysisEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const analysisEventWithIdOnly = await prisma.analysisEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AnalysisEventFindManyArgs>(args?: SelectSubset<T, AnalysisEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AnalysisEvent.
+     * @param {AnalysisEventCreateArgs} args - Arguments to create a AnalysisEvent.
+     * @example
+     * // Create one AnalysisEvent
+     * const AnalysisEvent = await prisma.analysisEvent.create({
+     *   data: {
+     *     // ... data to create a AnalysisEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends AnalysisEventCreateArgs>(args: SelectSubset<T, AnalysisEventCreateArgs<ExtArgs>>): Prisma__AnalysisEventClient<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AnalysisEvents.
+     * @param {AnalysisEventCreateManyArgs} args - Arguments to create many AnalysisEvents.
+     * @example
+     * // Create many AnalysisEvents
+     * const analysisEvent = await prisma.analysisEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AnalysisEventCreateManyArgs>(args?: SelectSubset<T, AnalysisEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AnalysisEvents and returns the data saved in the database.
+     * @param {AnalysisEventCreateManyAndReturnArgs} args - Arguments to create many AnalysisEvents.
+     * @example
+     * // Create many AnalysisEvents
+     * const analysisEvent = await prisma.analysisEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AnalysisEvents and only return the `id`
+     * const analysisEventWithIdOnly = await prisma.analysisEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AnalysisEventCreateManyAndReturnArgs>(args?: SelectSubset<T, AnalysisEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AnalysisEvent.
+     * @param {AnalysisEventDeleteArgs} args - Arguments to delete one AnalysisEvent.
+     * @example
+     * // Delete one AnalysisEvent
+     * const AnalysisEvent = await prisma.analysisEvent.delete({
+     *   where: {
+     *     // ... filter to delete one AnalysisEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AnalysisEventDeleteArgs>(args: SelectSubset<T, AnalysisEventDeleteArgs<ExtArgs>>): Prisma__AnalysisEventClient<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AnalysisEvent.
+     * @param {AnalysisEventUpdateArgs} args - Arguments to update one AnalysisEvent.
+     * @example
+     * // Update one AnalysisEvent
+     * const analysisEvent = await prisma.analysisEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AnalysisEventUpdateArgs>(args: SelectSubset<T, AnalysisEventUpdateArgs<ExtArgs>>): Prisma__AnalysisEventClient<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AnalysisEvents.
+     * @param {AnalysisEventDeleteManyArgs} args - Arguments to filter AnalysisEvents to delete.
+     * @example
+     * // Delete a few AnalysisEvents
+     * const { count } = await prisma.analysisEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AnalysisEventDeleteManyArgs>(args?: SelectSubset<T, AnalysisEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AnalysisEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AnalysisEvents
+     * const analysisEvent = await prisma.analysisEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AnalysisEventUpdateManyArgs>(args: SelectSubset<T, AnalysisEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AnalysisEvents and returns the data updated in the database.
+     * @param {AnalysisEventUpdateManyAndReturnArgs} args - Arguments to update many AnalysisEvents.
+     * @example
+     * // Update many AnalysisEvents
+     * const analysisEvent = await prisma.analysisEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AnalysisEvents and only return the `id`
+     * const analysisEventWithIdOnly = await prisma.analysisEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AnalysisEventUpdateManyAndReturnArgs>(args: SelectSubset<T, AnalysisEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AnalysisEvent.
+     * @param {AnalysisEventUpsertArgs} args - Arguments to update or create a AnalysisEvent.
+     * @example
+     * // Update or create a AnalysisEvent
+     * const analysisEvent = await prisma.analysisEvent.upsert({
+     *   create: {
+     *     // ... data to create a AnalysisEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AnalysisEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AnalysisEventUpsertArgs>(args: SelectSubset<T, AnalysisEventUpsertArgs<ExtArgs>>): Prisma__AnalysisEventClient<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AnalysisEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisEventCountArgs} args - Arguments to filter AnalysisEvents to count.
+     * @example
+     * // Count the number of AnalysisEvents
+     * const count = await prisma.analysisEvent.count({
+     *   where: {
+     *     // ... the filter for the AnalysisEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends AnalysisEventCountArgs>(
+      args?: Subset<T, AnalysisEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AnalysisEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AnalysisEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AnalysisEventAggregateArgs>(args: Subset<T, AnalysisEventAggregateArgs>): Prisma.PrismaPromise<GetAnalysisEventAggregateType<T>>
+
+    /**
+     * Group by AnalysisEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AnalysisEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AnalysisEventGroupByArgs['orderBy'] }
+        : { orderBy?: AnalysisEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AnalysisEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAnalysisEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AnalysisEvent model
+   */
+  readonly fields: AnalysisEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AnalysisEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AnalysisEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    careerAnalysis<T extends CareerAnalysisDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysisDefaultArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AnalysisEvent model
+   */
+  interface AnalysisEventFieldRefs {
+    readonly id: FieldRef<"AnalysisEvent", 'String'>
+    readonly careerAnalysisId: FieldRef<"AnalysisEvent", 'String'>
+    readonly type: FieldRef<"AnalysisEvent", 'AnalysisEventType'>
+    readonly payload: FieldRef<"AnalysisEvent", 'Json'>
+    readonly createdAt: FieldRef<"AnalysisEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AnalysisEvent findUnique
+   */
+  export type AnalysisEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventInclude<ExtArgs> | null
+    /**
+     * Filter, which AnalysisEvent to fetch.
+     */
+    where: AnalysisEventWhereUniqueInput
+  }
+
+  /**
+   * AnalysisEvent findUniqueOrThrow
+   */
+  export type AnalysisEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventInclude<ExtArgs> | null
+    /**
+     * Filter, which AnalysisEvent to fetch.
+     */
+    where: AnalysisEventWhereUniqueInput
+  }
+
+  /**
+   * AnalysisEvent findFirst
+   */
+  export type AnalysisEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventInclude<ExtArgs> | null
+    /**
+     * Filter, which AnalysisEvent to fetch.
+     */
+    where?: AnalysisEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnalysisEvents to fetch.
+     */
+    orderBy?: AnalysisEventOrderByWithRelationInput | AnalysisEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AnalysisEvents.
+     */
+    cursor?: AnalysisEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnalysisEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnalysisEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AnalysisEvents.
+     */
+    distinct?: AnalysisEventScalarFieldEnum | AnalysisEventScalarFieldEnum[]
+  }
+
+  /**
+   * AnalysisEvent findFirstOrThrow
+   */
+  export type AnalysisEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventInclude<ExtArgs> | null
+    /**
+     * Filter, which AnalysisEvent to fetch.
+     */
+    where?: AnalysisEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnalysisEvents to fetch.
+     */
+    orderBy?: AnalysisEventOrderByWithRelationInput | AnalysisEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AnalysisEvents.
+     */
+    cursor?: AnalysisEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnalysisEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnalysisEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AnalysisEvents.
+     */
+    distinct?: AnalysisEventScalarFieldEnum | AnalysisEventScalarFieldEnum[]
+  }
+
+  /**
+   * AnalysisEvent findMany
+   */
+  export type AnalysisEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventInclude<ExtArgs> | null
+    /**
+     * Filter, which AnalysisEvents to fetch.
+     */
+    where?: AnalysisEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnalysisEvents to fetch.
+     */
+    orderBy?: AnalysisEventOrderByWithRelationInput | AnalysisEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AnalysisEvents.
+     */
+    cursor?: AnalysisEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnalysisEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnalysisEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AnalysisEvents.
+     */
+    distinct?: AnalysisEventScalarFieldEnum | AnalysisEventScalarFieldEnum[]
+  }
+
+  /**
+   * AnalysisEvent create
+   */
+  export type AnalysisEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AnalysisEvent.
+     */
+    data: XOR<AnalysisEventCreateInput, AnalysisEventUncheckedCreateInput>
+  }
+
+  /**
+   * AnalysisEvent createMany
+   */
+  export type AnalysisEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AnalysisEvents.
+     */
+    data: AnalysisEventCreateManyInput | AnalysisEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AnalysisEvent createManyAndReturn
+   */
+  export type AnalysisEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many AnalysisEvents.
+     */
+    data: AnalysisEventCreateManyInput | AnalysisEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AnalysisEvent update
+   */
+  export type AnalysisEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AnalysisEvent.
+     */
+    data: XOR<AnalysisEventUpdateInput, AnalysisEventUncheckedUpdateInput>
+    /**
+     * Choose, which AnalysisEvent to update.
+     */
+    where: AnalysisEventWhereUniqueInput
+  }
+
+  /**
+   * AnalysisEvent updateMany
+   */
+  export type AnalysisEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AnalysisEvents.
+     */
+    data: XOR<AnalysisEventUpdateManyMutationInput, AnalysisEventUncheckedUpdateManyInput>
+    /**
+     * Filter which AnalysisEvents to update
+     */
+    where?: AnalysisEventWhereInput
+    /**
+     * Limit how many AnalysisEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnalysisEvent updateManyAndReturn
+   */
+  export type AnalysisEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * The data used to update AnalysisEvents.
+     */
+    data: XOR<AnalysisEventUpdateManyMutationInput, AnalysisEventUncheckedUpdateManyInput>
+    /**
+     * Filter which AnalysisEvents to update
+     */
+    where?: AnalysisEventWhereInput
+    /**
+     * Limit how many AnalysisEvents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AnalysisEvent upsert
+   */
+  export type AnalysisEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AnalysisEvent to update in case it exists.
+     */
+    where: AnalysisEventWhereUniqueInput
+    /**
+     * In case the AnalysisEvent found by the `where` argument doesn't exist, create a new AnalysisEvent with this data.
+     */
+    create: XOR<AnalysisEventCreateInput, AnalysisEventUncheckedCreateInput>
+    /**
+     * In case the AnalysisEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AnalysisEventUpdateInput, AnalysisEventUncheckedUpdateInput>
+  }
+
+  /**
+   * AnalysisEvent delete
+   */
+  export type AnalysisEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventInclude<ExtArgs> | null
+    /**
+     * Filter which AnalysisEvent to delete.
+     */
+    where: AnalysisEventWhereUniqueInput
+  }
+
+  /**
+   * AnalysisEvent deleteMany
+   */
+  export type AnalysisEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AnalysisEvents to delete
+     */
+    where?: AnalysisEventWhereInput
+    /**
+     * Limit how many AnalysisEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnalysisEvent without action
+   */
+  export type AnalysisEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisEvent
+     */
+    select?: AnalysisEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisEvent
+     */
+    omit?: AnalysisEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalysisEventInclude<ExtArgs> | null
   }
 
 
@@ -7107,7 +16044,6 @@ export namespace Prisma {
     filePath: 'filePath',
     rawText: 'rawText',
     structuredResume: 'structuredResume',
-    enabledSections: 'enabledSections',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -7115,33 +16051,126 @@ export namespace Prisma {
   export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
 
 
-  export const AnalysisScalarFieldEnum: {
+  export const SkillScalarFieldEnum: {
     id: 'id',
-    resumeId: 'resumeId',
-    userId: 'userId',
-    jobDescription: 'jobDescription',
-    parsedJob: 'parsedJob',
-    resumeSnapshot: 'resumeSnapshot',
-    analysisResult: 'analysisResult',
+    slug: 'slug',
+    name: 'name',
+    aliases: 'aliases',
+    category: 'category',
     createdAt: 'createdAt',
-    exportedAt: 'exportedAt'
+    updatedAt: 'updatedAt'
   };
 
-  export type AnalysisScalarFieldEnum = (typeof AnalysisScalarFieldEnum)[keyof typeof AnalysisScalarFieldEnum]
+  export type SkillScalarFieldEnum = (typeof SkillScalarFieldEnum)[keyof typeof SkillScalarFieldEnum]
 
 
-  export const SuggestionScalarFieldEnum: {
+  export const RoleScalarFieldEnum: {
     id: 'id',
-    analysisId: 'analysisId',
-    original: 'original',
-    suggested: 'suggested',
-    section: 'section',
+    slug: 'slug',
+    title: 'title',
+    description: 'description',
+    seedVersion: 'seedVersion',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
+
+
+  export const RoleSkillRequirementScalarFieldEnum: {
+    id: 'id',
+    roleId: 'roleId',
+    skillId: 'skillId',
+    importance: 'importance',
+    rationale: 'rationale',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RoleSkillRequirementScalarFieldEnum = (typeof RoleSkillRequirementScalarFieldEnum)[keyof typeof RoleSkillRequirementScalarFieldEnum]
+
+
+  export const CareerAnalysisScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
     status: 'status',
-    rejectionReason: 'rejectionReason',
+    resumeId: 'resumeId',
+    roleId: 'roleId',
+    resumeSnapshot: 'resumeSnapshot',
+    roleSnapshot: 'roleSnapshot',
+    readinessScore: 'readinessScore',
+    readinessBreakdown: 'readinessBreakdown',
+    failureReason: 'failureReason',
+    createdAt: 'createdAt',
+    completedAt: 'completedAt'
+  };
+
+  export type CareerAnalysisScalarFieldEnum = (typeof CareerAnalysisScalarFieldEnum)[keyof typeof CareerAnalysisScalarFieldEnum]
+
+
+  export const CandidateSkillEvidenceScalarFieldEnum: {
+    id: 'id',
+    careerAnalysisId: 'careerAnalysisId',
+    skillId: 'skillId',
+    strength: 'strength',
+    quote: 'quote',
+    sourceSection: 'sourceSection',
+    sourceLabel: 'sourceLabel',
     createdAt: 'createdAt'
   };
 
-  export type SuggestionScalarFieldEnum = (typeof SuggestionScalarFieldEnum)[keyof typeof SuggestionScalarFieldEnum]
+  export type CandidateSkillEvidenceScalarFieldEnum = (typeof CandidateSkillEvidenceScalarFieldEnum)[keyof typeof CandidateSkillEvidenceScalarFieldEnum]
+
+
+  export const SkillGapScalarFieldEnum: {
+    id: 'id',
+    careerAnalysisId: 'careerAnalysisId',
+    skillId: 'skillId',
+    status: 'status',
+    priority: 'priority',
+    reasoning: 'reasoning',
+    createdAt: 'createdAt'
+  };
+
+  export type SkillGapScalarFieldEnum = (typeof SkillGapScalarFieldEnum)[keyof typeof SkillGapScalarFieldEnum]
+
+
+  export const RoadmapScalarFieldEnum: {
+    id: 'id',
+    careerAnalysisId: 'careerAnalysisId',
+    weekCount: 'weekCount',
+    createdAt: 'createdAt'
+  };
+
+  export type RoadmapScalarFieldEnum = (typeof RoadmapScalarFieldEnum)[keyof typeof RoadmapScalarFieldEnum]
+
+
+  export const RoadmapTaskScalarFieldEnum: {
+    id: 'id',
+    roadmapId: 'roadmapId',
+    skillGapId: 'skillGapId',
+    weekNumber: 'weekNumber',
+    orderInWeek: 'orderInWeek',
+    title: 'title',
+    description: 'description',
+    resources: 'resources',
+    completed: 'completed',
+    completedAt: 'completedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type RoadmapTaskScalarFieldEnum = (typeof RoadmapTaskScalarFieldEnum)[keyof typeof RoadmapTaskScalarFieldEnum]
+
+
+  export const AnalysisEventScalarFieldEnum: {
+    id: 'id',
+    careerAnalysisId: 'careerAnalysisId',
+    type: 'type',
+    payload: 'payload',
+    createdAt: 'createdAt'
+  };
+
+  export type AnalysisEventScalarFieldEnum = (typeof AnalysisEventScalarFieldEnum)[keyof typeof AnalysisEventScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -7254,16 +16283,79 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'SuggestionStatus'
+   * Reference to a field of type 'SkillImportance'
    */
-  export type EnumSuggestionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SuggestionStatus'>
+  export type EnumSkillImportanceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SkillImportance'>
     
 
 
   /**
-   * Reference to a field of type 'SuggestionStatus[]'
+   * Reference to a field of type 'SkillImportance[]'
    */
-  export type ListEnumSuggestionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SuggestionStatus[]'>
+  export type ListEnumSkillImportanceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SkillImportance[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'CareerAnalysisStatus'
+   */
+  export type EnumCareerAnalysisStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CareerAnalysisStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'CareerAnalysisStatus[]'
+   */
+  export type ListEnumCareerAnalysisStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CareerAnalysisStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'EvidenceStrength'
+   */
+  export type EnumEvidenceStrengthFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EvidenceStrength'>
+    
+
+
+  /**
+   * Reference to a field of type 'EvidenceStrength[]'
+   */
+  export type ListEnumEvidenceStrengthFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EvidenceStrength[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'GapStatus'
+   */
+  export type EnumGapStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GapStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'GapStatus[]'
+   */
+  export type ListEnumGapStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GapStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'AnalysisEventType'
+   */
+  export type EnumAnalysisEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnalysisEventType'>
+    
+
+
+  /**
+   * Reference to a field of type 'AnalysisEventType[]'
+   */
+  export type ListEnumAnalysisEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnalysisEventType[]'>
     
 
 
@@ -7296,7 +16388,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     resumes?: ResumeListRelationFilter
     refreshTokens?: RefreshTokenListRelationFilter
-    analyses?: AnalysisListRelationFilter
+    analyses?: CareerAnalysisListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -7308,7 +16400,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     resumes?: ResumeOrderByRelationAggregateInput
     refreshTokens?: RefreshTokenOrderByRelationAggregateInput
-    analyses?: AnalysisOrderByRelationAggregateInput
+    analyses?: CareerAnalysisOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -7323,7 +16415,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     resumes?: ResumeListRelationFilter
     refreshTokens?: RefreshTokenListRelationFilter
-    analyses?: AnalysisListRelationFilter
+    analyses?: CareerAnalysisListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -7429,11 +16521,10 @@ export namespace Prisma {
     filePath?: StringNullableFilter<"Resume"> | string | null
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
-    enabledSections?: JsonNullableFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
     updatedAt?: DateTimeFilter<"Resume"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    analyses?: AnalysisListRelationFilter
+    analyses?: CareerAnalysisListRelationFilter
   }
 
   export type ResumeOrderByWithRelationInput = {
@@ -7447,11 +16538,10 @@ export namespace Prisma {
     filePath?: SortOrderInput | SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
-    enabledSections?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
-    analyses?: AnalysisOrderByRelationAggregateInput
+    analyses?: CareerAnalysisOrderByRelationAggregateInput
   }
 
   export type ResumeWhereUniqueInput = Prisma.AtLeast<{
@@ -7468,11 +16558,10 @@ export namespace Prisma {
     filePath?: StringNullableFilter<"Resume"> | string | null
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
-    enabledSections?: JsonNullableFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
     updatedAt?: DateTimeFilter<"Resume"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    analyses?: AnalysisListRelationFilter
+    analyses?: CareerAnalysisListRelationFilter
   }, "id">
 
   export type ResumeOrderByWithAggregationInput = {
@@ -7486,7 +16575,6 @@ export namespace Prisma {
     filePath?: SortOrderInput | SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
-    enabledSections?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ResumeCountOrderByAggregateInput
@@ -7510,160 +16598,673 @@ export namespace Prisma {
     filePath?: StringNullableWithAggregatesFilter<"Resume"> | string | null
     rawText?: StringWithAggregatesFilter<"Resume"> | string
     structuredResume?: JsonWithAggregatesFilter<"Resume">
-    enabledSections?: JsonNullableWithAggregatesFilter<"Resume">
     createdAt?: DateTimeWithAggregatesFilter<"Resume"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Resume"> | Date | string
   }
 
-  export type AnalysisWhereInput = {
-    AND?: AnalysisWhereInput | AnalysisWhereInput[]
-    OR?: AnalysisWhereInput[]
-    NOT?: AnalysisWhereInput | AnalysisWhereInput[]
-    id?: UuidFilter<"Analysis"> | string
-    resumeId?: UuidFilter<"Analysis"> | string
-    userId?: UuidFilter<"Analysis"> | string
-    jobDescription?: StringFilter<"Analysis"> | string
-    parsedJob?: JsonFilter<"Analysis">
-    resumeSnapshot?: JsonFilter<"Analysis">
-    analysisResult?: JsonFilter<"Analysis">
-    createdAt?: DateTimeFilter<"Analysis"> | Date | string
-    exportedAt?: DateTimeNullableFilter<"Analysis"> | Date | string | null
-    resume?: XOR<ResumeScalarRelationFilter, ResumeWhereInput>
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    suggestions?: SuggestionListRelationFilter
+  export type SkillWhereInput = {
+    AND?: SkillWhereInput | SkillWhereInput[]
+    OR?: SkillWhereInput[]
+    NOT?: SkillWhereInput | SkillWhereInput[]
+    id?: UuidFilter<"Skill"> | string
+    slug?: StringFilter<"Skill"> | string
+    name?: StringFilter<"Skill"> | string
+    aliases?: StringNullableListFilter<"Skill">
+    category?: StringNullableFilter<"Skill"> | string | null
+    createdAt?: DateTimeFilter<"Skill"> | Date | string
+    updatedAt?: DateTimeFilter<"Skill"> | Date | string
+    requirements?: RoleSkillRequirementListRelationFilter
+    evidence?: CandidateSkillEvidenceListRelationFilter
+    gaps?: SkillGapListRelationFilter
   }
 
-  export type AnalysisOrderByWithRelationInput = {
+  export type SkillOrderByWithRelationInput = {
     id?: SortOrder
-    resumeId?: SortOrder
-    userId?: SortOrder
-    jobDescription?: SortOrder
-    parsedJob?: SortOrder
-    resumeSnapshot?: SortOrder
-    analysisResult?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    aliases?: SortOrder
+    category?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    exportedAt?: SortOrderInput | SortOrder
-    resume?: ResumeOrderByWithRelationInput
+    updatedAt?: SortOrder
+    requirements?: RoleSkillRequirementOrderByRelationAggregateInput
+    evidence?: CandidateSkillEvidenceOrderByRelationAggregateInput
+    gaps?: SkillGapOrderByRelationAggregateInput
+  }
+
+  export type SkillWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    slug?: string
+    AND?: SkillWhereInput | SkillWhereInput[]
+    OR?: SkillWhereInput[]
+    NOT?: SkillWhereInput | SkillWhereInput[]
+    name?: StringFilter<"Skill"> | string
+    aliases?: StringNullableListFilter<"Skill">
+    category?: StringNullableFilter<"Skill"> | string | null
+    createdAt?: DateTimeFilter<"Skill"> | Date | string
+    updatedAt?: DateTimeFilter<"Skill"> | Date | string
+    requirements?: RoleSkillRequirementListRelationFilter
+    evidence?: CandidateSkillEvidenceListRelationFilter
+    gaps?: SkillGapListRelationFilter
+  }, "id" | "slug">
+
+  export type SkillOrderByWithAggregationInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    aliases?: SortOrder
+    category?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SkillCountOrderByAggregateInput
+    _max?: SkillMaxOrderByAggregateInput
+    _min?: SkillMinOrderByAggregateInput
+  }
+
+  export type SkillScalarWhereWithAggregatesInput = {
+    AND?: SkillScalarWhereWithAggregatesInput | SkillScalarWhereWithAggregatesInput[]
+    OR?: SkillScalarWhereWithAggregatesInput[]
+    NOT?: SkillScalarWhereWithAggregatesInput | SkillScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"Skill"> | string
+    slug?: StringWithAggregatesFilter<"Skill"> | string
+    name?: StringWithAggregatesFilter<"Skill"> | string
+    aliases?: StringNullableListFilter<"Skill">
+    category?: StringNullableWithAggregatesFilter<"Skill"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Skill"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Skill"> | Date | string
+  }
+
+  export type RoleWhereInput = {
+    AND?: RoleWhereInput | RoleWhereInput[]
+    OR?: RoleWhereInput[]
+    NOT?: RoleWhereInput | RoleWhereInput[]
+    id?: UuidFilter<"Role"> | string
+    slug?: StringFilter<"Role"> | string
+    title?: StringFilter<"Role"> | string
+    description?: StringFilter<"Role"> | string
+    seedVersion?: StringFilter<"Role"> | string
+    createdAt?: DateTimeFilter<"Role"> | Date | string
+    updatedAt?: DateTimeFilter<"Role"> | Date | string
+    requirements?: RoleSkillRequirementListRelationFilter
+    analyses?: CareerAnalysisListRelationFilter
+  }
+
+  export type RoleOrderByWithRelationInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    seedVersion?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    requirements?: RoleSkillRequirementOrderByRelationAggregateInput
+    analyses?: CareerAnalysisOrderByRelationAggregateInput
+  }
+
+  export type RoleWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    slug?: string
+    AND?: RoleWhereInput | RoleWhereInput[]
+    OR?: RoleWhereInput[]
+    NOT?: RoleWhereInput | RoleWhereInput[]
+    title?: StringFilter<"Role"> | string
+    description?: StringFilter<"Role"> | string
+    seedVersion?: StringFilter<"Role"> | string
+    createdAt?: DateTimeFilter<"Role"> | Date | string
+    updatedAt?: DateTimeFilter<"Role"> | Date | string
+    requirements?: RoleSkillRequirementListRelationFilter
+    analyses?: CareerAnalysisListRelationFilter
+  }, "id" | "slug">
+
+  export type RoleOrderByWithAggregationInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    seedVersion?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RoleCountOrderByAggregateInput
+    _max?: RoleMaxOrderByAggregateInput
+    _min?: RoleMinOrderByAggregateInput
+  }
+
+  export type RoleScalarWhereWithAggregatesInput = {
+    AND?: RoleScalarWhereWithAggregatesInput | RoleScalarWhereWithAggregatesInput[]
+    OR?: RoleScalarWhereWithAggregatesInput[]
+    NOT?: RoleScalarWhereWithAggregatesInput | RoleScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"Role"> | string
+    slug?: StringWithAggregatesFilter<"Role"> | string
+    title?: StringWithAggregatesFilter<"Role"> | string
+    description?: StringWithAggregatesFilter<"Role"> | string
+    seedVersion?: StringWithAggregatesFilter<"Role"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Role"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Role"> | Date | string
+  }
+
+  export type RoleSkillRequirementWhereInput = {
+    AND?: RoleSkillRequirementWhereInput | RoleSkillRequirementWhereInput[]
+    OR?: RoleSkillRequirementWhereInput[]
+    NOT?: RoleSkillRequirementWhereInput | RoleSkillRequirementWhereInput[]
+    id?: UuidFilter<"RoleSkillRequirement"> | string
+    roleId?: UuidFilter<"RoleSkillRequirement"> | string
+    skillId?: UuidFilter<"RoleSkillRequirement"> | string
+    importance?: EnumSkillImportanceFilter<"RoleSkillRequirement"> | $Enums.SkillImportance
+    rationale?: StringFilter<"RoleSkillRequirement"> | string
+    createdAt?: DateTimeFilter<"RoleSkillRequirement"> | Date | string
+    updatedAt?: DateTimeFilter<"RoleSkillRequirement"> | Date | string
+    role?: XOR<RoleScalarRelationFilter, RoleWhereInput>
+    skill?: XOR<SkillScalarRelationFilter, SkillWhereInput>
+  }
+
+  export type RoleSkillRequirementOrderByWithRelationInput = {
+    id?: SortOrder
+    roleId?: SortOrder
+    skillId?: SortOrder
+    importance?: SortOrder
+    rationale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    role?: RoleOrderByWithRelationInput
+    skill?: SkillOrderByWithRelationInput
+  }
+
+  export type RoleSkillRequirementWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    roleId_skillId?: RoleSkillRequirementRoleIdSkillIdCompoundUniqueInput
+    AND?: RoleSkillRequirementWhereInput | RoleSkillRequirementWhereInput[]
+    OR?: RoleSkillRequirementWhereInput[]
+    NOT?: RoleSkillRequirementWhereInput | RoleSkillRequirementWhereInput[]
+    roleId?: UuidFilter<"RoleSkillRequirement"> | string
+    skillId?: UuidFilter<"RoleSkillRequirement"> | string
+    importance?: EnumSkillImportanceFilter<"RoleSkillRequirement"> | $Enums.SkillImportance
+    rationale?: StringFilter<"RoleSkillRequirement"> | string
+    createdAt?: DateTimeFilter<"RoleSkillRequirement"> | Date | string
+    updatedAt?: DateTimeFilter<"RoleSkillRequirement"> | Date | string
+    role?: XOR<RoleScalarRelationFilter, RoleWhereInput>
+    skill?: XOR<SkillScalarRelationFilter, SkillWhereInput>
+  }, "id" | "roleId_skillId">
+
+  export type RoleSkillRequirementOrderByWithAggregationInput = {
+    id?: SortOrder
+    roleId?: SortOrder
+    skillId?: SortOrder
+    importance?: SortOrder
+    rationale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RoleSkillRequirementCountOrderByAggregateInput
+    _max?: RoleSkillRequirementMaxOrderByAggregateInput
+    _min?: RoleSkillRequirementMinOrderByAggregateInput
+  }
+
+  export type RoleSkillRequirementScalarWhereWithAggregatesInput = {
+    AND?: RoleSkillRequirementScalarWhereWithAggregatesInput | RoleSkillRequirementScalarWhereWithAggregatesInput[]
+    OR?: RoleSkillRequirementScalarWhereWithAggregatesInput[]
+    NOT?: RoleSkillRequirementScalarWhereWithAggregatesInput | RoleSkillRequirementScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"RoleSkillRequirement"> | string
+    roleId?: UuidWithAggregatesFilter<"RoleSkillRequirement"> | string
+    skillId?: UuidWithAggregatesFilter<"RoleSkillRequirement"> | string
+    importance?: EnumSkillImportanceWithAggregatesFilter<"RoleSkillRequirement"> | $Enums.SkillImportance
+    rationale?: StringWithAggregatesFilter<"RoleSkillRequirement"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"RoleSkillRequirement"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"RoleSkillRequirement"> | Date | string
+  }
+
+  export type CareerAnalysisWhereInput = {
+    AND?: CareerAnalysisWhereInput | CareerAnalysisWhereInput[]
+    OR?: CareerAnalysisWhereInput[]
+    NOT?: CareerAnalysisWhereInput | CareerAnalysisWhereInput[]
+    id?: UuidFilter<"CareerAnalysis"> | string
+    userId?: UuidFilter<"CareerAnalysis"> | string
+    status?: EnumCareerAnalysisStatusFilter<"CareerAnalysis"> | $Enums.CareerAnalysisStatus
+    resumeId?: UuidFilter<"CareerAnalysis"> | string
+    roleId?: UuidFilter<"CareerAnalysis"> | string
+    resumeSnapshot?: JsonFilter<"CareerAnalysis">
+    roleSnapshot?: JsonFilter<"CareerAnalysis">
+    readinessScore?: IntNullableFilter<"CareerAnalysis"> | number | null
+    readinessBreakdown?: JsonNullableFilter<"CareerAnalysis">
+    failureReason?: StringNullableFilter<"CareerAnalysis"> | string | null
+    createdAt?: DateTimeFilter<"CareerAnalysis"> | Date | string
+    completedAt?: DateTimeNullableFilter<"CareerAnalysis"> | Date | string | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    resume?: XOR<ResumeScalarRelationFilter, ResumeWhereInput>
+    role?: XOR<RoleScalarRelationFilter, RoleWhereInput>
+    evidence?: CandidateSkillEvidenceListRelationFilter
+    gaps?: SkillGapListRelationFilter
+    roadmap?: XOR<RoadmapNullableScalarRelationFilter, RoadmapWhereInput> | null
+    events?: AnalysisEventListRelationFilter
+  }
+
+  export type CareerAnalysisOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    resumeId?: SortOrder
+    roleId?: SortOrder
+    resumeSnapshot?: SortOrder
+    roleSnapshot?: SortOrder
+    readinessScore?: SortOrderInput | SortOrder
+    readinessBreakdown?: SortOrderInput | SortOrder
+    failureReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
-    suggestions?: SuggestionOrderByRelationAggregateInput
+    resume?: ResumeOrderByWithRelationInput
+    role?: RoleOrderByWithRelationInput
+    evidence?: CandidateSkillEvidenceOrderByRelationAggregateInput
+    gaps?: SkillGapOrderByRelationAggregateInput
+    roadmap?: RoadmapOrderByWithRelationInput
+    events?: AnalysisEventOrderByRelationAggregateInput
   }
 
-  export type AnalysisWhereUniqueInput = Prisma.AtLeast<{
+  export type CareerAnalysisWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: AnalysisWhereInput | AnalysisWhereInput[]
-    OR?: AnalysisWhereInput[]
-    NOT?: AnalysisWhereInput | AnalysisWhereInput[]
-    resumeId?: UuidFilter<"Analysis"> | string
-    userId?: UuidFilter<"Analysis"> | string
-    jobDescription?: StringFilter<"Analysis"> | string
-    parsedJob?: JsonFilter<"Analysis">
-    resumeSnapshot?: JsonFilter<"Analysis">
-    analysisResult?: JsonFilter<"Analysis">
-    createdAt?: DateTimeFilter<"Analysis"> | Date | string
-    exportedAt?: DateTimeNullableFilter<"Analysis"> | Date | string | null
-    resume?: XOR<ResumeScalarRelationFilter, ResumeWhereInput>
+    AND?: CareerAnalysisWhereInput | CareerAnalysisWhereInput[]
+    OR?: CareerAnalysisWhereInput[]
+    NOT?: CareerAnalysisWhereInput | CareerAnalysisWhereInput[]
+    userId?: UuidFilter<"CareerAnalysis"> | string
+    status?: EnumCareerAnalysisStatusFilter<"CareerAnalysis"> | $Enums.CareerAnalysisStatus
+    resumeId?: UuidFilter<"CareerAnalysis"> | string
+    roleId?: UuidFilter<"CareerAnalysis"> | string
+    resumeSnapshot?: JsonFilter<"CareerAnalysis">
+    roleSnapshot?: JsonFilter<"CareerAnalysis">
+    readinessScore?: IntNullableFilter<"CareerAnalysis"> | number | null
+    readinessBreakdown?: JsonNullableFilter<"CareerAnalysis">
+    failureReason?: StringNullableFilter<"CareerAnalysis"> | string | null
+    createdAt?: DateTimeFilter<"CareerAnalysis"> | Date | string
+    completedAt?: DateTimeNullableFilter<"CareerAnalysis"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    suggestions?: SuggestionListRelationFilter
+    resume?: XOR<ResumeScalarRelationFilter, ResumeWhereInput>
+    role?: XOR<RoleScalarRelationFilter, RoleWhereInput>
+    evidence?: CandidateSkillEvidenceListRelationFilter
+    gaps?: SkillGapListRelationFilter
+    roadmap?: XOR<RoadmapNullableScalarRelationFilter, RoadmapWhereInput> | null
+    events?: AnalysisEventListRelationFilter
   }, "id">
 
-  export type AnalysisOrderByWithAggregationInput = {
+  export type CareerAnalysisOrderByWithAggregationInput = {
     id?: SortOrder
-    resumeId?: SortOrder
     userId?: SortOrder
-    jobDescription?: SortOrder
-    parsedJob?: SortOrder
-    resumeSnapshot?: SortOrder
-    analysisResult?: SortOrder
-    createdAt?: SortOrder
-    exportedAt?: SortOrderInput | SortOrder
-    _count?: AnalysisCountOrderByAggregateInput
-    _max?: AnalysisMaxOrderByAggregateInput
-    _min?: AnalysisMinOrderByAggregateInput
-  }
-
-  export type AnalysisScalarWhereWithAggregatesInput = {
-    AND?: AnalysisScalarWhereWithAggregatesInput | AnalysisScalarWhereWithAggregatesInput[]
-    OR?: AnalysisScalarWhereWithAggregatesInput[]
-    NOT?: AnalysisScalarWhereWithAggregatesInput | AnalysisScalarWhereWithAggregatesInput[]
-    id?: UuidWithAggregatesFilter<"Analysis"> | string
-    resumeId?: UuidWithAggregatesFilter<"Analysis"> | string
-    userId?: UuidWithAggregatesFilter<"Analysis"> | string
-    jobDescription?: StringWithAggregatesFilter<"Analysis"> | string
-    parsedJob?: JsonWithAggregatesFilter<"Analysis">
-    resumeSnapshot?: JsonWithAggregatesFilter<"Analysis">
-    analysisResult?: JsonWithAggregatesFilter<"Analysis">
-    createdAt?: DateTimeWithAggregatesFilter<"Analysis"> | Date | string
-    exportedAt?: DateTimeNullableWithAggregatesFilter<"Analysis"> | Date | string | null
-  }
-
-  export type SuggestionWhereInput = {
-    AND?: SuggestionWhereInput | SuggestionWhereInput[]
-    OR?: SuggestionWhereInput[]
-    NOT?: SuggestionWhereInput | SuggestionWhereInput[]
-    id?: UuidFilter<"Suggestion"> | string
-    analysisId?: UuidFilter<"Suggestion"> | string
-    original?: StringFilter<"Suggestion"> | string
-    suggested?: StringFilter<"Suggestion"> | string
-    section?: StringNullableFilter<"Suggestion"> | string | null
-    status?: EnumSuggestionStatusFilter<"Suggestion"> | $Enums.SuggestionStatus
-    rejectionReason?: StringNullableFilter<"Suggestion"> | string | null
-    createdAt?: DateTimeFilter<"Suggestion"> | Date | string
-    analysis?: XOR<AnalysisScalarRelationFilter, AnalysisWhereInput>
-  }
-
-  export type SuggestionOrderByWithRelationInput = {
-    id?: SortOrder
-    analysisId?: SortOrder
-    original?: SortOrder
-    suggested?: SortOrder
-    section?: SortOrderInput | SortOrder
     status?: SortOrder
-    rejectionReason?: SortOrderInput | SortOrder
+    resumeId?: SortOrder
+    roleId?: SortOrder
+    resumeSnapshot?: SortOrder
+    roleSnapshot?: SortOrder
+    readinessScore?: SortOrderInput | SortOrder
+    readinessBreakdown?: SortOrderInput | SortOrder
+    failureReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    analysis?: AnalysisOrderByWithRelationInput
+    completedAt?: SortOrderInput | SortOrder
+    _count?: CareerAnalysisCountOrderByAggregateInput
+    _avg?: CareerAnalysisAvgOrderByAggregateInput
+    _max?: CareerAnalysisMaxOrderByAggregateInput
+    _min?: CareerAnalysisMinOrderByAggregateInput
+    _sum?: CareerAnalysisSumOrderByAggregateInput
   }
 
-  export type SuggestionWhereUniqueInput = Prisma.AtLeast<{
+  export type CareerAnalysisScalarWhereWithAggregatesInput = {
+    AND?: CareerAnalysisScalarWhereWithAggregatesInput | CareerAnalysisScalarWhereWithAggregatesInput[]
+    OR?: CareerAnalysisScalarWhereWithAggregatesInput[]
+    NOT?: CareerAnalysisScalarWhereWithAggregatesInput | CareerAnalysisScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"CareerAnalysis"> | string
+    userId?: UuidWithAggregatesFilter<"CareerAnalysis"> | string
+    status?: EnumCareerAnalysisStatusWithAggregatesFilter<"CareerAnalysis"> | $Enums.CareerAnalysisStatus
+    resumeId?: UuidWithAggregatesFilter<"CareerAnalysis"> | string
+    roleId?: UuidWithAggregatesFilter<"CareerAnalysis"> | string
+    resumeSnapshot?: JsonWithAggregatesFilter<"CareerAnalysis">
+    roleSnapshot?: JsonWithAggregatesFilter<"CareerAnalysis">
+    readinessScore?: IntNullableWithAggregatesFilter<"CareerAnalysis"> | number | null
+    readinessBreakdown?: JsonNullableWithAggregatesFilter<"CareerAnalysis">
+    failureReason?: StringNullableWithAggregatesFilter<"CareerAnalysis"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CareerAnalysis"> | Date | string
+    completedAt?: DateTimeNullableWithAggregatesFilter<"CareerAnalysis"> | Date | string | null
+  }
+
+  export type CandidateSkillEvidenceWhereInput = {
+    AND?: CandidateSkillEvidenceWhereInput | CandidateSkillEvidenceWhereInput[]
+    OR?: CandidateSkillEvidenceWhereInput[]
+    NOT?: CandidateSkillEvidenceWhereInput | CandidateSkillEvidenceWhereInput[]
+    id?: UuidFilter<"CandidateSkillEvidence"> | string
+    careerAnalysisId?: UuidFilter<"CandidateSkillEvidence"> | string
+    skillId?: UuidFilter<"CandidateSkillEvidence"> | string
+    strength?: EnumEvidenceStrengthFilter<"CandidateSkillEvidence"> | $Enums.EvidenceStrength
+    quote?: StringFilter<"CandidateSkillEvidence"> | string
+    sourceSection?: StringFilter<"CandidateSkillEvidence"> | string
+    sourceLabel?: StringFilter<"CandidateSkillEvidence"> | string
+    createdAt?: DateTimeFilter<"CandidateSkillEvidence"> | Date | string
+    careerAnalysis?: XOR<CareerAnalysisScalarRelationFilter, CareerAnalysisWhereInput>
+    skill?: XOR<SkillScalarRelationFilter, SkillWhereInput>
+  }
+
+  export type CandidateSkillEvidenceOrderByWithRelationInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    skillId?: SortOrder
+    strength?: SortOrder
+    quote?: SortOrder
+    sourceSection?: SortOrder
+    sourceLabel?: SortOrder
+    createdAt?: SortOrder
+    careerAnalysis?: CareerAnalysisOrderByWithRelationInput
+    skill?: SkillOrderByWithRelationInput
+  }
+
+  export type CandidateSkillEvidenceWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: SuggestionWhereInput | SuggestionWhereInput[]
-    OR?: SuggestionWhereInput[]
-    NOT?: SuggestionWhereInput | SuggestionWhereInput[]
-    analysisId?: UuidFilter<"Suggestion"> | string
-    original?: StringFilter<"Suggestion"> | string
-    suggested?: StringFilter<"Suggestion"> | string
-    section?: StringNullableFilter<"Suggestion"> | string | null
-    status?: EnumSuggestionStatusFilter<"Suggestion"> | $Enums.SuggestionStatus
-    rejectionReason?: StringNullableFilter<"Suggestion"> | string | null
-    createdAt?: DateTimeFilter<"Suggestion"> | Date | string
-    analysis?: XOR<AnalysisScalarRelationFilter, AnalysisWhereInput>
+    AND?: CandidateSkillEvidenceWhereInput | CandidateSkillEvidenceWhereInput[]
+    OR?: CandidateSkillEvidenceWhereInput[]
+    NOT?: CandidateSkillEvidenceWhereInput | CandidateSkillEvidenceWhereInput[]
+    careerAnalysisId?: UuidFilter<"CandidateSkillEvidence"> | string
+    skillId?: UuidFilter<"CandidateSkillEvidence"> | string
+    strength?: EnumEvidenceStrengthFilter<"CandidateSkillEvidence"> | $Enums.EvidenceStrength
+    quote?: StringFilter<"CandidateSkillEvidence"> | string
+    sourceSection?: StringFilter<"CandidateSkillEvidence"> | string
+    sourceLabel?: StringFilter<"CandidateSkillEvidence"> | string
+    createdAt?: DateTimeFilter<"CandidateSkillEvidence"> | Date | string
+    careerAnalysis?: XOR<CareerAnalysisScalarRelationFilter, CareerAnalysisWhereInput>
+    skill?: XOR<SkillScalarRelationFilter, SkillWhereInput>
   }, "id">
 
-  export type SuggestionOrderByWithAggregationInput = {
+  export type CandidateSkillEvidenceOrderByWithAggregationInput = {
     id?: SortOrder
-    analysisId?: SortOrder
-    original?: SortOrder
-    suggested?: SortOrder
-    section?: SortOrderInput | SortOrder
-    status?: SortOrder
-    rejectionReason?: SortOrderInput | SortOrder
+    careerAnalysisId?: SortOrder
+    skillId?: SortOrder
+    strength?: SortOrder
+    quote?: SortOrder
+    sourceSection?: SortOrder
+    sourceLabel?: SortOrder
     createdAt?: SortOrder
-    _count?: SuggestionCountOrderByAggregateInput
-    _max?: SuggestionMaxOrderByAggregateInput
-    _min?: SuggestionMinOrderByAggregateInput
+    _count?: CandidateSkillEvidenceCountOrderByAggregateInput
+    _max?: CandidateSkillEvidenceMaxOrderByAggregateInput
+    _min?: CandidateSkillEvidenceMinOrderByAggregateInput
   }
 
-  export type SuggestionScalarWhereWithAggregatesInput = {
-    AND?: SuggestionScalarWhereWithAggregatesInput | SuggestionScalarWhereWithAggregatesInput[]
-    OR?: SuggestionScalarWhereWithAggregatesInput[]
-    NOT?: SuggestionScalarWhereWithAggregatesInput | SuggestionScalarWhereWithAggregatesInput[]
-    id?: UuidWithAggregatesFilter<"Suggestion"> | string
-    analysisId?: UuidWithAggregatesFilter<"Suggestion"> | string
-    original?: StringWithAggregatesFilter<"Suggestion"> | string
-    suggested?: StringWithAggregatesFilter<"Suggestion"> | string
-    section?: StringNullableWithAggregatesFilter<"Suggestion"> | string | null
-    status?: EnumSuggestionStatusWithAggregatesFilter<"Suggestion"> | $Enums.SuggestionStatus
-    rejectionReason?: StringNullableWithAggregatesFilter<"Suggestion"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"Suggestion"> | Date | string
+  export type CandidateSkillEvidenceScalarWhereWithAggregatesInput = {
+    AND?: CandidateSkillEvidenceScalarWhereWithAggregatesInput | CandidateSkillEvidenceScalarWhereWithAggregatesInput[]
+    OR?: CandidateSkillEvidenceScalarWhereWithAggregatesInput[]
+    NOT?: CandidateSkillEvidenceScalarWhereWithAggregatesInput | CandidateSkillEvidenceScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"CandidateSkillEvidence"> | string
+    careerAnalysisId?: UuidWithAggregatesFilter<"CandidateSkillEvidence"> | string
+    skillId?: UuidWithAggregatesFilter<"CandidateSkillEvidence"> | string
+    strength?: EnumEvidenceStrengthWithAggregatesFilter<"CandidateSkillEvidence"> | $Enums.EvidenceStrength
+    quote?: StringWithAggregatesFilter<"CandidateSkillEvidence"> | string
+    sourceSection?: StringWithAggregatesFilter<"CandidateSkillEvidence"> | string
+    sourceLabel?: StringWithAggregatesFilter<"CandidateSkillEvidence"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"CandidateSkillEvidence"> | Date | string
+  }
+
+  export type SkillGapWhereInput = {
+    AND?: SkillGapWhereInput | SkillGapWhereInput[]
+    OR?: SkillGapWhereInput[]
+    NOT?: SkillGapWhereInput | SkillGapWhereInput[]
+    id?: UuidFilter<"SkillGap"> | string
+    careerAnalysisId?: UuidFilter<"SkillGap"> | string
+    skillId?: UuidFilter<"SkillGap"> | string
+    status?: EnumGapStatusFilter<"SkillGap"> | $Enums.GapStatus
+    priority?: IntFilter<"SkillGap"> | number
+    reasoning?: StringFilter<"SkillGap"> | string
+    createdAt?: DateTimeFilter<"SkillGap"> | Date | string
+    careerAnalysis?: XOR<CareerAnalysisScalarRelationFilter, CareerAnalysisWhereInput>
+    skill?: XOR<SkillScalarRelationFilter, SkillWhereInput>
+    tasks?: RoadmapTaskListRelationFilter
+  }
+
+  export type SkillGapOrderByWithRelationInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    skillId?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    reasoning?: SortOrder
+    createdAt?: SortOrder
+    careerAnalysis?: CareerAnalysisOrderByWithRelationInput
+    skill?: SkillOrderByWithRelationInput
+    tasks?: RoadmapTaskOrderByRelationAggregateInput
+  }
+
+  export type SkillGapWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    careerAnalysisId_skillId?: SkillGapCareerAnalysisIdSkillIdCompoundUniqueInput
+    AND?: SkillGapWhereInput | SkillGapWhereInput[]
+    OR?: SkillGapWhereInput[]
+    NOT?: SkillGapWhereInput | SkillGapWhereInput[]
+    careerAnalysisId?: UuidFilter<"SkillGap"> | string
+    skillId?: UuidFilter<"SkillGap"> | string
+    status?: EnumGapStatusFilter<"SkillGap"> | $Enums.GapStatus
+    priority?: IntFilter<"SkillGap"> | number
+    reasoning?: StringFilter<"SkillGap"> | string
+    createdAt?: DateTimeFilter<"SkillGap"> | Date | string
+    careerAnalysis?: XOR<CareerAnalysisScalarRelationFilter, CareerAnalysisWhereInput>
+    skill?: XOR<SkillScalarRelationFilter, SkillWhereInput>
+    tasks?: RoadmapTaskListRelationFilter
+  }, "id" | "careerAnalysisId_skillId">
+
+  export type SkillGapOrderByWithAggregationInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    skillId?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    reasoning?: SortOrder
+    createdAt?: SortOrder
+    _count?: SkillGapCountOrderByAggregateInput
+    _avg?: SkillGapAvgOrderByAggregateInput
+    _max?: SkillGapMaxOrderByAggregateInput
+    _min?: SkillGapMinOrderByAggregateInput
+    _sum?: SkillGapSumOrderByAggregateInput
+  }
+
+  export type SkillGapScalarWhereWithAggregatesInput = {
+    AND?: SkillGapScalarWhereWithAggregatesInput | SkillGapScalarWhereWithAggregatesInput[]
+    OR?: SkillGapScalarWhereWithAggregatesInput[]
+    NOT?: SkillGapScalarWhereWithAggregatesInput | SkillGapScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"SkillGap"> | string
+    careerAnalysisId?: UuidWithAggregatesFilter<"SkillGap"> | string
+    skillId?: UuidWithAggregatesFilter<"SkillGap"> | string
+    status?: EnumGapStatusWithAggregatesFilter<"SkillGap"> | $Enums.GapStatus
+    priority?: IntWithAggregatesFilter<"SkillGap"> | number
+    reasoning?: StringWithAggregatesFilter<"SkillGap"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"SkillGap"> | Date | string
+  }
+
+  export type RoadmapWhereInput = {
+    AND?: RoadmapWhereInput | RoadmapWhereInput[]
+    OR?: RoadmapWhereInput[]
+    NOT?: RoadmapWhereInput | RoadmapWhereInput[]
+    id?: UuidFilter<"Roadmap"> | string
+    careerAnalysisId?: UuidFilter<"Roadmap"> | string
+    weekCount?: IntFilter<"Roadmap"> | number
+    createdAt?: DateTimeFilter<"Roadmap"> | Date | string
+    careerAnalysis?: XOR<CareerAnalysisScalarRelationFilter, CareerAnalysisWhereInput>
+    tasks?: RoadmapTaskListRelationFilter
+  }
+
+  export type RoadmapOrderByWithRelationInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    weekCount?: SortOrder
+    createdAt?: SortOrder
+    careerAnalysis?: CareerAnalysisOrderByWithRelationInput
+    tasks?: RoadmapTaskOrderByRelationAggregateInput
+  }
+
+  export type RoadmapWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    careerAnalysisId?: string
+    AND?: RoadmapWhereInput | RoadmapWhereInput[]
+    OR?: RoadmapWhereInput[]
+    NOT?: RoadmapWhereInput | RoadmapWhereInput[]
+    weekCount?: IntFilter<"Roadmap"> | number
+    createdAt?: DateTimeFilter<"Roadmap"> | Date | string
+    careerAnalysis?: XOR<CareerAnalysisScalarRelationFilter, CareerAnalysisWhereInput>
+    tasks?: RoadmapTaskListRelationFilter
+  }, "id" | "careerAnalysisId">
+
+  export type RoadmapOrderByWithAggregationInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    weekCount?: SortOrder
+    createdAt?: SortOrder
+    _count?: RoadmapCountOrderByAggregateInput
+    _avg?: RoadmapAvgOrderByAggregateInput
+    _max?: RoadmapMaxOrderByAggregateInput
+    _min?: RoadmapMinOrderByAggregateInput
+    _sum?: RoadmapSumOrderByAggregateInput
+  }
+
+  export type RoadmapScalarWhereWithAggregatesInput = {
+    AND?: RoadmapScalarWhereWithAggregatesInput | RoadmapScalarWhereWithAggregatesInput[]
+    OR?: RoadmapScalarWhereWithAggregatesInput[]
+    NOT?: RoadmapScalarWhereWithAggregatesInput | RoadmapScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"Roadmap"> | string
+    careerAnalysisId?: UuidWithAggregatesFilter<"Roadmap"> | string
+    weekCount?: IntWithAggregatesFilter<"Roadmap"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"Roadmap"> | Date | string
+  }
+
+  export type RoadmapTaskWhereInput = {
+    AND?: RoadmapTaskWhereInput | RoadmapTaskWhereInput[]
+    OR?: RoadmapTaskWhereInput[]
+    NOT?: RoadmapTaskWhereInput | RoadmapTaskWhereInput[]
+    id?: UuidFilter<"RoadmapTask"> | string
+    roadmapId?: UuidFilter<"RoadmapTask"> | string
+    skillGapId?: UuidNullableFilter<"RoadmapTask"> | string | null
+    weekNumber?: IntFilter<"RoadmapTask"> | number
+    orderInWeek?: IntFilter<"RoadmapTask"> | number
+    title?: StringFilter<"RoadmapTask"> | string
+    description?: StringFilter<"RoadmapTask"> | string
+    resources?: JsonNullableFilter<"RoadmapTask">
+    completed?: BoolFilter<"RoadmapTask"> | boolean
+    completedAt?: DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
+    createdAt?: DateTimeFilter<"RoadmapTask"> | Date | string
+    roadmap?: XOR<RoadmapScalarRelationFilter, RoadmapWhereInput>
+    skillGap?: XOR<SkillGapNullableScalarRelationFilter, SkillGapWhereInput> | null
+  }
+
+  export type RoadmapTaskOrderByWithRelationInput = {
+    id?: SortOrder
+    roadmapId?: SortOrder
+    skillGapId?: SortOrderInput | SortOrder
+    weekNumber?: SortOrder
+    orderInWeek?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    resources?: SortOrderInput | SortOrder
+    completed?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    roadmap?: RoadmapOrderByWithRelationInput
+    skillGap?: SkillGapOrderByWithRelationInput
+  }
+
+  export type RoadmapTaskWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RoadmapTaskWhereInput | RoadmapTaskWhereInput[]
+    OR?: RoadmapTaskWhereInput[]
+    NOT?: RoadmapTaskWhereInput | RoadmapTaskWhereInput[]
+    roadmapId?: UuidFilter<"RoadmapTask"> | string
+    skillGapId?: UuidNullableFilter<"RoadmapTask"> | string | null
+    weekNumber?: IntFilter<"RoadmapTask"> | number
+    orderInWeek?: IntFilter<"RoadmapTask"> | number
+    title?: StringFilter<"RoadmapTask"> | string
+    description?: StringFilter<"RoadmapTask"> | string
+    resources?: JsonNullableFilter<"RoadmapTask">
+    completed?: BoolFilter<"RoadmapTask"> | boolean
+    completedAt?: DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
+    createdAt?: DateTimeFilter<"RoadmapTask"> | Date | string
+    roadmap?: XOR<RoadmapScalarRelationFilter, RoadmapWhereInput>
+    skillGap?: XOR<SkillGapNullableScalarRelationFilter, SkillGapWhereInput> | null
+  }, "id">
+
+  export type RoadmapTaskOrderByWithAggregationInput = {
+    id?: SortOrder
+    roadmapId?: SortOrder
+    skillGapId?: SortOrderInput | SortOrder
+    weekNumber?: SortOrder
+    orderInWeek?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    resources?: SortOrderInput | SortOrder
+    completed?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: RoadmapTaskCountOrderByAggregateInput
+    _avg?: RoadmapTaskAvgOrderByAggregateInput
+    _max?: RoadmapTaskMaxOrderByAggregateInput
+    _min?: RoadmapTaskMinOrderByAggregateInput
+    _sum?: RoadmapTaskSumOrderByAggregateInput
+  }
+
+  export type RoadmapTaskScalarWhereWithAggregatesInput = {
+    AND?: RoadmapTaskScalarWhereWithAggregatesInput | RoadmapTaskScalarWhereWithAggregatesInput[]
+    OR?: RoadmapTaskScalarWhereWithAggregatesInput[]
+    NOT?: RoadmapTaskScalarWhereWithAggregatesInput | RoadmapTaskScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"RoadmapTask"> | string
+    roadmapId?: UuidWithAggregatesFilter<"RoadmapTask"> | string
+    skillGapId?: UuidNullableWithAggregatesFilter<"RoadmapTask"> | string | null
+    weekNumber?: IntWithAggregatesFilter<"RoadmapTask"> | number
+    orderInWeek?: IntWithAggregatesFilter<"RoadmapTask"> | number
+    title?: StringWithAggregatesFilter<"RoadmapTask"> | string
+    description?: StringWithAggregatesFilter<"RoadmapTask"> | string
+    resources?: JsonNullableWithAggregatesFilter<"RoadmapTask">
+    completed?: BoolWithAggregatesFilter<"RoadmapTask"> | boolean
+    completedAt?: DateTimeNullableWithAggregatesFilter<"RoadmapTask"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"RoadmapTask"> | Date | string
+  }
+
+  export type AnalysisEventWhereInput = {
+    AND?: AnalysisEventWhereInput | AnalysisEventWhereInput[]
+    OR?: AnalysisEventWhereInput[]
+    NOT?: AnalysisEventWhereInput | AnalysisEventWhereInput[]
+    id?: UuidFilter<"AnalysisEvent"> | string
+    careerAnalysisId?: UuidFilter<"AnalysisEvent"> | string
+    type?: EnumAnalysisEventTypeFilter<"AnalysisEvent"> | $Enums.AnalysisEventType
+    payload?: JsonNullableFilter<"AnalysisEvent">
+    createdAt?: DateTimeFilter<"AnalysisEvent"> | Date | string
+    careerAnalysis?: XOR<CareerAnalysisScalarRelationFilter, CareerAnalysisWhereInput>
+  }
+
+  export type AnalysisEventOrderByWithRelationInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    type?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    careerAnalysis?: CareerAnalysisOrderByWithRelationInput
+  }
+
+  export type AnalysisEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AnalysisEventWhereInput | AnalysisEventWhereInput[]
+    OR?: AnalysisEventWhereInput[]
+    NOT?: AnalysisEventWhereInput | AnalysisEventWhereInput[]
+    careerAnalysisId?: UuidFilter<"AnalysisEvent"> | string
+    type?: EnumAnalysisEventTypeFilter<"AnalysisEvent"> | $Enums.AnalysisEventType
+    payload?: JsonNullableFilter<"AnalysisEvent">
+    createdAt?: DateTimeFilter<"AnalysisEvent"> | Date | string
+    careerAnalysis?: XOR<CareerAnalysisScalarRelationFilter, CareerAnalysisWhereInput>
+  }, "id">
+
+  export type AnalysisEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    type?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: AnalysisEventCountOrderByAggregateInput
+    _max?: AnalysisEventMaxOrderByAggregateInput
+    _min?: AnalysisEventMinOrderByAggregateInput
+  }
+
+  export type AnalysisEventScalarWhereWithAggregatesInput = {
+    AND?: AnalysisEventScalarWhereWithAggregatesInput | AnalysisEventScalarWhereWithAggregatesInput[]
+    OR?: AnalysisEventScalarWhereWithAggregatesInput[]
+    NOT?: AnalysisEventScalarWhereWithAggregatesInput | AnalysisEventScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"AnalysisEvent"> | string
+    careerAnalysisId?: UuidWithAggregatesFilter<"AnalysisEvent"> | string
+    type?: EnumAnalysisEventTypeWithAggregatesFilter<"AnalysisEvent"> | $Enums.AnalysisEventType
+    payload?: JsonNullableWithAggregatesFilter<"AnalysisEvent">
+    createdAt?: DateTimeWithAggregatesFilter<"AnalysisEvent"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -7675,7 +17276,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     resumes?: ResumeCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
-    analyses?: AnalysisCreateNestedManyWithoutUserInput
+    analyses?: CareerAnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -7687,7 +17288,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
-    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -7699,7 +17300,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumes?: ResumeUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
-    analyses?: AnalysisUpdateManyWithoutUserNestedInput
+    analyses?: CareerAnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -7711,7 +17312,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
-    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -7820,11 +17421,10 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutResumesInput
-    analyses?: AnalysisCreateNestedManyWithoutResumeInput
+    analyses?: CareerAnalysisCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUncheckedCreateInput = {
@@ -7838,10 +17438,9 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    analyses?: AnalysisUncheckedCreateNestedManyWithoutResumeInput
+    analyses?: CareerAnalysisUncheckedCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUpdateInput = {
@@ -7854,11 +17453,10 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutResumesNestedInput
-    analyses?: AnalysisUpdateManyWithoutResumeNestedInput
+    analyses?: CareerAnalysisUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateInput = {
@@ -7872,10 +17470,9 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    analyses?: AnalysisUncheckedUpdateManyWithoutResumeNestedInput
+    analyses?: CareerAnalysisUncheckedUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeCreateManyInput = {
@@ -7889,7 +17486,6 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -7904,7 +17500,6 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7920,170 +17515,703 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type AnalysisCreateInput = {
+  export type SkillCreateInput = {
     id?: string
-    jobDescription: string
-    parsedJob: JsonNullValueInput | InputJsonValue
-    resumeSnapshot: JsonNullValueInput | InputJsonValue
-    analysisResult: JsonNullValueInput | InputJsonValue
+    slug: string
+    name: string
+    aliases?: SkillCreatealiasesInput | string[]
+    category?: string | null
     createdAt?: Date | string
-    exportedAt?: Date | string | null
-    resume: ResumeCreateNestedOneWithoutAnalysesInput
+    updatedAt?: Date | string
+    requirements?: RoleSkillRequirementCreateNestedManyWithoutSkillInput
+    evidence?: CandidateSkillEvidenceCreateNestedManyWithoutSkillInput
+    gaps?: SkillGapCreateNestedManyWithoutSkillInput
+  }
+
+  export type SkillUncheckedCreateInput = {
+    id?: string
+    slug: string
+    name: string
+    aliases?: SkillCreatealiasesInput | string[]
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requirements?: RoleSkillRequirementUncheckedCreateNestedManyWithoutSkillInput
+    evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutSkillInput
+    gaps?: SkillGapUncheckedCreateNestedManyWithoutSkillInput
+  }
+
+  export type SkillUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    aliases?: SkillUpdatealiasesInput | string[]
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requirements?: RoleSkillRequirementUpdateManyWithoutSkillNestedInput
+    evidence?: CandidateSkillEvidenceUpdateManyWithoutSkillNestedInput
+    gaps?: SkillGapUpdateManyWithoutSkillNestedInput
+  }
+
+  export type SkillUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    aliases?: SkillUpdatealiasesInput | string[]
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requirements?: RoleSkillRequirementUncheckedUpdateManyWithoutSkillNestedInput
+    evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutSkillNestedInput
+    gaps?: SkillGapUncheckedUpdateManyWithoutSkillNestedInput
+  }
+
+  export type SkillCreateManyInput = {
+    id?: string
+    slug: string
+    name: string
+    aliases?: SkillCreatealiasesInput | string[]
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    aliases?: SkillUpdatealiasesInput | string[]
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    aliases?: SkillUpdatealiasesInput | string[]
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoleCreateInput = {
+    id?: string
+    slug: string
+    title: string
+    description: string
+    seedVersion: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requirements?: RoleSkillRequirementCreateNestedManyWithoutRoleInput
+    analyses?: CareerAnalysisCreateNestedManyWithoutRoleInput
+  }
+
+  export type RoleUncheckedCreateInput = {
+    id?: string
+    slug: string
+    title: string
+    description: string
+    seedVersion: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requirements?: RoleSkillRequirementUncheckedCreateNestedManyWithoutRoleInput
+    analyses?: CareerAnalysisUncheckedCreateNestedManyWithoutRoleInput
+  }
+
+  export type RoleUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    seedVersion?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requirements?: RoleSkillRequirementUpdateManyWithoutRoleNestedInput
+    analyses?: CareerAnalysisUpdateManyWithoutRoleNestedInput
+  }
+
+  export type RoleUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    seedVersion?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requirements?: RoleSkillRequirementUncheckedUpdateManyWithoutRoleNestedInput
+    analyses?: CareerAnalysisUncheckedUpdateManyWithoutRoleNestedInput
+  }
+
+  export type RoleCreateManyInput = {
+    id?: string
+    slug: string
+    title: string
+    description: string
+    seedVersion: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RoleUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    seedVersion?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoleUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    seedVersion?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoleSkillRequirementCreateInput = {
+    id?: string
+    importance: $Enums.SkillImportance
+    rationale: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    role: RoleCreateNestedOneWithoutRequirementsInput
+    skill: SkillCreateNestedOneWithoutRequirementsInput
+  }
+
+  export type RoleSkillRequirementUncheckedCreateInput = {
+    id?: string
+    roleId: string
+    skillId: string
+    importance: $Enums.SkillImportance
+    rationale: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RoleSkillRequirementUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    importance?: EnumSkillImportanceFieldUpdateOperationsInput | $Enums.SkillImportance
+    rationale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: RoleUpdateOneRequiredWithoutRequirementsNestedInput
+    skill?: SkillUpdateOneRequiredWithoutRequirementsNestedInput
+  }
+
+  export type RoleSkillRequirementUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    importance?: EnumSkillImportanceFieldUpdateOperationsInput | $Enums.SkillImportance
+    rationale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoleSkillRequirementCreateManyInput = {
+    id?: string
+    roleId: string
+    skillId: string
+    importance: $Enums.SkillImportance
+    rationale: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RoleSkillRequirementUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    importance?: EnumSkillImportanceFieldUpdateOperationsInput | $Enums.SkillImportance
+    rationale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoleSkillRequirementUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    importance?: EnumSkillImportanceFieldUpdateOperationsInput | $Enums.SkillImportance
+    rationale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CareerAnalysisCreateInput = {
+    id?: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
     user: UserCreateNestedOneWithoutAnalysesInput
-    suggestions?: SuggestionCreateNestedManyWithoutAnalysisInput
+    resume: ResumeCreateNestedOneWithoutAnalysesInput
+    role: RoleCreateNestedOneWithoutAnalysesInput
+    evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
   }
 
-  export type AnalysisUncheckedCreateInput = {
+  export type CareerAnalysisUncheckedCreateInput = {
     id?: string
-    resumeId: string
     userId: string
-    jobDescription: string
-    parsedJob: JsonNullValueInput | InputJsonValue
+    status?: $Enums.CareerAnalysisStatus
+    resumeId: string
+    roleId: string
     resumeSnapshot: JsonNullValueInput | InputJsonValue
-    analysisResult: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
-    exportedAt?: Date | string | null
-    suggestions?: SuggestionUncheckedCreateNestedManyWithoutAnalysisInput
+    completedAt?: Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
   }
 
-  export type AnalysisUpdateInput = {
+  export type CareerAnalysisUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    jobDescription?: StringFieldUpdateOperationsInput | string
-    parsedJob?: JsonNullValueInput | InputJsonValue
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
-    analysisResult?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
-    suggestions?: SuggestionUpdateManyWithoutAnalysisNestedInput
+    resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
+    role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
+    evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
   }
 
-  export type AnalysisUncheckedUpdateInput = {
+  export type CareerAnalysisUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    resumeId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    jobDescription?: StringFieldUpdateOperationsInput | string
-    parsedJob?: JsonNullValueInput | InputJsonValue
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeId?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
-    analysisResult?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    suggestions?: SuggestionUncheckedUpdateManyWithoutAnalysisNestedInput
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
   }
 
-  export type AnalysisCreateManyInput = {
+  export type CareerAnalysisCreateManyInput = {
     id?: string
-    resumeId: string
     userId: string
-    jobDescription: string
-    parsedJob: JsonNullValueInput | InputJsonValue
+    status?: $Enums.CareerAnalysisStatus
+    resumeId: string
+    roleId: string
     resumeSnapshot: JsonNullValueInput | InputJsonValue
-    analysisResult: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
-    exportedAt?: Date | string | null
+    completedAt?: Date | string | null
   }
 
-  export type AnalysisUpdateManyMutationInput = {
+  export type CareerAnalysisUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    jobDescription?: StringFieldUpdateOperationsInput | string
-    parsedJob?: JsonNullValueInput | InputJsonValue
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
-    analysisResult?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type AnalysisUncheckedUpdateManyInput = {
+  export type CareerAnalysisUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    resumeId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    jobDescription?: StringFieldUpdateOperationsInput | string
-    parsedJob?: JsonNullValueInput | InputJsonValue
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeId?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
-    analysisResult?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type SuggestionCreateInput = {
+  export type CandidateSkillEvidenceCreateInput = {
     id?: string
-    original: string
-    suggested: string
-    section?: string | null
-    status?: $Enums.SuggestionStatus
-    rejectionReason?: string | null
+    strength: $Enums.EvidenceStrength
+    quote: string
+    sourceSection: string
+    sourceLabel: string
     createdAt?: Date | string
-    analysis: AnalysisCreateNestedOneWithoutSuggestionsInput
+    careerAnalysis: CareerAnalysisCreateNestedOneWithoutEvidenceInput
+    skill: SkillCreateNestedOneWithoutEvidenceInput
   }
 
-  export type SuggestionUncheckedCreateInput = {
+  export type CandidateSkillEvidenceUncheckedCreateInput = {
     id?: string
-    analysisId: string
-    original: string
-    suggested: string
-    section?: string | null
-    status?: $Enums.SuggestionStatus
-    rejectionReason?: string | null
-    createdAt?: Date | string
-  }
-
-  export type SuggestionUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    original?: StringFieldUpdateOperationsInput | string
-    suggested?: StringFieldUpdateOperationsInput | string
-    section?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
-    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    analysis?: AnalysisUpdateOneRequiredWithoutSuggestionsNestedInput
-  }
-
-  export type SuggestionUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    analysisId?: StringFieldUpdateOperationsInput | string
-    original?: StringFieldUpdateOperationsInput | string
-    suggested?: StringFieldUpdateOperationsInput | string
-    section?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
-    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SuggestionCreateManyInput = {
-    id?: string
-    analysisId: string
-    original: string
-    suggested: string
-    section?: string | null
-    status?: $Enums.SuggestionStatus
-    rejectionReason?: string | null
+    careerAnalysisId: string
+    skillId: string
+    strength: $Enums.EvidenceStrength
+    quote: string
+    sourceSection: string
+    sourceLabel: string
     createdAt?: Date | string
   }
 
-  export type SuggestionUpdateManyMutationInput = {
+  export type CandidateSkillEvidenceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    original?: StringFieldUpdateOperationsInput | string
-    suggested?: StringFieldUpdateOperationsInput | string
-    section?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
-    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    strength?: EnumEvidenceStrengthFieldUpdateOperationsInput | $Enums.EvidenceStrength
+    quote?: StringFieldUpdateOperationsInput | string
+    sourceSection?: StringFieldUpdateOperationsInput | string
+    sourceLabel?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    careerAnalysis?: CareerAnalysisUpdateOneRequiredWithoutEvidenceNestedInput
+    skill?: SkillUpdateOneRequiredWithoutEvidenceNestedInput
+  }
+
+  export type CandidateSkillEvidenceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    strength?: EnumEvidenceStrengthFieldUpdateOperationsInput | $Enums.EvidenceStrength
+    quote?: StringFieldUpdateOperationsInput | string
+    sourceSection?: StringFieldUpdateOperationsInput | string
+    sourceLabel?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type SuggestionUncheckedUpdateManyInput = {
+  export type CandidateSkillEvidenceCreateManyInput = {
+    id?: string
+    careerAnalysisId: string
+    skillId: string
+    strength: $Enums.EvidenceStrength
+    quote: string
+    sourceSection: string
+    sourceLabel: string
+    createdAt?: Date | string
+  }
+
+  export type CandidateSkillEvidenceUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    analysisId?: StringFieldUpdateOperationsInput | string
-    original?: StringFieldUpdateOperationsInput | string
-    suggested?: StringFieldUpdateOperationsInput | string
-    section?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
-    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    strength?: EnumEvidenceStrengthFieldUpdateOperationsInput | $Enums.EvidenceStrength
+    quote?: StringFieldUpdateOperationsInput | string
+    sourceSection?: StringFieldUpdateOperationsInput | string
+    sourceLabel?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateSkillEvidenceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    strength?: EnumEvidenceStrengthFieldUpdateOperationsInput | $Enums.EvidenceStrength
+    quote?: StringFieldUpdateOperationsInput | string
+    sourceSection?: StringFieldUpdateOperationsInput | string
+    sourceLabel?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillGapCreateInput = {
+    id?: string
+    status: $Enums.GapStatus
+    priority: number
+    reasoning: string
+    createdAt?: Date | string
+    careerAnalysis: CareerAnalysisCreateNestedOneWithoutGapsInput
+    skill: SkillCreateNestedOneWithoutGapsInput
+    tasks?: RoadmapTaskCreateNestedManyWithoutSkillGapInput
+  }
+
+  export type SkillGapUncheckedCreateInput = {
+    id?: string
+    careerAnalysisId: string
+    skillId: string
+    status: $Enums.GapStatus
+    priority: number
+    reasoning: string
+    createdAt?: Date | string
+    tasks?: RoadmapTaskUncheckedCreateNestedManyWithoutSkillGapInput
+  }
+
+  export type SkillGapUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumGapStatusFieldUpdateOperationsInput | $Enums.GapStatus
+    priority?: IntFieldUpdateOperationsInput | number
+    reasoning?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    careerAnalysis?: CareerAnalysisUpdateOneRequiredWithoutGapsNestedInput
+    skill?: SkillUpdateOneRequiredWithoutGapsNestedInput
+    tasks?: RoadmapTaskUpdateManyWithoutSkillGapNestedInput
+  }
+
+  export type SkillGapUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    status?: EnumGapStatusFieldUpdateOperationsInput | $Enums.GapStatus
+    priority?: IntFieldUpdateOperationsInput | number
+    reasoning?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tasks?: RoadmapTaskUncheckedUpdateManyWithoutSkillGapNestedInput
+  }
+
+  export type SkillGapCreateManyInput = {
+    id?: string
+    careerAnalysisId: string
+    skillId: string
+    status: $Enums.GapStatus
+    priority: number
+    reasoning: string
+    createdAt?: Date | string
+  }
+
+  export type SkillGapUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumGapStatusFieldUpdateOperationsInput | $Enums.GapStatus
+    priority?: IntFieldUpdateOperationsInput | number
+    reasoning?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillGapUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    status?: EnumGapStatusFieldUpdateOperationsInput | $Enums.GapStatus
+    priority?: IntFieldUpdateOperationsInput | number
+    reasoning?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoadmapCreateInput = {
+    id?: string
+    weekCount?: number
+    createdAt?: Date | string
+    careerAnalysis: CareerAnalysisCreateNestedOneWithoutRoadmapInput
+    tasks?: RoadmapTaskCreateNestedManyWithoutRoadmapInput
+  }
+
+  export type RoadmapUncheckedCreateInput = {
+    id?: string
+    careerAnalysisId: string
+    weekCount?: number
+    createdAt?: Date | string
+    tasks?: RoadmapTaskUncheckedCreateNestedManyWithoutRoadmapInput
+  }
+
+  export type RoadmapUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    careerAnalysis?: CareerAnalysisUpdateOneRequiredWithoutRoadmapNestedInput
+    tasks?: RoadmapTaskUpdateManyWithoutRoadmapNestedInput
+  }
+
+  export type RoadmapUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    weekCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tasks?: RoadmapTaskUncheckedUpdateManyWithoutRoadmapNestedInput
+  }
+
+  export type RoadmapCreateManyInput = {
+    id?: string
+    careerAnalysisId: string
+    weekCount?: number
+    createdAt?: Date | string
+  }
+
+  export type RoadmapUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoadmapUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    weekCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoadmapTaskCreateInput = {
+    id?: string
+    weekNumber: number
+    orderInWeek: number
+    title: string
+    description: string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: boolean
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    roadmap: RoadmapCreateNestedOneWithoutTasksInput
+    skillGap?: SkillGapCreateNestedOneWithoutTasksInput
+  }
+
+  export type RoadmapTaskUncheckedCreateInput = {
+    id?: string
+    roadmapId: string
+    skillGapId?: string | null
+    weekNumber: number
+    orderInWeek: number
+    title: string
+    description: string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: boolean
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type RoadmapTaskUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekNumber?: IntFieldUpdateOperationsInput | number
+    orderInWeek?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roadmap?: RoadmapUpdateOneRequiredWithoutTasksNestedInput
+    skillGap?: SkillGapUpdateOneWithoutTasksNestedInput
+  }
+
+  export type RoadmapTaskUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    roadmapId?: StringFieldUpdateOperationsInput | string
+    skillGapId?: NullableStringFieldUpdateOperationsInput | string | null
+    weekNumber?: IntFieldUpdateOperationsInput | number
+    orderInWeek?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoadmapTaskCreateManyInput = {
+    id?: string
+    roadmapId: string
+    skillGapId?: string | null
+    weekNumber: number
+    orderInWeek: number
+    title: string
+    description: string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: boolean
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type RoadmapTaskUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekNumber?: IntFieldUpdateOperationsInput | number
+    orderInWeek?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoadmapTaskUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    roadmapId?: StringFieldUpdateOperationsInput | string
+    skillGapId?: NullableStringFieldUpdateOperationsInput | string | null
+    weekNumber?: IntFieldUpdateOperationsInput | number
+    orderInWeek?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisEventCreateInput = {
+    id?: string
+    type: $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    careerAnalysis: CareerAnalysisCreateNestedOneWithoutEventsInput
+  }
+
+  export type AnalysisEventUncheckedCreateInput = {
+    id?: string
+    careerAnalysisId: string
+    type: $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type AnalysisEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumAnalysisEventTypeFieldUpdateOperationsInput | $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    careerAnalysis?: CareerAnalysisUpdateOneRequiredWithoutEventsNestedInput
+  }
+
+  export type AnalysisEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    type?: EnumAnalysisEventTypeFieldUpdateOperationsInput | $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisEventCreateManyInput = {
+    id?: string
+    careerAnalysisId: string
+    type: $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type AnalysisEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumAnalysisEventTypeFieldUpdateOperationsInput | $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    type?: EnumAnalysisEventTypeFieldUpdateOperationsInput | $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -8137,10 +18265,10 @@ export namespace Prisma {
     none?: RefreshTokenWhereInput
   }
 
-  export type AnalysisListRelationFilter = {
-    every?: AnalysisWhereInput
-    some?: AnalysisWhereInput
-    none?: AnalysisWhereInput
+  export type CareerAnalysisListRelationFilter = {
+    every?: CareerAnalysisWhereInput
+    some?: CareerAnalysisWhereInput
+    none?: CareerAnalysisWhereInput
   }
 
   export type ResumeOrderByRelationAggregateInput = {
@@ -8151,7 +18279,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type AnalysisOrderByRelationAggregateInput = {
+  export type CareerAnalysisOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -8342,29 +18470,6 @@ export namespace Prisma {
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type ResumeCountOrderByAggregateInput = {
     id?: SortOrder
@@ -8377,7 +18482,6 @@ export namespace Prisma {
     filePath?: SortOrder
     rawText?: SortOrder
     structuredResume?: SortOrder
-    enabledSections?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -8477,6 +18581,298 @@ export namespace Prisma {
     _min?: NestedJsonFilter<$PrismaModel>
     _max?: NestedJsonFilter<$PrismaModel>
   }
+
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type RoleSkillRequirementListRelationFilter = {
+    every?: RoleSkillRequirementWhereInput
+    some?: RoleSkillRequirementWhereInput
+    none?: RoleSkillRequirementWhereInput
+  }
+
+  export type CandidateSkillEvidenceListRelationFilter = {
+    every?: CandidateSkillEvidenceWhereInput
+    some?: CandidateSkillEvidenceWhereInput
+    none?: CandidateSkillEvidenceWhereInput
+  }
+
+  export type SkillGapListRelationFilter = {
+    every?: SkillGapWhereInput
+    some?: SkillGapWhereInput
+    none?: SkillGapWhereInput
+  }
+
+  export type RoleSkillRequirementOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CandidateSkillEvidenceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SkillGapOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SkillCountOrderByAggregateInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    aliases?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SkillMaxOrderByAggregateInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SkillMinOrderByAggregateInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RoleCountOrderByAggregateInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    seedVersion?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RoleMaxOrderByAggregateInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    seedVersion?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RoleMinOrderByAggregateInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    seedVersion?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumSkillImportanceFilter<$PrismaModel = never> = {
+    equals?: $Enums.SkillImportance | EnumSkillImportanceFieldRefInput<$PrismaModel>
+    in?: $Enums.SkillImportance[] | ListEnumSkillImportanceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SkillImportance[] | ListEnumSkillImportanceFieldRefInput<$PrismaModel>
+    not?: NestedEnumSkillImportanceFilter<$PrismaModel> | $Enums.SkillImportance
+  }
+
+  export type RoleScalarRelationFilter = {
+    is?: RoleWhereInput
+    isNot?: RoleWhereInput
+  }
+
+  export type SkillScalarRelationFilter = {
+    is?: SkillWhereInput
+    isNot?: SkillWhereInput
+  }
+
+  export type RoleSkillRequirementRoleIdSkillIdCompoundUniqueInput = {
+    roleId: string
+    skillId: string
+  }
+
+  export type RoleSkillRequirementCountOrderByAggregateInput = {
+    id?: SortOrder
+    roleId?: SortOrder
+    skillId?: SortOrder
+    importance?: SortOrder
+    rationale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RoleSkillRequirementMaxOrderByAggregateInput = {
+    id?: SortOrder
+    roleId?: SortOrder
+    skillId?: SortOrder
+    importance?: SortOrder
+    rationale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RoleSkillRequirementMinOrderByAggregateInput = {
+    id?: SortOrder
+    roleId?: SortOrder
+    skillId?: SortOrder
+    importance?: SortOrder
+    rationale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumSkillImportanceWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SkillImportance | EnumSkillImportanceFieldRefInput<$PrismaModel>
+    in?: $Enums.SkillImportance[] | ListEnumSkillImportanceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SkillImportance[] | ListEnumSkillImportanceFieldRefInput<$PrismaModel>
+    not?: NestedEnumSkillImportanceWithAggregatesFilter<$PrismaModel> | $Enums.SkillImportance
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSkillImportanceFilter<$PrismaModel>
+    _max?: NestedEnumSkillImportanceFilter<$PrismaModel>
+  }
+
+  export type EnumCareerAnalysisStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.CareerAnalysisStatus | EnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CareerAnalysisStatus[] | ListEnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CareerAnalysisStatus[] | ListEnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCareerAnalysisStatusFilter<$PrismaModel> | $Enums.CareerAnalysisStatus
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type ResumeScalarRelationFilter = {
+    is?: ResumeWhereInput
+    isNot?: ResumeWhereInput
+  }
+
+  export type RoadmapNullableScalarRelationFilter = {
+    is?: RoadmapWhereInput | null
+    isNot?: RoadmapWhereInput | null
+  }
+
+  export type AnalysisEventListRelationFilter = {
+    every?: AnalysisEventWhereInput
+    some?: AnalysisEventWhereInput
+    none?: AnalysisEventWhereInput
+  }
+
+  export type AnalysisEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CareerAnalysisCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    resumeId?: SortOrder
+    roleId?: SortOrder
+    resumeSnapshot?: SortOrder
+    roleSnapshot?: SortOrder
+    readinessScore?: SortOrder
+    readinessBreakdown?: SortOrder
+    failureReason?: SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type CareerAnalysisAvgOrderByAggregateInput = {
+    readinessScore?: SortOrder
+  }
+
+  export type CareerAnalysisMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    resumeId?: SortOrder
+    roleId?: SortOrder
+    readinessScore?: SortOrder
+    failureReason?: SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type CareerAnalysisMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    resumeId?: SortOrder
+    roleId?: SortOrder
+    readinessScore?: SortOrder
+    failureReason?: SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type CareerAnalysisSumOrderByAggregateInput = {
+    readinessScore?: SortOrder
+  }
+
+  export type EnumCareerAnalysisStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CareerAnalysisStatus | EnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CareerAnalysisStatus[] | ListEnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CareerAnalysisStatus[] | ListEnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCareerAnalysisStatusWithAggregatesFilter<$PrismaModel> | $Enums.CareerAnalysisStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCareerAnalysisStatusFilter<$PrismaModel>
+    _max?: NestedEnumCareerAnalysisStatusFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
@@ -8504,104 +18900,297 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
-  export type ResumeScalarRelationFilter = {
-    is?: ResumeWhereInput
-    isNot?: ResumeWhereInput
+  export type EnumEvidenceStrengthFilter<$PrismaModel = never> = {
+    equals?: $Enums.EvidenceStrength | EnumEvidenceStrengthFieldRefInput<$PrismaModel>
+    in?: $Enums.EvidenceStrength[] | ListEnumEvidenceStrengthFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EvidenceStrength[] | ListEnumEvidenceStrengthFieldRefInput<$PrismaModel>
+    not?: NestedEnumEvidenceStrengthFilter<$PrismaModel> | $Enums.EvidenceStrength
   }
 
-  export type SuggestionListRelationFilter = {
-    every?: SuggestionWhereInput
-    some?: SuggestionWhereInput
-    none?: SuggestionWhereInput
+  export type CareerAnalysisScalarRelationFilter = {
+    is?: CareerAnalysisWhereInput
+    isNot?: CareerAnalysisWhereInput
   }
 
-  export type SuggestionOrderByRelationAggregateInput = {
+  export type CandidateSkillEvidenceCountOrderByAggregateInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    skillId?: SortOrder
+    strength?: SortOrder
+    quote?: SortOrder
+    sourceSection?: SortOrder
+    sourceLabel?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CandidateSkillEvidenceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    skillId?: SortOrder
+    strength?: SortOrder
+    quote?: SortOrder
+    sourceSection?: SortOrder
+    sourceLabel?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CandidateSkillEvidenceMinOrderByAggregateInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    skillId?: SortOrder
+    strength?: SortOrder
+    quote?: SortOrder
+    sourceSection?: SortOrder
+    sourceLabel?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumEvidenceStrengthWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EvidenceStrength | EnumEvidenceStrengthFieldRefInput<$PrismaModel>
+    in?: $Enums.EvidenceStrength[] | ListEnumEvidenceStrengthFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EvidenceStrength[] | ListEnumEvidenceStrengthFieldRefInput<$PrismaModel>
+    not?: NestedEnumEvidenceStrengthWithAggregatesFilter<$PrismaModel> | $Enums.EvidenceStrength
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEvidenceStrengthFilter<$PrismaModel>
+    _max?: NestedEnumEvidenceStrengthFilter<$PrismaModel>
+  }
+
+  export type EnumGapStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.GapStatus | EnumGapStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GapStatus[] | ListEnumGapStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GapStatus[] | ListEnumGapStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGapStatusFilter<$PrismaModel> | $Enums.GapStatus
+  }
+
+  export type RoadmapTaskListRelationFilter = {
+    every?: RoadmapTaskWhereInput
+    some?: RoadmapTaskWhereInput
+    none?: RoadmapTaskWhereInput
+  }
+
+  export type RoadmapTaskOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type AnalysisCountOrderByAggregateInput = {
+  export type SkillGapCareerAnalysisIdSkillIdCompoundUniqueInput = {
+    careerAnalysisId: string
+    skillId: string
+  }
+
+  export type SkillGapCountOrderByAggregateInput = {
     id?: SortOrder
-    resumeId?: SortOrder
-    userId?: SortOrder
-    jobDescription?: SortOrder
-    parsedJob?: SortOrder
-    resumeSnapshot?: SortOrder
-    analysisResult?: SortOrder
-    createdAt?: SortOrder
-    exportedAt?: SortOrder
-  }
-
-  export type AnalysisMaxOrderByAggregateInput = {
-    id?: SortOrder
-    resumeId?: SortOrder
-    userId?: SortOrder
-    jobDescription?: SortOrder
-    createdAt?: SortOrder
-    exportedAt?: SortOrder
-  }
-
-  export type AnalysisMinOrderByAggregateInput = {
-    id?: SortOrder
-    resumeId?: SortOrder
-    userId?: SortOrder
-    jobDescription?: SortOrder
-    createdAt?: SortOrder
-    exportedAt?: SortOrder
-  }
-
-  export type EnumSuggestionStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.SuggestionStatus | EnumSuggestionStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumSuggestionStatusFilter<$PrismaModel> | $Enums.SuggestionStatus
-  }
-
-  export type AnalysisScalarRelationFilter = {
-    is?: AnalysisWhereInput
-    isNot?: AnalysisWhereInput
-  }
-
-  export type SuggestionCountOrderByAggregateInput = {
-    id?: SortOrder
-    analysisId?: SortOrder
-    original?: SortOrder
-    suggested?: SortOrder
-    section?: SortOrder
+    careerAnalysisId?: SortOrder
+    skillId?: SortOrder
     status?: SortOrder
-    rejectionReason?: SortOrder
+    priority?: SortOrder
+    reasoning?: SortOrder
     createdAt?: SortOrder
   }
 
-  export type SuggestionMaxOrderByAggregateInput = {
+  export type SkillGapAvgOrderByAggregateInput = {
+    priority?: SortOrder
+  }
+
+  export type SkillGapMaxOrderByAggregateInput = {
     id?: SortOrder
-    analysisId?: SortOrder
-    original?: SortOrder
-    suggested?: SortOrder
-    section?: SortOrder
+    careerAnalysisId?: SortOrder
+    skillId?: SortOrder
     status?: SortOrder
-    rejectionReason?: SortOrder
+    priority?: SortOrder
+    reasoning?: SortOrder
     createdAt?: SortOrder
   }
 
-  export type SuggestionMinOrderByAggregateInput = {
+  export type SkillGapMinOrderByAggregateInput = {
     id?: SortOrder
-    analysisId?: SortOrder
-    original?: SortOrder
-    suggested?: SortOrder
-    section?: SortOrder
+    careerAnalysisId?: SortOrder
+    skillId?: SortOrder
     status?: SortOrder
-    rejectionReason?: SortOrder
+    priority?: SortOrder
+    reasoning?: SortOrder
     createdAt?: SortOrder
   }
 
-  export type EnumSuggestionStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.SuggestionStatus | EnumSuggestionStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumSuggestionStatusWithAggregatesFilter<$PrismaModel> | $Enums.SuggestionStatus
+  export type SkillGapSumOrderByAggregateInput = {
+    priority?: SortOrder
+  }
+
+  export type EnumGapStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GapStatus | EnumGapStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GapStatus[] | ListEnumGapStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GapStatus[] | ListEnumGapStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGapStatusWithAggregatesFilter<$PrismaModel> | $Enums.GapStatus
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumSuggestionStatusFilter<$PrismaModel>
-    _max?: NestedEnumSuggestionStatusFilter<$PrismaModel>
+    _min?: NestedEnumGapStatusFilter<$PrismaModel>
+    _max?: NestedEnumGapStatusFilter<$PrismaModel>
+  }
+
+  export type RoadmapCountOrderByAggregateInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    weekCount?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RoadmapAvgOrderByAggregateInput = {
+    weekCount?: SortOrder
+  }
+
+  export type RoadmapMaxOrderByAggregateInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    weekCount?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RoadmapMinOrderByAggregateInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    weekCount?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RoadmapSumOrderByAggregateInput = {
+    weekCount?: SortOrder
+  }
+
+  export type UuidNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type RoadmapScalarRelationFilter = {
+    is?: RoadmapWhereInput
+    isNot?: RoadmapWhereInput
+  }
+
+  export type SkillGapNullableScalarRelationFilter = {
+    is?: SkillGapWhereInput | null
+    isNot?: SkillGapWhereInput | null
+  }
+
+  export type RoadmapTaskCountOrderByAggregateInput = {
+    id?: SortOrder
+    roadmapId?: SortOrder
+    skillGapId?: SortOrder
+    weekNumber?: SortOrder
+    orderInWeek?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    resources?: SortOrder
+    completed?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RoadmapTaskAvgOrderByAggregateInput = {
+    weekNumber?: SortOrder
+    orderInWeek?: SortOrder
+  }
+
+  export type RoadmapTaskMaxOrderByAggregateInput = {
+    id?: SortOrder
+    roadmapId?: SortOrder
+    skillGapId?: SortOrder
+    weekNumber?: SortOrder
+    orderInWeek?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    completed?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RoadmapTaskMinOrderByAggregateInput = {
+    id?: SortOrder
+    roadmapId?: SortOrder
+    skillGapId?: SortOrder
+    weekNumber?: SortOrder
+    orderInWeek?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    completed?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RoadmapTaskSumOrderByAggregateInput = {
+    weekNumber?: SortOrder
+    orderInWeek?: SortOrder
+  }
+
+  export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type EnumAnalysisEventTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnalysisEventType | EnumAnalysisEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AnalysisEventType[] | ListEnumAnalysisEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnalysisEventType[] | ListEnumAnalysisEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnalysisEventTypeFilter<$PrismaModel> | $Enums.AnalysisEventType
+  }
+
+  export type AnalysisEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    type?: SortOrder
+    payload?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AnalysisEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AnalysisEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    careerAnalysisId?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumAnalysisEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnalysisEventType | EnumAnalysisEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AnalysisEventType[] | ListEnumAnalysisEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnalysisEventType[] | ListEnumAnalysisEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnalysisEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.AnalysisEventType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAnalysisEventTypeFilter<$PrismaModel>
+    _max?: NestedEnumAnalysisEventTypeFilter<$PrismaModel>
   }
 
   export type ResumeCreateNestedManyWithoutUserInput = {
@@ -8618,11 +19207,11 @@ export namespace Prisma {
     connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
   }
 
-  export type AnalysisCreateNestedManyWithoutUserInput = {
-    create?: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput> | AnalysisCreateWithoutUserInput[] | AnalysisUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AnalysisCreateOrConnectWithoutUserInput | AnalysisCreateOrConnectWithoutUserInput[]
-    createMany?: AnalysisCreateManyUserInputEnvelope
-    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+  export type CareerAnalysisCreateNestedManyWithoutUserInput = {
+    create?: XOR<CareerAnalysisCreateWithoutUserInput, CareerAnalysisUncheckedCreateWithoutUserInput> | CareerAnalysisCreateWithoutUserInput[] | CareerAnalysisUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutUserInput | CareerAnalysisCreateOrConnectWithoutUserInput[]
+    createMany?: CareerAnalysisCreateManyUserInputEnvelope
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
   }
 
   export type ResumeUncheckedCreateNestedManyWithoutUserInput = {
@@ -8639,11 +19228,11 @@ export namespace Prisma {
     connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
   }
 
-  export type AnalysisUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput> | AnalysisCreateWithoutUserInput[] | AnalysisUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AnalysisCreateOrConnectWithoutUserInput | AnalysisCreateOrConnectWithoutUserInput[]
-    createMany?: AnalysisCreateManyUserInputEnvelope
-    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+  export type CareerAnalysisUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CareerAnalysisCreateWithoutUserInput, CareerAnalysisUncheckedCreateWithoutUserInput> | CareerAnalysisCreateWithoutUserInput[] | CareerAnalysisUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutUserInput | CareerAnalysisCreateOrConnectWithoutUserInput[]
+    createMany?: CareerAnalysisCreateManyUserInputEnvelope
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -8682,18 +19271,18 @@ export namespace Prisma {
     deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
   }
 
-  export type AnalysisUpdateManyWithoutUserNestedInput = {
-    create?: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput> | AnalysisCreateWithoutUserInput[] | AnalysisUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AnalysisCreateOrConnectWithoutUserInput | AnalysisCreateOrConnectWithoutUserInput[]
-    upsert?: AnalysisUpsertWithWhereUniqueWithoutUserInput | AnalysisUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: AnalysisCreateManyUserInputEnvelope
-    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    update?: AnalysisUpdateWithWhereUniqueWithoutUserInput | AnalysisUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: AnalysisUpdateManyWithWhereWithoutUserInput | AnalysisUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+  export type CareerAnalysisUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutUserInput, CareerAnalysisUncheckedCreateWithoutUserInput> | CareerAnalysisCreateWithoutUserInput[] | CareerAnalysisUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutUserInput | CareerAnalysisCreateOrConnectWithoutUserInput[]
+    upsert?: CareerAnalysisUpsertWithWhereUniqueWithoutUserInput | CareerAnalysisUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CareerAnalysisCreateManyUserInputEnvelope
+    set?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    disconnect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    delete?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    update?: CareerAnalysisUpdateWithWhereUniqueWithoutUserInput | CareerAnalysisUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CareerAnalysisUpdateManyWithWhereWithoutUserInput | CareerAnalysisUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CareerAnalysisScalarWhereInput | CareerAnalysisScalarWhereInput[]
   }
 
   export type ResumeUncheckedUpdateManyWithoutUserNestedInput = {
@@ -8724,18 +19313,18 @@ export namespace Prisma {
     deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
   }
 
-  export type AnalysisUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput> | AnalysisCreateWithoutUserInput[] | AnalysisUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AnalysisCreateOrConnectWithoutUserInput | AnalysisCreateOrConnectWithoutUserInput[]
-    upsert?: AnalysisUpsertWithWhereUniqueWithoutUserInput | AnalysisUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: AnalysisCreateManyUserInputEnvelope
-    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    update?: AnalysisUpdateWithWhereUniqueWithoutUserInput | AnalysisUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: AnalysisUpdateManyWithWhereWithoutUserInput | AnalysisUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+  export type CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutUserInput, CareerAnalysisUncheckedCreateWithoutUserInput> | CareerAnalysisCreateWithoutUserInput[] | CareerAnalysisUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutUserInput | CareerAnalysisCreateOrConnectWithoutUserInput[]
+    upsert?: CareerAnalysisUpsertWithWhereUniqueWithoutUserInput | CareerAnalysisUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CareerAnalysisCreateManyUserInputEnvelope
+    set?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    disconnect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    delete?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    update?: CareerAnalysisUpdateWithWhereUniqueWithoutUserInput | CareerAnalysisUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CareerAnalysisUpdateManyWithWhereWithoutUserInput | CareerAnalysisUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CareerAnalysisScalarWhereInput | CareerAnalysisScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutRefreshTokensInput = {
@@ -8762,18 +19351,18 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type AnalysisCreateNestedManyWithoutResumeInput = {
-    create?: XOR<AnalysisCreateWithoutResumeInput, AnalysisUncheckedCreateWithoutResumeInput> | AnalysisCreateWithoutResumeInput[] | AnalysisUncheckedCreateWithoutResumeInput[]
-    connectOrCreate?: AnalysisCreateOrConnectWithoutResumeInput | AnalysisCreateOrConnectWithoutResumeInput[]
-    createMany?: AnalysisCreateManyResumeInputEnvelope
-    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+  export type CareerAnalysisCreateNestedManyWithoutResumeInput = {
+    create?: XOR<CareerAnalysisCreateWithoutResumeInput, CareerAnalysisUncheckedCreateWithoutResumeInput> | CareerAnalysisCreateWithoutResumeInput[] | CareerAnalysisUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutResumeInput | CareerAnalysisCreateOrConnectWithoutResumeInput[]
+    createMany?: CareerAnalysisCreateManyResumeInputEnvelope
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
   }
 
-  export type AnalysisUncheckedCreateNestedManyWithoutResumeInput = {
-    create?: XOR<AnalysisCreateWithoutResumeInput, AnalysisUncheckedCreateWithoutResumeInput> | AnalysisCreateWithoutResumeInput[] | AnalysisUncheckedCreateWithoutResumeInput[]
-    connectOrCreate?: AnalysisCreateOrConnectWithoutResumeInput | AnalysisCreateOrConnectWithoutResumeInput[]
-    createMany?: AnalysisCreateManyResumeInputEnvelope
-    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
+  export type CareerAnalysisUncheckedCreateNestedManyWithoutResumeInput = {
+    create?: XOR<CareerAnalysisCreateWithoutResumeInput, CareerAnalysisUncheckedCreateWithoutResumeInput> | CareerAnalysisCreateWithoutResumeInput[] | CareerAnalysisUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutResumeInput | CareerAnalysisCreateOrConnectWithoutResumeInput[]
+    createMany?: CareerAnalysisCreateManyResumeInputEnvelope
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -8796,38 +19385,283 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutResumesInput, UserUpdateWithoutResumesInput>, UserUncheckedUpdateWithoutResumesInput>
   }
 
-  export type AnalysisUpdateManyWithoutResumeNestedInput = {
-    create?: XOR<AnalysisCreateWithoutResumeInput, AnalysisUncheckedCreateWithoutResumeInput> | AnalysisCreateWithoutResumeInput[] | AnalysisUncheckedCreateWithoutResumeInput[]
-    connectOrCreate?: AnalysisCreateOrConnectWithoutResumeInput | AnalysisCreateOrConnectWithoutResumeInput[]
-    upsert?: AnalysisUpsertWithWhereUniqueWithoutResumeInput | AnalysisUpsertWithWhereUniqueWithoutResumeInput[]
-    createMany?: AnalysisCreateManyResumeInputEnvelope
-    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    update?: AnalysisUpdateWithWhereUniqueWithoutResumeInput | AnalysisUpdateWithWhereUniqueWithoutResumeInput[]
-    updateMany?: AnalysisUpdateManyWithWhereWithoutResumeInput | AnalysisUpdateManyWithWhereWithoutResumeInput[]
-    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+  export type CareerAnalysisUpdateManyWithoutResumeNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutResumeInput, CareerAnalysisUncheckedCreateWithoutResumeInput> | CareerAnalysisCreateWithoutResumeInput[] | CareerAnalysisUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutResumeInput | CareerAnalysisCreateOrConnectWithoutResumeInput[]
+    upsert?: CareerAnalysisUpsertWithWhereUniqueWithoutResumeInput | CareerAnalysisUpsertWithWhereUniqueWithoutResumeInput[]
+    createMany?: CareerAnalysisCreateManyResumeInputEnvelope
+    set?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    disconnect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    delete?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    update?: CareerAnalysisUpdateWithWhereUniqueWithoutResumeInput | CareerAnalysisUpdateWithWhereUniqueWithoutResumeInput[]
+    updateMany?: CareerAnalysisUpdateManyWithWhereWithoutResumeInput | CareerAnalysisUpdateManyWithWhereWithoutResumeInput[]
+    deleteMany?: CareerAnalysisScalarWhereInput | CareerAnalysisScalarWhereInput[]
   }
 
-  export type AnalysisUncheckedUpdateManyWithoutResumeNestedInput = {
-    create?: XOR<AnalysisCreateWithoutResumeInput, AnalysisUncheckedCreateWithoutResumeInput> | AnalysisCreateWithoutResumeInput[] | AnalysisUncheckedCreateWithoutResumeInput[]
-    connectOrCreate?: AnalysisCreateOrConnectWithoutResumeInput | AnalysisCreateOrConnectWithoutResumeInput[]
-    upsert?: AnalysisUpsertWithWhereUniqueWithoutResumeInput | AnalysisUpsertWithWhereUniqueWithoutResumeInput[]
-    createMany?: AnalysisCreateManyResumeInputEnvelope
-    set?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    disconnect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    delete?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    connect?: AnalysisWhereUniqueInput | AnalysisWhereUniqueInput[]
-    update?: AnalysisUpdateWithWhereUniqueWithoutResumeInput | AnalysisUpdateWithWhereUniqueWithoutResumeInput[]
-    updateMany?: AnalysisUpdateManyWithWhereWithoutResumeInput | AnalysisUpdateManyWithWhereWithoutResumeInput[]
-    deleteMany?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
+  export type CareerAnalysisUncheckedUpdateManyWithoutResumeNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutResumeInput, CareerAnalysisUncheckedCreateWithoutResumeInput> | CareerAnalysisCreateWithoutResumeInput[] | CareerAnalysisUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutResumeInput | CareerAnalysisCreateOrConnectWithoutResumeInput[]
+    upsert?: CareerAnalysisUpsertWithWhereUniqueWithoutResumeInput | CareerAnalysisUpsertWithWhereUniqueWithoutResumeInput[]
+    createMany?: CareerAnalysisCreateManyResumeInputEnvelope
+    set?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    disconnect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    delete?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    update?: CareerAnalysisUpdateWithWhereUniqueWithoutResumeInput | CareerAnalysisUpdateWithWhereUniqueWithoutResumeInput[]
+    updateMany?: CareerAnalysisUpdateManyWithWhereWithoutResumeInput | CareerAnalysisUpdateManyWithWhereWithoutResumeInput[]
+    deleteMany?: CareerAnalysisScalarWhereInput | CareerAnalysisScalarWhereInput[]
   }
 
-  export type ResumeCreateNestedOneWithoutAnalysesInput = {
-    create?: XOR<ResumeCreateWithoutAnalysesInput, ResumeUncheckedCreateWithoutAnalysesInput>
-    connectOrCreate?: ResumeCreateOrConnectWithoutAnalysesInput
-    connect?: ResumeWhereUniqueInput
+  export type SkillCreatealiasesInput = {
+    set: string[]
+  }
+
+  export type RoleSkillRequirementCreateNestedManyWithoutSkillInput = {
+    create?: XOR<RoleSkillRequirementCreateWithoutSkillInput, RoleSkillRequirementUncheckedCreateWithoutSkillInput> | RoleSkillRequirementCreateWithoutSkillInput[] | RoleSkillRequirementUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: RoleSkillRequirementCreateOrConnectWithoutSkillInput | RoleSkillRequirementCreateOrConnectWithoutSkillInput[]
+    createMany?: RoleSkillRequirementCreateManySkillInputEnvelope
+    connect?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+  }
+
+  export type CandidateSkillEvidenceCreateNestedManyWithoutSkillInput = {
+    create?: XOR<CandidateSkillEvidenceCreateWithoutSkillInput, CandidateSkillEvidenceUncheckedCreateWithoutSkillInput> | CandidateSkillEvidenceCreateWithoutSkillInput[] | CandidateSkillEvidenceUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: CandidateSkillEvidenceCreateOrConnectWithoutSkillInput | CandidateSkillEvidenceCreateOrConnectWithoutSkillInput[]
+    createMany?: CandidateSkillEvidenceCreateManySkillInputEnvelope
+    connect?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+  }
+
+  export type SkillGapCreateNestedManyWithoutSkillInput = {
+    create?: XOR<SkillGapCreateWithoutSkillInput, SkillGapUncheckedCreateWithoutSkillInput> | SkillGapCreateWithoutSkillInput[] | SkillGapUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: SkillGapCreateOrConnectWithoutSkillInput | SkillGapCreateOrConnectWithoutSkillInput[]
+    createMany?: SkillGapCreateManySkillInputEnvelope
+    connect?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+  }
+
+  export type RoleSkillRequirementUncheckedCreateNestedManyWithoutSkillInput = {
+    create?: XOR<RoleSkillRequirementCreateWithoutSkillInput, RoleSkillRequirementUncheckedCreateWithoutSkillInput> | RoleSkillRequirementCreateWithoutSkillInput[] | RoleSkillRequirementUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: RoleSkillRequirementCreateOrConnectWithoutSkillInput | RoleSkillRequirementCreateOrConnectWithoutSkillInput[]
+    createMany?: RoleSkillRequirementCreateManySkillInputEnvelope
+    connect?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+  }
+
+  export type CandidateSkillEvidenceUncheckedCreateNestedManyWithoutSkillInput = {
+    create?: XOR<CandidateSkillEvidenceCreateWithoutSkillInput, CandidateSkillEvidenceUncheckedCreateWithoutSkillInput> | CandidateSkillEvidenceCreateWithoutSkillInput[] | CandidateSkillEvidenceUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: CandidateSkillEvidenceCreateOrConnectWithoutSkillInput | CandidateSkillEvidenceCreateOrConnectWithoutSkillInput[]
+    createMany?: CandidateSkillEvidenceCreateManySkillInputEnvelope
+    connect?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+  }
+
+  export type SkillGapUncheckedCreateNestedManyWithoutSkillInput = {
+    create?: XOR<SkillGapCreateWithoutSkillInput, SkillGapUncheckedCreateWithoutSkillInput> | SkillGapCreateWithoutSkillInput[] | SkillGapUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: SkillGapCreateOrConnectWithoutSkillInput | SkillGapCreateOrConnectWithoutSkillInput[]
+    createMany?: SkillGapCreateManySkillInputEnvelope
+    connect?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+  }
+
+  export type SkillUpdatealiasesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type RoleSkillRequirementUpdateManyWithoutSkillNestedInput = {
+    create?: XOR<RoleSkillRequirementCreateWithoutSkillInput, RoleSkillRequirementUncheckedCreateWithoutSkillInput> | RoleSkillRequirementCreateWithoutSkillInput[] | RoleSkillRequirementUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: RoleSkillRequirementCreateOrConnectWithoutSkillInput | RoleSkillRequirementCreateOrConnectWithoutSkillInput[]
+    upsert?: RoleSkillRequirementUpsertWithWhereUniqueWithoutSkillInput | RoleSkillRequirementUpsertWithWhereUniqueWithoutSkillInput[]
+    createMany?: RoleSkillRequirementCreateManySkillInputEnvelope
+    set?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    disconnect?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    delete?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    connect?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    update?: RoleSkillRequirementUpdateWithWhereUniqueWithoutSkillInput | RoleSkillRequirementUpdateWithWhereUniqueWithoutSkillInput[]
+    updateMany?: RoleSkillRequirementUpdateManyWithWhereWithoutSkillInput | RoleSkillRequirementUpdateManyWithWhereWithoutSkillInput[]
+    deleteMany?: RoleSkillRequirementScalarWhereInput | RoleSkillRequirementScalarWhereInput[]
+  }
+
+  export type CandidateSkillEvidenceUpdateManyWithoutSkillNestedInput = {
+    create?: XOR<CandidateSkillEvidenceCreateWithoutSkillInput, CandidateSkillEvidenceUncheckedCreateWithoutSkillInput> | CandidateSkillEvidenceCreateWithoutSkillInput[] | CandidateSkillEvidenceUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: CandidateSkillEvidenceCreateOrConnectWithoutSkillInput | CandidateSkillEvidenceCreateOrConnectWithoutSkillInput[]
+    upsert?: CandidateSkillEvidenceUpsertWithWhereUniqueWithoutSkillInput | CandidateSkillEvidenceUpsertWithWhereUniqueWithoutSkillInput[]
+    createMany?: CandidateSkillEvidenceCreateManySkillInputEnvelope
+    set?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    disconnect?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    delete?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    connect?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    update?: CandidateSkillEvidenceUpdateWithWhereUniqueWithoutSkillInput | CandidateSkillEvidenceUpdateWithWhereUniqueWithoutSkillInput[]
+    updateMany?: CandidateSkillEvidenceUpdateManyWithWhereWithoutSkillInput | CandidateSkillEvidenceUpdateManyWithWhereWithoutSkillInput[]
+    deleteMany?: CandidateSkillEvidenceScalarWhereInput | CandidateSkillEvidenceScalarWhereInput[]
+  }
+
+  export type SkillGapUpdateManyWithoutSkillNestedInput = {
+    create?: XOR<SkillGapCreateWithoutSkillInput, SkillGapUncheckedCreateWithoutSkillInput> | SkillGapCreateWithoutSkillInput[] | SkillGapUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: SkillGapCreateOrConnectWithoutSkillInput | SkillGapCreateOrConnectWithoutSkillInput[]
+    upsert?: SkillGapUpsertWithWhereUniqueWithoutSkillInput | SkillGapUpsertWithWhereUniqueWithoutSkillInput[]
+    createMany?: SkillGapCreateManySkillInputEnvelope
+    set?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    disconnect?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    delete?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    connect?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    update?: SkillGapUpdateWithWhereUniqueWithoutSkillInput | SkillGapUpdateWithWhereUniqueWithoutSkillInput[]
+    updateMany?: SkillGapUpdateManyWithWhereWithoutSkillInput | SkillGapUpdateManyWithWhereWithoutSkillInput[]
+    deleteMany?: SkillGapScalarWhereInput | SkillGapScalarWhereInput[]
+  }
+
+  export type RoleSkillRequirementUncheckedUpdateManyWithoutSkillNestedInput = {
+    create?: XOR<RoleSkillRequirementCreateWithoutSkillInput, RoleSkillRequirementUncheckedCreateWithoutSkillInput> | RoleSkillRequirementCreateWithoutSkillInput[] | RoleSkillRequirementUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: RoleSkillRequirementCreateOrConnectWithoutSkillInput | RoleSkillRequirementCreateOrConnectWithoutSkillInput[]
+    upsert?: RoleSkillRequirementUpsertWithWhereUniqueWithoutSkillInput | RoleSkillRequirementUpsertWithWhereUniqueWithoutSkillInput[]
+    createMany?: RoleSkillRequirementCreateManySkillInputEnvelope
+    set?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    disconnect?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    delete?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    connect?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    update?: RoleSkillRequirementUpdateWithWhereUniqueWithoutSkillInput | RoleSkillRequirementUpdateWithWhereUniqueWithoutSkillInput[]
+    updateMany?: RoleSkillRequirementUpdateManyWithWhereWithoutSkillInput | RoleSkillRequirementUpdateManyWithWhereWithoutSkillInput[]
+    deleteMany?: RoleSkillRequirementScalarWhereInput | RoleSkillRequirementScalarWhereInput[]
+  }
+
+  export type CandidateSkillEvidenceUncheckedUpdateManyWithoutSkillNestedInput = {
+    create?: XOR<CandidateSkillEvidenceCreateWithoutSkillInput, CandidateSkillEvidenceUncheckedCreateWithoutSkillInput> | CandidateSkillEvidenceCreateWithoutSkillInput[] | CandidateSkillEvidenceUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: CandidateSkillEvidenceCreateOrConnectWithoutSkillInput | CandidateSkillEvidenceCreateOrConnectWithoutSkillInput[]
+    upsert?: CandidateSkillEvidenceUpsertWithWhereUniqueWithoutSkillInput | CandidateSkillEvidenceUpsertWithWhereUniqueWithoutSkillInput[]
+    createMany?: CandidateSkillEvidenceCreateManySkillInputEnvelope
+    set?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    disconnect?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    delete?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    connect?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    update?: CandidateSkillEvidenceUpdateWithWhereUniqueWithoutSkillInput | CandidateSkillEvidenceUpdateWithWhereUniqueWithoutSkillInput[]
+    updateMany?: CandidateSkillEvidenceUpdateManyWithWhereWithoutSkillInput | CandidateSkillEvidenceUpdateManyWithWhereWithoutSkillInput[]
+    deleteMany?: CandidateSkillEvidenceScalarWhereInput | CandidateSkillEvidenceScalarWhereInput[]
+  }
+
+  export type SkillGapUncheckedUpdateManyWithoutSkillNestedInput = {
+    create?: XOR<SkillGapCreateWithoutSkillInput, SkillGapUncheckedCreateWithoutSkillInput> | SkillGapCreateWithoutSkillInput[] | SkillGapUncheckedCreateWithoutSkillInput[]
+    connectOrCreate?: SkillGapCreateOrConnectWithoutSkillInput | SkillGapCreateOrConnectWithoutSkillInput[]
+    upsert?: SkillGapUpsertWithWhereUniqueWithoutSkillInput | SkillGapUpsertWithWhereUniqueWithoutSkillInput[]
+    createMany?: SkillGapCreateManySkillInputEnvelope
+    set?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    disconnect?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    delete?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    connect?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    update?: SkillGapUpdateWithWhereUniqueWithoutSkillInput | SkillGapUpdateWithWhereUniqueWithoutSkillInput[]
+    updateMany?: SkillGapUpdateManyWithWhereWithoutSkillInput | SkillGapUpdateManyWithWhereWithoutSkillInput[]
+    deleteMany?: SkillGapScalarWhereInput | SkillGapScalarWhereInput[]
+  }
+
+  export type RoleSkillRequirementCreateNestedManyWithoutRoleInput = {
+    create?: XOR<RoleSkillRequirementCreateWithoutRoleInput, RoleSkillRequirementUncheckedCreateWithoutRoleInput> | RoleSkillRequirementCreateWithoutRoleInput[] | RoleSkillRequirementUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: RoleSkillRequirementCreateOrConnectWithoutRoleInput | RoleSkillRequirementCreateOrConnectWithoutRoleInput[]
+    createMany?: RoleSkillRequirementCreateManyRoleInputEnvelope
+    connect?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+  }
+
+  export type CareerAnalysisCreateNestedManyWithoutRoleInput = {
+    create?: XOR<CareerAnalysisCreateWithoutRoleInput, CareerAnalysisUncheckedCreateWithoutRoleInput> | CareerAnalysisCreateWithoutRoleInput[] | CareerAnalysisUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutRoleInput | CareerAnalysisCreateOrConnectWithoutRoleInput[]
+    createMany?: CareerAnalysisCreateManyRoleInputEnvelope
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+  }
+
+  export type RoleSkillRequirementUncheckedCreateNestedManyWithoutRoleInput = {
+    create?: XOR<RoleSkillRequirementCreateWithoutRoleInput, RoleSkillRequirementUncheckedCreateWithoutRoleInput> | RoleSkillRequirementCreateWithoutRoleInput[] | RoleSkillRequirementUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: RoleSkillRequirementCreateOrConnectWithoutRoleInput | RoleSkillRequirementCreateOrConnectWithoutRoleInput[]
+    createMany?: RoleSkillRequirementCreateManyRoleInputEnvelope
+    connect?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+  }
+
+  export type CareerAnalysisUncheckedCreateNestedManyWithoutRoleInput = {
+    create?: XOR<CareerAnalysisCreateWithoutRoleInput, CareerAnalysisUncheckedCreateWithoutRoleInput> | CareerAnalysisCreateWithoutRoleInput[] | CareerAnalysisUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutRoleInput | CareerAnalysisCreateOrConnectWithoutRoleInput[]
+    createMany?: CareerAnalysisCreateManyRoleInputEnvelope
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+  }
+
+  export type RoleSkillRequirementUpdateManyWithoutRoleNestedInput = {
+    create?: XOR<RoleSkillRequirementCreateWithoutRoleInput, RoleSkillRequirementUncheckedCreateWithoutRoleInput> | RoleSkillRequirementCreateWithoutRoleInput[] | RoleSkillRequirementUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: RoleSkillRequirementCreateOrConnectWithoutRoleInput | RoleSkillRequirementCreateOrConnectWithoutRoleInput[]
+    upsert?: RoleSkillRequirementUpsertWithWhereUniqueWithoutRoleInput | RoleSkillRequirementUpsertWithWhereUniqueWithoutRoleInput[]
+    createMany?: RoleSkillRequirementCreateManyRoleInputEnvelope
+    set?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    disconnect?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    delete?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    connect?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    update?: RoleSkillRequirementUpdateWithWhereUniqueWithoutRoleInput | RoleSkillRequirementUpdateWithWhereUniqueWithoutRoleInput[]
+    updateMany?: RoleSkillRequirementUpdateManyWithWhereWithoutRoleInput | RoleSkillRequirementUpdateManyWithWhereWithoutRoleInput[]
+    deleteMany?: RoleSkillRequirementScalarWhereInput | RoleSkillRequirementScalarWhereInput[]
+  }
+
+  export type CareerAnalysisUpdateManyWithoutRoleNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutRoleInput, CareerAnalysisUncheckedCreateWithoutRoleInput> | CareerAnalysisCreateWithoutRoleInput[] | CareerAnalysisUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutRoleInput | CareerAnalysisCreateOrConnectWithoutRoleInput[]
+    upsert?: CareerAnalysisUpsertWithWhereUniqueWithoutRoleInput | CareerAnalysisUpsertWithWhereUniqueWithoutRoleInput[]
+    createMany?: CareerAnalysisCreateManyRoleInputEnvelope
+    set?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    disconnect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    delete?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    update?: CareerAnalysisUpdateWithWhereUniqueWithoutRoleInput | CareerAnalysisUpdateWithWhereUniqueWithoutRoleInput[]
+    updateMany?: CareerAnalysisUpdateManyWithWhereWithoutRoleInput | CareerAnalysisUpdateManyWithWhereWithoutRoleInput[]
+    deleteMany?: CareerAnalysisScalarWhereInput | CareerAnalysisScalarWhereInput[]
+  }
+
+  export type RoleSkillRequirementUncheckedUpdateManyWithoutRoleNestedInput = {
+    create?: XOR<RoleSkillRequirementCreateWithoutRoleInput, RoleSkillRequirementUncheckedCreateWithoutRoleInput> | RoleSkillRequirementCreateWithoutRoleInput[] | RoleSkillRequirementUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: RoleSkillRequirementCreateOrConnectWithoutRoleInput | RoleSkillRequirementCreateOrConnectWithoutRoleInput[]
+    upsert?: RoleSkillRequirementUpsertWithWhereUniqueWithoutRoleInput | RoleSkillRequirementUpsertWithWhereUniqueWithoutRoleInput[]
+    createMany?: RoleSkillRequirementCreateManyRoleInputEnvelope
+    set?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    disconnect?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    delete?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    connect?: RoleSkillRequirementWhereUniqueInput | RoleSkillRequirementWhereUniqueInput[]
+    update?: RoleSkillRequirementUpdateWithWhereUniqueWithoutRoleInput | RoleSkillRequirementUpdateWithWhereUniqueWithoutRoleInput[]
+    updateMany?: RoleSkillRequirementUpdateManyWithWhereWithoutRoleInput | RoleSkillRequirementUpdateManyWithWhereWithoutRoleInput[]
+    deleteMany?: RoleSkillRequirementScalarWhereInput | RoleSkillRequirementScalarWhereInput[]
+  }
+
+  export type CareerAnalysisUncheckedUpdateManyWithoutRoleNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutRoleInput, CareerAnalysisUncheckedCreateWithoutRoleInput> | CareerAnalysisCreateWithoutRoleInput[] | CareerAnalysisUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutRoleInput | CareerAnalysisCreateOrConnectWithoutRoleInput[]
+    upsert?: CareerAnalysisUpsertWithWhereUniqueWithoutRoleInput | CareerAnalysisUpsertWithWhereUniqueWithoutRoleInput[]
+    createMany?: CareerAnalysisCreateManyRoleInputEnvelope
+    set?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    disconnect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    delete?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    update?: CareerAnalysisUpdateWithWhereUniqueWithoutRoleInput | CareerAnalysisUpdateWithWhereUniqueWithoutRoleInput[]
+    updateMany?: CareerAnalysisUpdateManyWithWhereWithoutRoleInput | CareerAnalysisUpdateManyWithWhereWithoutRoleInput[]
+    deleteMany?: CareerAnalysisScalarWhereInput | CareerAnalysisScalarWhereInput[]
+  }
+
+  export type RoleCreateNestedOneWithoutRequirementsInput = {
+    create?: XOR<RoleCreateWithoutRequirementsInput, RoleUncheckedCreateWithoutRequirementsInput>
+    connectOrCreate?: RoleCreateOrConnectWithoutRequirementsInput
+    connect?: RoleWhereUniqueInput
+  }
+
+  export type SkillCreateNestedOneWithoutRequirementsInput = {
+    create?: XOR<SkillCreateWithoutRequirementsInput, SkillUncheckedCreateWithoutRequirementsInput>
+    connectOrCreate?: SkillCreateOrConnectWithoutRequirementsInput
+    connect?: SkillWhereUniqueInput
+  }
+
+  export type EnumSkillImportanceFieldUpdateOperationsInput = {
+    set?: $Enums.SkillImportance
+  }
+
+  export type RoleUpdateOneRequiredWithoutRequirementsNestedInput = {
+    create?: XOR<RoleCreateWithoutRequirementsInput, RoleUncheckedCreateWithoutRequirementsInput>
+    connectOrCreate?: RoleCreateOrConnectWithoutRequirementsInput
+    upsert?: RoleUpsertWithoutRequirementsInput
+    connect?: RoleWhereUniqueInput
+    update?: XOR<XOR<RoleUpdateToOneWithWhereWithoutRequirementsInput, RoleUpdateWithoutRequirementsInput>, RoleUncheckedUpdateWithoutRequirementsInput>
+  }
+
+  export type SkillUpdateOneRequiredWithoutRequirementsNestedInput = {
+    create?: XOR<SkillCreateWithoutRequirementsInput, SkillUncheckedCreateWithoutRequirementsInput>
+    connectOrCreate?: SkillCreateOrConnectWithoutRequirementsInput
+    upsert?: SkillUpsertWithoutRequirementsInput
+    connect?: SkillWhereUniqueInput
+    update?: XOR<XOR<SkillUpdateToOneWithWhereWithoutRequirementsInput, SkillUpdateWithoutRequirementsInput>, SkillUncheckedUpdateWithoutRequirementsInput>
   }
 
   export type UserCreateNestedOneWithoutAnalysesInput = {
@@ -8836,26 +19670,82 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type SuggestionCreateNestedManyWithoutAnalysisInput = {
-    create?: XOR<SuggestionCreateWithoutAnalysisInput, SuggestionUncheckedCreateWithoutAnalysisInput> | SuggestionCreateWithoutAnalysisInput[] | SuggestionUncheckedCreateWithoutAnalysisInput[]
-    connectOrCreate?: SuggestionCreateOrConnectWithoutAnalysisInput | SuggestionCreateOrConnectWithoutAnalysisInput[]
-    createMany?: SuggestionCreateManyAnalysisInputEnvelope
-    connect?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
-  }
-
-  export type SuggestionUncheckedCreateNestedManyWithoutAnalysisInput = {
-    create?: XOR<SuggestionCreateWithoutAnalysisInput, SuggestionUncheckedCreateWithoutAnalysisInput> | SuggestionCreateWithoutAnalysisInput[] | SuggestionUncheckedCreateWithoutAnalysisInput[]
-    connectOrCreate?: SuggestionCreateOrConnectWithoutAnalysisInput | SuggestionCreateOrConnectWithoutAnalysisInput[]
-    createMany?: SuggestionCreateManyAnalysisInputEnvelope
-    connect?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
-  }
-
-  export type ResumeUpdateOneRequiredWithoutAnalysesNestedInput = {
+  export type ResumeCreateNestedOneWithoutAnalysesInput = {
     create?: XOR<ResumeCreateWithoutAnalysesInput, ResumeUncheckedCreateWithoutAnalysesInput>
     connectOrCreate?: ResumeCreateOrConnectWithoutAnalysesInput
-    upsert?: ResumeUpsertWithoutAnalysesInput
     connect?: ResumeWhereUniqueInput
-    update?: XOR<XOR<ResumeUpdateToOneWithWhereWithoutAnalysesInput, ResumeUpdateWithoutAnalysesInput>, ResumeUncheckedUpdateWithoutAnalysesInput>
+  }
+
+  export type RoleCreateNestedOneWithoutAnalysesInput = {
+    create?: XOR<RoleCreateWithoutAnalysesInput, RoleUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: RoleCreateOrConnectWithoutAnalysesInput
+    connect?: RoleWhereUniqueInput
+  }
+
+  export type CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput = {
+    create?: XOR<CandidateSkillEvidenceCreateWithoutCareerAnalysisInput, CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput> | CandidateSkillEvidenceCreateWithoutCareerAnalysisInput[] | CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput[]
+    connectOrCreate?: CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput | CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput[]
+    createMany?: CandidateSkillEvidenceCreateManyCareerAnalysisInputEnvelope
+    connect?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+  }
+
+  export type SkillGapCreateNestedManyWithoutCareerAnalysisInput = {
+    create?: XOR<SkillGapCreateWithoutCareerAnalysisInput, SkillGapUncheckedCreateWithoutCareerAnalysisInput> | SkillGapCreateWithoutCareerAnalysisInput[] | SkillGapUncheckedCreateWithoutCareerAnalysisInput[]
+    connectOrCreate?: SkillGapCreateOrConnectWithoutCareerAnalysisInput | SkillGapCreateOrConnectWithoutCareerAnalysisInput[]
+    createMany?: SkillGapCreateManyCareerAnalysisInputEnvelope
+    connect?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+  }
+
+  export type RoadmapCreateNestedOneWithoutCareerAnalysisInput = {
+    create?: XOR<RoadmapCreateWithoutCareerAnalysisInput, RoadmapUncheckedCreateWithoutCareerAnalysisInput>
+    connectOrCreate?: RoadmapCreateOrConnectWithoutCareerAnalysisInput
+    connect?: RoadmapWhereUniqueInput
+  }
+
+  export type AnalysisEventCreateNestedManyWithoutCareerAnalysisInput = {
+    create?: XOR<AnalysisEventCreateWithoutCareerAnalysisInput, AnalysisEventUncheckedCreateWithoutCareerAnalysisInput> | AnalysisEventCreateWithoutCareerAnalysisInput[] | AnalysisEventUncheckedCreateWithoutCareerAnalysisInput[]
+    connectOrCreate?: AnalysisEventCreateOrConnectWithoutCareerAnalysisInput | AnalysisEventCreateOrConnectWithoutCareerAnalysisInput[]
+    createMany?: AnalysisEventCreateManyCareerAnalysisInputEnvelope
+    connect?: AnalysisEventWhereUniqueInput | AnalysisEventWhereUniqueInput[]
+  }
+
+  export type CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput = {
+    create?: XOR<CandidateSkillEvidenceCreateWithoutCareerAnalysisInput, CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput> | CandidateSkillEvidenceCreateWithoutCareerAnalysisInput[] | CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput[]
+    connectOrCreate?: CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput | CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput[]
+    createMany?: CandidateSkillEvidenceCreateManyCareerAnalysisInputEnvelope
+    connect?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+  }
+
+  export type SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput = {
+    create?: XOR<SkillGapCreateWithoutCareerAnalysisInput, SkillGapUncheckedCreateWithoutCareerAnalysisInput> | SkillGapCreateWithoutCareerAnalysisInput[] | SkillGapUncheckedCreateWithoutCareerAnalysisInput[]
+    connectOrCreate?: SkillGapCreateOrConnectWithoutCareerAnalysisInput | SkillGapCreateOrConnectWithoutCareerAnalysisInput[]
+    createMany?: SkillGapCreateManyCareerAnalysisInputEnvelope
+    connect?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+  }
+
+  export type RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput = {
+    create?: XOR<RoadmapCreateWithoutCareerAnalysisInput, RoadmapUncheckedCreateWithoutCareerAnalysisInput>
+    connectOrCreate?: RoadmapCreateOrConnectWithoutCareerAnalysisInput
+    connect?: RoadmapWhereUniqueInput
+  }
+
+  export type AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput = {
+    create?: XOR<AnalysisEventCreateWithoutCareerAnalysisInput, AnalysisEventUncheckedCreateWithoutCareerAnalysisInput> | AnalysisEventCreateWithoutCareerAnalysisInput[] | AnalysisEventUncheckedCreateWithoutCareerAnalysisInput[]
+    connectOrCreate?: AnalysisEventCreateOrConnectWithoutCareerAnalysisInput | AnalysisEventCreateOrConnectWithoutCareerAnalysisInput[]
+    createMany?: AnalysisEventCreateManyCareerAnalysisInputEnvelope
+    connect?: AnalysisEventWhereUniqueInput | AnalysisEventWhereUniqueInput[]
+  }
+
+  export type EnumCareerAnalysisStatusFieldUpdateOperationsInput = {
+    set?: $Enums.CareerAnalysisStatus
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type UserUpdateOneRequiredWithoutAnalysesNestedInput = {
@@ -8866,50 +19756,338 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAnalysesInput, UserUpdateWithoutAnalysesInput>, UserUncheckedUpdateWithoutAnalysesInput>
   }
 
-  export type SuggestionUpdateManyWithoutAnalysisNestedInput = {
-    create?: XOR<SuggestionCreateWithoutAnalysisInput, SuggestionUncheckedCreateWithoutAnalysisInput> | SuggestionCreateWithoutAnalysisInput[] | SuggestionUncheckedCreateWithoutAnalysisInput[]
-    connectOrCreate?: SuggestionCreateOrConnectWithoutAnalysisInput | SuggestionCreateOrConnectWithoutAnalysisInput[]
-    upsert?: SuggestionUpsertWithWhereUniqueWithoutAnalysisInput | SuggestionUpsertWithWhereUniqueWithoutAnalysisInput[]
-    createMany?: SuggestionCreateManyAnalysisInputEnvelope
-    set?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
-    disconnect?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
-    delete?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
-    connect?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
-    update?: SuggestionUpdateWithWhereUniqueWithoutAnalysisInput | SuggestionUpdateWithWhereUniqueWithoutAnalysisInput[]
-    updateMany?: SuggestionUpdateManyWithWhereWithoutAnalysisInput | SuggestionUpdateManyWithWhereWithoutAnalysisInput[]
-    deleteMany?: SuggestionScalarWhereInput | SuggestionScalarWhereInput[]
+  export type ResumeUpdateOneRequiredWithoutAnalysesNestedInput = {
+    create?: XOR<ResumeCreateWithoutAnalysesInput, ResumeUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: ResumeCreateOrConnectWithoutAnalysesInput
+    upsert?: ResumeUpsertWithoutAnalysesInput
+    connect?: ResumeWhereUniqueInput
+    update?: XOR<XOR<ResumeUpdateToOneWithWhereWithoutAnalysesInput, ResumeUpdateWithoutAnalysesInput>, ResumeUncheckedUpdateWithoutAnalysesInput>
   }
 
-  export type SuggestionUncheckedUpdateManyWithoutAnalysisNestedInput = {
-    create?: XOR<SuggestionCreateWithoutAnalysisInput, SuggestionUncheckedCreateWithoutAnalysisInput> | SuggestionCreateWithoutAnalysisInput[] | SuggestionUncheckedCreateWithoutAnalysisInput[]
-    connectOrCreate?: SuggestionCreateOrConnectWithoutAnalysisInput | SuggestionCreateOrConnectWithoutAnalysisInput[]
-    upsert?: SuggestionUpsertWithWhereUniqueWithoutAnalysisInput | SuggestionUpsertWithWhereUniqueWithoutAnalysisInput[]
-    createMany?: SuggestionCreateManyAnalysisInputEnvelope
-    set?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
-    disconnect?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
-    delete?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
-    connect?: SuggestionWhereUniqueInput | SuggestionWhereUniqueInput[]
-    update?: SuggestionUpdateWithWhereUniqueWithoutAnalysisInput | SuggestionUpdateWithWhereUniqueWithoutAnalysisInput[]
-    updateMany?: SuggestionUpdateManyWithWhereWithoutAnalysisInput | SuggestionUpdateManyWithWhereWithoutAnalysisInput[]
-    deleteMany?: SuggestionScalarWhereInput | SuggestionScalarWhereInput[]
+  export type RoleUpdateOneRequiredWithoutAnalysesNestedInput = {
+    create?: XOR<RoleCreateWithoutAnalysesInput, RoleUncheckedCreateWithoutAnalysesInput>
+    connectOrCreate?: RoleCreateOrConnectWithoutAnalysesInput
+    upsert?: RoleUpsertWithoutAnalysesInput
+    connect?: RoleWhereUniqueInput
+    update?: XOR<XOR<RoleUpdateToOneWithWhereWithoutAnalysesInput, RoleUpdateWithoutAnalysesInput>, RoleUncheckedUpdateWithoutAnalysesInput>
   }
 
-  export type AnalysisCreateNestedOneWithoutSuggestionsInput = {
-    create?: XOR<AnalysisCreateWithoutSuggestionsInput, AnalysisUncheckedCreateWithoutSuggestionsInput>
-    connectOrCreate?: AnalysisCreateOrConnectWithoutSuggestionsInput
-    connect?: AnalysisWhereUniqueInput
+  export type CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput = {
+    create?: XOR<CandidateSkillEvidenceCreateWithoutCareerAnalysisInput, CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput> | CandidateSkillEvidenceCreateWithoutCareerAnalysisInput[] | CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput[]
+    connectOrCreate?: CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput | CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput[]
+    upsert?: CandidateSkillEvidenceUpsertWithWhereUniqueWithoutCareerAnalysisInput | CandidateSkillEvidenceUpsertWithWhereUniqueWithoutCareerAnalysisInput[]
+    createMany?: CandidateSkillEvidenceCreateManyCareerAnalysisInputEnvelope
+    set?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    disconnect?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    delete?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    connect?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    update?: CandidateSkillEvidenceUpdateWithWhereUniqueWithoutCareerAnalysisInput | CandidateSkillEvidenceUpdateWithWhereUniqueWithoutCareerAnalysisInput[]
+    updateMany?: CandidateSkillEvidenceUpdateManyWithWhereWithoutCareerAnalysisInput | CandidateSkillEvidenceUpdateManyWithWhereWithoutCareerAnalysisInput[]
+    deleteMany?: CandidateSkillEvidenceScalarWhereInput | CandidateSkillEvidenceScalarWhereInput[]
   }
 
-  export type EnumSuggestionStatusFieldUpdateOperationsInput = {
-    set?: $Enums.SuggestionStatus
+  export type SkillGapUpdateManyWithoutCareerAnalysisNestedInput = {
+    create?: XOR<SkillGapCreateWithoutCareerAnalysisInput, SkillGapUncheckedCreateWithoutCareerAnalysisInput> | SkillGapCreateWithoutCareerAnalysisInput[] | SkillGapUncheckedCreateWithoutCareerAnalysisInput[]
+    connectOrCreate?: SkillGapCreateOrConnectWithoutCareerAnalysisInput | SkillGapCreateOrConnectWithoutCareerAnalysisInput[]
+    upsert?: SkillGapUpsertWithWhereUniqueWithoutCareerAnalysisInput | SkillGapUpsertWithWhereUniqueWithoutCareerAnalysisInput[]
+    createMany?: SkillGapCreateManyCareerAnalysisInputEnvelope
+    set?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    disconnect?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    delete?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    connect?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    update?: SkillGapUpdateWithWhereUniqueWithoutCareerAnalysisInput | SkillGapUpdateWithWhereUniqueWithoutCareerAnalysisInput[]
+    updateMany?: SkillGapUpdateManyWithWhereWithoutCareerAnalysisInput | SkillGapUpdateManyWithWhereWithoutCareerAnalysisInput[]
+    deleteMany?: SkillGapScalarWhereInput | SkillGapScalarWhereInput[]
   }
 
-  export type AnalysisUpdateOneRequiredWithoutSuggestionsNestedInput = {
-    create?: XOR<AnalysisCreateWithoutSuggestionsInput, AnalysisUncheckedCreateWithoutSuggestionsInput>
-    connectOrCreate?: AnalysisCreateOrConnectWithoutSuggestionsInput
-    upsert?: AnalysisUpsertWithoutSuggestionsInput
-    connect?: AnalysisWhereUniqueInput
-    update?: XOR<XOR<AnalysisUpdateToOneWithWhereWithoutSuggestionsInput, AnalysisUpdateWithoutSuggestionsInput>, AnalysisUncheckedUpdateWithoutSuggestionsInput>
+  export type RoadmapUpdateOneWithoutCareerAnalysisNestedInput = {
+    create?: XOR<RoadmapCreateWithoutCareerAnalysisInput, RoadmapUncheckedCreateWithoutCareerAnalysisInput>
+    connectOrCreate?: RoadmapCreateOrConnectWithoutCareerAnalysisInput
+    upsert?: RoadmapUpsertWithoutCareerAnalysisInput
+    disconnect?: RoadmapWhereInput | boolean
+    delete?: RoadmapWhereInput | boolean
+    connect?: RoadmapWhereUniqueInput
+    update?: XOR<XOR<RoadmapUpdateToOneWithWhereWithoutCareerAnalysisInput, RoadmapUpdateWithoutCareerAnalysisInput>, RoadmapUncheckedUpdateWithoutCareerAnalysisInput>
+  }
+
+  export type AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput = {
+    create?: XOR<AnalysisEventCreateWithoutCareerAnalysisInput, AnalysisEventUncheckedCreateWithoutCareerAnalysisInput> | AnalysisEventCreateWithoutCareerAnalysisInput[] | AnalysisEventUncheckedCreateWithoutCareerAnalysisInput[]
+    connectOrCreate?: AnalysisEventCreateOrConnectWithoutCareerAnalysisInput | AnalysisEventCreateOrConnectWithoutCareerAnalysisInput[]
+    upsert?: AnalysisEventUpsertWithWhereUniqueWithoutCareerAnalysisInput | AnalysisEventUpsertWithWhereUniqueWithoutCareerAnalysisInput[]
+    createMany?: AnalysisEventCreateManyCareerAnalysisInputEnvelope
+    set?: AnalysisEventWhereUniqueInput | AnalysisEventWhereUniqueInput[]
+    disconnect?: AnalysisEventWhereUniqueInput | AnalysisEventWhereUniqueInput[]
+    delete?: AnalysisEventWhereUniqueInput | AnalysisEventWhereUniqueInput[]
+    connect?: AnalysisEventWhereUniqueInput | AnalysisEventWhereUniqueInput[]
+    update?: AnalysisEventUpdateWithWhereUniqueWithoutCareerAnalysisInput | AnalysisEventUpdateWithWhereUniqueWithoutCareerAnalysisInput[]
+    updateMany?: AnalysisEventUpdateManyWithWhereWithoutCareerAnalysisInput | AnalysisEventUpdateManyWithWhereWithoutCareerAnalysisInput[]
+    deleteMany?: AnalysisEventScalarWhereInput | AnalysisEventScalarWhereInput[]
+  }
+
+  export type CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput = {
+    create?: XOR<CandidateSkillEvidenceCreateWithoutCareerAnalysisInput, CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput> | CandidateSkillEvidenceCreateWithoutCareerAnalysisInput[] | CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput[]
+    connectOrCreate?: CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput | CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput[]
+    upsert?: CandidateSkillEvidenceUpsertWithWhereUniqueWithoutCareerAnalysisInput | CandidateSkillEvidenceUpsertWithWhereUniqueWithoutCareerAnalysisInput[]
+    createMany?: CandidateSkillEvidenceCreateManyCareerAnalysisInputEnvelope
+    set?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    disconnect?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    delete?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    connect?: CandidateSkillEvidenceWhereUniqueInput | CandidateSkillEvidenceWhereUniqueInput[]
+    update?: CandidateSkillEvidenceUpdateWithWhereUniqueWithoutCareerAnalysisInput | CandidateSkillEvidenceUpdateWithWhereUniqueWithoutCareerAnalysisInput[]
+    updateMany?: CandidateSkillEvidenceUpdateManyWithWhereWithoutCareerAnalysisInput | CandidateSkillEvidenceUpdateManyWithWhereWithoutCareerAnalysisInput[]
+    deleteMany?: CandidateSkillEvidenceScalarWhereInput | CandidateSkillEvidenceScalarWhereInput[]
+  }
+
+  export type SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput = {
+    create?: XOR<SkillGapCreateWithoutCareerAnalysisInput, SkillGapUncheckedCreateWithoutCareerAnalysisInput> | SkillGapCreateWithoutCareerAnalysisInput[] | SkillGapUncheckedCreateWithoutCareerAnalysisInput[]
+    connectOrCreate?: SkillGapCreateOrConnectWithoutCareerAnalysisInput | SkillGapCreateOrConnectWithoutCareerAnalysisInput[]
+    upsert?: SkillGapUpsertWithWhereUniqueWithoutCareerAnalysisInput | SkillGapUpsertWithWhereUniqueWithoutCareerAnalysisInput[]
+    createMany?: SkillGapCreateManyCareerAnalysisInputEnvelope
+    set?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    disconnect?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    delete?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    connect?: SkillGapWhereUniqueInput | SkillGapWhereUniqueInput[]
+    update?: SkillGapUpdateWithWhereUniqueWithoutCareerAnalysisInput | SkillGapUpdateWithWhereUniqueWithoutCareerAnalysisInput[]
+    updateMany?: SkillGapUpdateManyWithWhereWithoutCareerAnalysisInput | SkillGapUpdateManyWithWhereWithoutCareerAnalysisInput[]
+    deleteMany?: SkillGapScalarWhereInput | SkillGapScalarWhereInput[]
+  }
+
+  export type RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput = {
+    create?: XOR<RoadmapCreateWithoutCareerAnalysisInput, RoadmapUncheckedCreateWithoutCareerAnalysisInput>
+    connectOrCreate?: RoadmapCreateOrConnectWithoutCareerAnalysisInput
+    upsert?: RoadmapUpsertWithoutCareerAnalysisInput
+    disconnect?: RoadmapWhereInput | boolean
+    delete?: RoadmapWhereInput | boolean
+    connect?: RoadmapWhereUniqueInput
+    update?: XOR<XOR<RoadmapUpdateToOneWithWhereWithoutCareerAnalysisInput, RoadmapUpdateWithoutCareerAnalysisInput>, RoadmapUncheckedUpdateWithoutCareerAnalysisInput>
+  }
+
+  export type AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput = {
+    create?: XOR<AnalysisEventCreateWithoutCareerAnalysisInput, AnalysisEventUncheckedCreateWithoutCareerAnalysisInput> | AnalysisEventCreateWithoutCareerAnalysisInput[] | AnalysisEventUncheckedCreateWithoutCareerAnalysisInput[]
+    connectOrCreate?: AnalysisEventCreateOrConnectWithoutCareerAnalysisInput | AnalysisEventCreateOrConnectWithoutCareerAnalysisInput[]
+    upsert?: AnalysisEventUpsertWithWhereUniqueWithoutCareerAnalysisInput | AnalysisEventUpsertWithWhereUniqueWithoutCareerAnalysisInput[]
+    createMany?: AnalysisEventCreateManyCareerAnalysisInputEnvelope
+    set?: AnalysisEventWhereUniqueInput | AnalysisEventWhereUniqueInput[]
+    disconnect?: AnalysisEventWhereUniqueInput | AnalysisEventWhereUniqueInput[]
+    delete?: AnalysisEventWhereUniqueInput | AnalysisEventWhereUniqueInput[]
+    connect?: AnalysisEventWhereUniqueInput | AnalysisEventWhereUniqueInput[]
+    update?: AnalysisEventUpdateWithWhereUniqueWithoutCareerAnalysisInput | AnalysisEventUpdateWithWhereUniqueWithoutCareerAnalysisInput[]
+    updateMany?: AnalysisEventUpdateManyWithWhereWithoutCareerAnalysisInput | AnalysisEventUpdateManyWithWhereWithoutCareerAnalysisInput[]
+    deleteMany?: AnalysisEventScalarWhereInput | AnalysisEventScalarWhereInput[]
+  }
+
+  export type CareerAnalysisCreateNestedOneWithoutEvidenceInput = {
+    create?: XOR<CareerAnalysisCreateWithoutEvidenceInput, CareerAnalysisUncheckedCreateWithoutEvidenceInput>
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutEvidenceInput
+    connect?: CareerAnalysisWhereUniqueInput
+  }
+
+  export type SkillCreateNestedOneWithoutEvidenceInput = {
+    create?: XOR<SkillCreateWithoutEvidenceInput, SkillUncheckedCreateWithoutEvidenceInput>
+    connectOrCreate?: SkillCreateOrConnectWithoutEvidenceInput
+    connect?: SkillWhereUniqueInput
+  }
+
+  export type EnumEvidenceStrengthFieldUpdateOperationsInput = {
+    set?: $Enums.EvidenceStrength
+  }
+
+  export type CareerAnalysisUpdateOneRequiredWithoutEvidenceNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutEvidenceInput, CareerAnalysisUncheckedCreateWithoutEvidenceInput>
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutEvidenceInput
+    upsert?: CareerAnalysisUpsertWithoutEvidenceInput
+    connect?: CareerAnalysisWhereUniqueInput
+    update?: XOR<XOR<CareerAnalysisUpdateToOneWithWhereWithoutEvidenceInput, CareerAnalysisUpdateWithoutEvidenceInput>, CareerAnalysisUncheckedUpdateWithoutEvidenceInput>
+  }
+
+  export type SkillUpdateOneRequiredWithoutEvidenceNestedInput = {
+    create?: XOR<SkillCreateWithoutEvidenceInput, SkillUncheckedCreateWithoutEvidenceInput>
+    connectOrCreate?: SkillCreateOrConnectWithoutEvidenceInput
+    upsert?: SkillUpsertWithoutEvidenceInput
+    connect?: SkillWhereUniqueInput
+    update?: XOR<XOR<SkillUpdateToOneWithWhereWithoutEvidenceInput, SkillUpdateWithoutEvidenceInput>, SkillUncheckedUpdateWithoutEvidenceInput>
+  }
+
+  export type CareerAnalysisCreateNestedOneWithoutGapsInput = {
+    create?: XOR<CareerAnalysisCreateWithoutGapsInput, CareerAnalysisUncheckedCreateWithoutGapsInput>
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutGapsInput
+    connect?: CareerAnalysisWhereUniqueInput
+  }
+
+  export type SkillCreateNestedOneWithoutGapsInput = {
+    create?: XOR<SkillCreateWithoutGapsInput, SkillUncheckedCreateWithoutGapsInput>
+    connectOrCreate?: SkillCreateOrConnectWithoutGapsInput
+    connect?: SkillWhereUniqueInput
+  }
+
+  export type RoadmapTaskCreateNestedManyWithoutSkillGapInput = {
+    create?: XOR<RoadmapTaskCreateWithoutSkillGapInput, RoadmapTaskUncheckedCreateWithoutSkillGapInput> | RoadmapTaskCreateWithoutSkillGapInput[] | RoadmapTaskUncheckedCreateWithoutSkillGapInput[]
+    connectOrCreate?: RoadmapTaskCreateOrConnectWithoutSkillGapInput | RoadmapTaskCreateOrConnectWithoutSkillGapInput[]
+    createMany?: RoadmapTaskCreateManySkillGapInputEnvelope
+    connect?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+  }
+
+  export type RoadmapTaskUncheckedCreateNestedManyWithoutSkillGapInput = {
+    create?: XOR<RoadmapTaskCreateWithoutSkillGapInput, RoadmapTaskUncheckedCreateWithoutSkillGapInput> | RoadmapTaskCreateWithoutSkillGapInput[] | RoadmapTaskUncheckedCreateWithoutSkillGapInput[]
+    connectOrCreate?: RoadmapTaskCreateOrConnectWithoutSkillGapInput | RoadmapTaskCreateOrConnectWithoutSkillGapInput[]
+    createMany?: RoadmapTaskCreateManySkillGapInputEnvelope
+    connect?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+  }
+
+  export type EnumGapStatusFieldUpdateOperationsInput = {
+    set?: $Enums.GapStatus
+  }
+
+  export type CareerAnalysisUpdateOneRequiredWithoutGapsNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutGapsInput, CareerAnalysisUncheckedCreateWithoutGapsInput>
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutGapsInput
+    upsert?: CareerAnalysisUpsertWithoutGapsInput
+    connect?: CareerAnalysisWhereUniqueInput
+    update?: XOR<XOR<CareerAnalysisUpdateToOneWithWhereWithoutGapsInput, CareerAnalysisUpdateWithoutGapsInput>, CareerAnalysisUncheckedUpdateWithoutGapsInput>
+  }
+
+  export type SkillUpdateOneRequiredWithoutGapsNestedInput = {
+    create?: XOR<SkillCreateWithoutGapsInput, SkillUncheckedCreateWithoutGapsInput>
+    connectOrCreate?: SkillCreateOrConnectWithoutGapsInput
+    upsert?: SkillUpsertWithoutGapsInput
+    connect?: SkillWhereUniqueInput
+    update?: XOR<XOR<SkillUpdateToOneWithWhereWithoutGapsInput, SkillUpdateWithoutGapsInput>, SkillUncheckedUpdateWithoutGapsInput>
+  }
+
+  export type RoadmapTaskUpdateManyWithoutSkillGapNestedInput = {
+    create?: XOR<RoadmapTaskCreateWithoutSkillGapInput, RoadmapTaskUncheckedCreateWithoutSkillGapInput> | RoadmapTaskCreateWithoutSkillGapInput[] | RoadmapTaskUncheckedCreateWithoutSkillGapInput[]
+    connectOrCreate?: RoadmapTaskCreateOrConnectWithoutSkillGapInput | RoadmapTaskCreateOrConnectWithoutSkillGapInput[]
+    upsert?: RoadmapTaskUpsertWithWhereUniqueWithoutSkillGapInput | RoadmapTaskUpsertWithWhereUniqueWithoutSkillGapInput[]
+    createMany?: RoadmapTaskCreateManySkillGapInputEnvelope
+    set?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    disconnect?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    delete?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    connect?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    update?: RoadmapTaskUpdateWithWhereUniqueWithoutSkillGapInput | RoadmapTaskUpdateWithWhereUniqueWithoutSkillGapInput[]
+    updateMany?: RoadmapTaskUpdateManyWithWhereWithoutSkillGapInput | RoadmapTaskUpdateManyWithWhereWithoutSkillGapInput[]
+    deleteMany?: RoadmapTaskScalarWhereInput | RoadmapTaskScalarWhereInput[]
+  }
+
+  export type RoadmapTaskUncheckedUpdateManyWithoutSkillGapNestedInput = {
+    create?: XOR<RoadmapTaskCreateWithoutSkillGapInput, RoadmapTaskUncheckedCreateWithoutSkillGapInput> | RoadmapTaskCreateWithoutSkillGapInput[] | RoadmapTaskUncheckedCreateWithoutSkillGapInput[]
+    connectOrCreate?: RoadmapTaskCreateOrConnectWithoutSkillGapInput | RoadmapTaskCreateOrConnectWithoutSkillGapInput[]
+    upsert?: RoadmapTaskUpsertWithWhereUniqueWithoutSkillGapInput | RoadmapTaskUpsertWithWhereUniqueWithoutSkillGapInput[]
+    createMany?: RoadmapTaskCreateManySkillGapInputEnvelope
+    set?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    disconnect?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    delete?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    connect?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    update?: RoadmapTaskUpdateWithWhereUniqueWithoutSkillGapInput | RoadmapTaskUpdateWithWhereUniqueWithoutSkillGapInput[]
+    updateMany?: RoadmapTaskUpdateManyWithWhereWithoutSkillGapInput | RoadmapTaskUpdateManyWithWhereWithoutSkillGapInput[]
+    deleteMany?: RoadmapTaskScalarWhereInput | RoadmapTaskScalarWhereInput[]
+  }
+
+  export type CareerAnalysisCreateNestedOneWithoutRoadmapInput = {
+    create?: XOR<CareerAnalysisCreateWithoutRoadmapInput, CareerAnalysisUncheckedCreateWithoutRoadmapInput>
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutRoadmapInput
+    connect?: CareerAnalysisWhereUniqueInput
+  }
+
+  export type RoadmapTaskCreateNestedManyWithoutRoadmapInput = {
+    create?: XOR<RoadmapTaskCreateWithoutRoadmapInput, RoadmapTaskUncheckedCreateWithoutRoadmapInput> | RoadmapTaskCreateWithoutRoadmapInput[] | RoadmapTaskUncheckedCreateWithoutRoadmapInput[]
+    connectOrCreate?: RoadmapTaskCreateOrConnectWithoutRoadmapInput | RoadmapTaskCreateOrConnectWithoutRoadmapInput[]
+    createMany?: RoadmapTaskCreateManyRoadmapInputEnvelope
+    connect?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+  }
+
+  export type RoadmapTaskUncheckedCreateNestedManyWithoutRoadmapInput = {
+    create?: XOR<RoadmapTaskCreateWithoutRoadmapInput, RoadmapTaskUncheckedCreateWithoutRoadmapInput> | RoadmapTaskCreateWithoutRoadmapInput[] | RoadmapTaskUncheckedCreateWithoutRoadmapInput[]
+    connectOrCreate?: RoadmapTaskCreateOrConnectWithoutRoadmapInput | RoadmapTaskCreateOrConnectWithoutRoadmapInput[]
+    createMany?: RoadmapTaskCreateManyRoadmapInputEnvelope
+    connect?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+  }
+
+  export type CareerAnalysisUpdateOneRequiredWithoutRoadmapNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutRoadmapInput, CareerAnalysisUncheckedCreateWithoutRoadmapInput>
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutRoadmapInput
+    upsert?: CareerAnalysisUpsertWithoutRoadmapInput
+    connect?: CareerAnalysisWhereUniqueInput
+    update?: XOR<XOR<CareerAnalysisUpdateToOneWithWhereWithoutRoadmapInput, CareerAnalysisUpdateWithoutRoadmapInput>, CareerAnalysisUncheckedUpdateWithoutRoadmapInput>
+  }
+
+  export type RoadmapTaskUpdateManyWithoutRoadmapNestedInput = {
+    create?: XOR<RoadmapTaskCreateWithoutRoadmapInput, RoadmapTaskUncheckedCreateWithoutRoadmapInput> | RoadmapTaskCreateWithoutRoadmapInput[] | RoadmapTaskUncheckedCreateWithoutRoadmapInput[]
+    connectOrCreate?: RoadmapTaskCreateOrConnectWithoutRoadmapInput | RoadmapTaskCreateOrConnectWithoutRoadmapInput[]
+    upsert?: RoadmapTaskUpsertWithWhereUniqueWithoutRoadmapInput | RoadmapTaskUpsertWithWhereUniqueWithoutRoadmapInput[]
+    createMany?: RoadmapTaskCreateManyRoadmapInputEnvelope
+    set?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    disconnect?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    delete?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    connect?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    update?: RoadmapTaskUpdateWithWhereUniqueWithoutRoadmapInput | RoadmapTaskUpdateWithWhereUniqueWithoutRoadmapInput[]
+    updateMany?: RoadmapTaskUpdateManyWithWhereWithoutRoadmapInput | RoadmapTaskUpdateManyWithWhereWithoutRoadmapInput[]
+    deleteMany?: RoadmapTaskScalarWhereInput | RoadmapTaskScalarWhereInput[]
+  }
+
+  export type RoadmapTaskUncheckedUpdateManyWithoutRoadmapNestedInput = {
+    create?: XOR<RoadmapTaskCreateWithoutRoadmapInput, RoadmapTaskUncheckedCreateWithoutRoadmapInput> | RoadmapTaskCreateWithoutRoadmapInput[] | RoadmapTaskUncheckedCreateWithoutRoadmapInput[]
+    connectOrCreate?: RoadmapTaskCreateOrConnectWithoutRoadmapInput | RoadmapTaskCreateOrConnectWithoutRoadmapInput[]
+    upsert?: RoadmapTaskUpsertWithWhereUniqueWithoutRoadmapInput | RoadmapTaskUpsertWithWhereUniqueWithoutRoadmapInput[]
+    createMany?: RoadmapTaskCreateManyRoadmapInputEnvelope
+    set?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    disconnect?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    delete?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    connect?: RoadmapTaskWhereUniqueInput | RoadmapTaskWhereUniqueInput[]
+    update?: RoadmapTaskUpdateWithWhereUniqueWithoutRoadmapInput | RoadmapTaskUpdateWithWhereUniqueWithoutRoadmapInput[]
+    updateMany?: RoadmapTaskUpdateManyWithWhereWithoutRoadmapInput | RoadmapTaskUpdateManyWithWhereWithoutRoadmapInput[]
+    deleteMany?: RoadmapTaskScalarWhereInput | RoadmapTaskScalarWhereInput[]
+  }
+
+  export type RoadmapCreateNestedOneWithoutTasksInput = {
+    create?: XOR<RoadmapCreateWithoutTasksInput, RoadmapUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: RoadmapCreateOrConnectWithoutTasksInput
+    connect?: RoadmapWhereUniqueInput
+  }
+
+  export type SkillGapCreateNestedOneWithoutTasksInput = {
+    create?: XOR<SkillGapCreateWithoutTasksInput, SkillGapUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: SkillGapCreateOrConnectWithoutTasksInput
+    connect?: SkillGapWhereUniqueInput
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type RoadmapUpdateOneRequiredWithoutTasksNestedInput = {
+    create?: XOR<RoadmapCreateWithoutTasksInput, RoadmapUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: RoadmapCreateOrConnectWithoutTasksInput
+    upsert?: RoadmapUpsertWithoutTasksInput
+    connect?: RoadmapWhereUniqueInput
+    update?: XOR<XOR<RoadmapUpdateToOneWithWhereWithoutTasksInput, RoadmapUpdateWithoutTasksInput>, RoadmapUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type SkillGapUpdateOneWithoutTasksNestedInput = {
+    create?: XOR<SkillGapCreateWithoutTasksInput, SkillGapUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: SkillGapCreateOrConnectWithoutTasksInput
+    upsert?: SkillGapUpsertWithoutTasksInput
+    disconnect?: SkillGapWhereInput | boolean
+    delete?: SkillGapWhereInput | boolean
+    connect?: SkillGapWhereUniqueInput
+    update?: XOR<XOR<SkillGapUpdateToOneWithWhereWithoutTasksInput, SkillGapUpdateWithoutTasksInput>, SkillGapUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type CareerAnalysisCreateNestedOneWithoutEventsInput = {
+    create?: XOR<CareerAnalysisCreateWithoutEventsInput, CareerAnalysisUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutEventsInput
+    connect?: CareerAnalysisWhereUniqueInput
+  }
+
+  export type EnumAnalysisEventTypeFieldUpdateOperationsInput = {
+    set?: $Enums.AnalysisEventType
+  }
+
+  export type CareerAnalysisUpdateOneRequiredWithoutEventsNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutEventsInput, CareerAnalysisUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutEventsInput
+    upsert?: CareerAnalysisUpsertWithoutEventsInput
+    connect?: CareerAnalysisWhereUniqueInput
+    update?: XOR<XOR<CareerAnalysisUpdateToOneWithWhereWithoutEventsInput, CareerAnalysisUpdateWithoutEventsInput>, CareerAnalysisUncheckedUpdateWithoutEventsInput>
   }
 
   export type NestedUuidFilter<$PrismaModel = never> = {
@@ -9120,6 +20298,67 @@ export namespace Prisma {
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
+
+  export type NestedEnumSkillImportanceFilter<$PrismaModel = never> = {
+    equals?: $Enums.SkillImportance | EnumSkillImportanceFieldRefInput<$PrismaModel>
+    in?: $Enums.SkillImportance[] | ListEnumSkillImportanceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SkillImportance[] | ListEnumSkillImportanceFieldRefInput<$PrismaModel>
+    not?: NestedEnumSkillImportanceFilter<$PrismaModel> | $Enums.SkillImportance
+  }
+
+  export type NestedEnumSkillImportanceWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SkillImportance | EnumSkillImportanceFieldRefInput<$PrismaModel>
+    in?: $Enums.SkillImportance[] | ListEnumSkillImportanceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SkillImportance[] | ListEnumSkillImportanceFieldRefInput<$PrismaModel>
+    not?: NestedEnumSkillImportanceWithAggregatesFilter<$PrismaModel> | $Enums.SkillImportance
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSkillImportanceFilter<$PrismaModel>
+    _max?: NestedEnumSkillImportanceFilter<$PrismaModel>
+  }
+
+  export type NestedEnumCareerAnalysisStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.CareerAnalysisStatus | EnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CareerAnalysisStatus[] | ListEnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CareerAnalysisStatus[] | ListEnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCareerAnalysisStatusFilter<$PrismaModel> | $Enums.CareerAnalysisStatus
+  }
+
+  export type NestedEnumCareerAnalysisStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CareerAnalysisStatus | EnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CareerAnalysisStatus[] | ListEnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CareerAnalysisStatus[] | ListEnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCareerAnalysisStatusWithAggregatesFilter<$PrismaModel> | $Enums.CareerAnalysisStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCareerAnalysisStatusFilter<$PrismaModel>
+    _max?: NestedEnumCareerAnalysisStatusFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -9144,21 +20383,93 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type NestedEnumSuggestionStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.SuggestionStatus | EnumSuggestionStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumSuggestionStatusFilter<$PrismaModel> | $Enums.SuggestionStatus
+  export type NestedEnumEvidenceStrengthFilter<$PrismaModel = never> = {
+    equals?: $Enums.EvidenceStrength | EnumEvidenceStrengthFieldRefInput<$PrismaModel>
+    in?: $Enums.EvidenceStrength[] | ListEnumEvidenceStrengthFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EvidenceStrength[] | ListEnumEvidenceStrengthFieldRefInput<$PrismaModel>
+    not?: NestedEnumEvidenceStrengthFilter<$PrismaModel> | $Enums.EvidenceStrength
   }
 
-  export type NestedEnumSuggestionStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.SuggestionStatus | EnumSuggestionStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SuggestionStatus[] | ListEnumSuggestionStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumSuggestionStatusWithAggregatesFilter<$PrismaModel> | $Enums.SuggestionStatus
+  export type NestedEnumEvidenceStrengthWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EvidenceStrength | EnumEvidenceStrengthFieldRefInput<$PrismaModel>
+    in?: $Enums.EvidenceStrength[] | ListEnumEvidenceStrengthFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EvidenceStrength[] | ListEnumEvidenceStrengthFieldRefInput<$PrismaModel>
+    not?: NestedEnumEvidenceStrengthWithAggregatesFilter<$PrismaModel> | $Enums.EvidenceStrength
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumSuggestionStatusFilter<$PrismaModel>
-    _max?: NestedEnumSuggestionStatusFilter<$PrismaModel>
+    _min?: NestedEnumEvidenceStrengthFilter<$PrismaModel>
+    _max?: NestedEnumEvidenceStrengthFilter<$PrismaModel>
+  }
+
+  export type NestedEnumGapStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.GapStatus | EnumGapStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GapStatus[] | ListEnumGapStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GapStatus[] | ListEnumGapStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGapStatusFilter<$PrismaModel> | $Enums.GapStatus
+  }
+
+  export type NestedEnumGapStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GapStatus | EnumGapStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GapStatus[] | ListEnumGapStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GapStatus[] | ListEnumGapStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGapStatusWithAggregatesFilter<$PrismaModel> | $Enums.GapStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumGapStatusFilter<$PrismaModel>
+    _max?: NestedEnumGapStatusFilter<$PrismaModel>
+  }
+
+  export type NestedUuidNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAnalysisEventTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnalysisEventType | EnumAnalysisEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AnalysisEventType[] | ListEnumAnalysisEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnalysisEventType[] | ListEnumAnalysisEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnalysisEventTypeFilter<$PrismaModel> | $Enums.AnalysisEventType
+  }
+
+  export type NestedEnumAnalysisEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnalysisEventType | EnumAnalysisEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AnalysisEventType[] | ListEnumAnalysisEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnalysisEventType[] | ListEnumAnalysisEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnalysisEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.AnalysisEventType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAnalysisEventTypeFilter<$PrismaModel>
+    _max?: NestedEnumAnalysisEventTypeFilter<$PrismaModel>
   }
 
   export type ResumeCreateWithoutUserInput = {
@@ -9171,10 +20482,9 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    analyses?: AnalysisCreateNestedManyWithoutResumeInput
+    analyses?: CareerAnalysisCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUncheckedCreateWithoutUserInput = {
@@ -9187,10 +20497,9 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
-    analyses?: AnalysisUncheckedCreateNestedManyWithoutResumeInput
+    analyses?: CareerAnalysisUncheckedCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeCreateOrConnectWithoutUserInput = {
@@ -9231,37 +20540,49 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type AnalysisCreateWithoutUserInput = {
+  export type CareerAnalysisCreateWithoutUserInput = {
     id?: string
-    jobDescription: string
-    parsedJob: JsonNullValueInput | InputJsonValue
+    status?: $Enums.CareerAnalysisStatus
     resumeSnapshot: JsonNullValueInput | InputJsonValue
-    analysisResult: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
-    exportedAt?: Date | string | null
+    completedAt?: Date | string | null
     resume: ResumeCreateNestedOneWithoutAnalysesInput
-    suggestions?: SuggestionCreateNestedManyWithoutAnalysisInput
+    role: RoleCreateNestedOneWithoutAnalysesInput
+    evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
   }
 
-  export type AnalysisUncheckedCreateWithoutUserInput = {
+  export type CareerAnalysisUncheckedCreateWithoutUserInput = {
     id?: string
+    status?: $Enums.CareerAnalysisStatus
     resumeId: string
-    jobDescription: string
-    parsedJob: JsonNullValueInput | InputJsonValue
+    roleId: string
     resumeSnapshot: JsonNullValueInput | InputJsonValue
-    analysisResult: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
-    exportedAt?: Date | string | null
-    suggestions?: SuggestionUncheckedCreateNestedManyWithoutAnalysisInput
+    completedAt?: Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
   }
 
-  export type AnalysisCreateOrConnectWithoutUserInput = {
-    where: AnalysisWhereUniqueInput
-    create: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput>
+  export type CareerAnalysisCreateOrConnectWithoutUserInput = {
+    where: CareerAnalysisWhereUniqueInput
+    create: XOR<CareerAnalysisCreateWithoutUserInput, CareerAnalysisUncheckedCreateWithoutUserInput>
   }
 
-  export type AnalysisCreateManyUserInputEnvelope = {
-    data: AnalysisCreateManyUserInput | AnalysisCreateManyUserInput[]
+  export type CareerAnalysisCreateManyUserInputEnvelope = {
+    data: CareerAnalysisCreateManyUserInput | CareerAnalysisCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -9295,7 +20616,6 @@ export namespace Prisma {
     filePath?: StringNullableFilter<"Resume"> | string | null
     rawText?: StringFilter<"Resume"> | string
     structuredResume?: JsonFilter<"Resume">
-    enabledSections?: JsonNullableFilter<"Resume">
     createdAt?: DateTimeFilter<"Resume"> | Date | string
     updatedAt?: DateTimeFilter<"Resume"> | Date | string
   }
@@ -9329,35 +20649,38 @@ export namespace Prisma {
     revokedAt?: DateTimeNullableFilter<"RefreshToken"> | Date | string | null
   }
 
-  export type AnalysisUpsertWithWhereUniqueWithoutUserInput = {
-    where: AnalysisWhereUniqueInput
-    update: XOR<AnalysisUpdateWithoutUserInput, AnalysisUncheckedUpdateWithoutUserInput>
-    create: XOR<AnalysisCreateWithoutUserInput, AnalysisUncheckedCreateWithoutUserInput>
+  export type CareerAnalysisUpsertWithWhereUniqueWithoutUserInput = {
+    where: CareerAnalysisWhereUniqueInput
+    update: XOR<CareerAnalysisUpdateWithoutUserInput, CareerAnalysisUncheckedUpdateWithoutUserInput>
+    create: XOR<CareerAnalysisCreateWithoutUserInput, CareerAnalysisUncheckedCreateWithoutUserInput>
   }
 
-  export type AnalysisUpdateWithWhereUniqueWithoutUserInput = {
-    where: AnalysisWhereUniqueInput
-    data: XOR<AnalysisUpdateWithoutUserInput, AnalysisUncheckedUpdateWithoutUserInput>
+  export type CareerAnalysisUpdateWithWhereUniqueWithoutUserInput = {
+    where: CareerAnalysisWhereUniqueInput
+    data: XOR<CareerAnalysisUpdateWithoutUserInput, CareerAnalysisUncheckedUpdateWithoutUserInput>
   }
 
-  export type AnalysisUpdateManyWithWhereWithoutUserInput = {
-    where: AnalysisScalarWhereInput
-    data: XOR<AnalysisUpdateManyMutationInput, AnalysisUncheckedUpdateManyWithoutUserInput>
+  export type CareerAnalysisUpdateManyWithWhereWithoutUserInput = {
+    where: CareerAnalysisScalarWhereInput
+    data: XOR<CareerAnalysisUpdateManyMutationInput, CareerAnalysisUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type AnalysisScalarWhereInput = {
-    AND?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
-    OR?: AnalysisScalarWhereInput[]
-    NOT?: AnalysisScalarWhereInput | AnalysisScalarWhereInput[]
-    id?: UuidFilter<"Analysis"> | string
-    resumeId?: UuidFilter<"Analysis"> | string
-    userId?: UuidFilter<"Analysis"> | string
-    jobDescription?: StringFilter<"Analysis"> | string
-    parsedJob?: JsonFilter<"Analysis">
-    resumeSnapshot?: JsonFilter<"Analysis">
-    analysisResult?: JsonFilter<"Analysis">
-    createdAt?: DateTimeFilter<"Analysis"> | Date | string
-    exportedAt?: DateTimeNullableFilter<"Analysis"> | Date | string | null
+  export type CareerAnalysisScalarWhereInput = {
+    AND?: CareerAnalysisScalarWhereInput | CareerAnalysisScalarWhereInput[]
+    OR?: CareerAnalysisScalarWhereInput[]
+    NOT?: CareerAnalysisScalarWhereInput | CareerAnalysisScalarWhereInput[]
+    id?: UuidFilter<"CareerAnalysis"> | string
+    userId?: UuidFilter<"CareerAnalysis"> | string
+    status?: EnumCareerAnalysisStatusFilter<"CareerAnalysis"> | $Enums.CareerAnalysisStatus
+    resumeId?: UuidFilter<"CareerAnalysis"> | string
+    roleId?: UuidFilter<"CareerAnalysis"> | string
+    resumeSnapshot?: JsonFilter<"CareerAnalysis">
+    roleSnapshot?: JsonFilter<"CareerAnalysis">
+    readinessScore?: IntNullableFilter<"CareerAnalysis"> | number | null
+    readinessBreakdown?: JsonNullableFilter<"CareerAnalysis">
+    failureReason?: StringNullableFilter<"CareerAnalysis"> | string | null
+    createdAt?: DateTimeFilter<"CareerAnalysis"> | Date | string
+    completedAt?: DateTimeNullableFilter<"CareerAnalysis"> | Date | string | null
   }
 
   export type UserCreateWithoutRefreshTokensInput = {
@@ -9368,7 +20691,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     resumes?: ResumeCreateNestedManyWithoutUserInput
-    analyses?: AnalysisCreateNestedManyWithoutUserInput
+    analyses?: CareerAnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -9379,7 +20702,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
-    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -9406,7 +20729,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumes?: ResumeUpdateManyWithoutUserNestedInput
-    analyses?: AnalysisUpdateManyWithoutUserNestedInput
+    analyses?: CareerAnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -9417,7 +20740,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
-    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutResumesInput = {
@@ -9428,7 +20751,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
-    analyses?: AnalysisCreateNestedManyWithoutUserInput
+    analyses?: CareerAnalysisCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutResumesInput = {
@@ -9439,7 +20762,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
-    analyses?: AnalysisUncheckedCreateNestedManyWithoutUserInput
+    analyses?: CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutResumesInput = {
@@ -9447,37 +20770,49 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutResumesInput, UserUncheckedCreateWithoutResumesInput>
   }
 
-  export type AnalysisCreateWithoutResumeInput = {
+  export type CareerAnalysisCreateWithoutResumeInput = {
     id?: string
-    jobDescription: string
-    parsedJob: JsonNullValueInput | InputJsonValue
+    status?: $Enums.CareerAnalysisStatus
     resumeSnapshot: JsonNullValueInput | InputJsonValue
-    analysisResult: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
-    exportedAt?: Date | string | null
+    completedAt?: Date | string | null
     user: UserCreateNestedOneWithoutAnalysesInput
-    suggestions?: SuggestionCreateNestedManyWithoutAnalysisInput
+    role: RoleCreateNestedOneWithoutAnalysesInput
+    evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
   }
 
-  export type AnalysisUncheckedCreateWithoutResumeInput = {
+  export type CareerAnalysisUncheckedCreateWithoutResumeInput = {
     id?: string
     userId: string
-    jobDescription: string
-    parsedJob: JsonNullValueInput | InputJsonValue
+    status?: $Enums.CareerAnalysisStatus
+    roleId: string
     resumeSnapshot: JsonNullValueInput | InputJsonValue
-    analysisResult: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
-    exportedAt?: Date | string | null
-    suggestions?: SuggestionUncheckedCreateNestedManyWithoutAnalysisInput
+    completedAt?: Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
   }
 
-  export type AnalysisCreateOrConnectWithoutResumeInput = {
-    where: AnalysisWhereUniqueInput
-    create: XOR<AnalysisCreateWithoutResumeInput, AnalysisUncheckedCreateWithoutResumeInput>
+  export type CareerAnalysisCreateOrConnectWithoutResumeInput = {
+    where: CareerAnalysisWhereUniqueInput
+    create: XOR<CareerAnalysisCreateWithoutResumeInput, CareerAnalysisUncheckedCreateWithoutResumeInput>
   }
 
-  export type AnalysisCreateManyResumeInputEnvelope = {
-    data: AnalysisCreateManyResumeInput | AnalysisCreateManyResumeInput[]
+  export type CareerAnalysisCreateManyResumeInputEnvelope = {
+    data: CareerAnalysisCreateManyResumeInput | CareerAnalysisCreateManyResumeInput[]
     skipDuplicates?: boolean
   }
 
@@ -9500,7 +20835,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
-    analyses?: AnalysisUpdateManyWithoutUserNestedInput
+    analyses?: CareerAnalysisUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutResumesInput = {
@@ -9511,60 +20846,429 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
-    analyses?: AnalysisUncheckedUpdateManyWithoutUserNestedInput
+    analyses?: CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type AnalysisUpsertWithWhereUniqueWithoutResumeInput = {
-    where: AnalysisWhereUniqueInput
-    update: XOR<AnalysisUpdateWithoutResumeInput, AnalysisUncheckedUpdateWithoutResumeInput>
-    create: XOR<AnalysisCreateWithoutResumeInput, AnalysisUncheckedCreateWithoutResumeInput>
+  export type CareerAnalysisUpsertWithWhereUniqueWithoutResumeInput = {
+    where: CareerAnalysisWhereUniqueInput
+    update: XOR<CareerAnalysisUpdateWithoutResumeInput, CareerAnalysisUncheckedUpdateWithoutResumeInput>
+    create: XOR<CareerAnalysisCreateWithoutResumeInput, CareerAnalysisUncheckedCreateWithoutResumeInput>
   }
 
-  export type AnalysisUpdateWithWhereUniqueWithoutResumeInput = {
-    where: AnalysisWhereUniqueInput
-    data: XOR<AnalysisUpdateWithoutResumeInput, AnalysisUncheckedUpdateWithoutResumeInput>
+  export type CareerAnalysisUpdateWithWhereUniqueWithoutResumeInput = {
+    where: CareerAnalysisWhereUniqueInput
+    data: XOR<CareerAnalysisUpdateWithoutResumeInput, CareerAnalysisUncheckedUpdateWithoutResumeInput>
   }
 
-  export type AnalysisUpdateManyWithWhereWithoutResumeInput = {
-    where: AnalysisScalarWhereInput
-    data: XOR<AnalysisUpdateManyMutationInput, AnalysisUncheckedUpdateManyWithoutResumeInput>
+  export type CareerAnalysisUpdateManyWithWhereWithoutResumeInput = {
+    where: CareerAnalysisScalarWhereInput
+    data: XOR<CareerAnalysisUpdateManyMutationInput, CareerAnalysisUncheckedUpdateManyWithoutResumeInput>
   }
 
-  export type ResumeCreateWithoutAnalysesInput = {
+  export type RoleSkillRequirementCreateWithoutSkillInput = {
     id?: string
-    title: string
-    originalFileName: string
-    mimeType: string
-    fileSize: number
-    fileUrl: string
-    filePath?: string | null
-    rawText: string
-    structuredResume: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
+    importance: $Enums.SkillImportance
+    rationale: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutResumesInput
+    role: RoleCreateNestedOneWithoutRequirementsInput
   }
 
-  export type ResumeUncheckedCreateWithoutAnalysesInput = {
+  export type RoleSkillRequirementUncheckedCreateWithoutSkillInput = {
+    id?: string
+    roleId: string
+    importance: $Enums.SkillImportance
+    rationale: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RoleSkillRequirementCreateOrConnectWithoutSkillInput = {
+    where: RoleSkillRequirementWhereUniqueInput
+    create: XOR<RoleSkillRequirementCreateWithoutSkillInput, RoleSkillRequirementUncheckedCreateWithoutSkillInput>
+  }
+
+  export type RoleSkillRequirementCreateManySkillInputEnvelope = {
+    data: RoleSkillRequirementCreateManySkillInput | RoleSkillRequirementCreateManySkillInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CandidateSkillEvidenceCreateWithoutSkillInput = {
+    id?: string
+    strength: $Enums.EvidenceStrength
+    quote: string
+    sourceSection: string
+    sourceLabel: string
+    createdAt?: Date | string
+    careerAnalysis: CareerAnalysisCreateNestedOneWithoutEvidenceInput
+  }
+
+  export type CandidateSkillEvidenceUncheckedCreateWithoutSkillInput = {
+    id?: string
+    careerAnalysisId: string
+    strength: $Enums.EvidenceStrength
+    quote: string
+    sourceSection: string
+    sourceLabel: string
+    createdAt?: Date | string
+  }
+
+  export type CandidateSkillEvidenceCreateOrConnectWithoutSkillInput = {
+    where: CandidateSkillEvidenceWhereUniqueInput
+    create: XOR<CandidateSkillEvidenceCreateWithoutSkillInput, CandidateSkillEvidenceUncheckedCreateWithoutSkillInput>
+  }
+
+  export type CandidateSkillEvidenceCreateManySkillInputEnvelope = {
+    data: CandidateSkillEvidenceCreateManySkillInput | CandidateSkillEvidenceCreateManySkillInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SkillGapCreateWithoutSkillInput = {
+    id?: string
+    status: $Enums.GapStatus
+    priority: number
+    reasoning: string
+    createdAt?: Date | string
+    careerAnalysis: CareerAnalysisCreateNestedOneWithoutGapsInput
+    tasks?: RoadmapTaskCreateNestedManyWithoutSkillGapInput
+  }
+
+  export type SkillGapUncheckedCreateWithoutSkillInput = {
+    id?: string
+    careerAnalysisId: string
+    status: $Enums.GapStatus
+    priority: number
+    reasoning: string
+    createdAt?: Date | string
+    tasks?: RoadmapTaskUncheckedCreateNestedManyWithoutSkillGapInput
+  }
+
+  export type SkillGapCreateOrConnectWithoutSkillInput = {
+    where: SkillGapWhereUniqueInput
+    create: XOR<SkillGapCreateWithoutSkillInput, SkillGapUncheckedCreateWithoutSkillInput>
+  }
+
+  export type SkillGapCreateManySkillInputEnvelope = {
+    data: SkillGapCreateManySkillInput | SkillGapCreateManySkillInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RoleSkillRequirementUpsertWithWhereUniqueWithoutSkillInput = {
+    where: RoleSkillRequirementWhereUniqueInput
+    update: XOR<RoleSkillRequirementUpdateWithoutSkillInput, RoleSkillRequirementUncheckedUpdateWithoutSkillInput>
+    create: XOR<RoleSkillRequirementCreateWithoutSkillInput, RoleSkillRequirementUncheckedCreateWithoutSkillInput>
+  }
+
+  export type RoleSkillRequirementUpdateWithWhereUniqueWithoutSkillInput = {
+    where: RoleSkillRequirementWhereUniqueInput
+    data: XOR<RoleSkillRequirementUpdateWithoutSkillInput, RoleSkillRequirementUncheckedUpdateWithoutSkillInput>
+  }
+
+  export type RoleSkillRequirementUpdateManyWithWhereWithoutSkillInput = {
+    where: RoleSkillRequirementScalarWhereInput
+    data: XOR<RoleSkillRequirementUpdateManyMutationInput, RoleSkillRequirementUncheckedUpdateManyWithoutSkillInput>
+  }
+
+  export type RoleSkillRequirementScalarWhereInput = {
+    AND?: RoleSkillRequirementScalarWhereInput | RoleSkillRequirementScalarWhereInput[]
+    OR?: RoleSkillRequirementScalarWhereInput[]
+    NOT?: RoleSkillRequirementScalarWhereInput | RoleSkillRequirementScalarWhereInput[]
+    id?: UuidFilter<"RoleSkillRequirement"> | string
+    roleId?: UuidFilter<"RoleSkillRequirement"> | string
+    skillId?: UuidFilter<"RoleSkillRequirement"> | string
+    importance?: EnumSkillImportanceFilter<"RoleSkillRequirement"> | $Enums.SkillImportance
+    rationale?: StringFilter<"RoleSkillRequirement"> | string
+    createdAt?: DateTimeFilter<"RoleSkillRequirement"> | Date | string
+    updatedAt?: DateTimeFilter<"RoleSkillRequirement"> | Date | string
+  }
+
+  export type CandidateSkillEvidenceUpsertWithWhereUniqueWithoutSkillInput = {
+    where: CandidateSkillEvidenceWhereUniqueInput
+    update: XOR<CandidateSkillEvidenceUpdateWithoutSkillInput, CandidateSkillEvidenceUncheckedUpdateWithoutSkillInput>
+    create: XOR<CandidateSkillEvidenceCreateWithoutSkillInput, CandidateSkillEvidenceUncheckedCreateWithoutSkillInput>
+  }
+
+  export type CandidateSkillEvidenceUpdateWithWhereUniqueWithoutSkillInput = {
+    where: CandidateSkillEvidenceWhereUniqueInput
+    data: XOR<CandidateSkillEvidenceUpdateWithoutSkillInput, CandidateSkillEvidenceUncheckedUpdateWithoutSkillInput>
+  }
+
+  export type CandidateSkillEvidenceUpdateManyWithWhereWithoutSkillInput = {
+    where: CandidateSkillEvidenceScalarWhereInput
+    data: XOR<CandidateSkillEvidenceUpdateManyMutationInput, CandidateSkillEvidenceUncheckedUpdateManyWithoutSkillInput>
+  }
+
+  export type CandidateSkillEvidenceScalarWhereInput = {
+    AND?: CandidateSkillEvidenceScalarWhereInput | CandidateSkillEvidenceScalarWhereInput[]
+    OR?: CandidateSkillEvidenceScalarWhereInput[]
+    NOT?: CandidateSkillEvidenceScalarWhereInput | CandidateSkillEvidenceScalarWhereInput[]
+    id?: UuidFilter<"CandidateSkillEvidence"> | string
+    careerAnalysisId?: UuidFilter<"CandidateSkillEvidence"> | string
+    skillId?: UuidFilter<"CandidateSkillEvidence"> | string
+    strength?: EnumEvidenceStrengthFilter<"CandidateSkillEvidence"> | $Enums.EvidenceStrength
+    quote?: StringFilter<"CandidateSkillEvidence"> | string
+    sourceSection?: StringFilter<"CandidateSkillEvidence"> | string
+    sourceLabel?: StringFilter<"CandidateSkillEvidence"> | string
+    createdAt?: DateTimeFilter<"CandidateSkillEvidence"> | Date | string
+  }
+
+  export type SkillGapUpsertWithWhereUniqueWithoutSkillInput = {
+    where: SkillGapWhereUniqueInput
+    update: XOR<SkillGapUpdateWithoutSkillInput, SkillGapUncheckedUpdateWithoutSkillInput>
+    create: XOR<SkillGapCreateWithoutSkillInput, SkillGapUncheckedCreateWithoutSkillInput>
+  }
+
+  export type SkillGapUpdateWithWhereUniqueWithoutSkillInput = {
+    where: SkillGapWhereUniqueInput
+    data: XOR<SkillGapUpdateWithoutSkillInput, SkillGapUncheckedUpdateWithoutSkillInput>
+  }
+
+  export type SkillGapUpdateManyWithWhereWithoutSkillInput = {
+    where: SkillGapScalarWhereInput
+    data: XOR<SkillGapUpdateManyMutationInput, SkillGapUncheckedUpdateManyWithoutSkillInput>
+  }
+
+  export type SkillGapScalarWhereInput = {
+    AND?: SkillGapScalarWhereInput | SkillGapScalarWhereInput[]
+    OR?: SkillGapScalarWhereInput[]
+    NOT?: SkillGapScalarWhereInput | SkillGapScalarWhereInput[]
+    id?: UuidFilter<"SkillGap"> | string
+    careerAnalysisId?: UuidFilter<"SkillGap"> | string
+    skillId?: UuidFilter<"SkillGap"> | string
+    status?: EnumGapStatusFilter<"SkillGap"> | $Enums.GapStatus
+    priority?: IntFilter<"SkillGap"> | number
+    reasoning?: StringFilter<"SkillGap"> | string
+    createdAt?: DateTimeFilter<"SkillGap"> | Date | string
+  }
+
+  export type RoleSkillRequirementCreateWithoutRoleInput = {
+    id?: string
+    importance: $Enums.SkillImportance
+    rationale: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    skill: SkillCreateNestedOneWithoutRequirementsInput
+  }
+
+  export type RoleSkillRequirementUncheckedCreateWithoutRoleInput = {
+    id?: string
+    skillId: string
+    importance: $Enums.SkillImportance
+    rationale: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RoleSkillRequirementCreateOrConnectWithoutRoleInput = {
+    where: RoleSkillRequirementWhereUniqueInput
+    create: XOR<RoleSkillRequirementCreateWithoutRoleInput, RoleSkillRequirementUncheckedCreateWithoutRoleInput>
+  }
+
+  export type RoleSkillRequirementCreateManyRoleInputEnvelope = {
+    data: RoleSkillRequirementCreateManyRoleInput | RoleSkillRequirementCreateManyRoleInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CareerAnalysisCreateWithoutRoleInput = {
+    id?: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    user: UserCreateNestedOneWithoutAnalysesInput
+    resume: ResumeCreateNestedOneWithoutAnalysesInput
+    evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+  }
+
+  export type CareerAnalysisUncheckedCreateWithoutRoleInput = {
     id?: string
     userId: string
-    title: string
-    originalFileName: string
-    mimeType: string
-    fileSize: number
-    fileUrl: string
-    filePath?: string | null
-    rawText: string
-    structuredResume: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.CareerAnalysisStatus
+    resumeId: string
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
   }
 
-  export type ResumeCreateOrConnectWithoutAnalysesInput = {
-    where: ResumeWhereUniqueInput
-    create: XOR<ResumeCreateWithoutAnalysesInput, ResumeUncheckedCreateWithoutAnalysesInput>
+  export type CareerAnalysisCreateOrConnectWithoutRoleInput = {
+    where: CareerAnalysisWhereUniqueInput
+    create: XOR<CareerAnalysisCreateWithoutRoleInput, CareerAnalysisUncheckedCreateWithoutRoleInput>
+  }
+
+  export type CareerAnalysisCreateManyRoleInputEnvelope = {
+    data: CareerAnalysisCreateManyRoleInput | CareerAnalysisCreateManyRoleInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RoleSkillRequirementUpsertWithWhereUniqueWithoutRoleInput = {
+    where: RoleSkillRequirementWhereUniqueInput
+    update: XOR<RoleSkillRequirementUpdateWithoutRoleInput, RoleSkillRequirementUncheckedUpdateWithoutRoleInput>
+    create: XOR<RoleSkillRequirementCreateWithoutRoleInput, RoleSkillRequirementUncheckedCreateWithoutRoleInput>
+  }
+
+  export type RoleSkillRequirementUpdateWithWhereUniqueWithoutRoleInput = {
+    where: RoleSkillRequirementWhereUniqueInput
+    data: XOR<RoleSkillRequirementUpdateWithoutRoleInput, RoleSkillRequirementUncheckedUpdateWithoutRoleInput>
+  }
+
+  export type RoleSkillRequirementUpdateManyWithWhereWithoutRoleInput = {
+    where: RoleSkillRequirementScalarWhereInput
+    data: XOR<RoleSkillRequirementUpdateManyMutationInput, RoleSkillRequirementUncheckedUpdateManyWithoutRoleInput>
+  }
+
+  export type CareerAnalysisUpsertWithWhereUniqueWithoutRoleInput = {
+    where: CareerAnalysisWhereUniqueInput
+    update: XOR<CareerAnalysisUpdateWithoutRoleInput, CareerAnalysisUncheckedUpdateWithoutRoleInput>
+    create: XOR<CareerAnalysisCreateWithoutRoleInput, CareerAnalysisUncheckedCreateWithoutRoleInput>
+  }
+
+  export type CareerAnalysisUpdateWithWhereUniqueWithoutRoleInput = {
+    where: CareerAnalysisWhereUniqueInput
+    data: XOR<CareerAnalysisUpdateWithoutRoleInput, CareerAnalysisUncheckedUpdateWithoutRoleInput>
+  }
+
+  export type CareerAnalysisUpdateManyWithWhereWithoutRoleInput = {
+    where: CareerAnalysisScalarWhereInput
+    data: XOR<CareerAnalysisUpdateManyMutationInput, CareerAnalysisUncheckedUpdateManyWithoutRoleInput>
+  }
+
+  export type RoleCreateWithoutRequirementsInput = {
+    id?: string
+    slug: string
+    title: string
+    description: string
+    seedVersion: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    analyses?: CareerAnalysisCreateNestedManyWithoutRoleInput
+  }
+
+  export type RoleUncheckedCreateWithoutRequirementsInput = {
+    id?: string
+    slug: string
+    title: string
+    description: string
+    seedVersion: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    analyses?: CareerAnalysisUncheckedCreateNestedManyWithoutRoleInput
+  }
+
+  export type RoleCreateOrConnectWithoutRequirementsInput = {
+    where: RoleWhereUniqueInput
+    create: XOR<RoleCreateWithoutRequirementsInput, RoleUncheckedCreateWithoutRequirementsInput>
+  }
+
+  export type SkillCreateWithoutRequirementsInput = {
+    id?: string
+    slug: string
+    name: string
+    aliases?: SkillCreatealiasesInput | string[]
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    evidence?: CandidateSkillEvidenceCreateNestedManyWithoutSkillInput
+    gaps?: SkillGapCreateNestedManyWithoutSkillInput
+  }
+
+  export type SkillUncheckedCreateWithoutRequirementsInput = {
+    id?: string
+    slug: string
+    name: string
+    aliases?: SkillCreatealiasesInput | string[]
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutSkillInput
+    gaps?: SkillGapUncheckedCreateNestedManyWithoutSkillInput
+  }
+
+  export type SkillCreateOrConnectWithoutRequirementsInput = {
+    where: SkillWhereUniqueInput
+    create: XOR<SkillCreateWithoutRequirementsInput, SkillUncheckedCreateWithoutRequirementsInput>
+  }
+
+  export type RoleUpsertWithoutRequirementsInput = {
+    update: XOR<RoleUpdateWithoutRequirementsInput, RoleUncheckedUpdateWithoutRequirementsInput>
+    create: XOR<RoleCreateWithoutRequirementsInput, RoleUncheckedCreateWithoutRequirementsInput>
+    where?: RoleWhereInput
+  }
+
+  export type RoleUpdateToOneWithWhereWithoutRequirementsInput = {
+    where?: RoleWhereInput
+    data: XOR<RoleUpdateWithoutRequirementsInput, RoleUncheckedUpdateWithoutRequirementsInput>
+  }
+
+  export type RoleUpdateWithoutRequirementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    seedVersion?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analyses?: CareerAnalysisUpdateManyWithoutRoleNestedInput
+  }
+
+  export type RoleUncheckedUpdateWithoutRequirementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    seedVersion?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analyses?: CareerAnalysisUncheckedUpdateManyWithoutRoleNestedInput
+  }
+
+  export type SkillUpsertWithoutRequirementsInput = {
+    update: XOR<SkillUpdateWithoutRequirementsInput, SkillUncheckedUpdateWithoutRequirementsInput>
+    create: XOR<SkillCreateWithoutRequirementsInput, SkillUncheckedCreateWithoutRequirementsInput>
+    where?: SkillWhereInput
+  }
+
+  export type SkillUpdateToOneWithWhereWithoutRequirementsInput = {
+    where?: SkillWhereInput
+    data: XOR<SkillUpdateWithoutRequirementsInput, SkillUncheckedUpdateWithoutRequirementsInput>
+  }
+
+  export type SkillUpdateWithoutRequirementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    aliases?: SkillUpdatealiasesInput | string[]
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    evidence?: CandidateSkillEvidenceUpdateManyWithoutSkillNestedInput
+    gaps?: SkillGapUpdateManyWithoutSkillNestedInput
+  }
+
+  export type SkillUncheckedUpdateWithoutRequirementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    aliases?: SkillUpdatealiasesInput | string[]
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutSkillNestedInput
+    gaps?: SkillGapUncheckedUpdateManyWithoutSkillNestedInput
   }
 
   export type UserCreateWithoutAnalysesInput = {
@@ -9594,77 +21298,169 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutAnalysesInput, UserUncheckedCreateWithoutAnalysesInput>
   }
 
-  export type SuggestionCreateWithoutAnalysisInput = {
+  export type ResumeCreateWithoutAnalysesInput = {
     id?: string
-    original: string
-    suggested: string
-    section?: string | null
-    status?: $Enums.SuggestionStatus
-    rejectionReason?: string | null
+    title: string
+    originalFileName: string
+    mimeType: string
+    fileSize: number
+    fileUrl: string
+    filePath?: string | null
+    rawText: string
+    structuredResume: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutResumesInput
+  }
+
+  export type ResumeUncheckedCreateWithoutAnalysesInput = {
+    id?: string
+    userId: string
+    title: string
+    originalFileName: string
+    mimeType: string
+    fileSize: number
+    fileUrl: string
+    filePath?: string | null
+    rawText: string
+    structuredResume: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ResumeCreateOrConnectWithoutAnalysesInput = {
+    where: ResumeWhereUniqueInput
+    create: XOR<ResumeCreateWithoutAnalysesInput, ResumeUncheckedCreateWithoutAnalysesInput>
+  }
+
+  export type RoleCreateWithoutAnalysesInput = {
+    id?: string
+    slug: string
+    title: string
+    description: string
+    seedVersion: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requirements?: RoleSkillRequirementCreateNestedManyWithoutRoleInput
+  }
+
+  export type RoleUncheckedCreateWithoutAnalysesInput = {
+    id?: string
+    slug: string
+    title: string
+    description: string
+    seedVersion: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requirements?: RoleSkillRequirementUncheckedCreateNestedManyWithoutRoleInput
+  }
+
+  export type RoleCreateOrConnectWithoutAnalysesInput = {
+    where: RoleWhereUniqueInput
+    create: XOR<RoleCreateWithoutAnalysesInput, RoleUncheckedCreateWithoutAnalysesInput>
+  }
+
+  export type CandidateSkillEvidenceCreateWithoutCareerAnalysisInput = {
+    id?: string
+    strength: $Enums.EvidenceStrength
+    quote: string
+    sourceSection: string
+    sourceLabel: string
+    createdAt?: Date | string
+    skill: SkillCreateNestedOneWithoutEvidenceInput
+  }
+
+  export type CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput = {
+    id?: string
+    skillId: string
+    strength: $Enums.EvidenceStrength
+    quote: string
+    sourceSection: string
+    sourceLabel: string
     createdAt?: Date | string
   }
 
-  export type SuggestionUncheckedCreateWithoutAnalysisInput = {
-    id?: string
-    original: string
-    suggested: string
-    section?: string | null
-    status?: $Enums.SuggestionStatus
-    rejectionReason?: string | null
-    createdAt?: Date | string
+  export type CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput = {
+    where: CandidateSkillEvidenceWhereUniqueInput
+    create: XOR<CandidateSkillEvidenceCreateWithoutCareerAnalysisInput, CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput>
   }
 
-  export type SuggestionCreateOrConnectWithoutAnalysisInput = {
-    where: SuggestionWhereUniqueInput
-    create: XOR<SuggestionCreateWithoutAnalysisInput, SuggestionUncheckedCreateWithoutAnalysisInput>
-  }
-
-  export type SuggestionCreateManyAnalysisInputEnvelope = {
-    data: SuggestionCreateManyAnalysisInput | SuggestionCreateManyAnalysisInput[]
+  export type CandidateSkillEvidenceCreateManyCareerAnalysisInputEnvelope = {
+    data: CandidateSkillEvidenceCreateManyCareerAnalysisInput | CandidateSkillEvidenceCreateManyCareerAnalysisInput[]
     skipDuplicates?: boolean
   }
 
-  export type ResumeUpsertWithoutAnalysesInput = {
-    update: XOR<ResumeUpdateWithoutAnalysesInput, ResumeUncheckedUpdateWithoutAnalysesInput>
-    create: XOR<ResumeCreateWithoutAnalysesInput, ResumeUncheckedCreateWithoutAnalysesInput>
-    where?: ResumeWhereInput
+  export type SkillGapCreateWithoutCareerAnalysisInput = {
+    id?: string
+    status: $Enums.GapStatus
+    priority: number
+    reasoning: string
+    createdAt?: Date | string
+    skill: SkillCreateNestedOneWithoutGapsInput
+    tasks?: RoadmapTaskCreateNestedManyWithoutSkillGapInput
   }
 
-  export type ResumeUpdateToOneWithWhereWithoutAnalysesInput = {
-    where?: ResumeWhereInput
-    data: XOR<ResumeUpdateWithoutAnalysesInput, ResumeUncheckedUpdateWithoutAnalysesInput>
+  export type SkillGapUncheckedCreateWithoutCareerAnalysisInput = {
+    id?: string
+    skillId: string
+    status: $Enums.GapStatus
+    priority: number
+    reasoning: string
+    createdAt?: Date | string
+    tasks?: RoadmapTaskUncheckedCreateNestedManyWithoutSkillGapInput
   }
 
-  export type ResumeUpdateWithoutAnalysesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    originalFileName?: StringFieldUpdateOperationsInput | string
-    mimeType?: StringFieldUpdateOperationsInput | string
-    fileSize?: IntFieldUpdateOperationsInput | number
-    fileUrl?: StringFieldUpdateOperationsInput | string
-    filePath?: NullableStringFieldUpdateOperationsInput | string | null
-    rawText?: StringFieldUpdateOperationsInput | string
-    structuredResume?: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutResumesNestedInput
+  export type SkillGapCreateOrConnectWithoutCareerAnalysisInput = {
+    where: SkillGapWhereUniqueInput
+    create: XOR<SkillGapCreateWithoutCareerAnalysisInput, SkillGapUncheckedCreateWithoutCareerAnalysisInput>
   }
 
-  export type ResumeUncheckedUpdateWithoutAnalysesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    originalFileName?: StringFieldUpdateOperationsInput | string
-    mimeType?: StringFieldUpdateOperationsInput | string
-    fileSize?: IntFieldUpdateOperationsInput | number
-    fileUrl?: StringFieldUpdateOperationsInput | string
-    filePath?: NullableStringFieldUpdateOperationsInput | string | null
-    rawText?: StringFieldUpdateOperationsInput | string
-    structuredResume?: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type SkillGapCreateManyCareerAnalysisInputEnvelope = {
+    data: SkillGapCreateManyCareerAnalysisInput | SkillGapCreateManyCareerAnalysisInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RoadmapCreateWithoutCareerAnalysisInput = {
+    id?: string
+    weekCount?: number
+    createdAt?: Date | string
+    tasks?: RoadmapTaskCreateNestedManyWithoutRoadmapInput
+  }
+
+  export type RoadmapUncheckedCreateWithoutCareerAnalysisInput = {
+    id?: string
+    weekCount?: number
+    createdAt?: Date | string
+    tasks?: RoadmapTaskUncheckedCreateNestedManyWithoutRoadmapInput
+  }
+
+  export type RoadmapCreateOrConnectWithoutCareerAnalysisInput = {
+    where: RoadmapWhereUniqueInput
+    create: XOR<RoadmapCreateWithoutCareerAnalysisInput, RoadmapUncheckedCreateWithoutCareerAnalysisInput>
+  }
+
+  export type AnalysisEventCreateWithoutCareerAnalysisInput = {
+    id?: string
+    type: $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type AnalysisEventUncheckedCreateWithoutCareerAnalysisInput = {
+    id?: string
+    type: $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type AnalysisEventCreateOrConnectWithoutCareerAnalysisInput = {
+    where: AnalysisEventWhereUniqueInput
+    create: XOR<AnalysisEventCreateWithoutCareerAnalysisInput, AnalysisEventUncheckedCreateWithoutCareerAnalysisInput>
+  }
+
+  export type AnalysisEventCreateManyCareerAnalysisInputEnvelope = {
+    data: AnalysisEventCreateManyCareerAnalysisInput | AnalysisEventCreateManyCareerAnalysisInput[]
+    skipDuplicates?: boolean
   }
 
   export type UserUpsertWithoutAnalysesInput = {
@@ -9700,98 +21496,863 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type SuggestionUpsertWithWhereUniqueWithoutAnalysisInput = {
-    where: SuggestionWhereUniqueInput
-    update: XOR<SuggestionUpdateWithoutAnalysisInput, SuggestionUncheckedUpdateWithoutAnalysisInput>
-    create: XOR<SuggestionCreateWithoutAnalysisInput, SuggestionUncheckedCreateWithoutAnalysisInput>
+  export type ResumeUpsertWithoutAnalysesInput = {
+    update: XOR<ResumeUpdateWithoutAnalysesInput, ResumeUncheckedUpdateWithoutAnalysesInput>
+    create: XOR<ResumeCreateWithoutAnalysesInput, ResumeUncheckedCreateWithoutAnalysesInput>
+    where?: ResumeWhereInput
   }
 
-  export type SuggestionUpdateWithWhereUniqueWithoutAnalysisInput = {
-    where: SuggestionWhereUniqueInput
-    data: XOR<SuggestionUpdateWithoutAnalysisInput, SuggestionUncheckedUpdateWithoutAnalysisInput>
+  export type ResumeUpdateToOneWithWhereWithoutAnalysesInput = {
+    where?: ResumeWhereInput
+    data: XOR<ResumeUpdateWithoutAnalysesInput, ResumeUncheckedUpdateWithoutAnalysesInput>
   }
 
-  export type SuggestionUpdateManyWithWhereWithoutAnalysisInput = {
-    where: SuggestionScalarWhereInput
-    data: XOR<SuggestionUpdateManyMutationInput, SuggestionUncheckedUpdateManyWithoutAnalysisInput>
-  }
-
-  export type SuggestionScalarWhereInput = {
-    AND?: SuggestionScalarWhereInput | SuggestionScalarWhereInput[]
-    OR?: SuggestionScalarWhereInput[]
-    NOT?: SuggestionScalarWhereInput | SuggestionScalarWhereInput[]
-    id?: UuidFilter<"Suggestion"> | string
-    analysisId?: UuidFilter<"Suggestion"> | string
-    original?: StringFilter<"Suggestion"> | string
-    suggested?: StringFilter<"Suggestion"> | string
-    section?: StringNullableFilter<"Suggestion"> | string | null
-    status?: EnumSuggestionStatusFilter<"Suggestion"> | $Enums.SuggestionStatus
-    rejectionReason?: StringNullableFilter<"Suggestion"> | string | null
-    createdAt?: DateTimeFilter<"Suggestion"> | Date | string
-  }
-
-  export type AnalysisCreateWithoutSuggestionsInput = {
-    id?: string
-    jobDescription: string
-    parsedJob: JsonNullValueInput | InputJsonValue
-    resumeSnapshot: JsonNullValueInput | InputJsonValue
-    analysisResult: JsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    exportedAt?: Date | string | null
-    resume: ResumeCreateNestedOneWithoutAnalysesInput
-    user: UserCreateNestedOneWithoutAnalysesInput
-  }
-
-  export type AnalysisUncheckedCreateWithoutSuggestionsInput = {
-    id?: string
-    resumeId: string
-    userId: string
-    jobDescription: string
-    parsedJob: JsonNullValueInput | InputJsonValue
-    resumeSnapshot: JsonNullValueInput | InputJsonValue
-    analysisResult: JsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    exportedAt?: Date | string | null
-  }
-
-  export type AnalysisCreateOrConnectWithoutSuggestionsInput = {
-    where: AnalysisWhereUniqueInput
-    create: XOR<AnalysisCreateWithoutSuggestionsInput, AnalysisUncheckedCreateWithoutSuggestionsInput>
-  }
-
-  export type AnalysisUpsertWithoutSuggestionsInput = {
-    update: XOR<AnalysisUpdateWithoutSuggestionsInput, AnalysisUncheckedUpdateWithoutSuggestionsInput>
-    create: XOR<AnalysisCreateWithoutSuggestionsInput, AnalysisUncheckedCreateWithoutSuggestionsInput>
-    where?: AnalysisWhereInput
-  }
-
-  export type AnalysisUpdateToOneWithWhereWithoutSuggestionsInput = {
-    where?: AnalysisWhereInput
-    data: XOR<AnalysisUpdateWithoutSuggestionsInput, AnalysisUncheckedUpdateWithoutSuggestionsInput>
-  }
-
-  export type AnalysisUpdateWithoutSuggestionsInput = {
+  export type ResumeUpdateWithoutAnalysesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    jobDescription?: StringFieldUpdateOperationsInput | string
-    parsedJob?: JsonNullValueInput | InputJsonValue
-    resumeSnapshot?: JsonNullValueInput | InputJsonValue
-    analysisResult?: JsonNullValueInput | InputJsonValue
+    title?: StringFieldUpdateOperationsInput | string
+    originalFileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
+    rawText?: StringFieldUpdateOperationsInput | string
+    structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
-    user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutResumesNestedInput
   }
 
-  export type AnalysisUncheckedUpdateWithoutSuggestionsInput = {
+  export type ResumeUncheckedUpdateWithoutAnalysesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    resumeId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    jobDescription?: StringFieldUpdateOperationsInput | string
-    parsedJob?: JsonNullValueInput | InputJsonValue
-    resumeSnapshot?: JsonNullValueInput | InputJsonValue
-    analysisResult?: JsonNullValueInput | InputJsonValue
+    title?: StringFieldUpdateOperationsInput | string
+    originalFileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
+    rawText?: StringFieldUpdateOperationsInput | string
+    structuredResume?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoleUpsertWithoutAnalysesInput = {
+    update: XOR<RoleUpdateWithoutAnalysesInput, RoleUncheckedUpdateWithoutAnalysesInput>
+    create: XOR<RoleCreateWithoutAnalysesInput, RoleUncheckedCreateWithoutAnalysesInput>
+    where?: RoleWhereInput
+  }
+
+  export type RoleUpdateToOneWithWhereWithoutAnalysesInput = {
+    where?: RoleWhereInput
+    data: XOR<RoleUpdateWithoutAnalysesInput, RoleUncheckedUpdateWithoutAnalysesInput>
+  }
+
+  export type RoleUpdateWithoutAnalysesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    seedVersion?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requirements?: RoleSkillRequirementUpdateManyWithoutRoleNestedInput
+  }
+
+  export type RoleUncheckedUpdateWithoutAnalysesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    seedVersion?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requirements?: RoleSkillRequirementUncheckedUpdateManyWithoutRoleNestedInput
+  }
+
+  export type CandidateSkillEvidenceUpsertWithWhereUniqueWithoutCareerAnalysisInput = {
+    where: CandidateSkillEvidenceWhereUniqueInput
+    update: XOR<CandidateSkillEvidenceUpdateWithoutCareerAnalysisInput, CandidateSkillEvidenceUncheckedUpdateWithoutCareerAnalysisInput>
+    create: XOR<CandidateSkillEvidenceCreateWithoutCareerAnalysisInput, CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput>
+  }
+
+  export type CandidateSkillEvidenceUpdateWithWhereUniqueWithoutCareerAnalysisInput = {
+    where: CandidateSkillEvidenceWhereUniqueInput
+    data: XOR<CandidateSkillEvidenceUpdateWithoutCareerAnalysisInput, CandidateSkillEvidenceUncheckedUpdateWithoutCareerAnalysisInput>
+  }
+
+  export type CandidateSkillEvidenceUpdateManyWithWhereWithoutCareerAnalysisInput = {
+    where: CandidateSkillEvidenceScalarWhereInput
+    data: XOR<CandidateSkillEvidenceUpdateManyMutationInput, CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisInput>
+  }
+
+  export type SkillGapUpsertWithWhereUniqueWithoutCareerAnalysisInput = {
+    where: SkillGapWhereUniqueInput
+    update: XOR<SkillGapUpdateWithoutCareerAnalysisInput, SkillGapUncheckedUpdateWithoutCareerAnalysisInput>
+    create: XOR<SkillGapCreateWithoutCareerAnalysisInput, SkillGapUncheckedCreateWithoutCareerAnalysisInput>
+  }
+
+  export type SkillGapUpdateWithWhereUniqueWithoutCareerAnalysisInput = {
+    where: SkillGapWhereUniqueInput
+    data: XOR<SkillGapUpdateWithoutCareerAnalysisInput, SkillGapUncheckedUpdateWithoutCareerAnalysisInput>
+  }
+
+  export type SkillGapUpdateManyWithWhereWithoutCareerAnalysisInput = {
+    where: SkillGapScalarWhereInput
+    data: XOR<SkillGapUpdateManyMutationInput, SkillGapUncheckedUpdateManyWithoutCareerAnalysisInput>
+  }
+
+  export type RoadmapUpsertWithoutCareerAnalysisInput = {
+    update: XOR<RoadmapUpdateWithoutCareerAnalysisInput, RoadmapUncheckedUpdateWithoutCareerAnalysisInput>
+    create: XOR<RoadmapCreateWithoutCareerAnalysisInput, RoadmapUncheckedCreateWithoutCareerAnalysisInput>
+    where?: RoadmapWhereInput
+  }
+
+  export type RoadmapUpdateToOneWithWhereWithoutCareerAnalysisInput = {
+    where?: RoadmapWhereInput
+    data: XOR<RoadmapUpdateWithoutCareerAnalysisInput, RoadmapUncheckedUpdateWithoutCareerAnalysisInput>
+  }
+
+  export type RoadmapUpdateWithoutCareerAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tasks?: RoadmapTaskUpdateManyWithoutRoadmapNestedInput
+  }
+
+  export type RoadmapUncheckedUpdateWithoutCareerAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tasks?: RoadmapTaskUncheckedUpdateManyWithoutRoadmapNestedInput
+  }
+
+  export type AnalysisEventUpsertWithWhereUniqueWithoutCareerAnalysisInput = {
+    where: AnalysisEventWhereUniqueInput
+    update: XOR<AnalysisEventUpdateWithoutCareerAnalysisInput, AnalysisEventUncheckedUpdateWithoutCareerAnalysisInput>
+    create: XOR<AnalysisEventCreateWithoutCareerAnalysisInput, AnalysisEventUncheckedCreateWithoutCareerAnalysisInput>
+  }
+
+  export type AnalysisEventUpdateWithWhereUniqueWithoutCareerAnalysisInput = {
+    where: AnalysisEventWhereUniqueInput
+    data: XOR<AnalysisEventUpdateWithoutCareerAnalysisInput, AnalysisEventUncheckedUpdateWithoutCareerAnalysisInput>
+  }
+
+  export type AnalysisEventUpdateManyWithWhereWithoutCareerAnalysisInput = {
+    where: AnalysisEventScalarWhereInput
+    data: XOR<AnalysisEventUpdateManyMutationInput, AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisInput>
+  }
+
+  export type AnalysisEventScalarWhereInput = {
+    AND?: AnalysisEventScalarWhereInput | AnalysisEventScalarWhereInput[]
+    OR?: AnalysisEventScalarWhereInput[]
+    NOT?: AnalysisEventScalarWhereInput | AnalysisEventScalarWhereInput[]
+    id?: UuidFilter<"AnalysisEvent"> | string
+    careerAnalysisId?: UuidFilter<"AnalysisEvent"> | string
+    type?: EnumAnalysisEventTypeFilter<"AnalysisEvent"> | $Enums.AnalysisEventType
+    payload?: JsonNullableFilter<"AnalysisEvent">
+    createdAt?: DateTimeFilter<"AnalysisEvent"> | Date | string
+  }
+
+  export type CareerAnalysisCreateWithoutEvidenceInput = {
+    id?: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    user: UserCreateNestedOneWithoutAnalysesInput
+    resume: ResumeCreateNestedOneWithoutAnalysesInput
+    role: RoleCreateNestedOneWithoutAnalysesInput
+    gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+  }
+
+  export type CareerAnalysisUncheckedCreateWithoutEvidenceInput = {
+    id?: string
+    userId: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeId: string
+    roleId: string
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
+  }
+
+  export type CareerAnalysisCreateOrConnectWithoutEvidenceInput = {
+    where: CareerAnalysisWhereUniqueInput
+    create: XOR<CareerAnalysisCreateWithoutEvidenceInput, CareerAnalysisUncheckedCreateWithoutEvidenceInput>
+  }
+
+  export type SkillCreateWithoutEvidenceInput = {
+    id?: string
+    slug: string
+    name: string
+    aliases?: SkillCreatealiasesInput | string[]
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requirements?: RoleSkillRequirementCreateNestedManyWithoutSkillInput
+    gaps?: SkillGapCreateNestedManyWithoutSkillInput
+  }
+
+  export type SkillUncheckedCreateWithoutEvidenceInput = {
+    id?: string
+    slug: string
+    name: string
+    aliases?: SkillCreatealiasesInput | string[]
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requirements?: RoleSkillRequirementUncheckedCreateNestedManyWithoutSkillInput
+    gaps?: SkillGapUncheckedCreateNestedManyWithoutSkillInput
+  }
+
+  export type SkillCreateOrConnectWithoutEvidenceInput = {
+    where: SkillWhereUniqueInput
+    create: XOR<SkillCreateWithoutEvidenceInput, SkillUncheckedCreateWithoutEvidenceInput>
+  }
+
+  export type CareerAnalysisUpsertWithoutEvidenceInput = {
+    update: XOR<CareerAnalysisUpdateWithoutEvidenceInput, CareerAnalysisUncheckedUpdateWithoutEvidenceInput>
+    create: XOR<CareerAnalysisCreateWithoutEvidenceInput, CareerAnalysisUncheckedCreateWithoutEvidenceInput>
+    where?: CareerAnalysisWhereInput
+  }
+
+  export type CareerAnalysisUpdateToOneWithWhereWithoutEvidenceInput = {
+    where?: CareerAnalysisWhereInput
+    data: XOR<CareerAnalysisUpdateWithoutEvidenceInput, CareerAnalysisUncheckedUpdateWithoutEvidenceInput>
+  }
+
+  export type CareerAnalysisUpdateWithoutEvidenceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
+    resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
+    role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
+    gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+  }
+
+  export type CareerAnalysisUncheckedUpdateWithoutEvidenceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeId?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+  }
+
+  export type SkillUpsertWithoutEvidenceInput = {
+    update: XOR<SkillUpdateWithoutEvidenceInput, SkillUncheckedUpdateWithoutEvidenceInput>
+    create: XOR<SkillCreateWithoutEvidenceInput, SkillUncheckedCreateWithoutEvidenceInput>
+    where?: SkillWhereInput
+  }
+
+  export type SkillUpdateToOneWithWhereWithoutEvidenceInput = {
+    where?: SkillWhereInput
+    data: XOR<SkillUpdateWithoutEvidenceInput, SkillUncheckedUpdateWithoutEvidenceInput>
+  }
+
+  export type SkillUpdateWithoutEvidenceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    aliases?: SkillUpdatealiasesInput | string[]
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requirements?: RoleSkillRequirementUpdateManyWithoutSkillNestedInput
+    gaps?: SkillGapUpdateManyWithoutSkillNestedInput
+  }
+
+  export type SkillUncheckedUpdateWithoutEvidenceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    aliases?: SkillUpdatealiasesInput | string[]
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requirements?: RoleSkillRequirementUncheckedUpdateManyWithoutSkillNestedInput
+    gaps?: SkillGapUncheckedUpdateManyWithoutSkillNestedInput
+  }
+
+  export type CareerAnalysisCreateWithoutGapsInput = {
+    id?: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    user: UserCreateNestedOneWithoutAnalysesInput
+    resume: ResumeCreateNestedOneWithoutAnalysesInput
+    role: RoleCreateNestedOneWithoutAnalysesInput
+    evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+  }
+
+  export type CareerAnalysisUncheckedCreateWithoutGapsInput = {
+    id?: string
+    userId: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeId: string
+    roleId: string
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
+  }
+
+  export type CareerAnalysisCreateOrConnectWithoutGapsInput = {
+    where: CareerAnalysisWhereUniqueInput
+    create: XOR<CareerAnalysisCreateWithoutGapsInput, CareerAnalysisUncheckedCreateWithoutGapsInput>
+  }
+
+  export type SkillCreateWithoutGapsInput = {
+    id?: string
+    slug: string
+    name: string
+    aliases?: SkillCreatealiasesInput | string[]
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requirements?: RoleSkillRequirementCreateNestedManyWithoutSkillInput
+    evidence?: CandidateSkillEvidenceCreateNestedManyWithoutSkillInput
+  }
+
+  export type SkillUncheckedCreateWithoutGapsInput = {
+    id?: string
+    slug: string
+    name: string
+    aliases?: SkillCreatealiasesInput | string[]
+    category?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requirements?: RoleSkillRequirementUncheckedCreateNestedManyWithoutSkillInput
+    evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutSkillInput
+  }
+
+  export type SkillCreateOrConnectWithoutGapsInput = {
+    where: SkillWhereUniqueInput
+    create: XOR<SkillCreateWithoutGapsInput, SkillUncheckedCreateWithoutGapsInput>
+  }
+
+  export type RoadmapTaskCreateWithoutSkillGapInput = {
+    id?: string
+    weekNumber: number
+    orderInWeek: number
+    title: string
+    description: string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: boolean
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    roadmap: RoadmapCreateNestedOneWithoutTasksInput
+  }
+
+  export type RoadmapTaskUncheckedCreateWithoutSkillGapInput = {
+    id?: string
+    roadmapId: string
+    weekNumber: number
+    orderInWeek: number
+    title: string
+    description: string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: boolean
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type RoadmapTaskCreateOrConnectWithoutSkillGapInput = {
+    where: RoadmapTaskWhereUniqueInput
+    create: XOR<RoadmapTaskCreateWithoutSkillGapInput, RoadmapTaskUncheckedCreateWithoutSkillGapInput>
+  }
+
+  export type RoadmapTaskCreateManySkillGapInputEnvelope = {
+    data: RoadmapTaskCreateManySkillGapInput | RoadmapTaskCreateManySkillGapInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CareerAnalysisUpsertWithoutGapsInput = {
+    update: XOR<CareerAnalysisUpdateWithoutGapsInput, CareerAnalysisUncheckedUpdateWithoutGapsInput>
+    create: XOR<CareerAnalysisCreateWithoutGapsInput, CareerAnalysisUncheckedCreateWithoutGapsInput>
+    where?: CareerAnalysisWhereInput
+  }
+
+  export type CareerAnalysisUpdateToOneWithWhereWithoutGapsInput = {
+    where?: CareerAnalysisWhereInput
+    data: XOR<CareerAnalysisUpdateWithoutGapsInput, CareerAnalysisUncheckedUpdateWithoutGapsInput>
+  }
+
+  export type CareerAnalysisUpdateWithoutGapsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
+    resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
+    role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
+    evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+  }
+
+  export type CareerAnalysisUncheckedUpdateWithoutGapsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeId?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+  }
+
+  export type SkillUpsertWithoutGapsInput = {
+    update: XOR<SkillUpdateWithoutGapsInput, SkillUncheckedUpdateWithoutGapsInput>
+    create: XOR<SkillCreateWithoutGapsInput, SkillUncheckedCreateWithoutGapsInput>
+    where?: SkillWhereInput
+  }
+
+  export type SkillUpdateToOneWithWhereWithoutGapsInput = {
+    where?: SkillWhereInput
+    data: XOR<SkillUpdateWithoutGapsInput, SkillUncheckedUpdateWithoutGapsInput>
+  }
+
+  export type SkillUpdateWithoutGapsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    aliases?: SkillUpdatealiasesInput | string[]
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requirements?: RoleSkillRequirementUpdateManyWithoutSkillNestedInput
+    evidence?: CandidateSkillEvidenceUpdateManyWithoutSkillNestedInput
+  }
+
+  export type SkillUncheckedUpdateWithoutGapsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    aliases?: SkillUpdatealiasesInput | string[]
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requirements?: RoleSkillRequirementUncheckedUpdateManyWithoutSkillNestedInput
+    evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutSkillNestedInput
+  }
+
+  export type RoadmapTaskUpsertWithWhereUniqueWithoutSkillGapInput = {
+    where: RoadmapTaskWhereUniqueInput
+    update: XOR<RoadmapTaskUpdateWithoutSkillGapInput, RoadmapTaskUncheckedUpdateWithoutSkillGapInput>
+    create: XOR<RoadmapTaskCreateWithoutSkillGapInput, RoadmapTaskUncheckedCreateWithoutSkillGapInput>
+  }
+
+  export type RoadmapTaskUpdateWithWhereUniqueWithoutSkillGapInput = {
+    where: RoadmapTaskWhereUniqueInput
+    data: XOR<RoadmapTaskUpdateWithoutSkillGapInput, RoadmapTaskUncheckedUpdateWithoutSkillGapInput>
+  }
+
+  export type RoadmapTaskUpdateManyWithWhereWithoutSkillGapInput = {
+    where: RoadmapTaskScalarWhereInput
+    data: XOR<RoadmapTaskUpdateManyMutationInput, RoadmapTaskUncheckedUpdateManyWithoutSkillGapInput>
+  }
+
+  export type RoadmapTaskScalarWhereInput = {
+    AND?: RoadmapTaskScalarWhereInput | RoadmapTaskScalarWhereInput[]
+    OR?: RoadmapTaskScalarWhereInput[]
+    NOT?: RoadmapTaskScalarWhereInput | RoadmapTaskScalarWhereInput[]
+    id?: UuidFilter<"RoadmapTask"> | string
+    roadmapId?: UuidFilter<"RoadmapTask"> | string
+    skillGapId?: UuidNullableFilter<"RoadmapTask"> | string | null
+    weekNumber?: IntFilter<"RoadmapTask"> | number
+    orderInWeek?: IntFilter<"RoadmapTask"> | number
+    title?: StringFilter<"RoadmapTask"> | string
+    description?: StringFilter<"RoadmapTask"> | string
+    resources?: JsonNullableFilter<"RoadmapTask">
+    completed?: BoolFilter<"RoadmapTask"> | boolean
+    completedAt?: DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
+    createdAt?: DateTimeFilter<"RoadmapTask"> | Date | string
+  }
+
+  export type CareerAnalysisCreateWithoutRoadmapInput = {
+    id?: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    user: UserCreateNestedOneWithoutAnalysesInput
+    resume: ResumeCreateNestedOneWithoutAnalysesInput
+    role: RoleCreateNestedOneWithoutAnalysesInput
+    evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
+    events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+  }
+
+  export type CareerAnalysisUncheckedCreateWithoutRoadmapInput = {
+    id?: string
+    userId: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeId: string
+    roleId: string
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
+  }
+
+  export type CareerAnalysisCreateOrConnectWithoutRoadmapInput = {
+    where: CareerAnalysisWhereUniqueInput
+    create: XOR<CareerAnalysisCreateWithoutRoadmapInput, CareerAnalysisUncheckedCreateWithoutRoadmapInput>
+  }
+
+  export type RoadmapTaskCreateWithoutRoadmapInput = {
+    id?: string
+    weekNumber: number
+    orderInWeek: number
+    title: string
+    description: string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: boolean
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    skillGap?: SkillGapCreateNestedOneWithoutTasksInput
+  }
+
+  export type RoadmapTaskUncheckedCreateWithoutRoadmapInput = {
+    id?: string
+    skillGapId?: string | null
+    weekNumber: number
+    orderInWeek: number
+    title: string
+    description: string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: boolean
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type RoadmapTaskCreateOrConnectWithoutRoadmapInput = {
+    where: RoadmapTaskWhereUniqueInput
+    create: XOR<RoadmapTaskCreateWithoutRoadmapInput, RoadmapTaskUncheckedCreateWithoutRoadmapInput>
+  }
+
+  export type RoadmapTaskCreateManyRoadmapInputEnvelope = {
+    data: RoadmapTaskCreateManyRoadmapInput | RoadmapTaskCreateManyRoadmapInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CareerAnalysisUpsertWithoutRoadmapInput = {
+    update: XOR<CareerAnalysisUpdateWithoutRoadmapInput, CareerAnalysisUncheckedUpdateWithoutRoadmapInput>
+    create: XOR<CareerAnalysisCreateWithoutRoadmapInput, CareerAnalysisUncheckedCreateWithoutRoadmapInput>
+    where?: CareerAnalysisWhereInput
+  }
+
+  export type CareerAnalysisUpdateToOneWithWhereWithoutRoadmapInput = {
+    where?: CareerAnalysisWhereInput
+    data: XOR<CareerAnalysisUpdateWithoutRoadmapInput, CareerAnalysisUncheckedUpdateWithoutRoadmapInput>
+  }
+
+  export type CareerAnalysisUpdateWithoutRoadmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
+    resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
+    role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
+    evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+  }
+
+  export type CareerAnalysisUncheckedUpdateWithoutRoadmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeId?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+  }
+
+  export type RoadmapTaskUpsertWithWhereUniqueWithoutRoadmapInput = {
+    where: RoadmapTaskWhereUniqueInput
+    update: XOR<RoadmapTaskUpdateWithoutRoadmapInput, RoadmapTaskUncheckedUpdateWithoutRoadmapInput>
+    create: XOR<RoadmapTaskCreateWithoutRoadmapInput, RoadmapTaskUncheckedCreateWithoutRoadmapInput>
+  }
+
+  export type RoadmapTaskUpdateWithWhereUniqueWithoutRoadmapInput = {
+    where: RoadmapTaskWhereUniqueInput
+    data: XOR<RoadmapTaskUpdateWithoutRoadmapInput, RoadmapTaskUncheckedUpdateWithoutRoadmapInput>
+  }
+
+  export type RoadmapTaskUpdateManyWithWhereWithoutRoadmapInput = {
+    where: RoadmapTaskScalarWhereInput
+    data: XOR<RoadmapTaskUpdateManyMutationInput, RoadmapTaskUncheckedUpdateManyWithoutRoadmapInput>
+  }
+
+  export type RoadmapCreateWithoutTasksInput = {
+    id?: string
+    weekCount?: number
+    createdAt?: Date | string
+    careerAnalysis: CareerAnalysisCreateNestedOneWithoutRoadmapInput
+  }
+
+  export type RoadmapUncheckedCreateWithoutTasksInput = {
+    id?: string
+    careerAnalysisId: string
+    weekCount?: number
+    createdAt?: Date | string
+  }
+
+  export type RoadmapCreateOrConnectWithoutTasksInput = {
+    where: RoadmapWhereUniqueInput
+    create: XOR<RoadmapCreateWithoutTasksInput, RoadmapUncheckedCreateWithoutTasksInput>
+  }
+
+  export type SkillGapCreateWithoutTasksInput = {
+    id?: string
+    status: $Enums.GapStatus
+    priority: number
+    reasoning: string
+    createdAt?: Date | string
+    careerAnalysis: CareerAnalysisCreateNestedOneWithoutGapsInput
+    skill: SkillCreateNestedOneWithoutGapsInput
+  }
+
+  export type SkillGapUncheckedCreateWithoutTasksInput = {
+    id?: string
+    careerAnalysisId: string
+    skillId: string
+    status: $Enums.GapStatus
+    priority: number
+    reasoning: string
+    createdAt?: Date | string
+  }
+
+  export type SkillGapCreateOrConnectWithoutTasksInput = {
+    where: SkillGapWhereUniqueInput
+    create: XOR<SkillGapCreateWithoutTasksInput, SkillGapUncheckedCreateWithoutTasksInput>
+  }
+
+  export type RoadmapUpsertWithoutTasksInput = {
+    update: XOR<RoadmapUpdateWithoutTasksInput, RoadmapUncheckedUpdateWithoutTasksInput>
+    create: XOR<RoadmapCreateWithoutTasksInput, RoadmapUncheckedCreateWithoutTasksInput>
+    where?: RoadmapWhereInput
+  }
+
+  export type RoadmapUpdateToOneWithWhereWithoutTasksInput = {
+    where?: RoadmapWhereInput
+    data: XOR<RoadmapUpdateWithoutTasksInput, RoadmapUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type RoadmapUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    careerAnalysis?: CareerAnalysisUpdateOneRequiredWithoutRoadmapNestedInput
+  }
+
+  export type RoadmapUncheckedUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    weekCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillGapUpsertWithoutTasksInput = {
+    update: XOR<SkillGapUpdateWithoutTasksInput, SkillGapUncheckedUpdateWithoutTasksInput>
+    create: XOR<SkillGapCreateWithoutTasksInput, SkillGapUncheckedCreateWithoutTasksInput>
+    where?: SkillGapWhereInput
+  }
+
+  export type SkillGapUpdateToOneWithWhereWithoutTasksInput = {
+    where?: SkillGapWhereInput
+    data: XOR<SkillGapUpdateWithoutTasksInput, SkillGapUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type SkillGapUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumGapStatusFieldUpdateOperationsInput | $Enums.GapStatus
+    priority?: IntFieldUpdateOperationsInput | number
+    reasoning?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    careerAnalysis?: CareerAnalysisUpdateOneRequiredWithoutGapsNestedInput
+    skill?: SkillUpdateOneRequiredWithoutGapsNestedInput
+  }
+
+  export type SkillGapUncheckedUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    status?: EnumGapStatusFieldUpdateOperationsInput | $Enums.GapStatus
+    priority?: IntFieldUpdateOperationsInput | number
+    reasoning?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CareerAnalysisCreateWithoutEventsInput = {
+    id?: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    user: UserCreateNestedOneWithoutAnalysesInput
+    resume: ResumeCreateNestedOneWithoutAnalysesInput
+    role: RoleCreateNestedOneWithoutAnalysesInput
+    evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
+  }
+
+  export type CareerAnalysisUncheckedCreateWithoutEventsInput = {
+    id?: string
+    userId: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeId: string
+    roleId: string
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
+  }
+
+  export type CareerAnalysisCreateOrConnectWithoutEventsInput = {
+    where: CareerAnalysisWhereUniqueInput
+    create: XOR<CareerAnalysisCreateWithoutEventsInput, CareerAnalysisUncheckedCreateWithoutEventsInput>
+  }
+
+  export type CareerAnalysisUpsertWithoutEventsInput = {
+    update: XOR<CareerAnalysisUpdateWithoutEventsInput, CareerAnalysisUncheckedUpdateWithoutEventsInput>
+    create: XOR<CareerAnalysisCreateWithoutEventsInput, CareerAnalysisUncheckedCreateWithoutEventsInput>
+    where?: CareerAnalysisWhereInput
+  }
+
+  export type CareerAnalysisUpdateToOneWithWhereWithoutEventsInput = {
+    where?: CareerAnalysisWhereInput
+    data: XOR<CareerAnalysisUpdateWithoutEventsInput, CareerAnalysisUncheckedUpdateWithoutEventsInput>
+  }
+
+  export type CareerAnalysisUpdateWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
+    resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
+    role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
+    evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
+  }
+
+  export type CareerAnalysisUncheckedUpdateWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeId?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
   }
 
   export type ResumeCreateManyUserInput = {
@@ -9804,7 +22365,6 @@ export namespace Prisma {
     filePath?: string | null
     rawText: string
     structuredResume: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9818,15 +22378,18 @@ export namespace Prisma {
     revokedAt?: Date | string | null
   }
 
-  export type AnalysisCreateManyUserInput = {
+  export type CareerAnalysisCreateManyUserInput = {
     id?: string
+    status?: $Enums.CareerAnalysisStatus
     resumeId: string
-    jobDescription: string
-    parsedJob: JsonNullValueInput | InputJsonValue
+    roleId: string
     resumeSnapshot: JsonNullValueInput | InputJsonValue
-    analysisResult: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
-    exportedAt?: Date | string | null
+    completedAt?: Date | string | null
   }
 
   export type ResumeUpdateWithoutUserInput = {
@@ -9839,10 +22402,9 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    analyses?: AnalysisUpdateManyWithoutResumeNestedInput
+    analyses?: CareerAnalysisUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateWithoutUserInput = {
@@ -9855,10 +22417,9 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    analyses?: AnalysisUncheckedUpdateManyWithoutResumeNestedInput
+    analyses?: CareerAnalysisUncheckedUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateManyWithoutUserInput = {
@@ -9871,7 +22432,6 @@ export namespace Prisma {
     filePath?: NullableStringFieldUpdateOperationsInput | string | null
     rawText?: StringFieldUpdateOperationsInput | string
     structuredResume?: JsonNullValueInput | InputJsonValue
-    enabledSections?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9903,124 +22463,541 @@ export namespace Prisma {
     revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type AnalysisUpdateWithoutUserInput = {
+  export type CareerAnalysisUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    jobDescription?: StringFieldUpdateOperationsInput | string
-    parsedJob?: JsonNullValueInput | InputJsonValue
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
-    analysisResult?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
-    suggestions?: SuggestionUpdateManyWithoutAnalysisNestedInput
+    role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
+    evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
   }
 
-  export type AnalysisUncheckedUpdateWithoutUserInput = {
+  export type CareerAnalysisUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
     resumeId?: StringFieldUpdateOperationsInput | string
-    jobDescription?: StringFieldUpdateOperationsInput | string
-    parsedJob?: JsonNullValueInput | InputJsonValue
+    roleId?: StringFieldUpdateOperationsInput | string
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
-    analysisResult?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    suggestions?: SuggestionUncheckedUpdateManyWithoutAnalysisNestedInput
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
   }
 
-  export type AnalysisUncheckedUpdateManyWithoutUserInput = {
+  export type CareerAnalysisUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
     resumeId?: StringFieldUpdateOperationsInput | string
-    jobDescription?: StringFieldUpdateOperationsInput | string
-    parsedJob?: JsonNullValueInput | InputJsonValue
+    roleId?: StringFieldUpdateOperationsInput | string
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
-    analysisResult?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type AnalysisCreateManyResumeInput = {
+  export type CareerAnalysisCreateManyResumeInput = {
     id?: string
     userId: string
-    jobDescription: string
-    parsedJob: JsonNullValueInput | InputJsonValue
+    status?: $Enums.CareerAnalysisStatus
+    roleId: string
     resumeSnapshot: JsonNullValueInput | InputJsonValue
-    analysisResult: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
-    exportedAt?: Date | string | null
+    completedAt?: Date | string | null
   }
 
-  export type AnalysisUpdateWithoutResumeInput = {
+  export type CareerAnalysisUpdateWithoutResumeInput = {
     id?: StringFieldUpdateOperationsInput | string
-    jobDescription?: StringFieldUpdateOperationsInput | string
-    parsedJob?: JsonNullValueInput | InputJsonValue
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
-    analysisResult?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
-    suggestions?: SuggestionUpdateManyWithoutAnalysisNestedInput
+    role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
+    evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
   }
 
-  export type AnalysisUncheckedUpdateWithoutResumeInput = {
+  export type CareerAnalysisUncheckedUpdateWithoutResumeInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    jobDescription?: StringFieldUpdateOperationsInput | string
-    parsedJob?: JsonNullValueInput | InputJsonValue
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    roleId?: StringFieldUpdateOperationsInput | string
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
-    analysisResult?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    suggestions?: SuggestionUncheckedUpdateManyWithoutAnalysisNestedInput
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
   }
 
-  export type AnalysisUncheckedUpdateManyWithoutResumeInput = {
+  export type CareerAnalysisUncheckedUpdateManyWithoutResumeInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    jobDescription?: StringFieldUpdateOperationsInput | string
-    parsedJob?: JsonNullValueInput | InputJsonValue
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    roleId?: StringFieldUpdateOperationsInput | string
     resumeSnapshot?: JsonNullValueInput | InputJsonValue
-    analysisResult?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type SuggestionCreateManyAnalysisInput = {
+  export type RoleSkillRequirementCreateManySkillInput = {
     id?: string
-    original: string
-    suggested: string
-    section?: string | null
-    status?: $Enums.SuggestionStatus
-    rejectionReason?: string | null
+    roleId: string
+    importance: $Enums.SkillImportance
+    rationale: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CandidateSkillEvidenceCreateManySkillInput = {
+    id?: string
+    careerAnalysisId: string
+    strength: $Enums.EvidenceStrength
+    quote: string
+    sourceSection: string
+    sourceLabel: string
     createdAt?: Date | string
   }
 
-  export type SuggestionUpdateWithoutAnalysisInput = {
+  export type SkillGapCreateManySkillInput = {
+    id?: string
+    careerAnalysisId: string
+    status: $Enums.GapStatus
+    priority: number
+    reasoning: string
+    createdAt?: Date | string
+  }
+
+  export type RoleSkillRequirementUpdateWithoutSkillInput = {
     id?: StringFieldUpdateOperationsInput | string
-    original?: StringFieldUpdateOperationsInput | string
-    suggested?: StringFieldUpdateOperationsInput | string
-    section?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
-    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    importance?: EnumSkillImportanceFieldUpdateOperationsInput | $Enums.SkillImportance
+    rationale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: RoleUpdateOneRequiredWithoutRequirementsNestedInput
+  }
+
+  export type RoleSkillRequirementUncheckedUpdateWithoutSkillInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    importance?: EnumSkillImportanceFieldUpdateOperationsInput | $Enums.SkillImportance
+    rationale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoleSkillRequirementUncheckedUpdateManyWithoutSkillInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    importance?: EnumSkillImportanceFieldUpdateOperationsInput | $Enums.SkillImportance
+    rationale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateSkillEvidenceUpdateWithoutSkillInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    strength?: EnumEvidenceStrengthFieldUpdateOperationsInput | $Enums.EvidenceStrength
+    quote?: StringFieldUpdateOperationsInput | string
+    sourceSection?: StringFieldUpdateOperationsInput | string
+    sourceLabel?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    careerAnalysis?: CareerAnalysisUpdateOneRequiredWithoutEvidenceNestedInput
+  }
+
+  export type CandidateSkillEvidenceUncheckedUpdateWithoutSkillInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    strength?: EnumEvidenceStrengthFieldUpdateOperationsInput | $Enums.EvidenceStrength
+    quote?: StringFieldUpdateOperationsInput | string
+    sourceSection?: StringFieldUpdateOperationsInput | string
+    sourceLabel?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type SuggestionUncheckedUpdateWithoutAnalysisInput = {
+  export type CandidateSkillEvidenceUncheckedUpdateManyWithoutSkillInput = {
     id?: StringFieldUpdateOperationsInput | string
-    original?: StringFieldUpdateOperationsInput | string
-    suggested?: StringFieldUpdateOperationsInput | string
-    section?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
-    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    strength?: EnumEvidenceStrengthFieldUpdateOperationsInput | $Enums.EvidenceStrength
+    quote?: StringFieldUpdateOperationsInput | string
+    sourceSection?: StringFieldUpdateOperationsInput | string
+    sourceLabel?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type SuggestionUncheckedUpdateManyWithoutAnalysisInput = {
+  export type SkillGapUpdateWithoutSkillInput = {
     id?: StringFieldUpdateOperationsInput | string
-    original?: StringFieldUpdateOperationsInput | string
-    suggested?: StringFieldUpdateOperationsInput | string
-    section?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumSuggestionStatusFieldUpdateOperationsInput | $Enums.SuggestionStatus
-    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumGapStatusFieldUpdateOperationsInput | $Enums.GapStatus
+    priority?: IntFieldUpdateOperationsInput | number
+    reasoning?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    careerAnalysis?: CareerAnalysisUpdateOneRequiredWithoutGapsNestedInput
+    tasks?: RoadmapTaskUpdateManyWithoutSkillGapNestedInput
+  }
+
+  export type SkillGapUncheckedUpdateWithoutSkillInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    status?: EnumGapStatusFieldUpdateOperationsInput | $Enums.GapStatus
+    priority?: IntFieldUpdateOperationsInput | number
+    reasoning?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tasks?: RoadmapTaskUncheckedUpdateManyWithoutSkillGapNestedInput
+  }
+
+  export type SkillGapUncheckedUpdateManyWithoutSkillInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    careerAnalysisId?: StringFieldUpdateOperationsInput | string
+    status?: EnumGapStatusFieldUpdateOperationsInput | $Enums.GapStatus
+    priority?: IntFieldUpdateOperationsInput | number
+    reasoning?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoleSkillRequirementCreateManyRoleInput = {
+    id?: string
+    skillId: string
+    importance: $Enums.SkillImportance
+    rationale: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CareerAnalysisCreateManyRoleInput = {
+    id?: string
+    userId: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeId: string
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type RoleSkillRequirementUpdateWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    importance?: EnumSkillImportanceFieldUpdateOperationsInput | $Enums.SkillImportance
+    rationale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    skill?: SkillUpdateOneRequiredWithoutRequirementsNestedInput
+  }
+
+  export type RoleSkillRequirementUncheckedUpdateWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    importance?: EnumSkillImportanceFieldUpdateOperationsInput | $Enums.SkillImportance
+    rationale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoleSkillRequirementUncheckedUpdateManyWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    importance?: EnumSkillImportanceFieldUpdateOperationsInput | $Enums.SkillImportance
+    rationale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CareerAnalysisUpdateWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
+    resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
+    evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+  }
+
+  export type CareerAnalysisUncheckedUpdateWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeId?: StringFieldUpdateOperationsInput | string
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+  }
+
+  export type CareerAnalysisUncheckedUpdateManyWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeId?: StringFieldUpdateOperationsInput | string
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type CandidateSkillEvidenceCreateManyCareerAnalysisInput = {
+    id?: string
+    skillId: string
+    strength: $Enums.EvidenceStrength
+    quote: string
+    sourceSection: string
+    sourceLabel: string
+    createdAt?: Date | string
+  }
+
+  export type SkillGapCreateManyCareerAnalysisInput = {
+    id?: string
+    skillId: string
+    status: $Enums.GapStatus
+    priority: number
+    reasoning: string
+    createdAt?: Date | string
+  }
+
+  export type AnalysisEventCreateManyCareerAnalysisInput = {
+    id?: string
+    type: $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type CandidateSkillEvidenceUpdateWithoutCareerAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    strength?: EnumEvidenceStrengthFieldUpdateOperationsInput | $Enums.EvidenceStrength
+    quote?: StringFieldUpdateOperationsInput | string
+    sourceSection?: StringFieldUpdateOperationsInput | string
+    sourceLabel?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    skill?: SkillUpdateOneRequiredWithoutEvidenceNestedInput
+  }
+
+  export type CandidateSkillEvidenceUncheckedUpdateWithoutCareerAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    strength?: EnumEvidenceStrengthFieldUpdateOperationsInput | $Enums.EvidenceStrength
+    quote?: StringFieldUpdateOperationsInput | string
+    sourceSection?: StringFieldUpdateOperationsInput | string
+    sourceLabel?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    strength?: EnumEvidenceStrengthFieldUpdateOperationsInput | $Enums.EvidenceStrength
+    quote?: StringFieldUpdateOperationsInput | string
+    sourceSection?: StringFieldUpdateOperationsInput | string
+    sourceLabel?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillGapUpdateWithoutCareerAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumGapStatusFieldUpdateOperationsInput | $Enums.GapStatus
+    priority?: IntFieldUpdateOperationsInput | number
+    reasoning?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    skill?: SkillUpdateOneRequiredWithoutGapsNestedInput
+    tasks?: RoadmapTaskUpdateManyWithoutSkillGapNestedInput
+  }
+
+  export type SkillGapUncheckedUpdateWithoutCareerAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    status?: EnumGapStatusFieldUpdateOperationsInput | $Enums.GapStatus
+    priority?: IntFieldUpdateOperationsInput | number
+    reasoning?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tasks?: RoadmapTaskUncheckedUpdateManyWithoutSkillGapNestedInput
+  }
+
+  export type SkillGapUncheckedUpdateManyWithoutCareerAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    status?: EnumGapStatusFieldUpdateOperationsInput | $Enums.GapStatus
+    priority?: IntFieldUpdateOperationsInput | number
+    reasoning?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisEventUpdateWithoutCareerAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumAnalysisEventTypeFieldUpdateOperationsInput | $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisEventUncheckedUpdateWithoutCareerAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumAnalysisEventTypeFieldUpdateOperationsInput | $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumAnalysisEventTypeFieldUpdateOperationsInput | $Enums.AnalysisEventType
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoadmapTaskCreateManySkillGapInput = {
+    id?: string
+    roadmapId: string
+    weekNumber: number
+    orderInWeek: number
+    title: string
+    description: string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: boolean
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type RoadmapTaskUpdateWithoutSkillGapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekNumber?: IntFieldUpdateOperationsInput | number
+    orderInWeek?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roadmap?: RoadmapUpdateOneRequiredWithoutTasksNestedInput
+  }
+
+  export type RoadmapTaskUncheckedUpdateWithoutSkillGapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    roadmapId?: StringFieldUpdateOperationsInput | string
+    weekNumber?: IntFieldUpdateOperationsInput | number
+    orderInWeek?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoadmapTaskUncheckedUpdateManyWithoutSkillGapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    roadmapId?: StringFieldUpdateOperationsInput | string
+    weekNumber?: IntFieldUpdateOperationsInput | number
+    orderInWeek?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoadmapTaskCreateManyRoadmapInput = {
+    id?: string
+    skillGapId?: string | null
+    weekNumber: number
+    orderInWeek: number
+    title: string
+    description: string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: boolean
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type RoadmapTaskUpdateWithoutRoadmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    weekNumber?: IntFieldUpdateOperationsInput | number
+    orderInWeek?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    skillGap?: SkillGapUpdateOneWithoutTasksNestedInput
+  }
+
+  export type RoadmapTaskUncheckedUpdateWithoutRoadmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    skillGapId?: NullableStringFieldUpdateOperationsInput | string | null
+    weekNumber?: IntFieldUpdateOperationsInput | number
+    orderInWeek?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoadmapTaskUncheckedUpdateManyWithoutRoadmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    skillGapId?: NullableStringFieldUpdateOperationsInput | string | null
+    weekNumber?: IntFieldUpdateOperationsInput | number
+    orderInWeek?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    resources?: NullableJsonNullValueInput | InputJsonValue
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

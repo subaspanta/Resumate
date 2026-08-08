@@ -17,7 +17,7 @@ model User {
 
   resumes       Resume[]
   refreshTokens RefreshToken[]
-  analyses      Analysis[]
+  analyses      CareerAnalysis[]
 
   @@map("users")
 }
@@ -49,57 +49,253 @@ model Resume {
   filePath         String?  @db.Text
   rawText          String   @db.Text
   structuredResume Json     @db.JsonB
-  enabledSections  Json?    @db.JsonB
   createdAt        DateTime @default(now()) @db.Timestamp(6)
   updatedAt        DateTime @updatedAt @db.Timestamp(6)
 
-  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  analyses Analysis[]
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  analyses CareerAnalysis[]
 
   @@index([userId])
   @@map("resumes")
 }
 
-model Analysis {
-  id             String   @id @default(uuid()) @db.Uuid
-  resumeId       String   @db.Uuid
-  userId         String   @db.Uuid
-  jobDescription String   @db.Text
-  parsedJob      Json      @db.JsonB
-  resumeSnapshot Json      @db.JsonB
-  analysisResult Json      @db.JsonB
-  createdAt      DateTime  @default(now()) @db.Timestamp(6)
-  exportedAt     DateTime? @db.Timestamp(6)
+// --- Role skill model -------------------------------------------------------
+// Seeded, hand-authored reference data. Never AI-generated at runtime: an LLM
+// asked "what does a frontend engineer need?" invents plausible requirements,
+// and every downstream gap and readiness score inherits that invention.
 
-  resume      Resume       @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  suggestions Suggestion[]
-
-  @@index([resumeId])
-  @@index([userId])
-  @@index([createdAt(sort: Desc)])
-  @@index([resumeId, createdAt(sort: Desc)])
-  @@map("analyses")
+enum SkillImportance {
+  critical
+  important
+  nice_to_have
 }
 
-enum SuggestionStatus {
+// Canonical skill vocabulary. A separate table (rather than a string column on
+// the requirement) so aliases are defined once and shared across roles — this
+// is what lets the evidence agent recognize "Express" as Node.js evidence
+// without inventing its own vocabulary.
+model Skill {
+  id        String   @id @default(uuid()) @db.Uuid
+  slug      String   @unique @db.VarChar(100)
+  name      String   @db.VarChar(100)
+  aliases   String[] @db.VarChar(100)
+  category  String?  @db.VarChar(50)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+
+  requirements RoleSkillRequirement[]
+  evidence     CandidateSkillEvidence[]
+  gaps         SkillGap[]
+
+  @@map("skills")
+}
+
+model Role {
+  id          String   @id @default(uuid()) @db.Uuid
+  slug        String   @unique @db.VarChar(100)
+  title       String   @db.VarChar(150)
+  description String   @db.Text
+  // Bumped whenever requirements change; copied into every roleSnapshot so a
+  // score computed under old seed data is diagnosable rather than mysterious.
+  seedVersion String   @db.VarChar(20)
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
+
+  requirements RoleSkillRequirement[]
+  analyses     CareerAnalysis[]
+
+  @@map("roles")
+}
+
+model RoleSkillRequirement {
+  id         String          @id @default(uuid()) @db.Uuid
+  roleId     String          @db.Uuid
+  skillId    String          @db.Uuid
+  importance SkillImportance
+  rationale  String          @db.Text
+  createdAt  DateTime        @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime        @updatedAt @db.Timestamp(6)
+
+  role  Role  @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  // Restrict, not Cascade: seed data must not be deletable while analyses
+  // reference it. Cascade here would let a seed cleanup destroy user history.
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Restrict)
+
+  // The seed's idempotency key — upsert targets this compound unique.
+  @@unique([roleId, skillId])
+  @@index([roleId])
+  @@map("role_skill_requirements")
+}
+
+// --- Career analysis --------------------------------------------------------
+
+// What the AI *observes* about the resume. Deliberately a different enum from
+// GapStatus (what the application *judges*) so the agent's output schema has
+// no field capable of expressing a judgement.
+enum EvidenceStrength {
+  experience_backed
+  project_backed
+  mentioned
+}
+
+enum GapStatus {
+  strong
+  developing
+  weak_evidence
+  missing
+}
+
+enum CareerAnalysisStatus {
   pending
-  applied
-  rejected
+  analyzing
+  complete
+  failed
 }
 
-model Suggestion {
-  id              String           @id @default(uuid()) @db.Uuid
-  analysisId      String           @db.Uuid
-  original        String           @db.Text
-  suggested       String           @db.Text
-  section         String?          @db.VarChar(50)
-  status          SuggestionStatus @default(pending)
-  rejectionReason String?          @db.Text
-  createdAt       DateTime         @default(now()) @db.Timestamp(6)
+enum AnalysisEventType {
+  analysis_started
+  analysis_completed
+  analysis_failed
+  roadmap_generated
+  task_completed
+  task_uncompleted
+}
 
-  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+model CareerAnalysis {
+  id     String               @id @default(uuid()) @db.Uuid
+  userId String               @db.Uuid
+  status CareerAnalysisStatus @default(pending)
 
-  @@index([analysisId])
-  @@map("suggestions")
+  resumeId String @db.Uuid
+  roleId   String @db.Uuid
+
+  // Frozen inputs. resumeSnapshot follows the existing precedent (later resume
+  // edits must not retroactively change past analyses); roleSnapshot exists
+  // because RoleSkillRequirement rows are *mutable seed data* — re-seeding with
+  // re-tuned importance would otherwise silently rewrite the meaning of every
+  // historical readinessScore.
+  resumeSnapshot Json @db.JsonB
+  roleSnapshot   Json @db.JsonB
+
+  // Persisted rather than derived on read, so the breakdown that justified the
+  // stored score survives a later seed change. Null until status = complete.
+  readinessScore     Int?
+  readinessBreakdown Json? @db.JsonB
+
+  failureReason String?   @db.Text
+  createdAt     DateTime  @default(now()) @db.Timestamp(6)
+  completedAt   DateTime? @db.Timestamp(6)
+
+  user     User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume   Resume                   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  role     Role                     @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  evidence CandidateSkillEvidence[]
+  gaps     SkillGap[]
+  roadmap  Roadmap?
+  events   AnalysisEvent[]
+
+  @@index([userId])
+  @@index([resumeId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("career_analyses")
+}
+
+model CandidateSkillEvidence {
+  id               String           @id @default(uuid()) @db.Uuid
+  careerAnalysisId String           @db.Uuid
+  skillId          String           @db.Uuid
+  strength         EvidenceStrength
+  // Verbatim from the resume snapshot — the grounding validator drops any
+  // quote that does not appear there, so a stored quote is always real text.
+  quote            String           @db.Text
+  sourceSection    String           @db.VarChar(30)
+  sourceLabel      String           @db.VarChar(200)
+  createdAt        DateTime         @default(now()) @db.Timestamp(6)
+
+  careerAnalysis CareerAnalysis @relation(fields: [careerAnalysisId], references: [id], onDelete: Cascade)
+  skill          Skill          @relation(fields: [skillId], references: [id], onDelete: Restrict)
+
+  @@index([careerAnalysisId])
+  @@map("candidate_skill_evidence")
+}
+
+model SkillGap {
+  id               String    @id @default(uuid()) @db.Uuid
+  careerAnalysisId String    @db.Uuid
+  skillId          String    @db.Uuid
+  status           GapStatus
+  // Deterministic, computed in readiness.ts. Lower = more urgent.
+  priority         Int
+  reasoning        String    @db.Text
+  createdAt        DateTime  @default(now()) @db.Timestamp(6)
+
+  careerAnalysis CareerAnalysis @relation(fields: [careerAnalysisId], references: [id], onDelete: Cascade)
+  skill          Skill          @relation(fields: [skillId], references: [id], onDelete: Restrict)
+  tasks          RoadmapTask[]
+
+  // Exactly one gap row per required skill — lets a retry of the evidence
+  // call fail loudly instead of double-writing gaps.
+  @@unique([careerAnalysisId, skillId])
+  @@index([careerAnalysisId])
+  @@map("skill_gaps")
+}
+
+model Roadmap {
+  id               String   @id @default(uuid()) @db.Uuid
+  // 1:1 — regeneration replaces the existing roadmap inside a transaction
+  // rather than accumulating versions, so "the roadmap" stays unambiguous.
+  careerAnalysisId String   @unique @db.Uuid
+  weekCount        Int      @default(4)
+  createdAt        DateTime @default(now()) @db.Timestamp(6)
+
+  careerAnalysis CareerAnalysis @relation(fields: [careerAnalysisId], references: [id], onDelete: Cascade)
+  tasks          RoadmapTask[]
+
+  @@map("roadmaps")
+}
+
+model RoadmapTask {
+  id         String  @id @default(uuid()) @db.Uuid
+  roadmapId  String  @db.Uuid
+  // Nullable: a general task (e.g. "publish your project READMEs") maps to no
+  // single gap. SetNull rather than Cascade so deleting a gap doesn't silently
+  // delete work the user may already have completed.
+  skillGapId String? @db.Uuid
+
+  weekNumber Int
+  // A real column, not a sort computed on read: ordering that isn't persisted
+  // degrades to whatever order Postgres happens to return.
+  orderInWeek Int
+
+  title       String  @db.VarChar(200)
+  description String  @db.Text
+  resources   Json?   @db.JsonB
+
+  completed   Boolean   @default(false)
+  // Derived from `completed` in the repository, never accepted from the
+  // client — otherwise users could forge their own progress history.
+  completedAt DateTime? @db.Timestamp(6)
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+
+  roadmap  Roadmap   @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  skillGap SkillGap? @relation(fields: [skillGapId], references: [id], onDelete: SetNull)
+
+  @@index([roadmapId, weekNumber, orderInWeek])
+  @@map("roadmap_tasks")
+}
+
+// Minimal audit trail for the transitions the PRD calls audit-worthy. Not
+// event sourcing — these rows are a log, never a source of truth to rebuild
+// state from.
+model AnalysisEvent {
+  id               String            @id @default(uuid()) @db.Uuid
+  careerAnalysisId String            @db.Uuid
+  type             AnalysisEventType
+  payload          Json?             @db.JsonB
+  createdAt        DateTime          @default(now()) @db.Timestamp(6)
+
+  careerAnalysis CareerAnalysis @relation(fields: [careerAnalysisId], references: [id], onDelete: Cascade)
+
+  @@index([careerAnalysisId, createdAt])
+  @@map("analysis_events")
 }

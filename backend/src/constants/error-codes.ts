@@ -22,8 +22,11 @@ export const ERROR_CODES = {
   GEMINI_API_ERROR: "GEMINI_API_ERROR",
   GEMINI_RATE_LIMITED: "GEMINI_RATE_LIMITED",
   AI_VALIDATION_FAILED: "AI_VALIDATION_FAILED",
-  JOB_PARSING_FAILED: "JOB_PARSING_FAILED",
-  REWRITE_VALIDATION_FAILED: "REWRITE_VALIDATION_FAILED",
+  // Raised when AI output contradicts the inputs it was derived from — a
+  // skill outside the role's requirements, a quote absent from the resume,
+  // a roadmap task pinned to another analysis's gap. Distinct from
+  // AI_VALIDATION_FAILED, which means the output didn't match its schema.
+  AI_GROUNDING_FAILED: "AI_GROUNDING_FAILED",
   RATE_LIMIT_EXCEEDED: "RATE_LIMIT_EXCEEDED",
 } as const;
 
