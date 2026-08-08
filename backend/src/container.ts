@@ -1,7 +1,3 @@
-// Composition root: every repository/service/agent is built exactly once
-// here, then wired into controllers. Route files import the finished
-// controllers instead of constructing their own copy of the dependency
-// graph.
 import { GoogleGenAI } from "@google/genai";
 import { env } from "./config/env.js";
 
@@ -20,6 +16,11 @@ import { RoleRepository } from "./modules/role/role.repository.js";
 import { RoleService } from "./modules/role/role.service.js";
 import { RoleController } from "./modules/role/role.controller.js";
 
+import { CareerAnalysisRepository } from "./modules/career-analysis/career-analysis.repository.js";
+import { CareerAnalysisService } from "./modules/career-analysis/career-analysis.service.js";
+import { CareerAnalysisController } from "./modules/career-analysis/career-analysis.controller.js";
+import { EvidenceAgentService } from "./modules/career-analysis/agents/evidence.agent.js";
+
 // One shared Gemini client for every agent. Agents take it as a constructor
 // parameter rather than building their own at module scope — the old
 // job-parser/rewrite agents did the latter, which is why neither could be
@@ -30,15 +31,23 @@ const geminiClient = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 const authRepository = new AuthRepository();
 const resumeRepository = new ResumeRepository();
 const roleRepository = new RoleRepository();
+const careerAnalysisRepository = new CareerAnalysisRepository();
 
 // --- shared modules / agents ---
 const cloudinaryStorageModule = new CloudinaryStorageModule();
 const aiStructuringModule = new AIStructuringService(geminiClient);
 const parsingModule = new ParsingService(aiStructuringModule);
+const evidenceAgent = new EvidenceAgentService(geminiClient);
 
 // --- services ---
 const authService = new AuthService(authRepository);
 const roleService = new RoleService(roleRepository);
+const careerAnalysisService = new CareerAnalysisService(
+  careerAnalysisRepository,
+  resumeRepository,
+  roleService,
+  evidenceAgent,
+);
 const resumeService = new ResumeService(
   resumeRepository,
   cloudinaryStorageModule,
@@ -49,3 +58,6 @@ const resumeService = new ResumeService(
 export const authController = new AuthController(authService);
 export const resumeController = new ResumeController(resumeService);
 export const roleController = new RoleController(roleService);
+export const careerAnalysisController = new CareerAnalysisController(
+  careerAnalysisService,
+);

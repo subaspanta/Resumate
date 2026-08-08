@@ -110,6 +110,13 @@ export const createCareerAnalysisSchema = z.object({
   roleSlug: z.string().min(1).max(100),
 });
 
+export const listCareerAnalysesQuerySchema = z.object({
+  resumeId: z.string().uuid().optional(),
+});
+
 export type CreateCareerAnalysisInput = z.infer<
   typeof createCareerAnalysisSchema
+>;
+export type ListCareerAnalysesQuery = z.infer<
+  typeof listCareerAnalysesQuerySchema
 >;
