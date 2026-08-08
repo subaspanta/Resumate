@@ -5,7 +5,6 @@ import { HTTP_STATUS } from "../../../constants/http-status.js";
 import { validateAgentOutput } from "../../../utils/agent-output-validator.js";
 import { classifyGeminiError } from "../../ai/gemini-error.js";
 import { GEMINI_CALL_TIMEOUT_MS } from "../../ai/gemini-timeout.js";
-import { StructuredResume } from "../../parsing/parsing.types.js";
 import {
   EvidenceAgent,
   EvidenceAgentInput,
@@ -13,6 +12,10 @@ import {
   evidenceAgentOutputSchema,
   SOURCE_SECTIONS,
 } from "../career-analysis.types.js";
+import {
+  buildSourceItems,
+  renderSourceItemsForPrompt,
+} from "../resume-source-items.js";
 
 // Gemini structured-output schema mirroring EvidenceAgentOutput.
 //
@@ -71,70 +74,6 @@ export class EvidenceAgentService implements EvidenceAgent {
     return this.parseResponse(responseText);
   }
 
-  // Serializes only the parts of the resume a quote can legitimately come
-  // from. Contact details are withheld — they are PII, and no skill evidence
-  // should ever be attributed to a phone number.
-  //
-  // Every entry is labelled with its index, and those indices must match the
-  // order buildResumeHaystack walks the same arrays in. That correspondence is
-  // what makes sourceIndex resolvable: the model cites [2], the validator
-  // grounds the quote against entry 2, and the backend derives the label from
-  // entry 2. If the two orderings ever diverge, provenance silently points at
-  // the wrong job.
-  private serializeResume(resume: StructuredResume): string {
-    const sections: string[] = [];
-
-    if (resume.summary) {
-      sections.push(`## Summary\n[0] ${resume.summary}`);
-    }
-
-    if (resume.experience?.length) {
-      const entries = resume.experience.map((entry, index) => {
-        const header = [entry.title, entry.company].filter(Boolean).join(" — ");
-        const dates = [entry.startDate, entry.endDate]
-          .filter(Boolean)
-          .join(" to ");
-        const bullets = (entry.bullets ?? []).map((b) => `- ${b}`).join("\n");
-        return `[${index}] ${header}${dates ? ` (${dates})` : ""}\n${bullets}`;
-      });
-      sections.push(`## Experience\n${entries.join("\n\n")}`);
-    }
-
-    if (resume.projects?.length) {
-      const entries = resume.projects.map((project, index) => {
-        const bullets = (project.bullets ?? []).map((b) => `- ${b}`).join("\n");
-        return `[${index}] ${project.name}\n${bullets}`;
-      });
-      sections.push(`## Projects\n${entries.join("\n\n")}`);
-    }
-
-    if (resume.skills?.length) {
-      const groups = resume.skills.map(
-        (group, index) =>
-          `[${index}] ${group.category ?? "Other"}: ${group.items.join(", ")}`,
-      );
-      sections.push(`## Skills\n${groups.join("\n")}`);
-    }
-
-    if (resume.education?.length) {
-      const entries = resume.education.map(
-        (entry, index) =>
-          `[${index}] ${[entry.degree, entry.institution, entry.year].filter(Boolean).join(", ")}`,
-      );
-      sections.push(`## Education\n${entries.join("\n")}`);
-    }
-
-    if (resume.certifications?.length) {
-      const entries = resume.certifications.map(
-        (cert, index) =>
-          `[${index}] ${[cert.name, cert.issuer].filter(Boolean).join(", ")}`,
-      );
-      sections.push(`## Certifications\n${entries.join("\n")}`);
-    }
-
-    return sections.join("\n\n");
-  }
-
   private buildPrompt(input: EvidenceAgentInput): string {
     const skillList = input.requiredSkills
       .map((skill) => {
@@ -181,7 +120,7 @@ Skills to assess:
 ${skillList}
 
 Resume:
-${this.serializeResume(input.resume)}`;
+${renderSourceItemsForPrompt(buildSourceItems(input.resume))}`;
   }
 
   private async callGemini(prompt: string): Promise<string> {

@@ -22,6 +22,14 @@ import { ERROR_CODES } from "../constants/error-codes.js";
 import { HTTP_STATUS } from "../constants/http-status.js";
 import { StructuredResume } from "../modules/parsing/parsing.types.js";
 import {
+  MIN_GROUNDED_QUOTE_LENGTH,
+  normalizeForGrounding,
+} from "./grounding-normalize.js";
+import {
+  buildSourceItems,
+  ResumeSourceItems,
+} from "../modules/career-analysis/resume-source-items.js";
+import {
   EvidenceAgentOutput,
   EvidenceItem,
   GroundedEvidenceItem,
@@ -29,11 +37,6 @@ import {
   RoleSnapshot,
   SourceSection,
 } from "../modules/career-analysis/career-analysis.types.js";
-
-// Below this, a "quote" is a fragment that grounds against almost any resume
-// ("API", "React") and proves nothing. Rejecting them stops the model from
-// satisfying the grounding check with content-free snippets.
-export const MIN_GROUNDED_QUOTE_LENGTH = 12;
 
 // Which sections can justify each strength claim. Anything demonstrated
 // through narrative lives in experience or projects; a skills list is a
@@ -73,133 +76,12 @@ export type EvidenceGroundingResult = {
   rejections: GroundingRejection[];
 };
 
-// One addressable entry of the resume: the text a quote must appear in, and
-// the label the backend derives for it. The model references these by index;
-// it never authors the label.
-export type SourceItem = {
-  text: string;
-  label: string;
-};
-
-export type ResumeHaystack = {
-  bySection: Record<SourceSection, SourceItem[]>;
-};
-
-// Folds away the encoding noise that PDF extraction and model tokenization
-// introduce, so "verbatim" means "the same words", not "the same bytes".
-//
-// Applied identically to both haystack and needle. Anything this does NOT
-// erase — different words, different numbers, different order — still fails
-// the check, which is the property that actually matters.
-export function normalizeForGrounding(text: string): string {
-  return (
-    text
-      // NFKC folds ligatures (ﬁ -> fi), fullwidth forms, and non-breaking /
-      // thin spaces into ordinary characters.
-      .normalize("NFKC")
-      // PDFs emit en/em/figure dashes where the model writes a hyphen.
-      .replace(/[\u2010-\u2015\u2212]/g, "-")
-      .replace(/[\u2018\u2019\u201b\u2032]/g, "'")
-      .replace(/[\u201c\u201d\u2033]/g, '"')
-      // Zero-width characters some PDF encoders scatter through words.
-      .replace(/[\u200b\u200c\u200d\ufeff]/g, "")
-      .replace(/\s+/g, " ")
-      // Bullet glyphs and leading dashes are layout, not content.
-      .replace(/^[\u2022\u25aa\u25e6*\-\s]+/, "")
-      .replace(/[\u2022\u25aa\u25e6*\-\s]+$/, "")
-      .toLowerCase()
-      .trim()
-  );
-}
-
-function joinParts(parts: (string | null | undefined)[]): string {
-  // Joined with "\n" (which normalizes to a space) rather than "" so the end
-  // of one bullet and the start of the next can't form a phantom substring
-  // that grounds a quote spanning two unrelated bullets.
-  return parts.filter((p): p is string => Boolean(p)).join("\n");
-}
-
-// Builds the addressable source items, once per analysis.
-//
-// Each entry keeps its own text rather than being concatenated into one blob
-// per section: a quote must ground in the *specific* entry the model cited,
-// which is what makes derived provenance trustworthy. It also removes the
-// cross-entry false positive, where a quote spanning two unrelated jobs would
-// ground against the section as a whole.
-export function buildResumeHaystack(resume: StructuredResume): ResumeHaystack {
-  const experience: SourceItem[] = (resume.experience ?? []).map((entry) => ({
-    text: normalizeForGrounding(
-      joinParts([
-        entry.title,
-        entry.company,
-        entry.location,
-        ...(entry.bullets ?? []),
-      ]),
-    ),
-    // The label the user sees as provenance — derived here, never supplied
-    // by the model.
-    label: [entry.title, entry.company].filter(Boolean).join(" — ") || "Experience",
-  }));
-
-  const projects: SourceItem[] = (resume.projects ?? []).map((project) => ({
-    text: normalizeForGrounding(
-      joinParts([project.name, ...(project.bullets ?? [])]),
-    ),
-    label: project.name || "Project",
-  }));
-
-  const skills: SourceItem[] = (resume.skills ?? []).map((group) => ({
-    text: normalizeForGrounding(joinParts([group.category, ...group.items])),
-    label: group.category ?? "Skills",
-  }));
-
-  const education: SourceItem[] = (resume.education ?? []).map((entry) => ({
-    text: normalizeForGrounding(
-      joinParts([entry.degree, entry.institution, entry.year]),
-    ),
-    label: [entry.degree, entry.institution].filter(Boolean).join(", ") || "Education",
-  }));
-
-  const certifications: SourceItem[] = (resume.certifications ?? []).map(
-    (cert) => ({
-      text: normalizeForGrounding(joinParts([cert.name, cert.issuer])),
-      label: cert.name || "Certification",
-    }),
-  );
-
-  // The summary is a single string, so it is always index 0 — the one section
-  // where the index carries no choice.
-  const summary: SourceItem[] = resume.summary
-    ? [{ text: normalizeForGrounding(resume.summary), label: "Summary" }]
-    : [];
-
-  return {
-    bySection: {
-      experience,
-      projects,
-      skills,
-      summary,
-      education,
-      certifications,
-    },
-  };
-}
-
-// Whether a quote appears in one already-normalized source text. Exported for
-// testing; the grounding loop inlines the same two checks so it can attribute
-// a distinct rejection reason to each.
-export function isQuoteGrounded(quote: string, sourceText: string): boolean {
-  const needle = normalizeForGrounding(quote);
-  if (needle.length < MIN_GROUNDED_QUOTE_LENGTH) return false;
-  return sourceText.includes(needle);
-}
-
 // Checks one assessment's evidence, returning only the items that survive —
 // each with a sourceLabel derived from the entry it actually grounded in.
 function groundEvidence(
   skillSlug: string,
   evidence: EvidenceItem[],
-  haystack: ResumeHaystack,
+  sourceItems: ResumeSourceItems,
   rejections: GroundingRejection[],
 ): GroundedEvidenceItem[] {
   const survivors: GroundedEvidenceItem[] = [];
@@ -228,7 +110,9 @@ function groundEvidence(
       continue;
     }
 
-    const section = haystack.bySection[item.sourceSection];
+    // Indexes the same ordered representation the prompt was rendered from,
+    // so the model's [n] and this lookup can never drift apart.
+    const section = sourceItems[item.sourceSection];
     const source = section[item.sourceIndex];
 
     // A reference to an entry that doesn't exist. Rejecting rather than
@@ -247,7 +131,7 @@ function groundEvidence(
     // whole. Catches outright invention, paraphrase (a real bullet rewritten
     // into cleaner prose the user reads as their own words), and
     // misattribution (a real quote pinned to the wrong job) in a single check.
-    if (!source.text.includes(normalized)) {
+    if (!source.normalizedText.includes(normalized)) {
       rejections.push({
         skillSlug,
         reason: "quote_not_verbatim",
@@ -289,7 +173,7 @@ export function validateEvidenceGrounding(
     );
   }
 
-  const haystack = buildResumeHaystack(context.resume);
+  const sourceItems = buildSourceItems(context.resume);
   const rejections: GroundingRejection[] = [];
   const bySlug = new Map<string, GroundedSkillAssessment>();
 
@@ -297,7 +181,7 @@ export function validateEvidenceGrounding(
     const survivingEvidence = groundEvidence(
       assessment.skillSlug,
       assessment.evidence,
-      haystack,
+      sourceItems,
       rejections,
     );
 

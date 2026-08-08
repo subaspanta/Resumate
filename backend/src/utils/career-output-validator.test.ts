@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
-  buildResumeHaystack,
-  isQuoteGrounded,
-  normalizeForGrounding,
   validateEvidenceGrounding,
   validateRoadmapGrounding,
 } from "./career-output-validator.js";
+import {
+  isQuoteGrounded,
+  normalizeForGrounding,
+} from "./grounding-normalize.js";
+import { buildSourceItems } from "../modules/career-analysis/resume-source-items.js";
 import { StructuredResume } from "../modules/parsing/parsing.types.js";
 import {
   EvidenceAgentOutput,
@@ -127,55 +129,6 @@ describe("isQuoteGrounded", () => {
 
   it("rejects a quote below the minimum length", () => {
     expect(isQuoteGrounded("Docker", haystack)).toBe(false);
-  });
-});
-
-describe("buildResumeHaystack", () => {
-  it("keeps each entry separately addressable by index", () => {
-    const haystack = buildResumeHaystack(resume());
-
-    expect(haystack.bySection.experience).toHaveLength(2);
-    expect(haystack.bySection.experience[0].text).toContain("containerized");
-    expect(haystack.bySection.experience[1].text).toContain("integration tests");
-    // Entry 0's text must not leak into entry 1 — that separation is what
-    // makes a cited index verifiable.
-    expect(haystack.bySection.experience[0].text).not.toContain(
-      "integration tests",
-    );
-  });
-
-  it("derives a display label for each entry from the snapshot", () => {
-    const haystack = buildResumeHaystack(resume());
-
-    expect(haystack.bySection.experience[0].label).toBe(
-      "Backend Intern — Acme Corp",
-    );
-    expect(haystack.bySection.experience[1].label).toBe(
-      "Junior Developer — Globex",
-    );
-    expect(haystack.bySection.projects[0].label).toBe("Task Tracker");
-  });
-
-  it("treats the summary as a single entry at index 0", () => {
-    const haystack = buildResumeHaystack(resume());
-    expect(haystack.bySection.summary).toHaveLength(1);
-    expect(haystack.bySection.summary[0].label).toBe("Summary");
-  });
-
-  it("produces no entries for a section the resume omits", () => {
-    const haystack = buildResumeHaystack({ ...resume(), projects: [] });
-    expect(haystack.bySection.projects).toEqual([]);
-  });
-
-  it("does not let adjacent bullets form a phantom substring", () => {
-    const haystack = buildResumeHaystack({
-      ...resume(),
-      experience: [
-        { title: "Dev", company: "A", bullets: ["Built the alpha", "Beta shipped"] },
-      ],
-    });
-    // "alphabeta" spans two separate bullets and must not ground.
-    expect(haystack.bySection.experience[0].text).not.toContain("alphabeta");
   });
 });
 
