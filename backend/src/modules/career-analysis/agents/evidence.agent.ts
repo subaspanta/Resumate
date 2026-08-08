@@ -43,14 +43,15 @@ const EVIDENCE_OUTPUT_SCHEMA = {
                   type: Type.STRING,
                   enum: [...SOURCE_SECTIONS],
                 },
-                sourceLabel: { type: Type.STRING },
+                // A reference, not a label. The backend derives the display
+                // label from the snapshot entry this points at.
+                sourceIndex: { type: Type.INTEGER },
               },
-              required: ["quote", "strength", "sourceSection", "sourceLabel"],
+              required: ["quote", "strength", "sourceSection", "sourceIndex"],
             },
           },
-          observation: { type: Type.STRING },
         },
-        required: ["skillSlug", "found", "evidence", "observation"],
+        required: ["skillSlug", "found", "evidence"],
       },
     },
   },
@@ -73,50 +74,60 @@ export class EvidenceAgentService implements EvidenceAgent {
   // Serializes only the parts of the resume a quote can legitimately come
   // from. Contact details are withheld — they are PII, and no skill evidence
   // should ever be attributed to a phone number.
+  //
+  // Every entry is labelled with its index, and those indices must match the
+  // order buildResumeHaystack walks the same arrays in. That correspondence is
+  // what makes sourceIndex resolvable: the model cites [2], the validator
+  // grounds the quote against entry 2, and the backend derives the label from
+  // entry 2. If the two orderings ever diverge, provenance silently points at
+  // the wrong job.
   private serializeResume(resume: StructuredResume): string {
     const sections: string[] = [];
 
     if (resume.summary) {
-      sections.push(`## Summary\n${resume.summary}`);
+      sections.push(`## Summary\n[0] ${resume.summary}`);
     }
 
     if (resume.experience?.length) {
-      const entries = resume.experience.map((entry) => {
+      const entries = resume.experience.map((entry, index) => {
         const header = [entry.title, entry.company].filter(Boolean).join(" — ");
         const dates = [entry.startDate, entry.endDate]
           .filter(Boolean)
           .join(" to ");
         const bullets = (entry.bullets ?? []).map((b) => `- ${b}`).join("\n");
-        return `### ${header}${dates ? ` (${dates})` : ""}\n${bullets}`;
+        return `[${index}] ${header}${dates ? ` (${dates})` : ""}\n${bullets}`;
       });
       sections.push(`## Experience\n${entries.join("\n\n")}`);
     }
 
     if (resume.projects?.length) {
-      const entries = resume.projects.map((project) => {
+      const entries = resume.projects.map((project, index) => {
         const bullets = (project.bullets ?? []).map((b) => `- ${b}`).join("\n");
-        return `### ${project.name}\n${bullets}`;
+        return `[${index}] ${project.name}\n${bullets}`;
       });
       sections.push(`## Projects\n${entries.join("\n\n")}`);
     }
 
     if (resume.skills?.length) {
       const groups = resume.skills.map(
-        (group) => `${group.category ?? "Other"}: ${group.items.join(", ")}`,
+        (group, index) =>
+          `[${index}] ${group.category ?? "Other"}: ${group.items.join(", ")}`,
       );
       sections.push(`## Skills\n${groups.join("\n")}`);
     }
 
     if (resume.education?.length) {
-      const entries = resume.education.map((entry) =>
-        [entry.degree, entry.institution, entry.year].filter(Boolean).join(", "),
+      const entries = resume.education.map(
+        (entry, index) =>
+          `[${index}] ${[entry.degree, entry.institution, entry.year].filter(Boolean).join(", ")}`,
       );
       sections.push(`## Education\n${entries.join("\n")}`);
     }
 
     if (resume.certifications?.length) {
-      const entries = resume.certifications.map((cert) =>
-        [cert.name, cert.issuer].filter(Boolean).join(", "),
+      const entries = resume.certifications.map(
+        (cert, index) =>
+          `[${index}] ${[cert.name, cert.issuer].filter(Boolean).join(", ")}`,
       );
       sections.push(`## Certifications\n${entries.join("\n")}`);
     }
@@ -153,14 +164,15 @@ Rules:
                         narrative describing what was done with it.
 - "sourceSection" must be the section the quote was taken from, one of:
   ${SOURCE_SECTIONS.join(", ")}.
-- "sourceLabel" names the specific entry, e.g. "Acme Corp — Backend Intern"
-  or the project's name. Use "" when the section has no distinct entries.
-- "observation" is one short, factual sentence describing what the resume
-  shows about this skill.
+- "sourceIndex" is the number in square brackets on the entry the quote came
+  from, e.g. a quote from "[2] Backend Intern — Acme Corp" has sourceIndex 2.
+  The quote must appear in THAT entry; evidence citing the wrong entry is
+  discarded.
 
 Do NOT judge whether the candidate is qualified, rate them, rank the skills by
-importance, decide what they should learn, or recommend anything. You are
-reporting what the document says, not evaluating the person.
+importance, decide what they should learn, recommend anything, or write any
+commentary. Return only quotes and their source references. You are reporting
+what the document says, not evaluating the person.
 
 Target role: ${input.role.title}
 ${input.role.description}

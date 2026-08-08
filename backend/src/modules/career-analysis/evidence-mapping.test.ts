@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { mapAssessmentsToGaps } from "./evidence-mapping.js";
 import {
+  GroundedSkillAssessment,
   RoleSnapshot,
-  SkillAssessment,
 } from "./career-analysis.types.js";
 import { SkillImportance } from "../../generated/client/index.js";
 
@@ -29,8 +29,8 @@ function snapshot(
 
 function assessment(
   skillSlug: string,
-  strengths: SkillAssessment["evidence"][number]["strength"][],
-): SkillAssessment {
+  strengths: GroundedSkillAssessment["evidence"][number]["strength"][],
+): GroundedSkillAssessment {
   return {
     skillSlug,
     found: strengths.length > 0,
@@ -38,9 +38,10 @@ function assessment(
       quote: `evidence for ${skillSlug}`,
       strength,
       sourceSection: "experience" as const,
-      sourceLabel: "Acme Corp",
+      sourceIndex: 0,
+      // Derived by the validator from the snapshot, never model-authored.
+      sourceLabel: "Backend Intern — Acme Corp",
     })),
-    observation: `notes on ${skillSlug}`,
   };
 }
 
@@ -107,7 +108,7 @@ describe("mapAssessmentsToGaps", () => {
   it("treats an assessment stripped of all evidence as missing", () => {
     // What grounding leaves behind when every quote was hallucinated.
     const result = mapAssessmentsToGaps(
-      [{ skillSlug: "docker", found: false, evidence: [], observation: "" }],
+      [{ skillSlug: "docker", found: false, evidence: [] }],
       snapshot([["docker", "critical"]]),
     );
 
@@ -127,13 +128,26 @@ describe("mapAssessmentsToGaps", () => {
     expect(critical.priority).toBeLessThan(minor.priority);
   });
 
-  it("carries the model's observation through without reinterpreting it", () => {
+  it("builds reasoning from the derived status and the seeded rationale", () => {
     const result = mapAssessmentsToGaps(
       [assessment("docker", ["experience_backed"])],
       snapshot([["docker", "critical"]]),
     );
 
-    expect(result.gaps[0].observation).toBe("notes on docker");
+    const reasoning = result.gaps[0].reasoning;
+    // Assembled by the application, not quoted from the model: it must
+    // reference the derived provenance and the hand-authored rationale.
+    expect(reasoning).toContain("work experience");
+    expect(reasoning).toContain("Backend Intern — Acme Corp");
+    expect(reasoning).toContain("because");
+  });
+
+  it("explains a missing skill without inventing evidence for it", () => {
+    const result = mapAssessmentsToGaps([], snapshot([["docker", "critical"]]));
+
+    const reasoning = result.gaps[0].reasoning;
+    expect(reasoning).toContain("No evidence");
+    expect(reasoning).not.toContain("work experience");
   });
 
   it("ignores assessments for skills the role does not require", () => {

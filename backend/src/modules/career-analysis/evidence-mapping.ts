@@ -14,10 +14,12 @@ import {
 } from "./readiness.js";
 import { GapStatus } from "../../generated/client/index.js";
 import {
+  GroundedEvidenceItem,
+  GroundedSkillAssessment,
   RoleSnapshot,
   RoleSnapshotSkill,
-  SkillAssessment,
 } from "./career-analysis.types.js";
+import { buildGapReasoning } from "./gap-reasoning.js";
 
 export type MappedGap = {
   skillId: string;
@@ -25,10 +27,10 @@ export type MappedGap = {
   name: string;
   status: GapStatus;
   priority: number;
-  // Descriptive text from the model. Empty when the model said nothing —
-  // the service supplies a deterministic fallback rather than inventing prose.
-  observation: string;
-  evidence: SkillAssessment["evidence"];
+  // Assembled by the application from the derived status, the grounded
+  // evidence, and the hand-authored requirement rationale — never model prose.
+  reasoning: string;
+  evidence: GroundedEvidenceItem[];
 };
 
 export type MappedAnalysis = {
@@ -43,7 +45,7 @@ export type MappedAnalysis = {
 // A vanished skill would shrink the readiness denominator and quietly inflate
 // the score, which is the exact opposite of the failure direction we want.
 export function mapAssessmentsToGaps(
-  assessments: SkillAssessment[],
+  assessments: GroundedSkillAssessment[],
   roleSnapshot: RoleSnapshot,
 ): MappedAnalysis {
   const bySlug = new Map(assessments.map((a) => [a.skillSlug, a]));
@@ -60,7 +62,14 @@ export function mapAssessmentsToGaps(
         name: skill.name,
         status,
         priority: computeGapPriority(status, skill.importance),
-        observation: assessment?.observation ?? "",
+        reasoning: buildGapReasoning({
+          skillName: skill.name,
+          status,
+          importance: skill.importance,
+          roleTitle: roleSnapshot.title,
+          rationale: skill.rationale,
+          evidence,
+        }),
         evidence,
       };
     },

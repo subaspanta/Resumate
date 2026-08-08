@@ -24,8 +24,9 @@ import { StructuredResume } from "../modules/parsing/parsing.types.js";
 import {
   EvidenceAgentOutput,
   EvidenceItem,
+  GroundedEvidenceItem,
+  GroundedSkillAssessment,
   RoleSnapshot,
-  SkillAssessment,
   SourceSection,
 } from "../modules/career-analysis/career-analysis.types.js";
 
@@ -57,7 +58,7 @@ export type GroundingRejectionReason =
   | "quote_too_short"
   | "quote_not_verbatim"
   | "strength_section_mismatch"
-  | "quote_wrong_section";
+  | "source_index_out_of_range";
 
 export type GroundingRejection = {
   skillSlug: string;
@@ -68,13 +69,20 @@ export type GroundingRejection = {
 };
 
 export type EvidenceGroundingResult = {
-  assessments: SkillAssessment[];
+  assessments: GroundedSkillAssessment[];
   rejections: GroundingRejection[];
 };
 
+// One addressable entry of the resume: the text a quote must appear in, and
+// the label the backend derives for it. The model references these by index;
+// it never authors the label.
+export type SourceItem = {
+  text: string;
+  label: string;
+};
+
 export type ResumeHaystack = {
-  all: string;
-  bySection: Record<SourceSection, string>;
+  bySection: Record<SourceSection, SourceItem[]>;
 };
 
 // Folds away the encoding noise that PDF extraction and model tokenization
@@ -104,95 +112,97 @@ export function normalizeForGrounding(text: string): string {
   );
 }
 
-function joinSection(parts: (string | null | undefined)[]): string {
+function joinParts(parts: (string | null | undefined)[]): string {
   // Joined with "\n" (which normalizes to a space) rather than "" so the end
   // of one bullet and the start of the next can't form a phantom substring
-  // that grounds a quote spanning two unrelated entries.
+  // that grounds a quote spanning two unrelated bullets.
   return parts.filter((p): p is string => Boolean(p)).join("\n");
 }
 
-// Flattens the snapshot once per analysis. Rebuilding this per skill would be
-// O(skills x resume size) for no benefit.
+// Builds the addressable source items, once per analysis.
+//
+// Each entry keeps its own text rather than being concatenated into one blob
+// per section: a quote must ground in the *specific* entry the model cited,
+// which is what makes derived provenance trustworthy. It also removes the
+// cross-entry false positive, where a quote spanning two unrelated jobs would
+// ground against the section as a whole.
 export function buildResumeHaystack(resume: StructuredResume): ResumeHaystack {
-  const experience = joinSection(
-    (resume.experience ?? []).flatMap((entry) => [
-      entry.title,
-      entry.company,
-      entry.location,
-      ...(entry.bullets ?? []),
-    ]),
+  const experience: SourceItem[] = (resume.experience ?? []).map((entry) => ({
+    text: normalizeForGrounding(
+      joinParts([
+        entry.title,
+        entry.company,
+        entry.location,
+        ...(entry.bullets ?? []),
+      ]),
+    ),
+    // The label the user sees as provenance — derived here, never supplied
+    // by the model.
+    label: [entry.title, entry.company].filter(Boolean).join(" — ") || "Experience",
+  }));
+
+  const projects: SourceItem[] = (resume.projects ?? []).map((project) => ({
+    text: normalizeForGrounding(
+      joinParts([project.name, ...(project.bullets ?? [])]),
+    ),
+    label: project.name || "Project",
+  }));
+
+  const skills: SourceItem[] = (resume.skills ?? []).map((group) => ({
+    text: normalizeForGrounding(joinParts([group.category, ...group.items])),
+    label: group.category ?? "Skills",
+  }));
+
+  const education: SourceItem[] = (resume.education ?? []).map((entry) => ({
+    text: normalizeForGrounding(
+      joinParts([entry.degree, entry.institution, entry.year]),
+    ),
+    label: [entry.degree, entry.institution].filter(Boolean).join(", ") || "Education",
+  }));
+
+  const certifications: SourceItem[] = (resume.certifications ?? []).map(
+    (cert) => ({
+      text: normalizeForGrounding(joinParts([cert.name, cert.issuer])),
+      label: cert.name || "Certification",
+    }),
   );
 
-  const projects = joinSection(
-    (resume.projects ?? []).flatMap((project) => [
-      project.name,
-      ...(project.bullets ?? []),
-    ]),
-  );
+  // The summary is a single string, so it is always index 0 — the one section
+  // where the index carries no choice.
+  const summary: SourceItem[] = resume.summary
+    ? [{ text: normalizeForGrounding(resume.summary), label: "Summary" }]
+    : [];
 
-  const skills = joinSection(
-    (resume.skills ?? []).flatMap((group) => [group.category, ...group.items]),
-  );
-
-  const education = joinSection(
-    (resume.education ?? []).flatMap((entry) => [
-      entry.degree,
-      entry.institution,
-      entry.year,
-    ]),
-  );
-
-  const certifications = joinSection(
-    (resume.certifications ?? []).flatMap((cert) => [cert.name, cert.issuer]),
-  );
-
-  const customSections = joinSection(
-    (resume.customSections ?? []).flatMap((section) => [
-      section.heading,
-      ...(section.bullets ?? []),
-    ]),
-  );
-
-  const summary = resume.summary ?? "";
-
-  const bySection: Record<SourceSection, string> = {
-    experience: normalizeForGrounding(experience),
-    projects: normalizeForGrounding(projects),
-    skills: normalizeForGrounding(skills),
-    summary: normalizeForGrounding(summary),
-    education: normalizeForGrounding(education),
-    certifications: normalizeForGrounding(certifications),
-  };
-
-  const all = normalizeForGrounding(
-    joinSection([
-      summary,
+  return {
+    bySection: {
       experience,
       projects,
       skills,
+      summary,
       education,
       certifications,
-      customSections,
-    ]),
-  );
-
-  return { all, bySection };
+    },
+  };
 }
 
-export function isQuoteGrounded(quote: string, haystack: string): boolean {
+// Whether a quote appears in one already-normalized source text. Exported for
+// testing; the grounding loop inlines the same two checks so it can attribute
+// a distinct rejection reason to each.
+export function isQuoteGrounded(quote: string, sourceText: string): boolean {
   const needle = normalizeForGrounding(quote);
   if (needle.length < MIN_GROUNDED_QUOTE_LENGTH) return false;
-  return haystack.includes(needle);
+  return sourceText.includes(needle);
 }
 
-// Checks one assessment's evidence, returning only the items that survive.
+// Checks one assessment's evidence, returning only the items that survive —
+// each with a sourceLabel derived from the entry it actually grounded in.
 function groundEvidence(
   skillSlug: string,
   evidence: EvidenceItem[],
   haystack: ResumeHaystack,
   rejections: GroundingRejection[],
-): EvidenceItem[] {
-  const survivors: EvidenceItem[] = [];
+): GroundedEvidenceItem[] {
+  const survivors: GroundedEvidenceItem[] = [];
 
   for (const item of evidence) {
     const normalized = normalizeForGrounding(item.quote);
@@ -202,17 +212,6 @@ function groundEvidence(
         skillSlug,
         reason: "quote_too_short",
         detail: `quote of ${normalized.length} chars is below the ${MIN_GROUNDED_QUOTE_LENGTH}-char minimum`,
-      });
-      continue;
-    }
-
-    // Catches outright invention and the subtler failure: a real bullet
-    // paraphrased into cleaner prose, which the user reads as their own words.
-    if (!haystack.all.includes(normalized)) {
-      rejections.push({
-        skillSlug,
-        reason: "quote_not_verbatim",
-        detail: "quote does not appear in the resume snapshot",
       });
       continue;
     }
@@ -229,18 +228,35 @@ function groundEvidence(
       continue;
     }
 
-    // Right quote, wrong attribution — sourceLabel is rendered to the user as
-    // provenance, so a mislabelled section shows them a fabricated source.
-    if (!haystack.bySection[item.sourceSection].includes(normalized)) {
+    const section = haystack.bySection[item.sourceSection];
+    const source = section[item.sourceIndex];
+
+    // A reference to an entry that doesn't exist. Rejecting rather than
+    // falling back to a section-wide search is the point: an unresolvable
+    // reference cannot produce trustworthy provenance.
+    if (!source) {
       rejections.push({
         skillSlug,
-        reason: "quote_wrong_section",
-        detail: `quote is not present in section "${item.sourceSection}"`,
+        reason: "source_index_out_of_range",
+        detail: `section "${item.sourceSection}" has no entry at index ${item.sourceIndex}`,
       });
       continue;
     }
 
-    survivors.push(item);
+    // Grounds against the ONE entry the model cited, not the section as a
+    // whole. Catches outright invention, paraphrase (a real bullet rewritten
+    // into cleaner prose the user reads as their own words), and
+    // misattribution (a real quote pinned to the wrong job) in a single check.
+    if (!source.text.includes(normalized)) {
+      rejections.push({
+        skillSlug,
+        reason: "quote_not_verbatim",
+        detail: `quote does not appear in ${item.sourceSection}[${item.sourceIndex}]`,
+      });
+      continue;
+    }
+
+    survivors.push({ ...item, sourceLabel: source.label });
   }
 
   return survivors;
@@ -275,7 +291,7 @@ export function validateEvidenceGrounding(
 
   const haystack = buildResumeHaystack(context.resume);
   const rejections: GroundingRejection[] = [];
-  const bySlug = new Map<string, SkillAssessment>();
+  const bySlug = new Map<string, GroundedSkillAssessment>();
 
   for (const assessment of output.assessments) {
     const survivingEvidence = groundEvidence(
@@ -286,7 +302,7 @@ export function validateEvidenceGrounding(
     );
 
     bySlug.set(assessment.skillSlug, {
-      ...assessment,
+      skillSlug: assessment.skillSlug,
       // `found` must reflect surviving evidence, not the model's claim — an
       // assessment whose every quote was rejected is indistinguishable from
       // one that found nothing.
@@ -304,7 +320,6 @@ export function validateEvidenceGrounding(
         skillSlug: skill.slug,
         found: false,
         evidence: [],
-        observation: "",
       },
   );
 

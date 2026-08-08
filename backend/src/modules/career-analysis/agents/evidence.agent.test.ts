@@ -72,16 +72,14 @@ const VALID_RESPONSE = JSON.stringify({
           quote: "Built REST endpoints in Node.js and Express",
           strength: "experience_backed",
           sourceSection: "experience",
-          sourceLabel: "Acme Corp — Backend Intern",
+          sourceIndex: 0,
         },
       ],
-      observation: "Used during an internship",
     },
     {
       skillSlug: "docker",
       found: false,
       evidence: [],
-      observation: "Listed only in the tools section",
     },
   ],
 });
@@ -148,6 +146,25 @@ describe("EvidenceAgentService", () => {
     const sent = prompt();
     expect(sent).toContain("Built REST endpoints in Node.js and Express");
     expect(sent).toContain("Modeled the schema in PostgreSQL");
+  });
+
+  it("numbers each entry so the model can cite it by index", async () => {
+    const { client, prompt } = capturingGeminiClient(VALID_RESPONSE);
+    await new EvidenceAgentService(client).assessEvidence(INPUT);
+
+    const sent = prompt();
+    expect(sent).toContain("[0] Backend Intern — Acme Corp");
+    expect(sent).toContain("[0] Task Tracker");
+    expect(sent).toContain('"sourceIndex" is the number in square brackets');
+  });
+
+  it("asks for source references, never a display label", async () => {
+    const { client, prompt } = capturingGeminiClient(VALID_RESPONSE);
+    await new EvidenceAgentService(client).assessEvidence(INPUT);
+
+    // The backend derives sourceLabel from the snapshot; the model must not
+    // author the company or job title the user sees as provenance.
+    expect(prompt()).not.toContain("sourceLabel");
   });
 
   it("applies the shared call timeout and structured-output config", async () => {

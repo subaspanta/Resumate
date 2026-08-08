@@ -46,29 +46,48 @@ export const SOURCE_SECTIONS = [
 export const sourceSectionSchema = z.enum(SOURCE_SECTIONS);
 export type SourceSection = z.infer<typeof sourceSectionSchema>;
 
+// What the model returns per piece of evidence: a quote plus a *reference* to
+// where it came from — never a display label. The backend derives the label
+// from the snapshot itself, so an AI-written company or job title can never
+// reach the user as provenance.
+//
+// sourceIndex points into the corresponding section of the resume snapshot
+// (experience[2], projects[0], ...). The summary is a single string and is
+// always index 0.
 export const evidenceItemSchema = z.object({
   quote: z.string().min(1),
   strength: z.enum(["experience_backed", "project_backed", "mentioned"]),
   sourceSection: sourceSectionSchema,
-  sourceLabel: z.string().max(200),
+  sourceIndex: z.number().int().min(0),
 });
 
 export const skillAssessmentSchema = z.object({
   skillSlug: z.string().min(1),
   found: z.boolean(),
   evidence: z.array(evidenceItemSchema).max(3),
-  observation: z.string().max(400),
 });
 
 // Note what this schema cannot express: no status, priority, score,
-// importance, or week. The application decides all of those, so the model is
-// given no field through which to smuggle a judgement.
+// importance, week, or free-text commentary. The application decides all of
+// those, so the model is given no field through which to smuggle a judgement.
 export const evidenceAgentOutputSchema = z.object({
   assessments: z.array(skillAssessmentSchema).min(1),
 });
 
 export type EvidenceItem = z.infer<typeof evidenceItemSchema>;
 export type SkillAssessment = z.infer<typeof skillAssessmentSchema>;
+
+// An evidence item after grounding: the model's reference resolved into a
+// label the backend derived from the snapshot.
+export type GroundedEvidenceItem = EvidenceItem & {
+  sourceLabel: string;
+};
+
+export type GroundedSkillAssessment = {
+  skillSlug: string;
+  found: boolean;
+  evidence: GroundedEvidenceItem[];
+};
 export type EvidenceAgentOutput = z.infer<typeof evidenceAgentOutputSchema>;
 
 export type EvidenceAgentInput = {

@@ -15,9 +15,13 @@ import { AppError } from "../types/app-error.js";
 
 const REAL_BULLET =
   "Containerized the payment service using Docker and deployed it to staging";
+const SECOND_JOB_BULLET =
+  "Wrote integration tests covering the checkout flow end to end";
 const REAL_PROJECT_BULLET =
   "Built a task tracker with React and persisted state to PostgreSQL";
 
+// Two experience entries on purpose: with only one, every sourceIndex is 0 and
+// a validator that ignored the index entirely would still pass.
 function resume(): StructuredResume {
   return {
     name: "Test Candidate",
@@ -27,6 +31,11 @@ function resume(): StructuredResume {
         title: "Backend Intern",
         company: "Acme Corp",
         bullets: [REAL_BULLET],
+      },
+      {
+        title: "Junior Developer",
+        company: "Globex",
+        bullets: [SECOND_JOB_BULLET],
       },
     ],
     projects: [{ name: "Task Tracker", bullets: [REAL_PROJECT_BULLET] }],
@@ -122,23 +131,51 @@ describe("isQuoteGrounded", () => {
 });
 
 describe("buildResumeHaystack", () => {
-  it("indexes text by the section it came from", () => {
+  it("keeps each entry separately addressable by index", () => {
     const haystack = buildResumeHaystack(resume());
-    expect(haystack.bySection.experience).toContain("containerized");
-    expect(haystack.bySection.projects).toContain("task tracker");
-    expect(haystack.bySection.skills).toContain("typescript");
-    expect(haystack.bySection.experience).not.toContain("task tracker");
+
+    expect(haystack.bySection.experience).toHaveLength(2);
+    expect(haystack.bySection.experience[0].text).toContain("containerized");
+    expect(haystack.bySection.experience[1].text).toContain("integration tests");
+    // Entry 0's text must not leak into entry 1 — that separation is what
+    // makes a cited index verifiable.
+    expect(haystack.bySection.experience[0].text).not.toContain(
+      "integration tests",
+    );
   });
 
-  it("does not let adjacent entries form a phantom substring", () => {
+  it("derives a display label for each entry from the snapshot", () => {
+    const haystack = buildResumeHaystack(resume());
+
+    expect(haystack.bySection.experience[0].label).toBe(
+      "Backend Intern — Acme Corp",
+    );
+    expect(haystack.bySection.experience[1].label).toBe(
+      "Junior Developer — Globex",
+    );
+    expect(haystack.bySection.projects[0].label).toBe("Task Tracker");
+  });
+
+  it("treats the summary as a single entry at index 0", () => {
+    const haystack = buildResumeHaystack(resume());
+    expect(haystack.bySection.summary).toHaveLength(1);
+    expect(haystack.bySection.summary[0].label).toBe("Summary");
+  });
+
+  it("produces no entries for a section the resume omits", () => {
+    const haystack = buildResumeHaystack({ ...resume(), projects: [] });
+    expect(haystack.bySection.projects).toEqual([]);
+  });
+
+  it("does not let adjacent bullets form a phantom substring", () => {
     const haystack = buildResumeHaystack({
       ...resume(),
       experience: [
         { title: "Dev", company: "A", bullets: ["Built the alpha", "Beta shipped"] },
       ],
     });
-    // "alpha beta" spans two separate bullets and must not ground.
-    expect(haystack.bySection.experience).not.toContain("alphabeta");
+    // "alphabeta" spans two separate bullets and must not ground.
+    expect(haystack.bySection.experience[0].text).not.toContain("alphabeta");
   });
 });
 
@@ -151,7 +188,6 @@ describe("validateEvidenceGrounding", () => {
             skillSlug: "kubernetes",
             found: true,
             evidence: [],
-            observation: "",
           },
         ]),
         { roleSnapshot: roleSnapshot(["docker"]), resume: resume() },
@@ -170,10 +206,9 @@ describe("validateEvidenceGrounding", () => {
               quote: REAL_BULLET,
               strength: "experience_backed",
               sourceSection: "experience",
-              sourceLabel: "Acme Corp — Backend Intern",
+              sourceIndex: 0,
             },
           ],
-          observation: "Used in an internship",
         },
       ]),
       { roleSnapshot: roleSnapshot(["docker"]), resume: resume() },
@@ -195,10 +230,9 @@ describe("validateEvidenceGrounding", () => {
               quote: "Led migration of 40 microservices to Kubernetes at scale",
               strength: "experience_backed",
               sourceSection: "experience",
-              sourceLabel: "Acme Corp",
+              sourceIndex: 0,
             },
           ],
-          observation: "",
         },
       ]),
       { roleSnapshot: roleSnapshot(["docker"]), resume: resume() },
@@ -219,10 +253,9 @@ describe("validateEvidenceGrounding", () => {
               quote: "Architected a fault-tolerant distributed message bus",
               strength: "experience_backed",
               sourceSection: "experience",
-              sourceLabel: "Acme Corp",
+              sourceIndex: 0,
             },
           ],
-          observation: "",
         },
       ]),
       { roleSnapshot: roleSnapshot(["docker"]), resume: resume() },
@@ -244,10 +277,9 @@ describe("validateEvidenceGrounding", () => {
               quote: "Languages TypeScript Kubernetes",
               strength: "experience_backed",
               sourceSection: "skills",
-              sourceLabel: "Skills",
+              sourceIndex: 0,
             },
           ],
-          observation: "",
         },
       ]),
       { roleSnapshot: roleSnapshot(["typescript"]), resume: resume() },
@@ -269,16 +301,88 @@ describe("validateEvidenceGrounding", () => {
               quote: REAL_PROJECT_BULLET,
               strength: "experience_backed",
               sourceSection: "experience",
-              sourceLabel: "Acme Corp — Backend Intern",
+              sourceIndex: 0,
             },
           ],
-          observation: "",
         },
       ]),
       { roleSnapshot: roleSnapshot(["react"]), resume: resume() },
     );
 
-    expect(result.rejections[0].reason).toBe("quote_wrong_section");
+    expect(result.rejections[0].reason).toBe("quote_not_verbatim");
+  });
+
+  it("drops a real quote attributed to the wrong entry in the right section", () => {
+    // The subtle case index-addressing exists to catch: genuine resume text,
+    // correct section, but credited to a different job. A section-wide search
+    // would accept this and show the user fabricated provenance.
+    const result = validateEvidenceGrounding(
+      output([
+        {
+          skillSlug: "docker",
+          found: true,
+          evidence: [
+            {
+              quote: REAL_BULLET, // belongs to experience[0]
+              strength: "experience_backed",
+              sourceSection: "experience",
+              sourceIndex: 1, // credited to Globex
+            },
+          ],
+        },
+      ]),
+      { roleSnapshot: roleSnapshot(["docker"]), resume: resume() },
+    );
+
+    expect(result.rejections[0].reason).toBe("quote_not_verbatim");
+    expect(result.assessments[0].evidence).toEqual([]);
+  });
+
+  it("rejects a source index that does not exist", () => {
+    const result = validateEvidenceGrounding(
+      output([
+        {
+          skillSlug: "docker",
+          found: true,
+          evidence: [
+            {
+              quote: REAL_BULLET,
+              strength: "experience_backed",
+              sourceSection: "experience",
+              sourceIndex: 99,
+            },
+          ],
+        },
+      ]),
+      { roleSnapshot: roleSnapshot(["docker"]), resume: resume() },
+    );
+
+    expect(result.rejections[0].reason).toBe("source_index_out_of_range");
+  });
+
+  it("derives the source label from the cited entry rather than trusting the model", () => {
+    const result = validateEvidenceGrounding(
+      output([
+        {
+          skillSlug: "testing",
+          found: true,
+          evidence: [
+            {
+              quote: SECOND_JOB_BULLET,
+              strength: "experience_backed",
+              sourceSection: "experience",
+              sourceIndex: 1,
+            },
+          ],
+        },
+      ]),
+      { roleSnapshot: roleSnapshot(["testing"]), resume: resume() },
+    );
+
+    // The model supplied only an index; the label came from the snapshot.
+    expect(result.assessments[0].evidence[0].sourceLabel).toBe(
+      "Junior Developer — Globex",
+    );
   });
 
   it("accepts project evidence as project_backed", () => {
@@ -292,10 +396,9 @@ describe("validateEvidenceGrounding", () => {
               quote: REAL_PROJECT_BULLET,
               strength: "project_backed",
               sourceSection: "projects",
-              sourceLabel: "Task Tracker",
+              sourceIndex: 0,
             },
           ],
-          observation: "",
         },
       ]),
       { roleSnapshot: roleSnapshot(["react"]), resume: resume() },
@@ -316,10 +419,9 @@ describe("validateEvidenceGrounding", () => {
               quote: "Docker",
               strength: "mentioned",
               sourceSection: "skills",
-              sourceLabel: "Skills",
+              sourceIndex: 0,
             },
           ],
-          observation: "",
         },
       ]),
       { roleSnapshot: roleSnapshot(["docker"]), resume: resume() },
@@ -331,7 +433,7 @@ describe("validateEvidenceGrounding", () => {
   it("backfills a skill the AI omitted entirely as not found", () => {
     const result = validateEvidenceGrounding(
       output([
-        { skillSlug: "docker", found: false, evidence: [], observation: "" },
+        { skillSlug: "docker", found: false, evidence: [] },
       ]),
       {
         roleSnapshot: roleSnapshot(["docker", "testing", "ci-cd"]),
@@ -361,10 +463,9 @@ describe("validateEvidenceGrounding", () => {
               quote: "Some entirely fabricated achievement about scaling",
               strength: "experience_backed",
               sourceSection: "experience",
-              sourceLabel: "Acme Corp",
+              sourceIndex: 0,
             },
           ],
-          observation: "",
         },
       ]),
       { roleSnapshot: roleSnapshot(["docker"]), resume: resume() },
