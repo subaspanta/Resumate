@@ -1,116 +1,20 @@
 @layer components {
-  /* Job description input panel — echoes the dashboard upload zone's visual
-     weight so step 2 reads as a continuation of step 1, not a bare form. */
-  .workspace-jd-panel {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-base);
-    border-radius: var(--radius-xl);
-    padding: var(--spacing-xl);
+  /* Error state ------------------------------------------------------------ */
+
+  .analysis-error {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
-  }
-
-  .workspace-jd-panel-header {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-  }
-
-  .workspace-jd-panel-icon {
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-    border-radius: 9999px;
-    background-color: var(--color-surface-container-low);
-    color: var(--color-primary);
-    display: flex;
     align-items: center;
     justify-content: center;
+    gap: var(--spacing-md);
+    min-height: 40vh;
+    text-align: center;
   }
 
-  .workspace-jd-panel-heading {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-    min-width: 0;
-  }
-
-  .workspace-jd-panel-title {
-    font-family: var(--font-headline-sm);
-    font-size: var(--text-headline-sm);
-    font-weight: 600;
-    line-height: var(--text-headline-sm--line-height);
-    color: var(--color-text-primary);
-  }
-
-  .workspace-jd-panel-desc {
-    font-family: var(--font-body-md);
-    font-size: var(--text-body-md);
-    line-height: var(--text-body-md--line-height);
+  .analysis-error-message {
+    font-family: var(--font-body-lg);
+    font-size: var(--text-body-lg);
     color: var(--color-text-body);
-  }
-
-  /* Job description form -------------------------------------------------- */
-
-  .jd-form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-
-  .jd-form-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-md);
-  }
-
-  .jd-form-status {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-    min-width: 200px;
-    flex: 1;
-  }
-
-  .jd-form-meter {
-    height: 3px;
-    width: 100%;
-    max-width: 260px;
-    border-radius: 9999px;
-    background-color: var(--color-border-base);
-    overflow: hidden;
-  }
-
-  .jd-form-meter-fill {
-    display: block;
-    height: 100%;
-    width: 100%;
-    transform-origin: left center;
-    border-radius: 9999px;
-    background-color: var(--color-text-muted);
-    transition:
-      transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
-      background-color 240ms ease-out;
-  }
-
-  .jd-form-meter-fill--valid {
-    background-color: var(--color-primary);
-  }
-
-  .jd-form-status-text {
-    font-family: var(--font-mono-label);
-    font-size: var(--text-mono-label);
-    font-weight: 500;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .jd-form-submit {
-    flex-shrink: 0;
   }
 
   /* Analyzing state ------------------------------------------------------- */

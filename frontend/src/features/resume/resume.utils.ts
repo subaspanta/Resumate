@@ -40,20 +40,12 @@ export function validateResumeFile(file: File): string | null {
   return null;
 }
 
-// "Continue Working" (workspaceReady) fires when ANY resume has unfinished
-// tailoring work — not just the most recently uploaded one. Once every
-// resume has been exported at least once, there's nothing left to
-// continue, so it falls back to readyToStart (same screen as "never
-// started" — no separate "all done" state to design for yet).
 export function deriveDashboardState(
   input: DashboardStateInput,
 ): DashboardState {
   if (input.loadError) return "error";
   if (input.resumes.length === 0) return "firstTime";
-  const hasUnfinishedWork = input.resumes.some(
-    (r) => r.analysisStatus === "unexported",
-  );
-  return hasUnfinishedWork ? "workspaceReady" : "readyToStart";
+  return "readyToStart";
 }
 
 export function stateToLayoutKey(state: DashboardState): DashboardView {
@@ -62,8 +54,6 @@ export function stateToLayoutKey(state: DashboardState): DashboardView {
       return "firstTime";
     case "readyToStart":
       return "default";
-    case "workspaceReady":
-      return "active";
     case "error":
       return "default";
   }

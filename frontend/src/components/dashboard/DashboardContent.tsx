@@ -5,8 +5,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AppShell } from "@/src/components/layout/AppShell";
 import { FirstTimeDashboardContent } from "@/src/components/dashboard/FirstTimeDashboardContent";
 import { DefaultDashboardContent } from "@/src/components/dashboard/DefaultDashboardContent";
-import { ContinueWorkingHero } from "@/src/components/dashboard/ActiveDashboardContent";
-import { RecentResumesSection } from "@/src/components/dashboard/RecentResumesSection";
 import type {
   DashboardState,
   ResumeSummary,
@@ -23,10 +21,8 @@ interface DashboardContentProps {
   dashboardState: DashboardState;
   isLoading: boolean;
   resumes: ResumeSummary[];
-  primaryResume?: ResumeSummary;
   isUploading: boolean;
   onFileSelected: (file: File) => void;
-  onUploadClick: () => void;
   onOpenResume: (id: string) => void;
   onViewAll: () => void;
 }
@@ -49,11 +45,6 @@ function headerFor(
         subtitle:
           "Upload your resume to receive ATS analysis, AI suggestions, section-by-section feedback, and job-specific optimization.",
       };
-    case "workspaceReady":
-      return {
-        title: "Your Resumes",
-        subtitle: "Pick up where you left off, or start from a new upload.",
-      };
     default:
       return {
         title: `${getTimeGreeting()}, ${getGreetingName(userName)}.`,
@@ -66,17 +57,12 @@ export function DashboardContent({
   dashboardState,
   isLoading,
   resumes,
-  primaryResume,
   isUploading,
   onFileSelected,
-  onUploadClick,
   onOpenResume,
   onViewAll,
 }: DashboardContentProps) {
   const { user } = useAuth();
-  // Owned here, not in the per-state content components: both readyToStart and
-  // workspaceReady render a resume list, and a second useDeleteResumeFlow()
-  // would mint a duplicate mutation observer over the same cache key.
   const { handleDelete, deletingId } = useDeleteResumeFlow();
 
   if (isLoading) {
@@ -127,24 +113,6 @@ export function DashboardContent({
           onResumeDelete={handleDelete}
           deletingId={deletingId}
         />
-      )}
-
-      {dashboardState === "workspaceReady" && primaryResume && (
-        <div className="dashboard-main-inner flex flex-col gap-xl">
-          <ContinueWorkingHero
-            resume={primaryResume}
-            onOpenWorkspace={onOpenResume}
-            onUploadNew={onUploadClick}
-            isUploading={isUploading}
-          />
-          <RecentResumesSection
-            resumes={resumes}
-            onOpenResume={onOpenResume}
-            onViewAll={onViewAll}
-            onDeleteResume={handleDelete}
-            deletingId={deletingId}
-          />
-        </div>
       )}
 
       {dashboardState === "error" && (

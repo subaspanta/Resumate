@@ -18,8 +18,7 @@ export default function HomePage() {
     isError: resumesError,
   } = useResumes();
 
-  const { handleFileSelected, triggerUpload, isUploading } =
-    useUploadResumeFlow();
+  const { handleFileSelected, isUploading } = useUploadResumeFlow();
 
   const dashboardState: DashboardState = useMemo(() => {
     return deriveDashboardState({
@@ -28,11 +27,8 @@ export default function HomePage() {
     });
   }, [resumes, resumesError]);
 
-  const primaryResume =
-    resumes.find((r) => r.analysisStatus === "unexported") ?? resumes[0];
-
   const handleOpenResume = (id: string) => {
-    router.push(`/workspace/${id}`);
+    router.push(`/analyze/${id}`);
   };
 
   const handleViewAll = () => {
@@ -44,10 +40,8 @@ export default function HomePage() {
       dashboardState={dashboardState}
       isLoading={resumesLoading}
       resumes={resumes}
-      primaryResume={primaryResume}
       isUploading={isUploading}
       onFileSelected={handleFileSelected}
-      onUploadClick={triggerUpload}
       onOpenResume={handleOpenResume}
       onViewAll={handleViewAll}
     />

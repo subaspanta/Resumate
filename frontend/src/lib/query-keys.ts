@@ -17,17 +17,19 @@ export const queryKeys = {
     all: () => ["resumes"] as const,
     detail: (id: string) => ["resumes", id] as const,
   },
-  analysis: {
-    // Prefix key — matches every analysis query at once. For blanket
-    // invalidation when the affected resume isn't known.
-    all: () => ["analysis"] as const,
-    detail: (id: string) => ["analysis", id] as const,
-    merged: (resumeId: string) => ["analysis", "merged", resumeId] as const,
-    // No live subscriber. The backend routes still exist (GET
-    // /resumes/:resumeId/latest-analysis and /resumes/:resumeId/analyses), so
-    // these are kept for a "continue last analysis" or per-resume history view
-    // without having to re-derive the key shape.
-    latest: (resumeId: string) => ["analysis", "latest", resumeId] as const,
-    history: (resumeId: string) => ["analysis", "history", resumeId] as const,
+  roles: {
+    all: () => ["roles"] as const,
+    detail: (slug: string) => ["roles", slug] as const,
+  },
+  careerAnalyses: {
+    all: () => ["careerAnalyses"] as const,
+    list: (resumeId?: string) =>
+      ["careerAnalyses", "list", resumeId ?? null] as const,
+    detail: (id: string) => ["careerAnalyses", id] as const,
+  },
+  roadmap: {
+    byAnalysis: (analysisId: string) =>
+      ["roadmap", "analysis", analysisId] as const,
+    detail: (roadmapId: string) => ["roadmap", roadmapId] as const,
   },
 } as const;

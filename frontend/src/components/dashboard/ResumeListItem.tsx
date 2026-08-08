@@ -2,7 +2,6 @@
 
 import { ArrowRight, FileText, Trash2 } from "lucide-react";
 import { ResumeSummary } from "@/src/features/resume/types";
-import { AnalysisStatusBadge } from "@/src/components/dashboard/ActiveDashboardContent";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -54,7 +53,6 @@ export function ResumeListItem({
         </div>
       </div>
       <div className="dashboard-resume-row-right">
-        <AnalysisStatusBadge status={resume.analysisStatus} />
         <button
           className="dashboard-open-btn"
           onClick={(e) => {
