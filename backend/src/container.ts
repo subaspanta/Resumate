@@ -16,6 +16,10 @@ import { CloudinaryStorageModule } from "./modules/storage/cloudinary-storage-mo
 import { ParsingService } from "./modules/parsing/parsing.service.js";
 import { AIStructuringService } from "./modules/ai/ai.service.js";
 
+import { RoleRepository } from "./modules/role/role.repository.js";
+import { RoleService } from "./modules/role/role.service.js";
+import { RoleController } from "./modules/role/role.controller.js";
+
 // One shared Gemini client for every agent. Agents take it as a constructor
 // parameter rather than building their own at module scope — the old
 // job-parser/rewrite agents did the latter, which is why neither could be
@@ -25,6 +29,7 @@ const geminiClient = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 // --- repositories ---
 const authRepository = new AuthRepository();
 const resumeRepository = new ResumeRepository();
+const roleRepository = new RoleRepository();
 
 // --- shared modules / agents ---
 const cloudinaryStorageModule = new CloudinaryStorageModule();
@@ -33,6 +38,7 @@ const parsingModule = new ParsingService(aiStructuringModule);
 
 // --- services ---
 const authService = new AuthService(authRepository);
+const roleService = new RoleService(roleRepository);
 const resumeService = new ResumeService(
   resumeRepository,
   cloudinaryStorageModule,
@@ -42,3 +48,4 @@ const resumeService = new ResumeService(
 // --- controllers ---
 export const authController = new AuthController(authService);
 export const resumeController = new ResumeController(resumeService);
+export const roleController = new RoleController(roleService);
