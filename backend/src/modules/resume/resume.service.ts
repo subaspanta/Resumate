@@ -130,7 +130,7 @@ export class ResumeService {
     };
   }
 
-  // Deletes the resume row (cascades to its analyses/suggestions via the
+  // Deletes the resume row (cascades to its career analyses via the
   // schema's onDelete: Cascade) and best-effort cleans up the Cloudinary
   // file. Resumes uploaded before filePath was tracked have no way to
   // locate their Cloudinary object, so cleanup is skipped for those (logged,

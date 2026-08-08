@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 import { HTTP_STATUS } from "../constants/http-status.js";
 import { ERROR_CODES } from "../constants/error-codes.js";
 
-// Guards routes that call Gemini (resume structuring, job parsing, rewrite
-// generation) from runaway or scripted usage burning API spend. Keyed per
+// Guards routes that call Gemini (resume structuring, evidence assessment,
+// roadmap generation) from runaway or scripted usage burning API spend. Keyed per
 // authenticated user rather than per-IP — must run after requireAuth so
 // req.user is populated. 10 requests / 5 minutes comfortably covers real
 // usage (each call takes several seconds) while capping worst-case cost.

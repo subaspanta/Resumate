@@ -4,9 +4,9 @@ import { ERROR_CODES } from "../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../constants/http-status.js";
 
 // Classifies a Gemini SDK failure into an honest, user-facing AppError.
-// `what` is a short label ("structure resume", "parse the job description",
-// "rewrite this bullet") so the fallback message stays specific to the call
-// site, matching what each agent already said before this helper existed.
+// `what` is a short label ("structure resume", "analyze this resume",
+// "generate your roadmap") so the fallback message stays specific to the call
+// site rather than collapsing to one generic string.
 export function classifyGeminiError(err: unknown, what: string): AppError {
   if (err instanceof ApiError && err.status === 429) {
     return new AppError(

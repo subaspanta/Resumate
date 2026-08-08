@@ -28,7 +28,7 @@ import { RoadmapAgentService } from "./modules/roadmap/agents/roadmap.agent.js";
 
 // One shared Gemini client for every agent. Agents take it as a constructor
 // parameter rather than building their own at module scope — the old
-// job-parser/rewrite agents did the latter, which is why neither could be
+// agents this replaced did the latter, which is why neither could be
 // faked in a test without mocking the whole @google/genai module.
 const geminiClient = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
