@@ -114,6 +114,12 @@ export const listCareerAnalysesQuerySchema = z.object({
   resumeId: z.string().uuid().optional(),
 });
 
+// Route params. Without these a malformed id reaches Prisma's uuid cast and
+// surfaces as a generic 500 instead of a 400.
+export const analysisIdParamSchema = z.object({
+  id: z.string().uuid(),
+});
+
 export type CreateCareerAnalysisInput = z.infer<
   typeof createCareerAnalysisSchema
 >;

@@ -7,6 +7,8 @@ export type NewRoadmapTaskRow = {
   orderInWeek: number;
   title: string;
   description: string;
+  projectTask: string;
+  expectedEvidence: string;
   resources: Prisma.InputJsonValue;
 };
 
@@ -28,8 +30,11 @@ export class RoadmapRepository {
   // indistinguishable from one that was deliberately shorter.
   //
   // Roadmap.careerAnalysisId is @unique, so two concurrent generations race
-  // here and the loser fails on the constraint rather than both writing —
-  // which is what makes the service's 409 check safe against a TOCTOU gap.
+  // here and the loser fails on the constraint (P2002) rather than both
+  // writing. The constraint is the real concurrency guard; the service's
+  // existsForAnalysis check only avoids paying for a Gemini call in the
+  // common case, and it cannot close the window on its own. The service
+  // catches P2002 and maps it to the same 409 that check produces.
   async createWithTasks(input: {
     careerAnalysisId: string;
     weekCount: number;
@@ -143,6 +148,12 @@ export class RoadmapRepository {
       data: { completed, completedAt: completed ? new Date() : null },
     });
     if (result.count === 0) return null;
+    // Read-back is deliberately unscoped, and that is safe rather than an
+    // ownership hole: count > 0 above means the ownership-filtered write just
+    // matched this exact id, so the caller's right to see the row is already
+    // proven. Re-filtering here would only re-ask a question the write
+    // answered. updateMany cannot return the updated row, hence the second
+    // round-trip.
     return prisma.roadmapTask.findUnique({ where: { id: taskId } });
   }
 

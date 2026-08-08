@@ -11,12 +11,11 @@ import { logger } from "../../config/logger.js";
 import {
   CareerAnalysisRepository,
   CareerAnalysisWithResults,
+  CompletedCareerAnalysis,
+  STALE_ANALYSIS_AFTER_MS,
 } from "./career-analysis.repository.js";
 import { mapAssessmentsToGaps } from "./evidence-mapping.js";
-import {
-  EvidenceAgent,
-  RoleSnapshot,
-} from "./career-analysis.types.js";
+import { EvidenceAgent } from "./career-analysis.types.js";
 
 export class CareerAnalysisService {
   constructor(
@@ -42,7 +41,7 @@ export class CareerAnalysisService {
     userId: string,
     resumeId: string,
     roleSlug: string,
-  ): Promise<CareerAnalysisWithResults> {
+  ): Promise<CompletedCareerAnalysis> {
     const resume = await this.resumeRepository.findByIdAndUserId(
       userId,
       resumeId,
@@ -156,6 +155,10 @@ export class CareerAnalysisService {
 
   // A failure recording a failure must not replace the real error — that would
   // turn an honest "AI unavailable" into a confusing database error.
+  //
+  // The repository only transitions rows still in `analyzing`, so a failure
+  // raised after the analysis already completed leaves the completed result
+  // intact rather than marking a valid analysis failed.
   private async markFailedQuietly(
     analysisId: string,
     cause: unknown,
@@ -172,10 +175,19 @@ export class CareerAnalysisService {
     }
   }
 
-  async getAnalysisById(
-    userId: string,
-    analysisId: string,
-  ): Promise<CareerAnalysisWithResults> {
+  // The one place that decides who may touch an analysis.
+  //
+  // Public because RoadmapService needs the same rule: a roadmap is a
+  // sub-resource of an analysis, so "may I read this roadmap" is really "may I
+  // read its analysis". Having roadmap code ask this service — rather than
+  // reach into CareerAnalysisRepository itself — means any ownership rule
+  // added here applies to both modules automatically.
+  //
+  // 404 when absent, 403 when it exists but belongs to someone else. This is a
+  // decision read only; every write still carries its own ownership predicate,
+  // because the row can change owner or vanish between this check and the
+  // write.
+  async assertAnalysisOwner(userId: string, analysisId: string): Promise<void> {
     const owner =
       await this.careerAnalysisRepository.findByIdWithOwner(analysisId);
     if (!owner) {
@@ -192,6 +204,41 @@ export class CareerAnalysisService {
         "You do not have access to this analysis",
       );
     }
+  }
+
+  // Fails this user's abandoned `analyzing` rows before a read returns them.
+  //
+  // V1 is synchronous: nothing but the originating request can finish an
+  // analysis, so a row whose request died has no other way out of `analyzing`.
+  // Reaping on read rather than on a timer keeps V1 free of a background
+  // worker — a stale row is corrected the moment anyone would have seen it,
+  // and a row nobody reads again harms nobody.
+  //
+  // Scoped to the caller's own rows: this runs on a user's read, so it must
+  // not become a lever for touching anyone else's data.
+  private async reapStaleAnalyses(userId: string): Promise<void> {
+    const cutoff = new Date(Date.now() - STALE_ANALYSIS_AFTER_MS);
+    try {
+      const failed = await this.careerAnalysisRepository.failStaleAnalyses(
+        userId,
+        cutoff,
+      );
+      if (failed > 0) {
+        logger.warn("Failed stale career analyses on read", { userId, failed });
+      }
+    } catch (error) {
+      // Housekeeping must never break the read it was attached to. The row
+      // stays stale and the next read tries again.
+      logger.error("Could not reap stale career analyses", { userId, error });
+    }
+  }
+
+  async getAnalysisById(
+    userId: string,
+    analysisId: string,
+  ): Promise<CareerAnalysisWithResults> {
+    await this.assertAnalysisOwner(userId, analysisId);
+    await this.reapStaleAnalyses(userId);
 
     const analysis =
       await this.careerAnalysisRepository.findByIdWithResults(analysisId);
@@ -222,26 +269,15 @@ export class CareerAnalysisService {
         );
       }
     }
+
+    // The list is where a user actually notices a stuck analysis, so reap
+    // before building it rather than showing a spinner row that never resolves.
+    await this.reapStaleAnalyses(userId);
     return this.careerAnalysisRepository.findManyByUserId(userId, { resumeId });
   }
 
   async deleteAnalysis(userId: string, analysisId: string): Promise<void> {
-    const owner =
-      await this.careerAnalysisRepository.findByIdWithOwner(analysisId);
-    if (!owner) {
-      throw new AppError(
-        HTTP_STATUS.NOT_FOUND,
-        ERROR_CODES.RESOURCE_NOT_FOUND,
-        "Analysis not found",
-      );
-    }
-    if (owner.userId !== userId) {
-      throw new AppError(
-        HTTP_STATUS.FORBIDDEN,
-        ERROR_CODES.FORBIDDEN,
-        "You do not have access to this analysis",
-      );
-    }
+    await this.assertAnalysisOwner(userId, analysisId);
 
     const deleted = await this.careerAnalysisRepository.deleteByIdAndUserId(
       analysisId,
@@ -254,14 +290,5 @@ export class CareerAnalysisService {
         "Analysis not found",
       );
     }
-  }
-
-  // Used by the roadmap module, which needs the frozen role vocabulary rather
-  // than today's requirement rows.
-  async getRoleSnapshot(analysisId: string): Promise<RoleSnapshot | null> {
-    const analysis =
-      await this.careerAnalysisRepository.findByIdWithResults(analysisId);
-    if (!analysis) return null;
-    return analysis.roleSnapshot as unknown as RoleSnapshot;
   }
 }

@@ -14,6 +14,7 @@
 // Pure module: no Prisma, no Express, no AI.
 import { GapStatus, SkillImportance } from "../../generated/client/index.js";
 import { GroundedEvidenceItem } from "./career-analysis.types.js";
+import { strongestEvidence } from "./readiness.js";
 
 const IMPORTANCE_PHRASE: Record<SkillImportance, string> = {
   critical: "is a core requirement for",
@@ -23,13 +24,13 @@ const IMPORTANCE_PHRASE: Record<SkillImportance, string> = {
 
 // Describes what the surviving evidence actually was, in the application's
 // voice rather than the model's.
+//
+// Shares strongestEvidence with readiness.ts deliberately: the quote cited
+// here must be the same one the score was derived from, or the explanation
+// would justify a status using different evidence than produced it.
 function describeEvidence(evidence: GroundedEvidenceItem[]): string {
-  if (evidence.length === 0) return "";
-
-  const strongest = evidence.reduce((best, current) => {
-    const rank = { experience_backed: 3, project_backed: 2, mentioned: 1 };
-    return rank[current.strength] > rank[best.strength] ? current : best;
-  });
+  const strongest = strongestEvidence(evidence);
+  if (!strongest) return "";
 
   switch (strongest.strength) {
     case "experience_backed":
@@ -91,10 +92,9 @@ export function buildGapReasoning(input: {
 // after a colon.
 function lowerFirst(text: string): string {
   if (!text) return text;
-  // Leave acronyms and proper nouns alone — "REST APIs are..." must not
-  // become "rEST APIs are...".
-  if (text.length > 1 && text[1] === text[1].toUpperCase() && /[A-Za-z]/.test(text[1])) {
-    return text;
-  }
+  // Leave acronyms alone — "REST APIs are..." must not become "rEST APIs
+  // are...". Two leading capitals is the signal; a single capital followed by
+  // anything else is an ordinary sentence start.
+  if (/^[A-Z][A-Z]/.test(text)) return text;
   return text[0].toLowerCase() + text.slice(1);
 }

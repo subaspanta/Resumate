@@ -267,9 +267,17 @@ model RoadmapTask {
   // degrades to whatever order Postgres happens to return.
   orderInWeek Int
 
-  title       String @db.VarChar(200)
-  description String @db.Text
-  resources   Json?  @db.JsonB
+  title            String @db.VarChar(200)
+  description      String @db.Text
+  // Kept as their own columns rather than concatenated into description: the
+  // agent schema caps them separately, and the client renders "what to build"
+  // and "what proves it done" as distinct things. Both are required by the
+  // agent's output schema and written on every insert, so they are NOT NULL —
+  // making them optional would push a null check onto every consumer to
+  // describe a state the write path cannot produce.
+  projectTask      String @db.Text
+  expectedEvidence String @db.Text
+  resources        Json?  @db.JsonB
 
   completed   Boolean   @default(false)
   // Derived from `completed` in the repository, never accepted from the

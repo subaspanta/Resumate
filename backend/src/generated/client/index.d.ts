@@ -13763,6 +13763,8 @@ export namespace Prisma {
     orderInWeek: number | null
     title: string | null
     description: string | null
+    projectTask: string | null
+    expectedEvidence: string | null
     completed: boolean | null
     completedAt: Date | null
     createdAt: Date | null
@@ -13776,6 +13778,8 @@ export namespace Prisma {
     orderInWeek: number | null
     title: string | null
     description: string | null
+    projectTask: string | null
+    expectedEvidence: string | null
     completed: boolean | null
     completedAt: Date | null
     createdAt: Date | null
@@ -13789,6 +13793,8 @@ export namespace Prisma {
     orderInWeek: number
     title: number
     description: number
+    projectTask: number
+    expectedEvidence: number
     resources: number
     completed: number
     completedAt: number
@@ -13815,6 +13821,8 @@ export namespace Prisma {
     orderInWeek?: true
     title?: true
     description?: true
+    projectTask?: true
+    expectedEvidence?: true
     completed?: true
     completedAt?: true
     createdAt?: true
@@ -13828,6 +13836,8 @@ export namespace Prisma {
     orderInWeek?: true
     title?: true
     description?: true
+    projectTask?: true
+    expectedEvidence?: true
     completed?: true
     completedAt?: true
     createdAt?: true
@@ -13841,6 +13851,8 @@ export namespace Prisma {
     orderInWeek?: true
     title?: true
     description?: true
+    projectTask?: true
+    expectedEvidence?: true
     resources?: true
     completed?: true
     completedAt?: true
@@ -13942,6 +13954,8 @@ export namespace Prisma {
     orderInWeek: number
     title: string
     description: string
+    projectTask: string
+    expectedEvidence: string
     resources: JsonValue | null
     completed: boolean
     completedAt: Date | null
@@ -13975,6 +13989,8 @@ export namespace Prisma {
     orderInWeek?: boolean
     title?: boolean
     description?: boolean
+    projectTask?: boolean
+    expectedEvidence?: boolean
     resources?: boolean
     completed?: boolean
     completedAt?: boolean
@@ -13991,6 +14007,8 @@ export namespace Prisma {
     orderInWeek?: boolean
     title?: boolean
     description?: boolean
+    projectTask?: boolean
+    expectedEvidence?: boolean
     resources?: boolean
     completed?: boolean
     completedAt?: boolean
@@ -14007,6 +14025,8 @@ export namespace Prisma {
     orderInWeek?: boolean
     title?: boolean
     description?: boolean
+    projectTask?: boolean
+    expectedEvidence?: boolean
     resources?: boolean
     completed?: boolean
     completedAt?: boolean
@@ -14023,13 +14043,15 @@ export namespace Prisma {
     orderInWeek?: boolean
     title?: boolean
     description?: boolean
+    projectTask?: boolean
+    expectedEvidence?: boolean
     resources?: boolean
     completed?: boolean
     completedAt?: boolean
     createdAt?: boolean
   }
 
-  export type RoadmapTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roadmapId" | "skillGapId" | "weekNumber" | "orderInWeek" | "title" | "description" | "resources" | "completed" | "completedAt" | "createdAt", ExtArgs["result"]["roadmapTask"]>
+  export type RoadmapTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roadmapId" | "skillGapId" | "weekNumber" | "orderInWeek" | "title" | "description" | "projectTask" | "expectedEvidence" | "resources" | "completed" | "completedAt" | "createdAt", ExtArgs["result"]["roadmapTask"]>
   export type RoadmapTaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     roadmap?: boolean | RoadmapDefaultArgs<ExtArgs>
     skillGap?: boolean | RoadmapTask$skillGapArgs<ExtArgs>
@@ -14057,6 +14079,8 @@ export namespace Prisma {
       orderInWeek: number
       title: string
       description: string
+      projectTask: string
+      expectedEvidence: string
       resources: Prisma.JsonValue | null
       completed: boolean
       completedAt: Date | null
@@ -14493,6 +14517,8 @@ export namespace Prisma {
     readonly orderInWeek: FieldRef<"RoadmapTask", 'Int'>
     readonly title: FieldRef<"RoadmapTask", 'String'>
     readonly description: FieldRef<"RoadmapTask", 'String'>
+    readonly projectTask: FieldRef<"RoadmapTask", 'String'>
+    readonly expectedEvidence: FieldRef<"RoadmapTask", 'String'>
     readonly resources: FieldRef<"RoadmapTask", 'Json'>
     readonly completed: FieldRef<"RoadmapTask", 'Boolean'>
     readonly completedAt: FieldRef<"RoadmapTask", 'DateTime'>
@@ -16153,6 +16179,8 @@ export namespace Prisma {
     orderInWeek: 'orderInWeek',
     title: 'title',
     description: 'description',
+    projectTask: 'projectTask',
+    expectedEvidence: 'expectedEvidence',
     resources: 'resources',
     completed: 'completed',
     completedAt: 'completedAt',
@@ -17133,6 +17161,8 @@ export namespace Prisma {
     orderInWeek?: IntFilter<"RoadmapTask"> | number
     title?: StringFilter<"RoadmapTask"> | string
     description?: StringFilter<"RoadmapTask"> | string
+    projectTask?: StringFilter<"RoadmapTask"> | string
+    expectedEvidence?: StringFilter<"RoadmapTask"> | string
     resources?: JsonNullableFilter<"RoadmapTask">
     completed?: BoolFilter<"RoadmapTask"> | boolean
     completedAt?: DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
@@ -17149,6 +17179,8 @@ export namespace Prisma {
     orderInWeek?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    projectTask?: SortOrder
+    expectedEvidence?: SortOrder
     resources?: SortOrderInput | SortOrder
     completed?: SortOrder
     completedAt?: SortOrderInput | SortOrder
@@ -17168,6 +17200,8 @@ export namespace Prisma {
     orderInWeek?: IntFilter<"RoadmapTask"> | number
     title?: StringFilter<"RoadmapTask"> | string
     description?: StringFilter<"RoadmapTask"> | string
+    projectTask?: StringFilter<"RoadmapTask"> | string
+    expectedEvidence?: StringFilter<"RoadmapTask"> | string
     resources?: JsonNullableFilter<"RoadmapTask">
     completed?: BoolFilter<"RoadmapTask"> | boolean
     completedAt?: DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
@@ -17184,6 +17218,8 @@ export namespace Prisma {
     orderInWeek?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    projectTask?: SortOrder
+    expectedEvidence?: SortOrder
     resources?: SortOrderInput | SortOrder
     completed?: SortOrder
     completedAt?: SortOrderInput | SortOrder
@@ -17206,6 +17242,8 @@ export namespace Prisma {
     orderInWeek?: IntWithAggregatesFilter<"RoadmapTask"> | number
     title?: StringWithAggregatesFilter<"RoadmapTask"> | string
     description?: StringWithAggregatesFilter<"RoadmapTask"> | string
+    projectTask?: StringWithAggregatesFilter<"RoadmapTask"> | string
+    expectedEvidence?: StringWithAggregatesFilter<"RoadmapTask"> | string
     resources?: JsonNullableWithAggregatesFilter<"RoadmapTask">
     completed?: BoolWithAggregatesFilter<"RoadmapTask"> | boolean
     completedAt?: DateTimeNullableWithAggregatesFilter<"RoadmapTask"> | Date | string | null
@@ -18070,6 +18108,8 @@ export namespace Prisma {
     orderInWeek: number
     title: string
     description: string
+    projectTask: string
+    expectedEvidence: string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
@@ -18086,6 +18126,8 @@ export namespace Prisma {
     orderInWeek: number
     title: string
     description: string
+    projectTask: string
+    expectedEvidence: string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
@@ -18098,6 +18140,8 @@ export namespace Prisma {
     orderInWeek?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    projectTask?: StringFieldUpdateOperationsInput | string
+    expectedEvidence?: StringFieldUpdateOperationsInput | string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -18114,6 +18158,8 @@ export namespace Prisma {
     orderInWeek?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    projectTask?: StringFieldUpdateOperationsInput | string
+    expectedEvidence?: StringFieldUpdateOperationsInput | string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -18128,6 +18174,8 @@ export namespace Prisma {
     orderInWeek: number
     title: string
     description: string
+    projectTask: string
+    expectedEvidence: string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
@@ -18140,6 +18188,8 @@ export namespace Prisma {
     orderInWeek?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    projectTask?: StringFieldUpdateOperationsInput | string
+    expectedEvidence?: StringFieldUpdateOperationsInput | string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -18154,6 +18204,8 @@ export namespace Prisma {
     orderInWeek?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    projectTask?: StringFieldUpdateOperationsInput | string
+    expectedEvidence?: StringFieldUpdateOperationsInput | string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -19089,6 +19141,8 @@ export namespace Prisma {
     orderInWeek?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    projectTask?: SortOrder
+    expectedEvidence?: SortOrder
     resources?: SortOrder
     completed?: SortOrder
     completedAt?: SortOrder
@@ -19108,6 +19162,8 @@ export namespace Prisma {
     orderInWeek?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    projectTask?: SortOrder
+    expectedEvidence?: SortOrder
     completed?: SortOrder
     completedAt?: SortOrder
     createdAt?: SortOrder
@@ -19121,6 +19177,8 @@ export namespace Prisma {
     orderInWeek?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    projectTask?: SortOrder
+    expectedEvidence?: SortOrder
     completed?: SortOrder
     completedAt?: SortOrder
     createdAt?: SortOrder
@@ -21882,6 +21940,8 @@ export namespace Prisma {
     orderInWeek: number
     title: string
     description: string
+    projectTask: string
+    expectedEvidence: string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
@@ -21896,6 +21956,8 @@ export namespace Prisma {
     orderInWeek: number
     title: string
     description: string
+    projectTask: string
+    expectedEvidence: string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
@@ -22021,6 +22083,8 @@ export namespace Prisma {
     orderInWeek?: IntFilter<"RoadmapTask"> | number
     title?: StringFilter<"RoadmapTask"> | string
     description?: StringFilter<"RoadmapTask"> | string
+    projectTask?: StringFilter<"RoadmapTask"> | string
+    expectedEvidence?: StringFilter<"RoadmapTask"> | string
     resources?: JsonNullableFilter<"RoadmapTask">
     completed?: BoolFilter<"RoadmapTask"> | boolean
     completedAt?: DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
@@ -22074,6 +22138,8 @@ export namespace Prisma {
     orderInWeek: number
     title: string
     description: string
+    projectTask: string
+    expectedEvidence: string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
@@ -22088,6 +22154,8 @@ export namespace Prisma {
     orderInWeek: number
     title: string
     description: string
+    projectTask: string
+    expectedEvidence: string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
@@ -22904,6 +22972,8 @@ export namespace Prisma {
     orderInWeek: number
     title: string
     description: string
+    projectTask: string
+    expectedEvidence: string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
@@ -22916,6 +22986,8 @@ export namespace Prisma {
     orderInWeek?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    projectTask?: StringFieldUpdateOperationsInput | string
+    expectedEvidence?: StringFieldUpdateOperationsInput | string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -22930,6 +23002,8 @@ export namespace Prisma {
     orderInWeek?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    projectTask?: StringFieldUpdateOperationsInput | string
+    expectedEvidence?: StringFieldUpdateOperationsInput | string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -22943,6 +23017,8 @@ export namespace Prisma {
     orderInWeek?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    projectTask?: StringFieldUpdateOperationsInput | string
+    expectedEvidence?: StringFieldUpdateOperationsInput | string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -22956,6 +23032,8 @@ export namespace Prisma {
     orderInWeek: number
     title: string
     description: string
+    projectTask: string
+    expectedEvidence: string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
@@ -22968,6 +23046,8 @@ export namespace Prisma {
     orderInWeek?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    projectTask?: StringFieldUpdateOperationsInput | string
+    expectedEvidence?: StringFieldUpdateOperationsInput | string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -22982,6 +23062,8 @@ export namespace Prisma {
     orderInWeek?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    projectTask?: StringFieldUpdateOperationsInput | string
+    expectedEvidence?: StringFieldUpdateOperationsInput | string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -22995,6 +23077,8 @@ export namespace Prisma {
     orderInWeek?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    projectTask?: StringFieldUpdateOperationsInput | string
+    expectedEvidence?: StringFieldUpdateOperationsInput | string
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

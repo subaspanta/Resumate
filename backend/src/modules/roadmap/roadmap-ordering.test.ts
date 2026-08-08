@@ -2,18 +2,25 @@ import { describe, expect, it } from "vitest";
 import {
   assignWeeks,
   buildRoadmapSchedule,
+  DEFAULT_MAX_SCHEDULED_GAPS,
+  DEFAULT_ROADMAP_WEEKS,
   selectTopGaps,
   sortGapsByPriority,
 } from "./roadmap-ordering.js";
+import { GapStatus } from "../../generated/client/index.js";
 
 type Gap = {
   id: string;
   slug: string;
   priority: number;
-  status: string;
+  status: GapStatus;
 };
 
-function gap(slug: string, priority: number, status = "missing"): Gap {
+function gap(
+  slug: string,
+  priority: number,
+  status: GapStatus = "missing",
+): Gap {
   return { id: `gap-${slug}`, slug, priority, status };
 }
 
@@ -129,5 +136,26 @@ describe("buildRoadmapSchedule", () => {
 
   it("returns an empty schedule when there is nothing worth working on", () => {
     expect(buildRoadmapSchedule([gap("a", 30, "strong")])).toEqual([]);
+  });
+
+  // maxGaps caps how many gaps are scheduled, not how many weeks the roadmap
+  // "should" have — the two only coincide because V1 puts one gap per week.
+  // This is what item 1/2 of the review depend on: the service must read
+  // scheduled.length, not the cap, to know how many weeks it actually built.
+  it("returns fewer scheduled gaps than the cap when fewer qualify", () => {
+    const scheduled = buildRoadmapSchedule(
+      [gap("a", 0), gap("b", 1), gap("already-strong", 2, "strong")],
+      DEFAULT_MAX_SCHEDULED_GAPS,
+    );
+
+    expect(scheduled).toHaveLength(2);
+    expect(scheduled.length).toBeLessThan(DEFAULT_MAX_SCHEDULED_GAPS);
+  });
+
+  it("defaults DEFAULT_MAX_SCHEDULED_GAPS to DEFAULT_ROADMAP_WEEKS", () => {
+    // V1 invariant: one gap per week. If this ever fails, the two constants
+    // were deliberately split apart and the call sites need review, not this
+    // assertion silently updated.
+    expect(DEFAULT_MAX_SCHEDULED_GAPS).toBe(DEFAULT_ROADMAP_WEEKS);
   });
 });

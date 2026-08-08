@@ -25,6 +25,30 @@ export const validateRequest =
     next();
   };
 
+// Route params are strings from the URL, so a malformed uuid otherwise reaches
+// Prisma and surfaces as a raw driver error flattened to a generic 500. This
+// turns it into the 400 the rest of the API returns for bad input.
+//
+// Unlike req.query, req.params is a plain writable object in Express 5, so it
+// can be assigned directly.
+export const validateParams =
+  <T>(schema: ZodType<T>) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const result = schema.safeParse(req.params);
+    if (!result.success) {
+      return next(
+        new AppError(
+          400,
+          ERROR_CODES.VALIDATION_FAILED,
+          "Validation failed",
+          z.treeifyError(result.error),
+        ),
+      );
+    }
+    req.params = result.data as typeof req.params;
+    next();
+  };
+
 export const validateQuery =
   <T>(schema: ZodType<T>) =>
   (req: Request, res: Response, next: NextFunction) => {

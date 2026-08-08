@@ -139,4 +139,42 @@ describe("buildGapReasoning", () => {
 
     expect(text).toContain("REST endpoints");
   });
+
+  it("preserves a two-letter acronym opener", () => {
+    const text = buildGapReasoning({
+      ...BASE,
+      status: "missing",
+      importance: "critical",
+      rationale: "CI pipelines are expected on every team.",
+      evidence: [],
+    });
+
+    expect(text).toContain("CI pipelines");
+    expect(text).not.toContain("cI pipelines");
+  });
+
+  it("lowercases an ordinary sentence whose second character is a space", () => {
+    const text = buildGapReasoning({
+      ...BASE,
+      status: "missing",
+      importance: "critical",
+      rationale: "A working knowledge of the tool is expected.",
+      evidence: [],
+    });
+
+    expect(text).toContain(": a working knowledge");
+    expect(text).not.toContain(": A working knowledge");
+  });
+
+  it("lowercases a normal capitalised sentence", () => {
+    const text = buildGapReasoning({
+      ...BASE,
+      status: "missing",
+      importance: "critical",
+      rationale: "Reproducible builds matter here.",
+      evidence: [],
+    });
+
+    expect(text).toContain(": reproducible builds");
+  });
 });

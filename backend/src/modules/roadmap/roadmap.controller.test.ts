@@ -74,6 +74,8 @@ async function createRoadmapFixture(userId: string) {
           orderInWeek: 0,
           title: "Learn Docker",
           description: "Containerize your project",
+          projectTask: "Add a Dockerfile to your existing API project.",
+          expectedEvidence: "A working Dockerfile and a documented run command.",
           resources: ["docs"],
         },
       },
@@ -121,6 +123,17 @@ describe("POST /career-analyses/:id/roadmap", () => {
       .set("Cookie", [`accessToken=${owner.token}`]);
 
     expect(res.status).toBe(404);
+  });
+
+  // Regression: a malformed id used to reach Prisma's uuid cast and surface as
+  // a generic 500. Validated before aiRateLimit, so a bad id costs no budget.
+  it("rejects a non-uuid analysis id with 400", async () => {
+    const res = await request(app)
+      .post("/api/v1/career-analyses/not-a-uuid/roadmap")
+      .set("Cookie", [`accessToken=${owner.token}`]);
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_FAILED");
   });
 
   it("returns 409 when the analysis already has a roadmap", async () => {
@@ -228,6 +241,18 @@ describe("GET /roadmaps/:roadmapId", () => {
 
     expect(res.status).toBe(404);
   });
+
+  // Regression: a malformed id used to reach Prisma's uuid cast and surface as
+  // a generic 500 instead of a 400.
+  it("rejects a non-uuid roadmap id with 400", async () => {
+    const owner = await createUser("DirectRoadmapBadId");
+    const res = await request(app)
+      .get("/api/v1/roadmaps/not-a-uuid")
+      .set("Cookie", [`accessToken=${owner.token}`]);
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_FAILED");
+  });
 });
 
 describe("PATCH /roadmap-tasks/:taskId", () => {
@@ -279,6 +304,18 @@ describe("PATCH /roadmap-tasks/:taskId", () => {
       .send({ completed: true });
 
     expect(res.status).toBe(404);
+  });
+
+  // Regression: a malformed id used to reach Prisma's uuid cast and surface as
+  // a generic 500 instead of a 400.
+  it("rejects a non-uuid task id with 400", async () => {
+    const res = await request(app)
+      .patch("/api/v1/roadmap-tasks/not-a-uuid")
+      .set("Cookie", [`accessToken=${owner.token}`])
+      .send({ completed: true });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_FAILED");
   });
 
   it("marks the task complete for its owner", async () => {

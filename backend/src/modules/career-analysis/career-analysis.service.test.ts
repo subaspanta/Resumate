@@ -1,6 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { prisma } from "../../lib/prisma.js";
-import { CareerAnalysisRepository } from "./career-analysis.repository.js";
+import {
+  CareerAnalysisRepository,
+  STALE_ANALYSIS_AFTER_MS,
+  STALE_ANALYSIS_REASON,
+} from "./career-analysis.repository.js";
 import { CareerAnalysisService } from "./career-analysis.service.js";
 import { ResumeRepository } from "../resume/resume.repository.js";
 import { RoleRepository } from "../role/role.repository.js";
@@ -158,9 +162,17 @@ describe("CareerAnalysisService.createAnalysis", () => {
 
     const nodeGap = analysis.gaps.find((g) => g.skill.slug === "nodejs");
     expect(nodeGap?.status).toBe("strong");
+
+    // completeAnalysis omits the snapshots from its return, so read the stored
+    // row — which also proves the snapshot was actually persisted rather than
+    // merely echoed back.
+    const stored = await prisma.careerAnalysis.findUniqueOrThrow({
+      where: { id: analysis.id },
+      select: { roleSnapshot: true },
+    });
     // Every other required skill still gets a row rather than vanishing.
     expect(analysis.gaps.length).toBe(
-      (analysis.roleSnapshot as { skills: unknown[] }).skills.length,
+      (stored.roleSnapshot as unknown as { skills: unknown[] }).skills.length,
     );
   });
 
@@ -263,6 +275,63 @@ describe("CareerAnalysisService.createAnalysis", () => {
     expect(failed?.failureReason).toBe("AI unavailable");
   });
 
+  // Regression: markFailed used to update on id alone, so any failure raised
+  // after an analysis had completed would overwrite a valid result — real
+  // gaps, evidence, and a score — with status "failed".
+  it("never marks a completed analysis as failed", async () => {
+    const analysis = await buildService(
+      fakeAgent((input) => ({
+        assessments: input.requiredSkills.map((skill) => ({
+          skillSlug: skill.slug,
+          found: false,
+          evidence: [],
+        })),
+      })),
+    ).createAnalysis(userId, resumeId, "backend-engineer");
+    expect(analysis.status).toBe("complete");
+
+    const repository = new CareerAnalysisRepository();
+    const transitioned = await repository.markFailed(
+      analysis.id,
+      "late failure",
+    );
+
+    // The guard held: no transition, and the stored row is untouched.
+    expect(transitioned).toBe(false);
+    const stored = await prisma.careerAnalysis.findUniqueOrThrow({
+      where: { id: analysis.id },
+    });
+    expect(stored.status).toBe("complete");
+    expect(stored.failureReason).toBeNull();
+    expect(stored.readinessScore).not.toBeNull();
+
+    // And no analysis_failed event was logged for a failure that never
+    // happened.
+    const failedEvents = await prisma.analysisEvent.count({
+      where: { careerAnalysisId: analysis.id, type: "analysis_failed" },
+    });
+    expect(failedEvents).toBe(0);
+  });
+
+  it("records an analysis_failed event when a real failure transitions the row", async () => {
+    const service = buildService(
+      failingAgent(new AppError(503, "GEMINI_API_ERROR", "AI unavailable")),
+    );
+
+    await expect(
+      service.createAnalysis(userId, resumeId, "backend-engineer"),
+    ).rejects.toMatchObject({ code: "GEMINI_API_ERROR" });
+
+    const failed = await prisma.careerAnalysis.findFirstOrThrow({
+      where: { userId, status: "failed" },
+      orderBy: { createdAt: "desc" },
+    });
+    const events = await prisma.analysisEvent.count({
+      where: { careerAnalysisId: failed.id, type: "analysis_failed" },
+    });
+    expect(events).toBe(1);
+  });
+
   it("never sends importance or rationale to the model", async () => {
     const agent = fakeAgent((input) => ({
       assessments: input.requiredSkills.map((skill) => ({
@@ -293,7 +362,11 @@ describe("CareerAnalysisService.createAnalysis", () => {
       "backend-engineer",
     );
 
-    const snapshot = analysis.roleSnapshot as {
+    const stored = await prisma.careerAnalysis.findUniqueOrThrow({
+      where: { id: analysis.id },
+      select: { roleSnapshot: true },
+    });
+    const snapshot = stored.roleSnapshot as unknown as {
       slug: string;
       seedVersion: string;
       skills: { importance: string }[];
@@ -396,5 +469,110 @@ describe("CareerAnalysisService ownership", () => {
     expect(
       await prisma.skillGap.count({ where: { careerAnalysisId: created.id } }),
     ).toBe(0);
+  });
+});
+
+// V1 runs analysis synchronously inside the request, so nothing but the
+// originating request can move a row out of `analyzing`. If that request dies
+// (client disconnect, process restart, deploy mid-call) the row has no other
+// exit. These cover the read-path reaper that gives it one.
+describe("CareerAnalysisService stale analysis reaping", () => {
+  let userId: string;
+  let resumeId: string;
+
+  beforeAll(async () => {
+    userId = (await createUser("StaleReaper")).id;
+    resumeId = (await createResume(userId)).id;
+  });
+
+  // Writes a row directly in `analyzing` with a chosen age — the state a
+  // killed request leaves behind.
+  async function createAbandonedAnalysis(ageMs: number) {
+    const role = await prisma.role.findUniqueOrThrow({
+      where: { slug: "backend-engineer" },
+    });
+    return prisma.careerAnalysis.create({
+      data: {
+        userId,
+        resumeId,
+        roleId: role.id,
+        status: "analyzing",
+        resumeSnapshot: {},
+        roleSnapshot: {},
+        createdAt: new Date(Date.now() - ageMs),
+      },
+    });
+  }
+
+  it("fails an abandoned analyzing row once it is older than the window", async () => {
+    const stale = await createAbandonedAnalysis(STALE_ANALYSIS_AFTER_MS + 60_000);
+    const service = buildService(fakeAgent(() => ({ assessments: [] })));
+
+    const read = await service.getAnalysisById(userId, stale.id);
+
+    expect(read.status).toBe("failed");
+    expect(read.failureReason).toBe(STALE_ANALYSIS_REASON);
+  });
+
+  it("leaves an in-flight analysis alone", async () => {
+    // Younger than the cutoff: this is what a request still waiting on Gemini
+    // looks like, and reaping it would destroy a result the user is waiting for.
+    const inFlight = await createAbandonedAnalysis(5_000);
+    const service = buildService(fakeAgent(() => ({ assessments: [] })));
+
+    const read = await service.getAnalysisById(userId, inFlight.id);
+
+    expect(read.status).toBe("analyzing");
+    expect(read.failureReason).toBeNull();
+  });
+
+  it("reaps stale rows on the list path too", async () => {
+    const stale = await createAbandonedAnalysis(STALE_ANALYSIS_AFTER_MS + 60_000);
+    const service = buildService(fakeAgent(() => ({ assessments: [] })));
+
+    const listed = await service.listAnalyses(userId);
+
+    expect(listed.find((a) => a.id === stale.id)?.status).toBe("failed");
+  });
+
+  it("never touches another user's stale rows", async () => {
+    const stale = await createAbandonedAnalysis(STALE_ANALYSIS_AFTER_MS + 60_000);
+    const intruderId = (await createUser("StaleIntruder")).id;
+    const service = buildService(fakeAgent(() => ({ assessments: [] })));
+
+    await service.listAnalyses(intruderId);
+
+    const untouched = await prisma.careerAnalysis.findUniqueOrThrow({
+      where: { id: stale.id },
+    });
+    expect(untouched.status).toBe("analyzing");
+  });
+
+  it("does not overwrite an analysis that completed normally", async () => {
+    const service = buildService(
+      fakeAgent((input) => ({
+        assessments: input.requiredSkills.map((skill) => ({
+          skillSlug: skill.slug,
+          found: false,
+          evidence: [],
+        })),
+      })),
+    );
+    const completed = await service.createAnalysis(
+      userId,
+      resumeId,
+      "backend-engineer",
+    );
+
+    // Age it past the cutoff. Status, not age, is what protects a real result.
+    await prisma.careerAnalysis.update({
+      where: { id: completed.id },
+      data: { createdAt: new Date(Date.now() - STALE_ANALYSIS_AFTER_MS * 2) },
+    });
+
+    const read = await service.getAnalysisById(userId, completed.id);
+
+    expect(read.status).toBe("complete");
+    expect(read.failureReason).toBeNull();
   });
 });

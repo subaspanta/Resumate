@@ -163,6 +163,17 @@ describe("GET /career-analyses/:id", () => {
     expect(res.status).toBe(404);
   });
 
+  // Regression: a malformed id used to reach Prisma's uuid cast and surface
+  // as a generic 500 instead of the 400 the rest of the API returns.
+  it("rejects a non-uuid analysis id with 400", async () => {
+    const res = await request(app)
+      .get("/api/v1/career-analyses/not-a-uuid")
+      .set("Cookie", [`accessToken=${owner.token}`]);
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_FAILED");
+  });
+
   it("returns the analysis with its score and breakdown to the owner", async () => {
     const res = await request(app)
       .get(`/api/v1/career-analyses/${analysisId}`)
@@ -234,6 +245,16 @@ describe("DELETE /career-analyses/:id", () => {
     expect(
       await prisma.careerAnalysis.findUnique({ where: { id: analysis.id } }),
     ).not.toBeNull();
+  });
+
+  it("rejects a non-uuid analysis id with 400", async () => {
+    const owner = await createUser("DeleteBadId");
+    const res = await request(app)
+      .delete("/api/v1/career-analyses/not-a-uuid")
+      .set("Cookie", [`accessToken=${owner.token}`]);
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_FAILED");
   });
 
   it("deletes the analysis for its owner", async () => {

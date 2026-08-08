@@ -73,19 +73,48 @@ const evidenceAgent: EvidenceAgent = {
 function buildRoadmapService(agent: RoadmapAgent) {
   return new RoadmapService(
     new RoadmapRepository(),
-    new CareerAnalysisRepository(),
+    // The real CareerAnalysisService, not its repository: ownership and the
+    // 404/403 split are its rules, and this test asserts them.
+    buildAnalysisService(),
     agent,
   );
 }
 
-function buildAnalysisService() {
+function buildAnalysisService(agent: EvidenceAgent = evidenceAgent) {
   return new CareerAnalysisService(
     new CareerAnalysisRepository(),
     new ResumeRepository(),
     new RoleService(new RoleRepository()),
-    evidenceAgent,
+    agent,
   );
 }
+
+// Grounds every backend-engineer skill strong except two, leaving exactly two
+// real gaps to schedule — fewer than DEFAULT_ROADMAP_WEEKS. The opposite
+// extreme from the shared `evidenceAgent`, which grounds only nodejs.
+const twoGapsEvidenceAgent: EvidenceAgent = {
+  async assessEvidence(input: EvidenceAgentInput) {
+    const stillGaps = new Set(["docker", "deployment"]);
+    return {
+      assessments: input.requiredSkills.map((skill) =>
+        stillGaps.has(skill.slug)
+          ? { skillSlug: skill.slug, found: false, evidence: [] }
+          : {
+              skillSlug: skill.slug,
+              found: true,
+              evidence: [
+                {
+                  quote: REAL_BULLET,
+                  strength: "experience_backed" as const,
+                  sourceSection: "experience" as const,
+                  sourceIndex: 0,
+                },
+              ],
+            },
+      ),
+    };
+  },
+};
 
 async function createUser(name: string) {
   return prisma.user.create({
@@ -129,9 +158,9 @@ async function createResume(userId: string) {
 }
 
 // A complete analysis with real gaps, built through the real pipeline.
-async function seedAnalysis(userId: string) {
+async function seedAnalysis(userId: string, agent: EvidenceAgent = evidenceAgent) {
   const resume = await createResume(userId);
-  return buildAnalysisService().createAnalysis(
+  return buildAnalysisService(agent).createAnalysis(
     userId,
     resume.id,
     "backend-engineer",
@@ -230,6 +259,70 @@ describe("RoadmapService.generateRoadmap", () => {
     const still = await new RoadmapRepository().findByAnalysisId(analysis.id);
     expect(still!.id).toBe(first.id);
     expect(still!.tasks).toHaveLength(4);
+  });
+
+  // Regression: the existsForAnalysis check cannot close the window between
+  // itself and the write. A roadmap created while the Gemini call is in flight
+  // used to surface as a raw P2002 flattened to a generic 500; the unique
+  // constraint is the real guard, so the loser must get the same 409.
+  it("maps a lost create race to 409 rather than a generic 500", async () => {
+    const analysis = await seedAnalysis(userId);
+    const winner = buildRoadmapService(fakeRoadmapAgent());
+
+    // Simulates the concurrent generation landing during the AI call: by the
+    // time this service writes, the row it checked for already exists.
+    let raced: { id: string } | undefined;
+    const racingAgent = fakeRoadmapAgent();
+    const originalGenerate = racingAgent.generateTasks.bind(racingAgent);
+    racingAgent.generateTasks = async (input) => {
+      const output = await originalGenerate(input);
+      raced ??= await winner.generateRoadmap(userId, analysis.id);
+      return output;
+    };
+
+    const loser = buildRoadmapService(racingAgent);
+    await expect(
+      loser.generateRoadmap(userId, analysis.id),
+    ).rejects.toMatchObject({
+      statusCode: 409,
+      code: "ROADMAP_ALREADY_EXISTS",
+    });
+
+    // The winner's roadmap survives intact — the loser wrote nothing.
+    const stored = await prisma.roadmap.findMany({
+      where: { careerAnalysisId: analysis.id },
+    });
+    expect(stored).toHaveLength(1);
+    expect(stored[0].id).toBe(raced!.id);
+  });
+
+  it("stores projectTask and expectedEvidence as their own fields", async () => {
+    const analysis = await seedAnalysis(userId);
+    const service = buildRoadmapService(
+      fakeRoadmapAgent((input) => ({
+        tasks: input.gaps.map((gap) => ({
+          skillSlug: gap.skillSlug,
+          title: `Learn ${gap.skillName}`,
+          description: "Why this gap matters.",
+          projectTask: "Extend the task tracker with an audit log.",
+          expectedEvidence: "A migration, tests, and a README note.",
+          resources: ["official docs"],
+        })),
+      })),
+    );
+
+    const roadmap = await service.generateRoadmap(userId, analysis.id);
+    const task = roadmap.tasks[0];
+
+    expect(task.projectTask).toBe("Extend the task tracker with an audit log.");
+    expect(task.expectedEvidence).toBe(
+      "A migration, tests, and a README note.",
+    );
+    // description must stay the model's description alone — the three fields
+    // used to be concatenated into it, which lost the structure.
+    expect(task.description).toBe("Why this gap matters.");
+    expect(task.description).not.toContain("Build:");
+    expect(task.description).not.toContain("Evidence:");
   });
 
   it("preserves completed task state when a second generation is refused", async () => {
@@ -343,6 +436,55 @@ describe("RoadmapService.generateRoadmap", () => {
     await expect(
       buildRoadmapService(lazy).generateRoadmap(userId, analysis.id),
     ).rejects.toThrow(AppError);
+  });
+
+  // Regression: weekCount used to be hardcoded to DEFAULT_ROADMAP_WEEKS
+  // regardless of how many gaps actually got scheduled, so a candidate close
+  // to ready could end up with a stored weekCount of 4 next to 2 real tasks.
+  it("persists weekCount equal to the number of gaps actually scheduled", async () => {
+    const analysis = await seedAnalysis(userId, twoGapsEvidenceAgent);
+    const roadmap = await buildRoadmapService(
+      fakeRoadmapAgent(),
+    ).generateRoadmap(userId, analysis.id);
+
+    expect(roadmap.tasks).toHaveLength(2);
+    expect(roadmap.weekCount).toBe(2);
+    expect(roadmap.weekCount).toBe(roadmap.tasks.length);
+  });
+
+  // Every scheduled gap comes from the same roleSnapshot the rationale lookup
+  // reads, so a miss means the snapshot and its own gaps disagree — a bug,
+  // not a normal absence. This must fail before the model is ever called, or
+  // a broken snapshot would cost a Gemini call for nothing.
+  it("fails loudly, without calling the model, when a scheduled gap has no rationale", async () => {
+    const analysis = await seedAnalysis(userId);
+    const corrupted = await prisma.careerAnalysis.findUniqueOrThrow({
+      where: { id: analysis.id },
+    });
+    const snapshot = corrupted.roleSnapshot as {
+      skills: { slug: string }[];
+    };
+    await prisma.careerAnalysis.update({
+      where: { id: analysis.id },
+      data: {
+        roleSnapshot: {
+          ...snapshot,
+          // Strip every rationale so whichever skill gets scheduled first
+          // is guaranteed to hit the missing case, regardless of priority.
+          skills: snapshot.skills.map((skill) => ({
+            ...skill,
+            rationale: undefined,
+          })),
+        },
+      },
+    });
+
+    const agent = fakeRoadmapAgent();
+    await expect(
+      buildRoadmapService(agent).generateRoadmap(userId, analysis.id),
+    ).rejects.toMatchObject({ statusCode: 500 });
+
+    expect(agent.lastInput).toBeUndefined();
   });
 });
 

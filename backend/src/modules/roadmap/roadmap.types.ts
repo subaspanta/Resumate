@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { GapStatus } from "../../generated/client/index.js";
 
 // --- Roadmap agent (AI call #3) ---------------------------------------------
 //
@@ -33,7 +34,9 @@ export type RoadmapAgentOutput = z.infer<typeof roadmapAgentOutputSchema>;
 export type RoadmapGapBrief = {
   skillSlug: string;
   skillName: string;
-  status: string;
+  // The application's own judgement, carried as the enum rather than a bare
+  // string so it cannot drift from what readiness.ts derived.
+  status: GapStatus;
   // Hand-authored seed text explaining why the role needs this skill.
   rationale: string;
 };
@@ -59,3 +62,13 @@ export const updateRoadmapTaskSchema = z.object({
 });
 
 export type UpdateRoadmapTaskInput = z.infer<typeof updateRoadmapTaskSchema>;
+
+// Route params. Without these a malformed id reaches Prisma's uuid cast and
+// surfaces as a generic 500 instead of a 400.
+export const roadmapIdParamSchema = z.object({
+  roadmapId: z.string().uuid(),
+});
+
+export const roadmapTaskIdParamSchema = z.object({
+  taskId: z.string().uuid(),
+});

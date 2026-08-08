@@ -235,6 +235,8 @@ exports.Prisma.RoadmapTaskScalarFieldEnum = {
   orderInWeek: 'orderInWeek',
   title: 'title',
   description: 'description',
+  projectTask: 'projectTask',
+  expectedEvidence: 'expectedEvidence',
   resources: 'resources',
   completed: 'completed',
   completedAt: 'completedAt',

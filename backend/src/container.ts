@@ -67,7 +67,7 @@ export const resumeController = new ResumeController(resumeService);
 export const roleController = new RoleController(roleService);
 const roadmapService = new RoadmapService(
   roadmapRepository,
-  careerAnalysisRepository,
+  careerAnalysisService,
   roadmapAgent,
 );
 

@@ -63,11 +63,34 @@ const IMPORTANCE_RANK: Record<SkillImportance, number> = {
 
 // Strongest evidence wins when a skill has several supporting quotes — one
 // production deployment outweighs three passing mentions.
-const EVIDENCE_RANK: Record<EvidenceStrength, number> = {
+//
+// Exported because gap-reasoning.ts must pick the same "strongest" item this
+// file scores from. Two copies of this ordering could disagree, and the user
+// would read an explanation citing one quote while the score was derived from
+// another.
+export const EVIDENCE_RANK: Record<EvidenceStrength, number> = {
   experience_backed: 3,
   project_backed: 2,
   mentioned: 1,
 };
+
+// The single definition of "which of these quotes counts most".
+//
+// Generic over the item type: readiness only needs `strength`, while
+// gap-reasoning also reads `sourceLabel` off the winner. Returning the item
+// itself rather than its strength is what lets both callers share one
+// implementation. Returns undefined for empty input so callers decide what
+// no evidence means — `missing` here, an omitted sentence there.
+export function strongestEvidence<T extends { strength: EvidenceStrength }>(
+  evidence: T[],
+): T | undefined {
+  if (evidence.length === 0) return undefined;
+  return evidence.reduce((best, current) =>
+    EVIDENCE_RANK[current.strength] > EVIDENCE_RANK[best.strength]
+      ? current
+      : best,
+  );
+}
 
 export type ScoredSkill = {
   skillId: string;
@@ -103,14 +126,8 @@ export type ScorableSkill = {
 export function deriveGapStatus(
   groundedEvidence: { strength: EvidenceStrength }[],
 ): GapStatus {
-  if (groundedEvidence.length === 0) return "missing";
-
-  const best = groundedEvidence.reduce((strongest, current) =>
-    EVIDENCE_RANK[current.strength] > EVIDENCE_RANK[strongest.strength]
-      ? current
-      : strongest,
-  );
-
+  const best = strongestEvidence(groundedEvidence);
+  if (!best) return "missing";
   return STATUS_BY_EVIDENCE[best.strength];
 }
 
