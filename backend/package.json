@@ -37,7 +37,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "tokens:cleanup": "tsx src/scripts/cleanup-refresh-tokens.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "db:seed": "tsx prisma/seed.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
