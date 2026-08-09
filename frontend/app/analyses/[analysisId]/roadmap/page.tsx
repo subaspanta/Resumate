@@ -245,6 +245,9 @@ export default function RoadmapPage({
                     </p>
                     {task.resources && task.resources.length > 0 && (
                       <div className="roadmap-task-resources">
+                        <p className="roadmap-task-resources-heading">
+                          Free Resources
+                        </p>
                         {task.resources.map((resource, i) => (
                           <p key={i} className="roadmap-task-resource">
                             {resource}

@@ -186,6 +186,12 @@
     gap: 2px;
   }
 
+  .roadmap-task-resources-heading {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 2px;
+  }
+
   .roadmap-task-resource {
     display: flex;
     align-items: baseline;
