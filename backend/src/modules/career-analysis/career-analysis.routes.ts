@@ -18,8 +18,6 @@ import {
 
 const router = Router();
 
-// aiRateLimit must follow requireAuth — it keys on req.user.sub to cap spend
-// per user rather than per IP.
 router.post(
   "/",
   requireAuth,
