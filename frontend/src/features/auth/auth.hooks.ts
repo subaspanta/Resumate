@@ -72,6 +72,20 @@ export function useAuth() {
     },
   });
 
+  // Unlike logout, a failed delete must NOT clear the session — the account
+  // (and its data) still exists, so leaving the user signed in behind a
+  // "delete failed" toast is correct; only a real 200 means the account and
+  // every cascaded row are actually gone.
+  const deleteAccountMutation = useMutation({
+    mutationFn: async () => {
+      await authApi.deleteAccount();
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(queryKeys.auth.me(), null);
+      queryClient.clear();
+    },
+  });
+
   return {
     user,
     isAuthenticated,
@@ -83,6 +97,8 @@ export function useAuth() {
     isRegistering: registerMutation.isPending,
     logout: logoutMutation.mutateAsync,
     isLoggingOut: logoutMutation.isPending,
+    deleteAccount: deleteAccountMutation.mutateAsync,
+    isDeletingAccount: deleteAccountMutation.isPending,
     refetchMe: refetch,
   };
 }

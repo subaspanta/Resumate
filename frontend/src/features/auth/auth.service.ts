@@ -16,4 +16,6 @@ export const authApi = {
   me: () => axiosClient.get<ApiResponse<SafeUser>>("/auth/me"),
 
   logout: () => axiosClient.post<ApiResponse<null>>("/auth/logout"),
+
+  deleteAccount: () => axiosClient.delete<ApiResponse<null>>("/auth/me"),
 };

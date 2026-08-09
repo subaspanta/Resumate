@@ -6,11 +6,24 @@ import {
   LayoutDashboard,
   LogOut,
   Settings,
+  UserX,
   type LucideIcon,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/features/auth/auth.hooks";
 import { toast } from "sonner";
 import type { DashboardViewLayout } from "@/src/components/dashboard/dashboardViewConfig";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type SidebarLayout = Pick<
   DashboardViewLayout,
@@ -125,7 +138,9 @@ export function Sidebar({
   // Read the signed-in user here rather than taking it as a prop: this
   // component already depends on useAuth for logout, and the dashboard used to
   // drill the same name down three levels to reach it.
-  const { user, logout, isLoggingOut } = useAuth();
+  const { user, logout, isLoggingOut, deleteAccount, isDeletingAccount } =
+    useAuth();
+  const router = useRouter();
   const userName = user?.name;
   const userEmail = user?.email;
   const showCollapse = layout.sidebarCollapsible;
@@ -143,6 +158,17 @@ export function Sidebar({
 
   const handleUnavailable = (feature: string) =>
     toast.info(`${feature} is not available yet.`);
+
+  const handleDeleteAccount = async () => {
+    try {
+      await deleteAccount();
+      toast.success("Your account has been deleted.");
+      router.push("/welcome");
+    } catch (error) {
+      toast.error("Couldn't delete your account. Please try again.");
+      console.error(error);
+    }
+  };
 
   return (
     <aside
@@ -206,6 +232,49 @@ export function Sidebar({
           isCollapsed={collapsed}
           onClick={() => handleUnavailable("Settings")}
         />
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <button
+              type="button"
+              className={[
+                "dashboard-nav-item",
+                collapsed && "dashboard-nav-item--collapsed",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              disabled={isDeletingAccount}
+              aria-label="Delete account"
+            >
+              <UserX className="size-6 shrink-0" aria-hidden="true" />
+              <span
+                className={`dashboard-nav-label ${
+                  collapsed ? "dashboard-nav-label--collapsed" : ""
+                }`}
+              >
+                Delete account
+              </span>
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete your account?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Your account, every uploaded resume, and every career
+                analysis and roadmap you&apos;ve created will be permanently
+                removed. This can&apos;t be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="dashboard-resume-delete-confirm"
+                onClick={handleDeleteAccount}
+              >
+                Delete account
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </nav>
 
       <div className="dashboard-sidebar-footer">
