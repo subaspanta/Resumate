@@ -400,6 +400,29 @@ export class CareerAnalysisService {
     }
   }
 
+  // Resolves an analysis id that may be a reassessment revision to its root's
+  // id. A Roadmap row is only ever attached to the root (Roadmap has one
+  // careerAnalysisId, revisions never get their own), so any module reading
+  // a roadmap "for this analysis" must look it up by root id regardless of
+  // which revision the caller is actually viewing — otherwise a roadmap that
+  // genuinely exists reads back as null the moment a reassessment exists.
+  //
+  // Public for the same reason assertAnalysisOwner is: RoadmapService needs
+  // the same resolution and must not reach past this service into its
+  // repository to get it.
+  async resolveRootAnalysisId(analysisId: string): Promise<string> {
+    const root =
+      await this.careerAnalysisRepository.findRootForReassessment(analysisId);
+    if (!root) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Analysis not found",
+      );
+    }
+    return root.id;
+  }
+
   // Fails this user's abandoned `analyzing` rows before a read returns them.
   //
   // V1 is synchronous: nothing but the originating request can finish an

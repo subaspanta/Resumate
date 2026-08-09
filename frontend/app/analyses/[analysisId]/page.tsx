@@ -204,7 +204,10 @@ export default function AnalysisPage({
       ? diffGapStatuses(analysis.gaps, latestRevisionDetail.gaps)
       : [];
   const showRevisionPanel =
-    latestRevision && latestRevisionDetail && afterScore !== null;
+    latestRevision &&
+    latestRevision.id !== analysis.id &&
+    latestRevisionDetail &&
+    afterScore !== null;
 
   return (
     <AppShell

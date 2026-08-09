@@ -201,8 +201,15 @@ export class RoadmapService {
     analysisId: string,
   ): Promise<RoadmapWithTasks | null> {
     await this.careerAnalysisService.assertAnalysisOwner(userId, analysisId);
+    // A roadmap is only ever attached to the ROOT analysis — a reassessment
+    // revision never gets its own row. Resolving here means viewing a
+    // revision's page still finds the same roadmap the root sees, instead of
+    // reading back null for a roadmap that genuinely exists.
+    const rootId = await this.careerAnalysisService.resolveRootAnalysisId(
+      analysisId,
+    );
     // An analysis without a roadmap yet is a normal state, not an error.
-    return this.roadmapRepository.findByAnalysisId(analysisId);
+    return this.roadmapRepository.findByAnalysisId(rootId);
   }
 
   async getRoadmapById(

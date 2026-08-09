@@ -583,3 +583,41 @@ describe("RoadmapService.setTaskCompletion", () => {
     expect(events).toBe(1);
   });
 });
+
+// Regression: Roadmap.careerAnalysisId is only ever set on the root analysis
+// — a reassessment revision never gets its own roadmap row. getRoadmapForAnalysis
+// used to look up by whatever id it was given, so viewing a revision's page
+// read back null for a roadmap that genuinely existed on its root.
+describe("RoadmapService.getRoadmapForAnalysis — reassessment revisions", () => {
+  it("resolves a revision id to its root's roadmap", async () => {
+    const userId = (await createUser("RoadmapRevisionOwner")).id;
+    const analysis = await seedAnalysis(userId);
+    const analysisService = buildAnalysisService();
+    const roadmapService = new RoadmapService(
+      new RoadmapRepository(),
+      analysisService,
+      fakeRoadmapAgent(),
+    );
+
+    const roadmap = await roadmapService.generateRoadmap(userId, analysis.id);
+    await roadmapService.setTaskCompletion(
+      userId,
+      roadmap.tasks[0].id,
+      true,
+      "Built and shipped a Dockerfile with a working docker-compose setup",
+    );
+
+    const revision = await analysisService.reassessAnalysis(
+      userId,
+      analysis.id,
+    );
+
+    const viaRevision = await roadmapService.getRoadmapForAnalysis(
+      userId,
+      revision.id,
+    );
+
+    expect(viaRevision).not.toBeNull();
+    expect(viaRevision!.id).toBe(roadmap.id);
+  });
+});
