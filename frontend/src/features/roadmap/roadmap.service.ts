@@ -22,9 +22,13 @@ export const roadmapApi = {
   getById: (roadmapId: string) =>
     axiosClient.get<ApiResponse<Roadmap>>(`/roadmaps/${roadmapId}`),
 
-  setTaskCompletion: (taskId: string, completed: boolean) =>
-    axiosClient.patch<ApiResponse<RoadmapTaskRow>>(
-      `/roadmap-tasks/${taskId}`,
-      { completed },
-    ),
+  setTaskCompletion: (
+    taskId: string,
+    completed: boolean,
+    completionNote?: string,
+  ) =>
+    axiosClient.patch<ApiResponse<RoadmapTaskRow>>(`/roadmap-tasks/${taskId}`, {
+      completed,
+      ...(completionNote !== undefined ? { completionNote } : {}),
+    }),
 };

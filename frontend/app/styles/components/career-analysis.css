@@ -181,6 +181,7 @@
     max-width: var(--spacing-max-content);
     display: flex;
     justify-content: flex-end;
+    gap: var(--spacing-sm);
   }
 
   /* Readiness score ----------------------------------------------------------- */

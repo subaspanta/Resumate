@@ -5,8 +5,25 @@ import { useRouter } from "next/navigation";
 import { CheckCircle2, AlertCircle, XCircle, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useCareerAnalysisGuard } from "@/src/features/career-analysis/use-flow-guard";
-import { useGenerateRoadmap } from "@/src/features/roadmap/roadmap.hooks";
+import { useCareerAnalysis } from "@/src/features/career-analysis/career-analysis.hooks";
+import { useGenerateRoadmap, useRoadmap } from "@/src/features/roadmap/roadmap.hooks";
+import {
+  useRevisions,
+  useReassessAnalysis,
+} from "@/src/features/reassessment/reassessment.hooks";
+import { diffGapStatuses } from "@/src/features/reassessment/reassessment.utils";
 import { isApiError } from "@/src/api/api-error";
 import { AnalyzingOverlay } from "@/src/components/career-analysis/AnalyzingOverlay";
 import { FlowRedirect } from "@/src/components/FlowRedirect";
@@ -52,6 +69,23 @@ export default function AnalysisPage({
   const { analysis, isLoading, isError, isRedirecting, refetch } =
     useCareerAnalysisGuard(analysisId);
   const generateRoadmap = useGenerateRoadmap(analysisId);
+  const { roadmap } = useRoadmap(analysisId);
+  const { revisions } = useRevisions(analysisId);
+  const reassess = useReassessAnalysis(analysisId);
+
+  // Only fetched once a revision exists, so a first-pass analysis (the
+  // common case) never pays for a query it will not use.
+  const latestRevision = revisions[revisions.length - 1];
+  const { analysis: latestRevisionDetail } = useCareerAnalysis(
+    latestRevision?.id ?? "",
+  );
+
+  // Loose gate: the backend owns the strict "since last revision, with a
+  // note" rule and returns a specific 422 the mutation's onError surfaces —
+  // this only decides whether the button is worth showing at all.
+  const hasCompletedTask =
+    roadmap?.tasks.some((task) => task.completed) ?? false;
+  const canReassess = analysis?.status === "complete" && hasCompletedTask;
 
   const handleNavigateStep = useCallback(
     (step: string) => {
@@ -76,6 +110,12 @@ export default function AnalysisPage({
           router.push(`/analyses/${analysisId}/roadmap`);
         }
       },
+    });
+  };
+
+  const handleReassess = () => {
+    reassess.mutate(undefined, {
+      onSuccess: (data) => router.push(`/analyses/${data.id}`),
     });
   };
 
@@ -157,6 +197,15 @@ export default function AnalysisPage({
   const score = analysis.readinessScore ?? 0;
   const band = scoreBand(score);
 
+  const beforeScore = analysis.readinessScore ?? 0;
+  const afterScore = latestRevisionDetail?.readinessScore ?? null;
+  const gapMovements =
+    latestRevisionDetail && analysis.id !== latestRevisionDetail.id
+      ? diffGapStatuses(analysis.gaps, latestRevisionDetail.gaps)
+      : [];
+  const showRevisionPanel =
+    latestRevision && latestRevisionDetail && afterScore !== null;
+
   return (
     <AppShell
       step="analysis"
@@ -184,6 +233,43 @@ export default function AnalysisPage({
           />
         </div>
       </div>
+
+      {showRevisionPanel && (
+        <div className="reassessment-panel">
+          <span className="reassessment-panel-label">
+            After your latest reassessment
+          </span>
+          <div className="reassessment-score-change">
+            <span className="reassessment-score-before">{beforeScore}%</span>
+            <span className="reassessment-score-arrow" aria-hidden="true">
+              →
+            </span>
+            <span className="reassessment-score-after">{afterScore}%</span>
+          </div>
+          {gapMovements.length > 0 && (
+            <div className="reassessment-gap-movements">
+              {gapMovements.map((movement) => (
+                <div
+                  key={movement.skillSlug}
+                  className={`reassessment-gap-movement reassessment-gap-movement--${movement.direction}`}
+                >
+                  <span className="reassessment-gap-movement-skill">
+                    {movement.skillName}:
+                  </span>
+                  <span>{GAP_STATUS_LABEL[movement.before]}</span>
+                  <span aria-hidden="true">→</span>
+                  <span className="reassessment-gap-movement-after">
+                    {GAP_STATUS_LABEL[movement.after]}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+          <Button variant="outline" onClick={() => router.push(`/analyses/${latestRevision.id}`)}>
+            View latest assessment
+          </Button>
+        </div>
+      )}
 
       <div className="flex flex-col gap-4">
         <h2 className="section-heading">
@@ -254,8 +340,47 @@ export default function AnalysisPage({
         />
       )}
 
+      {reassess.isPending && (
+        <AnalyzingOverlay
+          title="Reassessing your progress"
+          phases={[
+            "Reading what you've completed",
+            "Re-checking your evidence",
+            "Recomputing your readiness",
+          ]}
+        />
+      )}
+
       <div className="analysis-action-bar">
         <div className="analysis-action-bar-inner">
+          {canReassess && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" disabled={reassess.isPending}>
+                  Reassess
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reassess your readiness?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This re-reads your resume plus the notes you added on
+                    completed roadmap tasks, and creates a new assessment.
+                    Your current readiness score won&apos;t change.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="alert-dialog-btn--reassess"
+                    onClick={handleReassess}
+                  >
+                    Reassess
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
           <Button
             disabled={generateRoadmap.isPending}
             onClick={handleGenerateRoadmap}

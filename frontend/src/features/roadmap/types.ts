@@ -17,6 +17,10 @@ export interface RoadmapTask {
   resources: string[] | null;
   completed: boolean;
   completedAt: string | null;
+  // What the user wrote about completing this task — the only groundable
+  // evidence a reassessment can find. Optional on the toggle request; a
+  // plain checkbox click sends none and leaves the stored note untouched.
+  completionNote: string | null;
   skillGap: { id: string; status: string; skill: SkillRef } | null;
 }
 

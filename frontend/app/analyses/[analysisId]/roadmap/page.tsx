@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useCallback, useMemo } from "react";
+import { use, useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,47 @@ import { AppShell } from "@/src/components/layout/AppShell";
 import type { RoadmapTask } from "@/src/features/roadmap/types";
 
 const CRUMBS = [{ label: "Dashboard", href: "/" }, { label: "Roadmap" }];
+
+// Single field, no cross-field validation — plain useState per the CLAUDE.md
+// resolver rule, same reasoning as JobInputForm. Own component so typing a
+// draft note in one task never re-renders the whole task list.
+function TaskCompletionNote({
+  task,
+  onSave,
+  saving,
+}: {
+  task: RoadmapTask;
+  onSave: (note: string) => void;
+  saving: boolean;
+}) {
+  const [note, setNote] = useState(task.completionNote ?? "");
+
+  if (!task.completed) return null;
+
+  return (
+    <div className="roadmap-task-note">
+      <label className="roadmap-task-note-label" htmlFor={`note-${task.id}`}>
+        What did you build? (used for reassessment)
+      </label>
+      <textarea
+        id={`note-${task.id}`}
+        className="roadmap-task-note-input"
+        value={note}
+        maxLength={1000}
+        onChange={(e) => setNote(e.target.value)}
+        placeholder="Describe what you actually did, in your own words"
+      />
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={saving || note.trim() === (task.completionNote ?? "")}
+        onClick={() => onSave(note)}
+      >
+        Save note
+      </Button>
+    </div>
+  );
+}
 
 export default function RoadmapPage({
   params,
@@ -255,6 +296,17 @@ export default function RoadmapPage({
                         ))}
                       </div>
                     )}
+                    <TaskCompletionNote
+                      task={task}
+                      saving={toggleTask.isPending}
+                      onSave={(note) =>
+                        toggleTask.mutate({
+                          taskId: task.id,
+                          completed: true,
+                          completionNote: note,
+                        })
+                      }
+                    />
                   </div>
                 </div>
               ))}

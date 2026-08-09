@@ -26,6 +26,8 @@ export const queryKeys = {
     list: (resumeId?: string) =>
       ["careerAnalyses", "list", resumeId ?? null] as const,
     detail: (id: string) => ["careerAnalyses", id] as const,
+    revisions: (analysisId: string) =>
+      ["careerAnalyses", analysisId, "revisions"] as const,
   },
   roadmap: {
     byAnalysis: (analysisId: string) =>

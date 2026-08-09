@@ -80,8 +80,9 @@ interface ToggleTaskContext {
 }
 
 // Optimistic like useDeleteResume: cancel -> snapshot -> patch -> rollback on
-// error -> invalidate on settle. Sends only { completed }; completedAt is
-// server-derived and read back on refetch, never written client-side.
+// error -> invalidate on settle. completedAt is server-derived and read back
+// on refetch, never written client-side. completionNote is optional — a
+// plain checkbox click omits it and leaves the stored note untouched.
 export function useToggleRoadmapTask(analysisId: string) {
   const queryClient = useQueryClient();
   const key = queryKeys.roadmap.byAnalysis(analysisId);
@@ -89,13 +90,13 @@ export function useToggleRoadmapTask(analysisId: string) {
   return useMutation<
     void,
     unknown,
-    { taskId: string; completed: boolean },
+    { taskId: string; completed: boolean; completionNote?: string },
     ToggleTaskContext
   >({
-    mutationFn: async ({ taskId, completed }) => {
-      await roadmapApi.setTaskCompletion(taskId, completed);
+    mutationFn: async ({ taskId, completed, completionNote }) => {
+      await roadmapApi.setTaskCompletion(taskId, completed, completionNote);
     },
-    onMutate: async ({ taskId, completed }) => {
+    onMutate: async ({ taskId, completed, completionNote }) => {
       await queryClient.cancelQueries({ queryKey: key });
       const previous = queryClient.getQueryData<Roadmap | null>(key);
       if (previous) {
@@ -107,6 +108,7 @@ export function useToggleRoadmapTask(analysisId: string) {
                   ...task,
                   completed,
                   completedAt: completed ? new Date().toISOString() : null,
+                  ...(completionNote !== undefined ? { completionNote } : {}),
                 }
               : task,
           ),
