@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "motion/react";
 import { UseFormRegisterReturn } from "react-hook-form";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +17,7 @@ interface AuthFormFieldProps {
   showPasswordToggle?: boolean;
   footer?: React.ReactNode;
   variant?: "login" | "register";
+  index?: number;
 }
 
 export function AuthFormField({
@@ -30,17 +32,25 @@ export function AuthFormField({
   showPasswordToggle,
   footer,
   variant = "login",
+  index = 0,
 }: AuthFormFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
   const inputType =
     showPasswordToggle && showPassword ? "text" : type || "text";
 
   return (
-    <div
+    <motion.div
       className={cn(
         "auth-field",
         variant === "login" ? "auth-field--login" : "auth-field--register"
       )}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.4,
+        delay: index * 0.08,
+        ease: [0.16, 1, 0.3, 1],
+      }}
     >
       <div className="flex justify-between items-center">
         <label htmlFor={id} className="auth-label">
@@ -85,6 +95,6 @@ export function AuthFormField({
       )}
 
       {footer}
-    </div>
+    </motion.div>
   );
 }

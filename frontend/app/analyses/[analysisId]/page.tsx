@@ -2,10 +2,8 @@
 
 import { use, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { CheckCircle2, AlertCircle, XCircle, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCareerAnalysisGuard } from "@/src/features/career-analysis/use-flow-guard";
 import { useGenerateRoadmap } from "@/src/features/roadmap/roadmap.hooks";
@@ -13,7 +11,11 @@ import { isApiError } from "@/src/api/api-error";
 import { AnalyzingOverlay } from "@/src/components/career-analysis/AnalyzingOverlay";
 import { FlowRedirect } from "@/src/components/FlowRedirect";
 import { AppShell } from "@/src/components/layout/AppShell";
-import type { GapStatus } from "@/src/features/career-analysis/types";
+import { scoreBand } from "@/src/features/career-analysis/career-analysis.utils";
+import type {
+  EvidenceStrength,
+  GapStatus,
+} from "@/src/features/career-analysis/types";
 
 const CRUMBS = [{ label: "Dashboard", href: "/" }, { label: "Analysis" }];
 
@@ -24,16 +26,19 @@ const GAP_STATUS_LABEL: Record<GapStatus, string> = {
   missing: "Missing",
 };
 
-// Ordered by severity so the badge color carries the same hierarchy the
-// page is actually communicating, not just a strong/not-strong binary.
-const GAP_STATUS_BADGE_VARIANT: Record<
-  GapStatus,
-  "default" | "secondary" | "outline" | "destructive"
-> = {
-  strong: "default",
-  developing: "secondary",
-  weak_evidence: "outline",
-  missing: "destructive",
+// Ordered by severity so the icon carries the same hierarchy the page is
+// actually communicating, not just a strong/not-strong binary.
+const GAP_STATUS_ICON: Record<GapStatus, typeof CheckCircle2> = {
+  strong: CheckCircle2,
+  developing: AlertCircle,
+  weak_evidence: AlertCircle,
+  missing: XCircle,
+};
+
+const EVIDENCE_STRENGTH_LABEL: Record<EvidenceStrength, string> = {
+  experience_backed: "From work experience",
+  project_backed: "From a project",
+  mentioned: "Mentioned",
 };
 
 export default function AnalysisPage({
@@ -143,6 +148,9 @@ export default function AnalysisPage({
     );
   }
 
+  const score = analysis.readinessScore ?? 0;
+  const band = scoreBand(score);
+
   return (
     <AppShell
       step="analysis"
@@ -150,61 +158,106 @@ export default function AnalysisPage({
       title={`Readiness for ${analysis.role.title}`}
       subtitle="Based on evidence found in your resume."
       onNavigateStep={handleNavigateStep}
+      hasActionBar
     >
-      <Card className="flex flex-col gap-3 p-5">
-        <div className="flex items-center justify-between">
-          <p className="font-medium text-foreground">Readiness score</p>
-          <p className="text-2xl font-semibold text-foreground">
-            {analysis.readinessScore ?? 0}%
-          </p>
+      <div className="readiness-card">
+        <div className="readiness-card-header">
+          <span className="readiness-card-label">Readiness score</span>
+          <span className={`readiness-card-score readiness-card-score--${band}`}>
+            {score}%
+          </span>
         </div>
-        <Progress value={analysis.readinessScore ?? 0} />
-      </Card>
+        <div className="readiness-track">
+          <div
+            className={`readiness-track-fill readiness-track-fill--${band}`}
+            style={
+              {
+                "--readiness-fill": Math.min(100, Math.max(0, score)) / 100,
+              } as React.CSSProperties
+            }
+          />
+        </div>
+      </div>
 
       <div className="flex flex-col gap-4">
-        <h2 className="text-sm font-medium text-muted-foreground">
+        <h2 className="section-heading">
           Skill gaps ({analysis.gaps.length})
         </h2>
-        {analysis.gaps.map((gap) => (
-          <Card key={gap.id} className="flex flex-col gap-2 p-5">
-            <div className="flex items-center justify-between gap-3">
-              <p className="font-medium text-foreground">{gap.skill.name}</p>
-              <Badge variant={GAP_STATUS_BADGE_VARIANT[gap.status]}>
-                {GAP_STATUS_LABEL[gap.status]}
-              </Badge>
-            </div>
-            <p className="text-sm text-muted-foreground">{gap.reasoning}</p>
-          </Card>
-        ))}
+        <div className="gap-list">
+          {analysis.gaps.map((gap) => {
+            const Icon = GAP_STATUS_ICON[gap.status];
+            return (
+              <div key={gap.id} className="gap-card">
+                <Icon
+                  className={`gap-card-icon gap-card-icon--${gap.status} size-5`}
+                  aria-hidden="true"
+                />
+                <div className="gap-card-body">
+                  <div className="gap-card-header">
+                    <span className="gap-card-title">{gap.skill.name}</span>
+                    <span className={`gap-card-status gap-card-status--${gap.status}`}>
+                      {GAP_STATUS_LABEL[gap.status]}
+                    </span>
+                  </div>
+                  <p className="gap-card-reasoning">{gap.reasoning}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {analysis.evidence.length > 0 && (
         <div className="flex flex-col gap-4">
-          <h2 className="text-sm font-medium text-muted-foreground">
-            Evidence found
-          </h2>
-          {analysis.evidence.map((item) => (
-            <Card key={item.id} className="flex flex-col gap-2 p-5">
-              <p className="font-medium text-foreground">{item.skill.name}</p>
-              <p className="text-sm italic text-muted-foreground">
-                &ldquo;{item.quote}&rdquo;
-              </p>
-              <p className="text-xs text-muted-foreground">{item.sourceLabel}</p>
-            </Card>
-          ))}
+          <h2 className="section-heading">Evidence found</h2>
+          <div className="evidence-list">
+            {analysis.evidence.map((item) => (
+              <div key={item.id} className="evidence-card">
+                <Quote
+                  className="evidence-card-icon size-5"
+                  aria-hidden="true"
+                />
+                <div className="evidence-card-body">
+                  <div className="evidence-card-header">
+                    <span className="evidence-card-title">
+                      {item.skill.name}
+                    </span>
+                    <span className="evidence-card-strength">
+                      {EVIDENCE_STRENGTH_LABEL[item.strength]}
+                    </span>
+                  </div>
+                  <p className="evidence-card-quote">
+                    &ldquo;{item.quote}&rdquo;
+                  </p>
+                  <p className="evidence-card-source">{item.sourceLabel}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      <div className="flex justify-end">
-        <Button
-          disabled={generateRoadmap.isPending}
-          onClick={handleGenerateRoadmap}
-        >
-          Generate roadmap
-        </Button>
-      </div>
+      {generateRoadmap.isPending && (
+        <AnalyzingOverlay
+          title="Building your roadmap"
+          phases={[
+            "Reviewing your skill gaps",
+            "Prioritizing what to tackle first",
+            "Writing your 4-week plan",
+          ]}
+        />
+      )}
 
-      {generateRoadmap.isPending && <AnalyzingOverlay />}
+      <div className="analysis-action-bar">
+        <div className="analysis-action-bar-inner">
+          <Button
+            disabled={generateRoadmap.isPending}
+            onClick={handleGenerateRoadmap}
+          >
+            Generate roadmap
+          </Button>
+        </div>
+      </div>
     </AppShell>
   );
 }

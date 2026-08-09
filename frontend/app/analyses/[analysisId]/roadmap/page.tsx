@@ -2,9 +2,8 @@
 
 import { use, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { CheckCircle2, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCareerAnalysisGuard } from "@/src/features/career-analysis/use-flow-guard";
 import {
@@ -52,6 +51,18 @@ export default function RoadmapPage({
       weekNumber: i + 1,
       tasks: byWeek.get(i + 1) ?? [],
     }));
+  }, [roadmap]);
+
+  const progress = useMemo(() => {
+    if (!roadmap || roadmap.tasks.length === 0) {
+      return { completed: 0, total: 0, fraction: 0 };
+    }
+    const completed = roadmap.tasks.filter((t) => t.completed).length;
+    return {
+      completed,
+      total: roadmap.tasks.length,
+      fraction: completed / roadmap.tasks.length,
+    };
   }, [roadmap]);
 
   if (isRedirecting) {
@@ -121,54 +132,111 @@ export default function RoadmapPage({
       subtitle={`${roadmap.weekCount}-week plan built from your skill gaps.`}
       onNavigateStep={handleNavigateStep}
     >
-      {weeks.map((week) => (
-        <div key={week.weekNumber} className="flex flex-col gap-4">
-          <h2 className="text-sm font-medium text-muted-foreground">
-            Week {week.weekNumber}
-          </h2>
-          {week.tasks.map((task) => (
-            <Card key={task.id} className="flex flex-col gap-3 p-5">
-              <div className="flex items-start gap-3">
-                <Checkbox
-                  checked={task.completed}
-                  onCheckedChange={(checked) =>
-                    toggleTask.mutate({
-                      taskId: task.id,
-                      completed: checked === true,
-                    })
-                  }
-                />
-                <div className="flex flex-col gap-1">
-                  <p
-                    className={`font-medium ${
-                      task.completed
-                        ? "text-muted-foreground line-through"
-                        : "text-foreground"
-                    }`}
-                  >
-                    {task.title}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {task.description}
-                  </p>
-                </div>
-              </div>
-              <div className="ml-7 flex flex-col gap-1 text-sm">
-                <p>
-                  <span className="font-medium text-foreground">Build: </span>
-                  <span className="text-muted-foreground">{task.projectTask}</span>
-                </p>
-                <p>
-                  <span className="font-medium text-foreground">Proves: </span>
-                  <span className="text-muted-foreground">
-                    {task.expectedEvidence}
-                  </span>
-                </p>
-              </div>
-            </Card>
-          ))}
+      <div className="roadmap-progress">
+        <div className="roadmap-progress-header">
+          <span className="roadmap-progress-label">Overall progress</span>
+          <span className="roadmap-progress-count">
+            {progress.completed} of {progress.total} tasks
+          </span>
         </div>
-      ))}
+        <div className="roadmap-progress-track">
+          <div
+            className="roadmap-progress-fill"
+            style={{ "--roadmap-fill": progress.fraction } as React.CSSProperties}
+          />
+        </div>
+      </div>
+
+      {weeks.map((week) => {
+        const weekDone = week.tasks.filter((t) => t.completed).length;
+        return (
+          <div key={week.weekNumber} className="roadmap-week">
+            <div className="roadmap-week-header">
+              <h2 className="roadmap-week-title">Week {week.weekNumber}</h2>
+              <span className="roadmap-week-count">
+                {weekDone}/{week.tasks.length} done
+              </span>
+            </div>
+            <div className="roadmap-task-list">
+              {week.tasks.map((task) => (
+                <div
+                  key={task.id}
+                  className={`roadmap-task ${
+                    task.completed ? "roadmap-task--completed" : ""
+                  }`}
+                >
+                  <button
+                    type="button"
+                    className="roadmap-task-toggle"
+                    onClick={() =>
+                      toggleTask.mutate({
+                        taskId: task.id,
+                        completed: !task.completed,
+                      })
+                    }
+                    aria-pressed={task.completed}
+                    aria-label={
+                      task.completed
+                        ? `Mark "${task.title}" incomplete`
+                        : `Mark "${task.title}" complete`
+                    }
+                  >
+                    {task.completed ? (
+                      <CheckCircle2
+                        className="roadmap-task-checkbox size-5 text-score-excellent"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <Circle
+                        className="roadmap-task-checkbox size-5 text-border-input"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </button>
+                  <div className="roadmap-task-body">
+                    <p
+                      className={`roadmap-task-title ${
+                        task.completed ? "roadmap-task-title--completed" : ""
+                      }`}
+                    >
+                      {task.title}
+                    </p>
+                    <p className="roadmap-task-description">
+                      {task.description}
+                    </p>
+                    {task.skillGap && (
+                      <span className="roadmap-task-skill">
+                        {task.skillGap.skill.name}
+                      </span>
+                    )}
+                    <p className="roadmap-task-detail">
+                      <span className="roadmap-task-detail-label">
+                        Build:{" "}
+                      </span>
+                      {task.projectTask}
+                    </p>
+                    <p className="roadmap-task-detail">
+                      <span className="roadmap-task-detail-label">
+                        Proves:{" "}
+                      </span>
+                      {task.expectedEvidence}
+                    </p>
+                    {task.resources && task.resources.length > 0 && (
+                      <div className="roadmap-task-resources">
+                        {task.resources.map((resource, i) => (
+                          <p key={i} className="roadmap-task-resource">
+                            {resource}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </AppShell>
   );
 }

@@ -127,6 +127,7 @@ export function Sidebar({
   // drill the same name down three levels to reach it.
   const { user, logout, isLoggingOut } = useAuth();
   const userName = user?.name;
+  const userEmail = user?.email;
   const showCollapse = layout.sidebarCollapsible;
   const collapsed = showCollapse && isCollapsed;
 
@@ -168,9 +169,9 @@ export function Sidebar({
             collapsed ? "dashboard-sidebar-brand-text--collapsed" : ""
           }`}
         >
-          <div className="dashboard-sidebar-brand-name">ResuMate</div>
+          <div className="dashboard-sidebar-brand-name">Resumate</div>
           {layout.sidebarShowTagline && (
-            <p className="dashboard-sidebar-tagline">AI Resume Workspace</p>
+            <p className="dashboard-sidebar-tagline">Career Gap Analysis</p>
           )}
         </div>
       </div>
@@ -186,13 +187,18 @@ export function Sidebar({
         />
         <NavItem
           icon={FileText}
-          label="Resume Workspace"
+          label="Analyses"
           isCollapsed={collapsed}
           isActive={activeNav === "workspace"}
           isFilled={activeNav === "workspace"}
           disabled={layout.sidebarNavDisabled}
           hint={layout.sidebarNavHint}
-          onClick={() => handleUnavailable("Resume Workspace")}
+          href={layout.sidebarNavDisabled ? undefined : "/analyses"}
+          onClick={
+            layout.sidebarNavDisabled
+              ? () => handleUnavailable("Analyses")
+              : undefined
+          }
         />
         <NavItem
           icon={Settings}
@@ -225,7 +231,9 @@ export function Sidebar({
             <span className="dashboard-sidebar-user-name">
               {userName || "Guest User"}
             </span>
-            <span className="dashboard-sidebar-user-tier">Pro Account</span>
+            {userEmail && (
+              <span className="dashboard-sidebar-user-email">{userEmail}</span>
+            )}
           </div>
           <button
             type="button"

@@ -124,6 +124,7 @@
   .dashboard-nav-label {
     font-family: var(--font-body-md);
     font-size: var(--text-body-md);
+    font-weight: 400;
     line-height: var(--text-body-md--line-height);
     white-space: nowrap;
     overflow: hidden;
@@ -152,34 +153,6 @@
     height: 0;
     opacity: 0;
     padding-block: 0;
-  }
-
-  .dashboard-sidebar-cta {
-    margin-top: auto;
-    padding-inline: var(--spacing-sm);
-    margin-bottom: var(--spacing-lg);
-  }
-
-  .dashboard-sidebar-cta-btn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm);
-    background-color: var(--color-primary);
-    color: var(--color-on-primary);
-    border: 1px solid var(--color-primary);
-    border-radius: var(--radius-DEFAULT);
-    font-family: var(--font-label-std);
-    font-size: var(--text-label-std);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 150ms ease-out;
-  }
-
-  .dashboard-sidebar-cta-btn:hover {
-    opacity: 0.9;
   }
 
   .dashboard-sidebar-footer {
@@ -232,7 +205,7 @@
   .dashboard-sidebar-user-card--collapsed {
     flex-direction: column;
     justify-content: center;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-md);
     padding-inline: 0;
   }
 
@@ -316,12 +289,11 @@
     white-space: nowrap;
   }
 
-  .dashboard-sidebar-user-tier {
-    font-family: var(--font-mono-label);
+  .dashboard-sidebar-user-email {
+    font-family: var(--font-body-md);
     font-size: var(--text-mono-label);
-    font-weight: 500;
+    font-weight: 400;
     color: var(--color-text-muted);
-    text-transform: uppercase;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

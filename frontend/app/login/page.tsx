@@ -14,7 +14,7 @@ export default function LoginPage() {
               Welcome back
             </h1>
             <p className="font-body-md text-body-md text-text-body">
-              Sign in to continue tailoring your resume.
+              Sign in to continue your career gap analysis.
             </p>
           </div>
           <LoginForm />

@@ -41,14 +41,14 @@ function headerFor(
   switch (state) {
     case "firstTime":
       return {
-        title: "Welcome to ResuMate.",
+        title: "Welcome to Resumate.",
         subtitle:
-          "Upload your resume to receive ATS analysis, AI suggestions, section-by-section feedback, and job-specific optimization.",
+          "Upload your resume to see which skills you can prove for a target role, where the gaps are, and a roadmap to close them.",
       };
     default:
       return {
         title: `${getTimeGreeting()}, ${getGreetingName(userName)}.`,
-        subtitle: "Upload a resume to start tailoring it to a job description.",
+        subtitle: "Upload a resume to start a new gap analysis.",
       };
   }
 }
@@ -117,7 +117,7 @@ export function DashboardContent({
 
       {dashboardState === "error" && (
         <div className="dashboard-main-inner flex items-center justify-center">
-          <div className="dashboard-side-panel items-center text-center max-w-sm">
+          <div className="dashboard-side-panel items-center text-center max-w-[24rem]">
             <CircleAlert
               className="size-8 text-danger mb-sm"
               aria-hidden="true"

@@ -28,7 +28,10 @@ export interface Crumb {
 }
 
 interface AppShellProps {
-  step: FlowStepKey;
+  /** Omit on surfaces outside the linear upload->role->analysis->roadmap
+   * journey (e.g. an analyses list) — the step rail only makes sense inside
+   * that flow. */
+  step?: FlowStepKey;
   view?: DashboardView;
   crumbs: Crumb[];
   title: ReactNode;
@@ -119,7 +122,9 @@ export function AppShell({
                   </span>
                 ))}
               </nav>
-              <FlowStepRail current={step} onNavigate={onNavigateStep} />
+              {step && (
+                <FlowStepRail current={step} onNavigate={onNavigateStep} />
+              )}
             </div>
 
             <div className="app-shell-titlebar">

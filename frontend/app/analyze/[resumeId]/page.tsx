@@ -1,18 +1,23 @@
 "use client";
 
-import { use, useCallback, useState } from "react";
+import { use, useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
+import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useResumeGuard } from "@/src/features/resume/use-flow-guard";
 import { useRoles } from "@/src/features/roles/roles.hooks";
 import { useCreateCareerAnalysisFlow } from "@/src/features/career-analysis/use-create-career-analysis-flow";
 import { ResumeContextCard } from "@/src/components/career-analysis/ResumeContextCard";
+import { RoleOptionCard } from "@/src/components/career-analysis/RoleOptionCard";
 import { AnalyzingOverlay } from "@/src/components/career-analysis/AnalyzingOverlay";
 import { FlowRedirect } from "@/src/components/FlowRedirect";
 import { AppShell } from "@/src/components/layout/AppShell";
+
+// Search only earns its keep once scrolling a plain list gets tedious; below
+// this count it would just be one more thing to look at before three cards.
+const SEARCH_THRESHOLD = 2;
 
 const CRUMBS = [{ label: "Dashboard", href: "/" }, { label: "Target Role" }];
 
@@ -24,6 +29,7 @@ export default function AnalyzeRolePage({
   const { resumeId } = use(params);
   const router = useRouter();
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
 
   const {
     resume,
@@ -32,7 +38,18 @@ export default function AnalyzeRolePage({
     isRedirecting,
   } = useResumeGuard(resumeId);
   const { roles, isLoading: rolesLoading } = useRoles();
-  const { submitRole, isCreatingAnalysis } = useCreateCareerAnalysisFlow(resumeId);
+  const { submitRole, isCreatingAnalysis } =
+    useCreateCareerAnalysisFlow(resumeId);
+
+  const filteredRoles = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return roles;
+    return roles.filter(
+      (role) =>
+        role.title.toLowerCase().includes(q) ||
+        role.description.toLowerCase().includes(q),
+    );
+  }, [roles, query]);
 
   const handleNavigateStep = useCallback(
     (step: string) => {
@@ -78,44 +95,50 @@ export default function AnalyzeRolePage({
     >
       <ResumeContextCard resume={resume} isLoading={resumeLoading} />
 
-      <div className="flex flex-col gap-4">
-        {rolesLoading &&
-          Array.from({ length: 3 }).map((_, i) => (
+      {!rolesLoading && roles.length > SEARCH_THRESHOLD && (
+        <div className="role-search">
+          <Search className="role-search-icon size-4" aria-hidden="true" />
+          <input
+            type="text"
+            className="role-search-input"
+            placeholder="Search roles"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search target roles"
+          />
+        </div>
+      )}
+
+      {rolesLoading && (
+        <div className="role-list">
+          {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} className="h-24 w-full rounded-xl" />
           ))}
+        </div>
+      )}
 
-        {!rolesLoading &&
-          roles.map((role) => (
-            <Card
-              key={role.id}
-              role="button"
-              tabIndex={0}
-              onClick={() => setSelectedSlug(role.slug)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") setSelectedSlug(role.slug);
-              }}
-              className={`cursor-pointer p-5 transition-colors hover:border-primary/50 ${
-                selectedSlug === role.slug
-                  ? "border-primary ring-1 ring-primary"
-                  : ""
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="font-medium text-foreground">{role.title}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {role.description}
-                  </p>
-                </div>
-                {selectedSlug === role.slug && <Badge>Selected</Badge>}
-              </div>
-            </Card>
+      {!rolesLoading && filteredRoles.length === 0 && (
+        <p className="role-empty">No roles match &ldquo;{query}&rdquo;.</p>
+      )}
+
+      {!rolesLoading && filteredRoles.length > 0 && (
+        <RadioGroupPrimitive.Root
+          className="role-list"
+          value={selectedSlug ?? undefined}
+          onValueChange={setSelectedSlug}
+          aria-label="Target role"
+        >
+          {filteredRoles.map((role) => (
+            <RoleOptionCard key={role.id} role={role} />
           ))}
-      </div>
+        </RadioGroupPrimitive.Root>
+      )}
 
       <div className="flex justify-end">
         <Button
-          disabled={!selectedSlug || resumeLoading || !resume || isCreatingAnalysis}
+          disabled={
+            !selectedSlug || resumeLoading || !resume || isCreatingAnalysis
+          }
           onClick={() => selectedSlug && submitRole(selectedSlug)}
         >
           Analyze fit

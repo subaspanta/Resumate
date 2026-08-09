@@ -6,7 +6,7 @@ import { useAuth } from "@/src/features/auth/auth.hooks";
 import { AuthLoading } from "./auth-loading";
 import { AuthError } from "./auth-error";
 
-const GUEST_ROUTES = ["/login", "/register"];
+const GUEST_ROUTES = ["/login", "/register", "/welcome"];
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, isError, refetchMe } = useAuth();
@@ -21,7 +21,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (isAuthenticated && isGuestRoute) {
       router.replace("/");
     } else if (!isAuthenticated && !isGuestRoute) {
-      router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+      router.replace(
+        pathname === "/"
+          ? "/welcome"
+          : `/login?next=${encodeURIComponent(pathname)}`,
+      );
     }
   }, [isAuthenticated, isLoading, pathname, router]);
 

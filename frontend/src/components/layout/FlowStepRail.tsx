@@ -17,7 +17,7 @@ export function FlowStepRail({ current, onNavigate }: FlowStepRailProps) {
   const currentIndex = FLOW_STEP_INDEX[current];
 
   return (
-    <nav className="flow-rail" aria-label="Tailoring progress">
+    <nav className="flow-rail" aria-label="Analysis progress">
       <ol className="flow-rail-list">
         {FLOW_STEPS.map((step, index) => {
           const state =

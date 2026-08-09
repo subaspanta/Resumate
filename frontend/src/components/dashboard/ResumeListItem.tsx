@@ -61,7 +61,7 @@ export function ResumeListItem({
           }}
           type="button"
         >
-          Open Workspace
+          Analyze
           <ArrowRight className="size-[18px]" aria-hidden="true" />
         </button>
 
@@ -88,9 +88,9 @@ export function ResumeListItem({
               <AlertDialogHeader>
                 <AlertDialogTitle>Delete this resume?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  <strong>{resume.title}</strong> and every analysis,
-                  suggestion, and tailored version created from it will be
-                  permanently removed. This can&apos;t be undone.
+                  <strong>{resume.title}</strong> and every career analysis
+                  and roadmap created from it will be permanently removed.
+                  This can&apos;t be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

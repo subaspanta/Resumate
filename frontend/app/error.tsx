@@ -21,7 +21,7 @@ export default function Error({
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-canvas px-6">
-      <div className="flex flex-col items-center gap-5 text-center max-w-md">
+      <div className="flex flex-col items-center gap-5 text-center max-w-[28rem]">
         <div className="flex items-center justify-center w-14 h-14 rounded-full bg-danger/10">
           <CircleAlert className="size-7 text-danger" aria-hidden="true" />
         </div>
