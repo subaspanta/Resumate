@@ -118,9 +118,39 @@ ${input.role.description}
 
 Skills to assess:
 ${skillList}
-
+${this.buildCompletedWorkContext(input.completedWorkContext)}
 Resume:
-${renderSourceItemsForPrompt(buildSourceItems(input.resume))}`;
+${renderSourceItemsForPrompt(input.sourceItems ?? buildSourceItems(input.resume))}`;
+  }
+
+  // Reassessment only. Describes what each completion note is a response to,
+  // so the model can interpret a terse note like "did this, tests pass" — but
+  // explicitly forbids quoting the assignment text itself, since it was
+  // written by this system, not the candidate.
+  private buildCompletedWorkContext(
+    context: EvidenceAgentInput["completedWorkContext"],
+  ): string {
+    if (!context || context.length === 0) return "";
+
+    const items = context
+      .map(
+        (c) =>
+          `- Skill: ${c.skillName}\n  Assignment: ${c.projectTask} (should prove: ${c.expectedEvidence})`,
+      )
+      .join("\n");
+
+    return `
+The candidate has since completed roadmap work. Each item below names the
+skill it targets and the assignment they were given. What they wrote about
+completing it appears in the "Completed roadmap work" section below, as a
+numbered, quotable entry.
+
+${items}
+
+The "Assignment" and "should prove" text above was written by this system,
+not the candidate. NEVER quote it or treat it as evidence — quote only the
+candidate's own words from a numbered section.
+`;
   }
 
   private async callGemini(prompt: string): Promise<string> {

@@ -24,7 +24,28 @@ export type RoadmapWithTasks = Prisma.RoadmapGetPayload<{
   };
 }>;
 
-export class RoadmapRepository {
+// The read reassessment needs: completed tasks plus the AI-authored context
+// (projectTask/expectedEvidence) needed to interpret a note — never a source
+// of quotable text itself. See career-analysis.service.ts#reassessAnalysis.
+export type CompletedTaskRow = {
+  id: string;
+  completedAt: Date | null;
+  completionNote: string | null;
+  projectTask: string;
+  expectedEvidence: string;
+  skillGap: { skill: { slug: string; name: string } } | null;
+};
+
+// Narrow read-only port CareerAnalysisService depends on. Deliberately not
+// RoadmapService: RoadmapService already depends on CareerAnalysisService for
+// ownership, so depending back would make container.ts unconstructable.
+export interface CompletedWorkReader {
+  findCompletedTasksForAnalysis(
+    careerAnalysisId: string,
+  ): Promise<CompletedTaskRow[]>;
+}
+
+export class RoadmapRepository implements CompletedWorkReader {
   // Creates the roadmap and every task in one transaction. A roadmap with a
   // partial set of tasks would present the user with a plan missing weeks,
   // indistinguishable from one that was deliberately shorter.
@@ -139,13 +160,20 @@ export class RoadmapRepository {
     taskId: string,
     userId: string,
     completed: boolean,
+    completionNote?: string,
   ): Promise<RoadmapTask | null> {
     const result = await prisma.roadmapTask.updateMany({
       where: { id: taskId, roadmap: { careerAnalysis: { userId } } },
-      // completedAt is derived here, never accepted from the client — a
-      // user-supplied timestamp would let anyone forge their own progress
-      // history.
-      data: { completed, completedAt: completed ? new Date() : null },
+      data: {
+        // completedAt is derived here, never accepted from the client — a
+        // user-supplied timestamp would let anyone forge their own progress
+        // history.
+        completed,
+        completedAt: completed ? new Date() : null,
+        // Spread so an absent key leaves the stored note untouched — distinct
+        // from an explicit "" clearing it.
+        ...(completionNote !== undefined ? { completionNote } : {}),
+      },
     });
     if (result.count === 0) return null;
     // Read-back is deliberately unscoped, and that is safe rather than an
@@ -198,6 +226,25 @@ export class RoadmapRepository {
           orderBy: [{ weekNumber: "asc" }, { orderInWeek: "asc" }],
         },
       },
+    });
+  }
+
+  // Explicit nested select, not include: include on skillGap.careerAnalysis
+  // would drag both snapshot JSONB blobs across the wire to read a skill name.
+  async findCompletedTasksForAnalysis(
+    careerAnalysisId: string,
+  ): Promise<CompletedTaskRow[]> {
+    return prisma.roadmapTask.findMany({
+      where: { roadmap: { careerAnalysisId }, completed: true },
+      select: {
+        id: true,
+        completedAt: true,
+        completionNote: true,
+        projectTask: true,
+        expectedEvidence: true,
+        skillGap: { select: { skill: { select: { slug: true, name: true } } } },
+      },
+      orderBy: [{ weekNumber: "asc" }, { orderInWeek: "asc" }],
     });
   }
 }

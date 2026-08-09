@@ -56,9 +56,14 @@ export interface RoadmapAgent {
 // --- Request schemas --------------------------------------------------------
 
 export const updateRoadmapTaskSchema = z.object({
-  // The only field a client may send. completedAt is derived server-side —
-  // accepting it would let users forge their own progress history.
+  // completedAt is derived server-side — accepting it would let users forge
+  // their own progress history.
   completed: z.boolean(),
+  // Optional: a plain checkbox click sends no note. Absent means "leave
+  // whatever is stored alone" (distinct from an explicit "" that clears it).
+  // This is the only groundable evidence a reassessment can find — see
+  // resume-source-items.ts's buildReassessmentSourceItems.
+  completionNote: z.string().max(1000).optional(),
 });
 
 export type UpdateRoadmapTaskInput = z.infer<typeof updateRoadmapTaskSchema>;

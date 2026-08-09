@@ -70,4 +70,38 @@ export class CareerAnalysisController {
       next(error);
     }
   };
+
+  reassess = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const userId = req.user!.sub;
+      const data = await this.careerAnalysisService.reassessAnalysis(
+        userId,
+        req.params.id,
+      );
+      res.status(HTTP_STATUS.CREATED).json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getRevisions = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const userId = req.user!.sub;
+      const data = await this.careerAnalysisService.getRevisions(
+        userId,
+        req.params.id,
+      );
+      res.status(HTTP_STATUS.OK).json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

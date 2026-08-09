@@ -7,7 +7,10 @@ import {
   isQuoteGrounded,
   normalizeForGrounding,
 } from "../../src/utils/grounding-normalize.js";
-import { buildSourceItems } from "../../src/modules/career-analysis/resume-source-items.js";
+import {
+  buildReassessmentSourceItems,
+  buildSourceItems,
+} from "../../src/modules/career-analysis/resume-source-items.js";
 import { StructuredResume } from "../../src/modules/parsing/parsing.types.js";
 import {
   EvidenceAgentOutput,
@@ -425,6 +428,126 @@ describe("validateEvidenceGrounding", () => {
     );
 
     expect(result.rejections[0].detail).not.toContain("fabricated");
+  });
+});
+
+describe("validateEvidenceGrounding — reassessment (completed_work)", () => {
+  const NOTE = "Wrote a multi-stage Dockerfile and a docker-compose file for local dev";
+  const TASK_TEXT = "Containerize a small service using Docker and docker-compose";
+
+  function reassessmentSourceItems() {
+    return buildReassessmentSourceItems(resume(), [
+      { skillName: "docker", completionNote: NOTE },
+    ]);
+  }
+
+  it("grounds a quote from a completion note as project_backed", () => {
+    const sourceItems = reassessmentSourceItems();
+    const result = validateEvidenceGrounding(
+      output([
+        {
+          skillSlug: "docker",
+          found: true,
+          evidence: [
+            {
+              quote: NOTE,
+              strength: "project_backed",
+              sourceSection: "completed_work",
+              sourceIndex: 0,
+            },
+          ],
+        },
+      ]),
+      { roleSnapshot: roleSnapshot(["docker"]), resume: resume(), sourceItems },
+    );
+
+    expect(result.rejections).toEqual([]);
+    expect(result.assessments[0].found).toBe(true);
+  });
+
+  // The ceiling: completed_work is self-directed practice, not paid
+  // employment. A note must never be able to earn "strong" — full credit on
+  // a critical skill would be exactly the strength inflation the grounding
+  // table exists to stop.
+  it("drops a completion-note quote claimed as experience_backed", () => {
+    const sourceItems = reassessmentSourceItems();
+    const result = validateEvidenceGrounding(
+      output([
+        {
+          skillSlug: "docker",
+          found: true,
+          evidence: [
+            {
+              quote: NOTE,
+              strength: "experience_backed",
+              sourceSection: "completed_work",
+              sourceIndex: 0,
+            },
+          ],
+        },
+      ]),
+      { roleSnapshot: roleSnapshot(["docker"]), resume: resume(), sourceItems },
+    );
+
+    expect(result.rejections[0].reason).toBe("strength_section_mismatch");
+    expect(result.assessments[0].found).toBe(false);
+  });
+
+  // The anti-self-certification test: the AI-authored task description is
+  // never in sourceItems, so a quote lifted verbatim from it can never ground
+  // — even though the text itself looks plausible. If this test starts
+  // failing, someone has wired task text into the groundable sources, which
+  // would let the roadmap agent's own words count as the user's evidence.
+  it("drops a quote lifted verbatim from the AI-authored task text", () => {
+    const sourceItems = reassessmentSourceItems();
+    const result = validateEvidenceGrounding(
+      output([
+        {
+          skillSlug: "docker",
+          found: true,
+          evidence: [
+            {
+              quote: TASK_TEXT,
+              strength: "project_backed",
+              sourceSection: "completed_work",
+              sourceIndex: 0,
+            },
+          ],
+        },
+      ]),
+      { roleSnapshot: roleSnapshot(["docker"]), resume: resume(), sourceItems },
+    );
+
+    expect(result.rejections[0].reason).toBe("quote_not_verbatim");
+    expect(result.assessments[0].found).toBe(false);
+  });
+
+  it("still grounds resume quotes normally alongside a completed_work section", () => {
+    const sourceItems = reassessmentSourceItems();
+    const result = validateEvidenceGrounding(
+      output([
+        {
+          skillSlug: "testing",
+          found: true,
+          evidence: [
+            {
+              quote: SECOND_JOB_BULLET,
+              strength: "experience_backed",
+              sourceSection: "experience",
+              sourceIndex: 1,
+            },
+          ],
+        },
+      ]),
+      {
+        roleSnapshot: roleSnapshot(["testing"]),
+        resume: resume(),
+        sourceItems,
+      },
+    );
+
+    expect(result.rejections).toEqual([]);
+    expect(result.assessments[0].found).toBe(true);
   });
 });
 

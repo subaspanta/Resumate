@@ -65,6 +65,22 @@ export type CompletedCareerAnalysis = Omit<
   "resumeSnapshot" | "roleSnapshot"
 >;
 
+// A root analysis with just the fields reassessment needs to decide
+// eligibility and rebuild the agent input. Deliberately not
+// CareerAnalysisWithResults — that pulls in evidence/gaps this caller does
+// not need and the two snapshot JSONB blobs are the only large fields it
+// actually wants.
+export type RootAnalysisForReassessment = {
+  id: string;
+  userId: string;
+  resumeId: string;
+  roleId: string;
+  status: CareerAnalysis["status"];
+  completedAt: Date | null;
+  resumeSnapshot: Prisma.JsonValue;
+  roleSnapshot: Prisma.JsonValue;
+};
+
 export class CareerAnalysisRepository {
   async createPending(input: {
     userId: string;
@@ -83,6 +99,86 @@ export class CareerAnalysisRepository {
         roleSnapshot: input.roleSnapshot,
         events: { create: { type: "analysis_started" } },
       },
+    });
+  }
+
+  // Same shape as createPending, plus the revision lineage. Writes its own
+  // "reassessment_started" event rather than "analysis_started" so the audit
+  // trail can tell a reassessment apart from an original analysis.
+  async createPendingRevision(input: {
+    parentAnalysisId: string;
+    revision: number;
+    userId: string;
+    resumeId: string;
+    roleId: string;
+    resumeSnapshot: Prisma.InputJsonValue;
+    roleSnapshot: Prisma.InputJsonValue;
+  }): Promise<CareerAnalysis> {
+    return prisma.careerAnalysis.create({
+      data: {
+        userId: input.userId,
+        resumeId: input.resumeId,
+        roleId: input.roleId,
+        parentAnalysisId: input.parentAnalysisId,
+        revision: input.revision,
+        status: "analyzing",
+        resumeSnapshot: input.resumeSnapshot,
+        roleSnapshot: input.roleSnapshot,
+        events: { create: { type: "reassessment_started" } },
+      },
+    });
+  }
+
+  // The root analysis a reassessment is derived from, resolved by walking
+  // parentAnalysisId when the caller passed a revision id. Read-only; never
+  // used to authorize a write on its own (assertAnalysisOwner still runs
+  // first in the service).
+  async findRootForReassessment(
+    analysisId: string,
+  ): Promise<RootAnalysisForReassessment | null> {
+    const row = await prisma.careerAnalysis.findUnique({
+      where: { id: analysisId },
+      select: {
+        id: true,
+        userId: true,
+        resumeId: true,
+        roleId: true,
+        status: true,
+        completedAt: true,
+        resumeSnapshot: true,
+        roleSnapshot: true,
+        parentAnalysisId: true,
+      },
+    });
+    if (!row) return null;
+    if (row.parentAnalysisId === null) return row;
+    // A revision id was passed. Revisions form a flat list under one root —
+    // never a chain — so this is at most one more hop.
+    return prisma.careerAnalysis.findUnique({
+      where: { id: row.parentAnalysisId },
+      select: {
+        id: true,
+        userId: true,
+        resumeId: true,
+        roleId: true,
+        status: true,
+        completedAt: true,
+        resumeSnapshot: true,
+        roleSnapshot: true,
+      },
+    });
+  }
+
+  // Latest revision under a root, or null if it has never been reassessed.
+  // Drives the reassessment eligibility clock: "since the last revision, or
+  // since the original analysis if there isn't one yet."
+  async findLatestRevision(
+    parentAnalysisId: string,
+  ): Promise<{ id: string; revision: number; createdAt: Date } | null> {
+    return prisma.careerAnalysis.findFirst({
+      where: { parentAnalysisId },
+      select: { id: true, revision: true, createdAt: true },
+      orderBy: { revision: "desc" },
     });
   }
 
@@ -249,6 +345,12 @@ export class CareerAnalysisRepository {
 
   // User-scoped list. The where clause carries userId so a foreign analysis
   // can never appear, independent of any check the service also makes.
+  //
+  // parentAnalysisId: null excludes reassessment revisions — the dashboard
+  // shows one entry per analysis, and a revision is presented as part of its
+  // root (via GET /:id/revisions), not as a sibling list row. Every row
+  // written before reassessment existed has parentAnalysisId null already, so
+  // this is a no-op until the first reassessment is created.
   async findManyByUserId(
     userId: string,
     filter: { resumeId?: string } = {},
@@ -265,7 +367,11 @@ export class CareerAnalysisRepository {
     >[]
   > {
     return prisma.careerAnalysis.findMany({
-      where: { userId, ...(filter.resumeId ? { resumeId: filter.resumeId } : {}) },
+      where: {
+        userId,
+        parentAnalysisId: null,
+        ...(filter.resumeId ? { resumeId: filter.resumeId } : {}),
+      },
       select: {
         id: true,
         resumeId: true,
@@ -276,6 +382,29 @@ export class CareerAnalysisRepository {
         completedAt: true,
       },
       orderBy: { createdAt: "desc" },
+    });
+  }
+
+  // Revision summaries under one root, oldest first — for GET
+  // /career-analyses/:id/revisions. No snapshots, no evidence/gaps: the
+  // frontend only needs enough to render a before/after readiness list.
+  async findRevisionsByRootId(rootId: string): Promise<
+    Pick<
+      CareerAnalysis,
+      "id" | "revision" | "status" | "readinessScore" | "createdAt" | "completedAt"
+    >[]
+  > {
+    return prisma.careerAnalysis.findMany({
+      where: { parentAnalysisId: rootId },
+      select: {
+        id: true,
+        revision: true,
+        status: true,
+        readinessScore: true,
+        createdAt: true,
+        completedAt: true,
+      },
+      orderBy: { revision: "asc" },
     });
   }
 

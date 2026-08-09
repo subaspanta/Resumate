@@ -86,6 +86,7 @@ function buildAnalysisService(agent: EvidenceAgent = evidenceAgent) {
     new ResumeRepository(),
     new RoleService(new RoleRepository()),
     agent,
+    new RoadmapRepository(),
   );
 }
 
@@ -539,6 +540,31 @@ describe("RoadmapService.setTaskCompletion", () => {
         true,
       ),
     ).rejects.toMatchObject({ statusCode: 404 });
+  });
+
+  it("stores a completion note when provided", async () => {
+    const service = buildRoadmapService(fakeRoadmapAgent());
+    const updated = await service.setTaskCompletion(
+      ownerId,
+      taskId,
+      true,
+      "Built a Dockerfile and pushed it to staging",
+    );
+
+    expect(updated.completionNote).toBe(
+      "Built a Dockerfile and pushed it to staging",
+    );
+  });
+
+  it("leaves an existing note untouched when the toggle omits it", async () => {
+    const service = buildRoadmapService(fakeRoadmapAgent());
+    await service.setTaskCompletion(ownerId, taskId, true, "Original note");
+
+    // A plain checkbox click: completed changes, no completionNote key sent.
+    const updated = await service.setTaskCompletion(ownerId, taskId, false);
+
+    expect(updated.completionNote).toBe("Original note");
+    expect(updated.completed).toBe(false);
   });
 
   it("records an event only on a real transition", async () => {

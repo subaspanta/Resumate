@@ -41,6 +41,11 @@ export const SOURCE_SECTIONS = [
   "summary",
   "education",
   "certifications",
+  // Reassessment only. Empty on a first-pass analysis — buildSourceItems()
+  // always returns [] for it there, and renderSourceItemsForPrompt() omits
+  // empty sections entirely, so the model is never shown a section it could
+  // cite on an original analysis.
+  "completed_work",
 ] as const;
 
 export const sourceSectionSchema = z.enum(SOURCE_SECTIONS);
@@ -97,7 +102,28 @@ export type EvidenceAgentInput = {
   // the model can't inflate evidence for skills it knows the role weights
   // heavily.
   requiredSkills: { slug: string; name: string; aliases: string[] }[];
+  // Reassessment only. Pre-built by the caller so the indices shown in the
+  // prompt are the exact object the grounding validator resolves against —
+  // rebuilding independently inside the agent could drift from what the
+  // validator sees.
+  sourceItems?: ResumeSourceItemsShape;
+  // What each completion note was written in response to. Context ONLY — the
+  // agent is instructed never to quote these, since they are AI-authored
+  // roadmap text, not candidate evidence.
+  completedWorkContext?: {
+    skillName: string;
+    projectTask: string;
+    expectedEvidence: string;
+  }[];
 };
+
+// Local structural type mirroring ResumeSourceItems (defined in
+// resume-source-items.ts) to avoid a circular import — that module already
+// imports SOURCE_SECTIONS/SourceSection from here.
+type ResumeSourceItemsShape = Record<
+  SourceSection,
+  { displayText: string; normalizedText: string; label: string }[]
+>;
 
 export interface EvidenceAgent {
   assessEvidence(input: EvidenceAgentInput): Promise<EvidenceAgentOutput>;

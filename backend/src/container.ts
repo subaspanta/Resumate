@@ -54,6 +54,9 @@ const careerAnalysisService = new CareerAnalysisService(
   resumeRepository,
   roleService,
   evidenceAgent,
+  // Narrow read-only port onto roadmapRepository, used only by reassessment.
+  // roadmapRepository is constructed above, so no reordering is needed.
+  roadmapRepository,
 );
 const resumeService = new ResumeService(
   resumeRepository,

@@ -196,7 +196,9 @@ exports.Prisma.CareerAnalysisScalarFieldEnum = {
   readinessBreakdown: 'readinessBreakdown',
   failureReason: 'failureReason',
   createdAt: 'createdAt',
-  completedAt: 'completedAt'
+  completedAt: 'completedAt',
+  parentAnalysisId: 'parentAnalysisId',
+  revision: 'revision'
 };
 
 exports.Prisma.CandidateSkillEvidenceScalarFieldEnum = {
@@ -240,6 +242,7 @@ exports.Prisma.RoadmapTaskScalarFieldEnum = {
   resources: 'resources',
   completed: 'completed',
   completedAt: 'completedAt',
+  completionNote: 'completionNote',
   createdAt: 'createdAt'
 };
 
@@ -312,7 +315,9 @@ exports.AnalysisEventType = exports.$Enums.AnalysisEventType = {
   analysis_failed: 'analysis_failed',
   roadmap_generated: 'roadmap_generated',
   task_completed: 'task_completed',
-  task_uncompleted: 'task_uncompleted'
+  task_uncompleted: 'task_uncompleted',
+  reassessment_started: 'reassessment_started',
+  reassessment_completed: 'reassessment_completed'
 };
 
 exports.Prisma.ModelName = {

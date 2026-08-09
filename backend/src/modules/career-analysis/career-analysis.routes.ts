@@ -68,4 +68,25 @@ router.get(
   roadmapController.getForAnalysis,
 );
 
+// Explicit, user-triggered re-run of evidence assessment against completed
+// roadmap work — never automatic on a task-completion toggle, since every AI
+// call has a cost. Same middleware ordering as POST /:id/roadmap: validate
+// the id before spending the caller's AI budget.
+router.post(
+  "/:id/reassess",
+  requireAuth,
+  validateParams(analysisIdParamSchema),
+  aiRateLimit,
+  careerAnalysisController.reassess,
+);
+
+// Plain read, no aiRateLimit — lets the frontend render before/after
+// readiness without re-running the AI call.
+router.get(
+  "/:id/revisions",
+  requireAuth,
+  validateParams(analysisIdParamSchema),
+  careerAnalysisController.getRevisions,
+);
+
 export default router;

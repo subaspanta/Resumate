@@ -159,6 +159,8 @@ enum AnalysisEventType {
   roadmap_generated
   task_completed
   task_uncompleted
+  reassessment_started
+  reassessment_completed
 }
 
 model CareerAnalysis {
@@ -186,6 +188,13 @@ model CareerAnalysis {
   createdAt     DateTime  @default(now()) @db.Timestamp(6)
   completedAt   DateTime? @db.Timestamp(6)
 
+  // A reassessment is a child revision of its analysis, not a replacement.
+  // The parent's readinessScore/readinessBreakdown/snapshots are historical
+  // record and are never written again once completeAnalysis returns for it.
+  // revision 0 is the original analysis; revision 1+ are reassessments.
+  parentAnalysisId String? @db.Uuid
+  revision         Int     @default(0)
+
   user     User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
   resume   Resume                   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   role     Role                     @relation(fields: [roleId], references: [id], onDelete: Restrict)
@@ -194,9 +203,14 @@ model CareerAnalysis {
   roadmap  Roadmap?
   events   AnalysisEvent[]
 
+  parent    CareerAnalysis?  @relation("AnalysisRevisions", fields: [parentAnalysisId], references: [id], onDelete: Cascade)
+  revisions CareerAnalysis[] @relation("AnalysisRevisions")
+
+  @@unique([parentAnalysisId, revision])
   @@index([userId])
   @@index([resumeId])
   @@index([userId, createdAt(sort: Desc)])
+  @@index([parentAnalysisId])
   @@map("career_analyses")
 }
 
@@ -285,6 +299,11 @@ model RoadmapTask {
   // Derived from `completed` in the repository, never accepted from the
   // client — otherwise users could forge their own progress history.
   completedAt DateTime? @db.Timestamp(6)
+  // What the user says they actually built. This is the ONLY new groundable
+  // evidence a reassessment can find — the AI-authored projectTask and
+  // expectedEvidence above are prompt context, never quote sources, or the
+  // model would be quoting its own output back as proof of the user's skill.
+  completionNote String? @db.Text
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
 
   roadmap  Roadmap   @relation(fields: [roadmapId], references: [id], onDelete: Cascade)

@@ -89,6 +89,45 @@ export function buildSourceItems(resume: StructuredResume): ResumeSourceItems {
     certifications: (resume.certifications ?? []).map((cert) =>
       item(joinParts([cert.name, cert.issuer]), cert.name || "Certification"),
     ),
+
+    // Always empty on a first-pass analysis. Populated only by
+    // buildReassessmentSourceItems below.
+    completed_work: [],
+  };
+}
+
+export type CompletedWorkItem = {
+  // Provenance label, from the roadmap task's skill gap.
+  skillName: string;
+  // User-written; the only groundable text a reassessment introduces.
+  completionNote: string;
+};
+
+// Reassessment's source items: the frozen resume PLUS what the user wrote
+// about the work they completed.
+//
+// Why this composes buildSourceItems() instead of running its own traversal:
+// the resume sections must keep byte-identical indices between the original
+// analysis and every reassessment, or a quote grounded at experience[2] could
+// resolve to a different job. Layering one extra section on top of the exact
+// same call is the only way to guarantee that.
+//
+// Why the AI-authored projectTask/expectedEvidence never appear here: a quote
+// grounded against them would be the model quoting the model. The roadmap
+// agent writes "Deploy a containerized service"; the evidence agent would
+// then be able to quote that same sentence back as proof; readiness would
+// rise on text no human ever wrote. Task text is fed to the evidence agent as
+// PROMPT CONTEXT (see evidence.agent.ts) so it knows what a note is
+// describing — but only the note itself is a quotable source.
+export function buildReassessmentSourceItems(
+  resume: StructuredResume,
+  completedWork: CompletedWorkItem[],
+): ResumeSourceItems {
+  return {
+    ...buildSourceItems(resume),
+    completed_work: completedWork.map((work) =>
+      item(work.completionNote, work.skillName),
+    ),
   };
 }
 
@@ -105,6 +144,7 @@ export function renderSourceItemsForPrompt(
     skills: "Skills",
     education: "Education",
     certifications: "Certifications",
+    completed_work: "Completed roadmap work",
   };
 
   return SOURCE_SECTIONS.filter((section) => sourceItems[section].length > 0)

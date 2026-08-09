@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildReassessmentSourceItems,
   buildSourceItems,
   renderSourceItemsForPrompt,
 } from "../../../src/modules/career-analysis/resume-source-items.js";
@@ -237,5 +238,54 @@ describe("prompt numbering aligns with source indexing", () => {
     const sourceItems = buildSourceItems(resume());
     const built = Object.keys(sourceItems).sort();
     expect(built).toEqual([...SOURCE_SECTIONS].sort() as SourceSection[]);
+  });
+});
+
+describe("buildReassessmentSourceItems", () => {
+  it("is empty on a first-pass analysis", () => {
+    // buildSourceItems (used by createAnalysis) never populates this section —
+    // only buildReassessmentSourceItems does.
+    expect(buildSourceItems(resume()).completed_work).toEqual([]);
+  });
+
+  it("keeps every resume section's indices identical to buildSourceItems", () => {
+    const plain = buildSourceItems(resume());
+    const reassessment = buildReassessmentSourceItems(resume(), [
+      { skillName: "Docker", completionNote: "Built and shipped a Dockerfile" },
+    ]);
+
+    for (const section of SOURCE_SECTIONS) {
+      if (section === "completed_work") continue;
+      expect(reassessment[section]).toEqual(plain[section]);
+    }
+  });
+
+  it("populates completed_work from the user's notes, keyed by skill name", () => {
+    const sourceItems = buildReassessmentSourceItems(resume(), [
+      { skillName: "Docker", completionNote: "Wrote a multi-stage Dockerfile" },
+    ]);
+
+    expect(sourceItems.completed_work).toHaveLength(1);
+    expect(sourceItems.completed_work[0].displayText).toBe(
+      "Wrote a multi-stage Dockerfile",
+    );
+    expect(sourceItems.completed_work[0].label).toBe("Docker");
+  });
+
+  it("omits completed_work from the prompt when there is nothing to show", () => {
+    const prompt = renderSourceItemsForPrompt(
+      buildReassessmentSourceItems(resume(), []),
+    );
+    expect(prompt).not.toContain("Completed roadmap work");
+  });
+
+  it("renders completed_work as a numbered, quotable section", () => {
+    const sourceItems = buildReassessmentSourceItems(resume(), [
+      { skillName: "Docker", completionNote: "Wrote a multi-stage Dockerfile" },
+    ]);
+    const prompt = renderSourceItemsForPrompt(sourceItems);
+
+    expect(prompt).toContain("## Completed roadmap work");
+    expect(prompt).toContain("[0] Wrote a multi-stage Dockerfile");
   });
 });

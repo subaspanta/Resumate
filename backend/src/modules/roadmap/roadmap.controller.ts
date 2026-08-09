@@ -69,6 +69,7 @@ export class RoadmapController {
         userId,
         req.params.taskId,
         req.body.completed,
+        req.body.completionNote,
       );
       res.status(HTTP_STATUS.OK).json({ success: true, data });
     } catch (error) {

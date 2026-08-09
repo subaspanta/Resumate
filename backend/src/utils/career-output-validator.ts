@@ -27,7 +27,7 @@ import {
 } from "./grounding-normalize.js";
 import {
   buildSourceItems,
-  ResumeSourceItems,
+  type ResumeSourceItems,
 } from "../modules/career-analysis/resume-source-items.js";
 import {
   EvidenceAgentOutput,
@@ -45,8 +45,12 @@ const SECTIONS_FOR_STRENGTH: Record<
   EvidenceItem["strength"],
   readonly SourceSection[]
 > = {
+  // completed_work deliberately excluded: it is self-directed practice, not
+  // paid employment. Letting it ground experience_backed would let a roadmap
+  // note earn "strong" — full credit on a critical skill — which is exactly
+  // the strength inflation this table exists to stop.
   experience_backed: ["experience"],
-  project_backed: ["projects"],
+  project_backed: ["projects", "completed_work"],
   mentioned: [
     "experience",
     "projects",
@@ -54,6 +58,7 @@ const SECTIONS_FOR_STRENGTH: Record<
     "summary",
     "education",
     "certifications",
+    "completed_work",
   ],
 };
 
@@ -150,7 +155,16 @@ function groundEvidence(
 // vocabulary it was given.
 export function validateEvidenceGrounding(
   output: EvidenceAgentOutput,
-  context: { roleSnapshot: RoleSnapshot; resume: StructuredResume },
+  context: {
+    roleSnapshot: RoleSnapshot;
+    resume: StructuredResume;
+    // Reassessment passes the exact source items it built and fed to the
+    // prompt (resume sections plus completed-work notes). Passing them
+    // rather than rebuilding from `resume` here is what keeps "what the
+    // model was shown" and "what this validator resolves against" the same
+    // object — rebuilding independently could drift.
+    sourceItems?: ResumeSourceItems;
+  },
 ): EvidenceGroundingResult {
   const allowed = new Map(
     context.roleSnapshot.skills.map((skill) => [skill.slug, skill]),
@@ -173,7 +187,7 @@ export function validateEvidenceGrounding(
     );
   }
 
-  const sourceItems = buildSourceItems(context.resume);
+  const sourceItems = context.sourceItems ?? buildSourceItems(context.resume);
   const rejections: GroundingRejection[] = [];
   const bySlug = new Map<string, GroundedSkillAssessment>();
 

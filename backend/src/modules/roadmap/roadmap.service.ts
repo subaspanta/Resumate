@@ -243,6 +243,7 @@ export class RoadmapService {
     userId: string,
     taskId: string,
     completed: boolean,
+    completionNote?: string,
   ) {
     const existing = await this.roadmapRepository.findTaskWithOwner(taskId);
     if (!existing) {
@@ -264,6 +265,7 @@ export class RoadmapService {
       taskId,
       userId,
       completed,
+      completionNote,
     );
     // Null means the row was deleted or reassigned between the read above and
     // this write — treat it as gone rather than reporting a success that did

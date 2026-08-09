@@ -15,6 +15,10 @@ import {
   EvidenceAgentInput,
   EvidenceAgentOutput,
 } from "../../../src/modules/career-analysis/career-analysis.types.js";
+import {
+  CompletedTaskRow,
+  CompletedWorkReader,
+} from "../../../src/modules/roadmap/roadmap.repository.js";
 
 const REAL_BULLET =
   "Built and shipped REST endpoints in Node.js backed by PostgreSQL";
@@ -44,13 +48,29 @@ function failingAgent(error: unknown): EvidenceAgent {
   };
 }
 
-function buildService(agent: EvidenceAgent) {
+// Fake completed-work reader: returns whatever the test scripts, so
+// reassessment tests never need a real Roadmap/RoadmapTask fixture.
+function fakeCompletedWorkReader(
+  rows: CompletedTaskRow[] = [],
+): CompletedWorkReader {
+  return {
+    async findCompletedTasksForAnalysis() {
+      return rows;
+    },
+  };
+}
+
+function buildService(
+  agent: EvidenceAgent,
+  completedWorkReader: CompletedWorkReader = fakeCompletedWorkReader(),
+) {
   const roleRepository = new RoleRepository();
   return new CareerAnalysisService(
     new CareerAnalysisRepository(),
     new ResumeRepository(),
     new RoleService(roleRepository),
     agent,
+    completedWorkReader,
   );
 }
 
@@ -574,5 +594,329 @@ describe("CareerAnalysisService stale analysis reaping", () => {
 
     expect(read.status).toBe("complete");
     expect(read.failureReason).toBeNull();
+  });
+});
+
+describe("CareerAnalysisService.reassessAnalysis", () => {
+  let userId: string;
+  let resumeId: string;
+
+  const NOTE =
+    "Built a small REST API with Docker and wrote a Dockerfile plus docker-compose for local dev";
+
+  beforeAll(async () => {
+    userId = (await createUser("Reassess")).id;
+    resumeId = (await createResume(userId)).id;
+  });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
+
+  async function createCompleteAnalysis(reader: CompletedWorkReader) {
+    const service = buildService(
+      fakeAgent((input) => ({
+        assessments: input.requiredSkills.map((skill) => ({
+          skillSlug: skill.slug,
+          found: false,
+          evidence: [],
+        })),
+      })),
+      reader,
+    );
+    return service.createAnalysis(userId, resumeId, "backend-engineer");
+  }
+
+  function completedTask(overrides: Partial<CompletedTaskRow> = {}): CompletedTaskRow {
+    return {
+      id: crypto.randomUUID(),
+      completedAt: new Date(),
+      completionNote: NOTE,
+      projectTask: "Containerize a small service with Docker",
+      expectedEvidence: "A Dockerfile and a working docker-compose setup",
+      skillGap: { skill: { slug: "docker", name: "Docker" } },
+      ...overrides,
+    };
+  }
+
+  it("returns 404 for an analysis that does not exist, without calling the model", async () => {
+    const agent = fakeAgent(() => ({ assessments: [] }));
+    const service = buildService(agent, fakeCompletedWorkReader([completedTask()]));
+
+    await expect(
+      service.reassessAnalysis(userId, crypto.randomUUID()),
+    ).rejects.toMatchObject({ statusCode: 404 });
+    expect(agent.lastInput).toBeUndefined();
+  });
+
+  it("returns 403 for someone else's analysis without calling the model", async () => {
+    const analysis = await createCompleteAnalysis(fakeCompletedWorkReader());
+    const intruder = await createUser("ReassessIntruder2");
+    const agent = fakeAgent(() => ({ assessments: [] }));
+    const service = buildService(agent, fakeCompletedWorkReader([completedTask()]));
+
+    await expect(
+      service.reassessAnalysis(intruder.id, analysis.id),
+    ).rejects.toMatchObject({ statusCode: 403 });
+    expect(agent.lastInput).toBeUndefined();
+  });
+
+  it("rejects reassessing an analysis that has not completed", async () => {
+    const role = await prisma.role.findUniqueOrThrow({
+      where: { slug: "backend-engineer" },
+    });
+    const pending = await prisma.careerAnalysis.create({
+      data: {
+        userId,
+        resumeId,
+        roleId: role.id,
+        status: "analyzing",
+        resumeSnapshot: {},
+        roleSnapshot: {},
+      },
+    });
+    const agent = fakeAgent(() => ({ assessments: [] }));
+    const service = buildService(agent, fakeCompletedWorkReader([completedTask()]));
+
+    await expect(
+      service.reassessAnalysis(userId, pending.id),
+    ).rejects.toMatchObject({ code: "VALIDATION_FAILED" });
+    expect(agent.lastInput).toBeUndefined();
+  });
+
+  it("rejects when there is no completed roadmap work at all", async () => {
+    const analysis = await createCompleteAnalysis(fakeCompletedWorkReader());
+    const agent = fakeAgent(() => ({ assessments: [] }));
+    const service = buildService(agent, fakeCompletedWorkReader([]));
+
+    await expect(
+      service.reassessAnalysis(userId, analysis.id),
+    ).rejects.toMatchObject({ code: "VALIDATION_FAILED" });
+    expect(agent.lastInput).toBeUndefined();
+  });
+
+  it("rejects when nothing was completed after the analysis finished", async () => {
+    const analysis = await createCompleteAnalysis(fakeCompletedWorkReader());
+    // Completed BEFORE the analysis existed — e.g. a task somehow predating
+    // it. The eligibility clock is `completedAt > since`.
+    const oldTask = completedTask({
+      completedAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
+    });
+    const agent = fakeAgent(() => ({ assessments: [] }));
+    const service = buildService(agent, fakeCompletedWorkReader([oldTask]));
+
+    await expect(
+      service.reassessAnalysis(userId, analysis.id),
+    ).rejects.toMatchObject({ code: "VALIDATION_FAILED" });
+    expect(agent.lastInput).toBeUndefined();
+  });
+
+  it("rejects when every newly-completed task has a blank note", async () => {
+    const analysis = await createCompleteAnalysis(fakeCompletedWorkReader());
+    const blank = completedTask({ completionNote: "   " });
+    const agent = fakeAgent(() => ({ assessments: [] }));
+    const service = buildService(agent, fakeCompletedWorkReader([blank]));
+
+    await expect(
+      service.reassessAnalysis(userId, analysis.id),
+    ).rejects.toMatchObject({ code: "VALIDATION_FAILED" });
+    expect(agent.lastInput).toBeUndefined();
+  });
+
+  it("creates a child revision and leaves the parent's readiness untouched", async () => {
+    // Original analysis: nothing found, so docker starts at "missing".
+    const parent = await createCompleteAnalysis(fakeCompletedWorkReader());
+    const parentStoredBefore = await prisma.careerAnalysis.findUniqueOrThrow({
+      where: { id: parent.id },
+    });
+
+    const reader = fakeCompletedWorkReader([completedTask()]);
+    const agent = fakeAgent((input) => ({
+      assessments: input.requiredSkills.map((skill) =>
+        skill.slug === "docker"
+          ? {
+              skillSlug: skill.slug,
+              found: true,
+              evidence: [
+                {
+                  quote: NOTE,
+                  strength: "project_backed" as const,
+                  sourceSection: "completed_work" as const,
+                  sourceIndex: 0,
+                },
+              ],
+            }
+          : { skillSlug: skill.slug, found: false, evidence: [] },
+      ),
+    }));
+    const service = buildService(agent, reader);
+
+    const revision = await service.reassessAnalysis(userId, parent.id);
+
+    expect(revision.id).not.toBe(parent.id);
+    const revisionRow = await prisma.careerAnalysis.findUniqueOrThrow({
+      where: { id: revision.id },
+    });
+    expect(revisionRow.parentAnalysisId).toBe(parent.id);
+    expect(revisionRow.revision).toBe(1);
+
+    const dockerGap = revision.gaps.find((g) => g.skill.slug === "docker");
+    expect(dockerGap?.status).toBe("developing"); // project_backed, not strong
+
+    // The parent's own row is untouched — historical integrity.
+    const parentStoredAfter = await prisma.careerAnalysis.findUniqueOrThrow({
+      where: { id: parent.id },
+    });
+    expect(parentStoredAfter.readinessScore).toBe(parentStoredBefore.readinessScore);
+    expect(parentStoredAfter.readinessBreakdown).toEqual(
+      parentStoredBefore.readinessBreakdown,
+    );
+    expect(parentStoredAfter.resumeSnapshot).toEqual(
+      parentStoredBefore.resumeSnapshot,
+    );
+  });
+
+  it("feeds the agent the note as a quotable source, not the task text", async () => {
+    const parent = await createCompleteAnalysis(fakeCompletedWorkReader());
+    const reader = fakeCompletedWorkReader([completedTask()]);
+    const agent = fakeAgent((input) => ({
+      assessments: input.requiredSkills.map((skill) => ({
+        skillSlug: skill.slug,
+        found: false,
+        evidence: [],
+      })),
+    }));
+    const service = buildService(agent, reader);
+
+    await service.reassessAnalysis(userId, parent.id);
+
+    const sourceItems = agent.lastInput!.sourceItems!;
+    expect(sourceItems.completed_work[0].displayText).toBe(NOTE);
+    // The AI-authored task text must never appear as a quotable source.
+    const allQuotable = Object.values(sourceItems).flat();
+    expect(
+      allQuotable.some((item) =>
+        item.displayText.includes("Containerize a small service"),
+      ),
+    ).toBe(false);
+  });
+
+  it("uses the parent's frozen snapshots, not a fresh resume read", async () => {
+    const parent = await createCompleteAnalysis(fakeCompletedWorkReader());
+    const parentStored = await prisma.careerAnalysis.findUniqueOrThrow({
+      where: { id: parent.id },
+    });
+
+    const reader = fakeCompletedWorkReader([completedTask()]);
+    const agent = fakeAgent((input) => ({
+      assessments: input.requiredSkills.map((skill) => ({
+        skillSlug: skill.slug,
+        found: false,
+        evidence: [],
+      })),
+    }));
+    const service = buildService(agent, reader);
+
+    await service.reassessAnalysis(userId, parent.id);
+
+    expect(agent.lastInput!.resume).toEqual(parentStored.resumeSnapshot);
+  });
+
+  it("increments revision on a second reassessment", async () => {
+    const parent = await createCompleteAnalysis(fakeCompletedWorkReader());
+    const emptyAgent = fakeAgent((input) => ({
+      assessments: input.requiredSkills.map((skill) => ({
+        skillSlug: skill.slug,
+        found: false,
+        evidence: [],
+      })),
+    }));
+
+    const task1 = completedTask({ id: crypto.randomUUID() });
+    const rev1 = await buildService(
+      emptyAgent,
+      fakeCompletedWorkReader([task1]),
+    ).reassessAnalysis(userId, parent.id);
+    expect(rev1.status).toBe("complete");
+
+    // A second task completed after rev1 was created.
+    const task2 = completedTask({
+      id: crypto.randomUUID(),
+      completedAt: new Date(Date.now() + 1000),
+    });
+    const rev2 = await buildService(
+      emptyAgent,
+      fakeCompletedWorkReader([task1, task2]),
+    ).reassessAnalysis(userId, parent.id);
+
+    const rev2Row = await prisma.careerAnalysis.findUniqueOrThrow({
+      where: { id: rev2.id },
+    });
+    expect(rev2Row.revision).toBe(2);
+  });
+
+  it("marks the revision failed when the model call fails, leaving the parent complete", async () => {
+    const parent = await createCompleteAnalysis(fakeCompletedWorkReader());
+    const reader = fakeCompletedWorkReader([completedTask()]);
+    const service = buildService(
+      failingAgent(new AppError(503, "GEMINI_API_ERROR", "AI unavailable")),
+      reader,
+    );
+
+    await expect(
+      service.reassessAnalysis(userId, parent.id),
+    ).rejects.toMatchObject({ code: "GEMINI_API_ERROR" });
+
+    const failedRevision = await prisma.careerAnalysis.findFirstOrThrow({
+      where: { parentAnalysisId: parent.id, status: "failed" },
+    });
+    expect(failedRevision.failureReason).toBe("AI unavailable");
+
+    const parentAfter = await prisma.careerAnalysis.findUniqueOrThrow({
+      where: { id: parent.id },
+    });
+    expect(parentAfter.status).toBe("complete");
+  });
+
+  it("excludes revisions from the user's analysis list", async () => {
+    const parent = await createCompleteAnalysis(fakeCompletedWorkReader());
+    const reader = fakeCompletedWorkReader([completedTask()]);
+    const agent = fakeAgent((input) => ({
+      assessments: input.requiredSkills.map((skill) => ({
+        skillSlug: skill.slug,
+        found: false,
+        evidence: [],
+      })),
+    }));
+    const service = buildService(agent, reader);
+    const revision = await service.reassessAnalysis(userId, parent.id);
+
+    const listed = await service.listAnalyses(userId);
+
+    // The dashboard shows one entry for the analysis, not one per revision.
+    expect(listed.filter((a) => a.id === parent.id).length).toBe(1);
+    expect(listed.some((a) => a.id === revision.id)).toBe(false);
+  });
+
+  it("returns revisions oldest-first via getRevisions", async () => {
+    const parent = await createCompleteAnalysis(fakeCompletedWorkReader());
+    const reader = fakeCompletedWorkReader([completedTask()]);
+    const agent = fakeAgent((input) => ({
+      assessments: input.requiredSkills.map((skill) => ({
+        skillSlug: skill.slug,
+        found: false,
+        evidence: [],
+      })),
+    }));
+    const service = buildService(agent, reader);
+    const revision = await service.reassessAnalysis(userId, parent.id);
+
+    const revisions = await service.getRevisions(userId, parent.id);
+    expect(revisions.map((r) => r.id)).toEqual([revision.id]);
+    expect(revisions[0].revision).toBe(1);
+
+    // Resolves from a revision id too, not just the root.
+    const viaRevision = await service.getRevisions(userId, revision.id);
+    expect(viaRevision.map((r) => r.id)).toEqual([revision.id]);
   });
 });

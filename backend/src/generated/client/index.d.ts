@@ -122,7 +122,9 @@ export const AnalysisEventType: {
   analysis_failed: 'analysis_failed',
   roadmap_generated: 'roadmap_generated',
   task_completed: 'task_completed',
-  task_uncompleted: 'task_uncompleted'
+  task_uncompleted: 'task_uncompleted',
+  reassessment_started: 'reassessment_started',
+  reassessment_completed: 'reassessment_completed'
 };
 
 export type AnalysisEventType = (typeof AnalysisEventType)[keyof typeof AnalysisEventType]
@@ -2114,12 +2116,14 @@ export namespace Prisma {
     evidence: number
     gaps: number
     events: number
+    revisions: number
   }
 
   export type CareerAnalysisCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     evidence?: boolean | CareerAnalysisCountOutputTypeCountEvidenceArgs
     gaps?: boolean | CareerAnalysisCountOutputTypeCountGapsArgs
     events?: boolean | CareerAnalysisCountOutputTypeCountEventsArgs
+    revisions?: boolean | CareerAnalysisCountOutputTypeCountRevisionsArgs
   }
 
   // Custom InputTypes
@@ -2152,6 +2156,13 @@ export namespace Prisma {
    */
   export type CareerAnalysisCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AnalysisEventWhereInput
+  }
+
+  /**
+   * CareerAnalysisCountOutputType without action
+   */
+  export type CareerAnalysisCountOutputTypeCountRevisionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CareerAnalysisWhereInput
   }
 
 
@@ -9061,10 +9072,12 @@ export namespace Prisma {
 
   export type CareerAnalysisAvgAggregateOutputType = {
     readinessScore: number | null
+    revision: number | null
   }
 
   export type CareerAnalysisSumAggregateOutputType = {
     readinessScore: number | null
+    revision: number | null
   }
 
   export type CareerAnalysisMinAggregateOutputType = {
@@ -9077,6 +9090,8 @@ export namespace Prisma {
     failureReason: string | null
     createdAt: Date | null
     completedAt: Date | null
+    parentAnalysisId: string | null
+    revision: number | null
   }
 
   export type CareerAnalysisMaxAggregateOutputType = {
@@ -9089,6 +9104,8 @@ export namespace Prisma {
     failureReason: string | null
     createdAt: Date | null
     completedAt: Date | null
+    parentAnalysisId: string | null
+    revision: number | null
   }
 
   export type CareerAnalysisCountAggregateOutputType = {
@@ -9104,16 +9121,20 @@ export namespace Prisma {
     failureReason: number
     createdAt: number
     completedAt: number
+    parentAnalysisId: number
+    revision: number
     _all: number
   }
 
 
   export type CareerAnalysisAvgAggregateInputType = {
     readinessScore?: true
+    revision?: true
   }
 
   export type CareerAnalysisSumAggregateInputType = {
     readinessScore?: true
+    revision?: true
   }
 
   export type CareerAnalysisMinAggregateInputType = {
@@ -9126,6 +9147,8 @@ export namespace Prisma {
     failureReason?: true
     createdAt?: true
     completedAt?: true
+    parentAnalysisId?: true
+    revision?: true
   }
 
   export type CareerAnalysisMaxAggregateInputType = {
@@ -9138,6 +9161,8 @@ export namespace Prisma {
     failureReason?: true
     createdAt?: true
     completedAt?: true
+    parentAnalysisId?: true
+    revision?: true
   }
 
   export type CareerAnalysisCountAggregateInputType = {
@@ -9153,6 +9178,8 @@ export namespace Prisma {
     failureReason?: true
     createdAt?: true
     completedAt?: true
+    parentAnalysisId?: true
+    revision?: true
     _all?: true
   }
 
@@ -9255,6 +9282,8 @@ export namespace Prisma {
     failureReason: string | null
     createdAt: Date
     completedAt: Date | null
+    parentAnalysisId: string | null
+    revision: number
     _count: CareerAnalysisCountAggregateOutputType | null
     _avg: CareerAnalysisAvgAggregateOutputType | null
     _sum: CareerAnalysisSumAggregateOutputType | null
@@ -9289,6 +9318,8 @@ export namespace Prisma {
     failureReason?: boolean
     createdAt?: boolean
     completedAt?: boolean
+    parentAnalysisId?: boolean
+    revision?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
     role?: boolean | RoleDefaultArgs<ExtArgs>
@@ -9296,6 +9327,8 @@ export namespace Prisma {
     gaps?: boolean | CareerAnalysis$gapsArgs<ExtArgs>
     roadmap?: boolean | CareerAnalysis$roadmapArgs<ExtArgs>
     events?: boolean | CareerAnalysis$eventsArgs<ExtArgs>
+    parent?: boolean | CareerAnalysis$parentArgs<ExtArgs>
+    revisions?: boolean | CareerAnalysis$revisionsArgs<ExtArgs>
     _count?: boolean | CareerAnalysisCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["careerAnalysis"]>
 
@@ -9312,9 +9345,12 @@ export namespace Prisma {
     failureReason?: boolean
     createdAt?: boolean
     completedAt?: boolean
+    parentAnalysisId?: boolean
+    revision?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
     role?: boolean | RoleDefaultArgs<ExtArgs>
+    parent?: boolean | CareerAnalysis$parentArgs<ExtArgs>
   }, ExtArgs["result"]["careerAnalysis"]>
 
   export type CareerAnalysisSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9330,9 +9366,12 @@ export namespace Prisma {
     failureReason?: boolean
     createdAt?: boolean
     completedAt?: boolean
+    parentAnalysisId?: boolean
+    revision?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
     role?: boolean | RoleDefaultArgs<ExtArgs>
+    parent?: boolean | CareerAnalysis$parentArgs<ExtArgs>
   }, ExtArgs["result"]["careerAnalysis"]>
 
   export type CareerAnalysisSelectScalar = {
@@ -9348,9 +9387,11 @@ export namespace Prisma {
     failureReason?: boolean
     createdAt?: boolean
     completedAt?: boolean
+    parentAnalysisId?: boolean
+    revision?: boolean
   }
 
-  export type CareerAnalysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "status" | "resumeId" | "roleId" | "resumeSnapshot" | "roleSnapshot" | "readinessScore" | "readinessBreakdown" | "failureReason" | "createdAt" | "completedAt", ExtArgs["result"]["careerAnalysis"]>
+  export type CareerAnalysisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "status" | "resumeId" | "roleId" | "resumeSnapshot" | "roleSnapshot" | "readinessScore" | "readinessBreakdown" | "failureReason" | "createdAt" | "completedAt" | "parentAnalysisId" | "revision", ExtArgs["result"]["careerAnalysis"]>
   export type CareerAnalysisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
@@ -9359,17 +9400,21 @@ export namespace Prisma {
     gaps?: boolean | CareerAnalysis$gapsArgs<ExtArgs>
     roadmap?: boolean | CareerAnalysis$roadmapArgs<ExtArgs>
     events?: boolean | CareerAnalysis$eventsArgs<ExtArgs>
+    parent?: boolean | CareerAnalysis$parentArgs<ExtArgs>
+    revisions?: boolean | CareerAnalysis$revisionsArgs<ExtArgs>
     _count?: boolean | CareerAnalysisCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CareerAnalysisIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
     role?: boolean | RoleDefaultArgs<ExtArgs>
+    parent?: boolean | CareerAnalysis$parentArgs<ExtArgs>
   }
   export type CareerAnalysisIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
     role?: boolean | RoleDefaultArgs<ExtArgs>
+    parent?: boolean | CareerAnalysis$parentArgs<ExtArgs>
   }
 
   export type $CareerAnalysisPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9382,6 +9427,8 @@ export namespace Prisma {
       gaps: Prisma.$SkillGapPayload<ExtArgs>[]
       roadmap: Prisma.$RoadmapPayload<ExtArgs> | null
       events: Prisma.$AnalysisEventPayload<ExtArgs>[]
+      parent: Prisma.$CareerAnalysisPayload<ExtArgs> | null
+      revisions: Prisma.$CareerAnalysisPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9396,6 +9443,8 @@ export namespace Prisma {
       failureReason: string | null
       createdAt: Date
       completedAt: Date | null
+      parentAnalysisId: string | null
+      revision: number
     }, ExtArgs["result"]["careerAnalysis"]>
     composites: {}
   }
@@ -9797,6 +9846,8 @@ export namespace Prisma {
     gaps<T extends CareerAnalysis$gapsArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysis$gapsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillGapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roadmap<T extends CareerAnalysis$roadmapArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysis$roadmapArgs<ExtArgs>>): Prisma__RoadmapClient<$Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     events<T extends CareerAnalysis$eventsArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysis$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    parent<T extends CareerAnalysis$parentArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysis$parentArgs<ExtArgs>>): Prisma__CareerAnalysisClient<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    revisions<T extends CareerAnalysis$revisionsArgs<ExtArgs> = {}>(args?: Subset<T, CareerAnalysis$revisionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9838,6 +9889,8 @@ export namespace Prisma {
     readonly failureReason: FieldRef<"CareerAnalysis", 'String'>
     readonly createdAt: FieldRef<"CareerAnalysis", 'DateTime'>
     readonly completedAt: FieldRef<"CareerAnalysis", 'DateTime'>
+    readonly parentAnalysisId: FieldRef<"CareerAnalysis", 'String'>
+    readonly revision: FieldRef<"CareerAnalysis", 'Int'>
   }
     
 
@@ -10327,6 +10380,49 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AnalysisEventScalarFieldEnum | AnalysisEventScalarFieldEnum[]
+  }
+
+  /**
+   * CareerAnalysis.parent
+   */
+  export type CareerAnalysis$parentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CareerAnalysis
+     */
+    select?: CareerAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CareerAnalysis
+     */
+    omit?: CareerAnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CareerAnalysisInclude<ExtArgs> | null
+    where?: CareerAnalysisWhereInput
+  }
+
+  /**
+   * CareerAnalysis.revisions
+   */
+  export type CareerAnalysis$revisionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CareerAnalysis
+     */
+    select?: CareerAnalysisSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CareerAnalysis
+     */
+    omit?: CareerAnalysisOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CareerAnalysisInclude<ExtArgs> | null
+    where?: CareerAnalysisWhereInput
+    orderBy?: CareerAnalysisOrderByWithRelationInput | CareerAnalysisOrderByWithRelationInput[]
+    cursor?: CareerAnalysisWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CareerAnalysisScalarFieldEnum | CareerAnalysisScalarFieldEnum[]
   }
 
   /**
@@ -13767,6 +13863,7 @@ export namespace Prisma {
     expectedEvidence: string | null
     completed: boolean | null
     completedAt: Date | null
+    completionNote: string | null
     createdAt: Date | null
   }
 
@@ -13782,6 +13879,7 @@ export namespace Prisma {
     expectedEvidence: string | null
     completed: boolean | null
     completedAt: Date | null
+    completionNote: string | null
     createdAt: Date | null
   }
 
@@ -13798,6 +13896,7 @@ export namespace Prisma {
     resources: number
     completed: number
     completedAt: number
+    completionNote: number
     createdAt: number
     _all: number
   }
@@ -13825,6 +13924,7 @@ export namespace Prisma {
     expectedEvidence?: true
     completed?: true
     completedAt?: true
+    completionNote?: true
     createdAt?: true
   }
 
@@ -13840,6 +13940,7 @@ export namespace Prisma {
     expectedEvidence?: true
     completed?: true
     completedAt?: true
+    completionNote?: true
     createdAt?: true
   }
 
@@ -13856,6 +13957,7 @@ export namespace Prisma {
     resources?: true
     completed?: true
     completedAt?: true
+    completionNote?: true
     createdAt?: true
     _all?: true
   }
@@ -13959,6 +14061,7 @@ export namespace Prisma {
     resources: JsonValue | null
     completed: boolean
     completedAt: Date | null
+    completionNote: string | null
     createdAt: Date
     _count: RoadmapTaskCountAggregateOutputType | null
     _avg: RoadmapTaskAvgAggregateOutputType | null
@@ -13994,6 +14097,7 @@ export namespace Prisma {
     resources?: boolean
     completed?: boolean
     completedAt?: boolean
+    completionNote?: boolean
     createdAt?: boolean
     roadmap?: boolean | RoadmapDefaultArgs<ExtArgs>
     skillGap?: boolean | RoadmapTask$skillGapArgs<ExtArgs>
@@ -14012,6 +14116,7 @@ export namespace Prisma {
     resources?: boolean
     completed?: boolean
     completedAt?: boolean
+    completionNote?: boolean
     createdAt?: boolean
     roadmap?: boolean | RoadmapDefaultArgs<ExtArgs>
     skillGap?: boolean | RoadmapTask$skillGapArgs<ExtArgs>
@@ -14030,6 +14135,7 @@ export namespace Prisma {
     resources?: boolean
     completed?: boolean
     completedAt?: boolean
+    completionNote?: boolean
     createdAt?: boolean
     roadmap?: boolean | RoadmapDefaultArgs<ExtArgs>
     skillGap?: boolean | RoadmapTask$skillGapArgs<ExtArgs>
@@ -14048,10 +14154,11 @@ export namespace Prisma {
     resources?: boolean
     completed?: boolean
     completedAt?: boolean
+    completionNote?: boolean
     createdAt?: boolean
   }
 
-  export type RoadmapTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roadmapId" | "skillGapId" | "weekNumber" | "orderInWeek" | "title" | "description" | "projectTask" | "expectedEvidence" | "resources" | "completed" | "completedAt" | "createdAt", ExtArgs["result"]["roadmapTask"]>
+  export type RoadmapTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roadmapId" | "skillGapId" | "weekNumber" | "orderInWeek" | "title" | "description" | "projectTask" | "expectedEvidence" | "resources" | "completed" | "completedAt" | "completionNote" | "createdAt", ExtArgs["result"]["roadmapTask"]>
   export type RoadmapTaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     roadmap?: boolean | RoadmapDefaultArgs<ExtArgs>
     skillGap?: boolean | RoadmapTask$skillGapArgs<ExtArgs>
@@ -14084,6 +14191,7 @@ export namespace Prisma {
       resources: Prisma.JsonValue | null
       completed: boolean
       completedAt: Date | null
+      completionNote: string | null
       createdAt: Date
     }, ExtArgs["result"]["roadmapTask"]>
     composites: {}
@@ -14522,6 +14630,7 @@ export namespace Prisma {
     readonly resources: FieldRef<"RoadmapTask", 'Json'>
     readonly completed: FieldRef<"RoadmapTask", 'Boolean'>
     readonly completedAt: FieldRef<"RoadmapTask", 'DateTime'>
+    readonly completionNote: FieldRef<"RoadmapTask", 'String'>
     readonly createdAt: FieldRef<"RoadmapTask", 'DateTime'>
   }
     
@@ -16128,7 +16237,9 @@ export namespace Prisma {
     readinessBreakdown: 'readinessBreakdown',
     failureReason: 'failureReason',
     createdAt: 'createdAt',
-    completedAt: 'completedAt'
+    completedAt: 'completedAt',
+    parentAnalysisId: 'parentAnalysisId',
+    revision: 'revision'
   };
 
   export type CareerAnalysisScalarFieldEnum = (typeof CareerAnalysisScalarFieldEnum)[keyof typeof CareerAnalysisScalarFieldEnum]
@@ -16184,6 +16295,7 @@ export namespace Prisma {
     resources: 'resources',
     completed: 'completed',
     completedAt: 'completedAt',
+    completionNote: 'completionNote',
     createdAt: 'createdAt'
   };
 
@@ -16854,6 +16966,8 @@ export namespace Prisma {
     failureReason?: StringNullableFilter<"CareerAnalysis"> | string | null
     createdAt?: DateTimeFilter<"CareerAnalysis"> | Date | string
     completedAt?: DateTimeNullableFilter<"CareerAnalysis"> | Date | string | null
+    parentAnalysisId?: UuidNullableFilter<"CareerAnalysis"> | string | null
+    revision?: IntFilter<"CareerAnalysis"> | number
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     resume?: XOR<ResumeScalarRelationFilter, ResumeWhereInput>
     role?: XOR<RoleScalarRelationFilter, RoleWhereInput>
@@ -16861,6 +16975,8 @@ export namespace Prisma {
     gaps?: SkillGapListRelationFilter
     roadmap?: XOR<RoadmapNullableScalarRelationFilter, RoadmapWhereInput> | null
     events?: AnalysisEventListRelationFilter
+    parent?: XOR<CareerAnalysisNullableScalarRelationFilter, CareerAnalysisWhereInput> | null
+    revisions?: CareerAnalysisListRelationFilter
   }
 
   export type CareerAnalysisOrderByWithRelationInput = {
@@ -16876,6 +16992,8 @@ export namespace Prisma {
     failureReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     completedAt?: SortOrderInput | SortOrder
+    parentAnalysisId?: SortOrderInput | SortOrder
+    revision?: SortOrder
     user?: UserOrderByWithRelationInput
     resume?: ResumeOrderByWithRelationInput
     role?: RoleOrderByWithRelationInput
@@ -16883,10 +17001,13 @@ export namespace Prisma {
     gaps?: SkillGapOrderByRelationAggregateInput
     roadmap?: RoadmapOrderByWithRelationInput
     events?: AnalysisEventOrderByRelationAggregateInput
+    parent?: CareerAnalysisOrderByWithRelationInput
+    revisions?: CareerAnalysisOrderByRelationAggregateInput
   }
 
   export type CareerAnalysisWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    parentAnalysisId_revision?: CareerAnalysisParentAnalysisIdRevisionCompoundUniqueInput
     AND?: CareerAnalysisWhereInput | CareerAnalysisWhereInput[]
     OR?: CareerAnalysisWhereInput[]
     NOT?: CareerAnalysisWhereInput | CareerAnalysisWhereInput[]
@@ -16901,6 +17022,8 @@ export namespace Prisma {
     failureReason?: StringNullableFilter<"CareerAnalysis"> | string | null
     createdAt?: DateTimeFilter<"CareerAnalysis"> | Date | string
     completedAt?: DateTimeNullableFilter<"CareerAnalysis"> | Date | string | null
+    parentAnalysisId?: UuidNullableFilter<"CareerAnalysis"> | string | null
+    revision?: IntFilter<"CareerAnalysis"> | number
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     resume?: XOR<ResumeScalarRelationFilter, ResumeWhereInput>
     role?: XOR<RoleScalarRelationFilter, RoleWhereInput>
@@ -16908,7 +17031,9 @@ export namespace Prisma {
     gaps?: SkillGapListRelationFilter
     roadmap?: XOR<RoadmapNullableScalarRelationFilter, RoadmapWhereInput> | null
     events?: AnalysisEventListRelationFilter
-  }, "id">
+    parent?: XOR<CareerAnalysisNullableScalarRelationFilter, CareerAnalysisWhereInput> | null
+    revisions?: CareerAnalysisListRelationFilter
+  }, "id" | "parentAnalysisId_revision">
 
   export type CareerAnalysisOrderByWithAggregationInput = {
     id?: SortOrder
@@ -16923,6 +17048,8 @@ export namespace Prisma {
     failureReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     completedAt?: SortOrderInput | SortOrder
+    parentAnalysisId?: SortOrderInput | SortOrder
+    revision?: SortOrder
     _count?: CareerAnalysisCountOrderByAggregateInput
     _avg?: CareerAnalysisAvgOrderByAggregateInput
     _max?: CareerAnalysisMaxOrderByAggregateInput
@@ -16946,6 +17073,8 @@ export namespace Prisma {
     failureReason?: StringNullableWithAggregatesFilter<"CareerAnalysis"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"CareerAnalysis"> | Date | string
     completedAt?: DateTimeNullableWithAggregatesFilter<"CareerAnalysis"> | Date | string | null
+    parentAnalysisId?: UuidNullableWithAggregatesFilter<"CareerAnalysis"> | string | null
+    revision?: IntWithAggregatesFilter<"CareerAnalysis"> | number
   }
 
   export type CandidateSkillEvidenceWhereInput = {
@@ -17166,6 +17295,7 @@ export namespace Prisma {
     resources?: JsonNullableFilter<"RoadmapTask">
     completed?: BoolFilter<"RoadmapTask"> | boolean
     completedAt?: DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
+    completionNote?: StringNullableFilter<"RoadmapTask"> | string | null
     createdAt?: DateTimeFilter<"RoadmapTask"> | Date | string
     roadmap?: XOR<RoadmapScalarRelationFilter, RoadmapWhereInput>
     skillGap?: XOR<SkillGapNullableScalarRelationFilter, SkillGapWhereInput> | null
@@ -17184,6 +17314,7 @@ export namespace Prisma {
     resources?: SortOrderInput | SortOrder
     completed?: SortOrder
     completedAt?: SortOrderInput | SortOrder
+    completionNote?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     roadmap?: RoadmapOrderByWithRelationInput
     skillGap?: SkillGapOrderByWithRelationInput
@@ -17205,6 +17336,7 @@ export namespace Prisma {
     resources?: JsonNullableFilter<"RoadmapTask">
     completed?: BoolFilter<"RoadmapTask"> | boolean
     completedAt?: DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
+    completionNote?: StringNullableFilter<"RoadmapTask"> | string | null
     createdAt?: DateTimeFilter<"RoadmapTask"> | Date | string
     roadmap?: XOR<RoadmapScalarRelationFilter, RoadmapWhereInput>
     skillGap?: XOR<SkillGapNullableScalarRelationFilter, SkillGapWhereInput> | null
@@ -17223,6 +17355,7 @@ export namespace Prisma {
     resources?: SortOrderInput | SortOrder
     completed?: SortOrder
     completedAt?: SortOrderInput | SortOrder
+    completionNote?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: RoadmapTaskCountOrderByAggregateInput
     _avg?: RoadmapTaskAvgOrderByAggregateInput
@@ -17247,6 +17380,7 @@ export namespace Prisma {
     resources?: JsonNullableWithAggregatesFilter<"RoadmapTask">
     completed?: BoolWithAggregatesFilter<"RoadmapTask"> | boolean
     completedAt?: DateTimeNullableWithAggregatesFilter<"RoadmapTask"> | Date | string | null
+    completionNote?: StringNullableWithAggregatesFilter<"RoadmapTask"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"RoadmapTask"> | Date | string
   }
 
@@ -17795,6 +17929,7 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    revision?: number
     user: UserCreateNestedOneWithoutAnalysesInput
     resume: ResumeCreateNestedOneWithoutAnalysesInput
     role: RoleCreateNestedOneWithoutAnalysesInput
@@ -17802,6 +17937,8 @@ export namespace Prisma {
     gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
     events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+    parent?: CareerAnalysisCreateNestedOneWithoutRevisionsInput
+    revisions?: CareerAnalysisCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisUncheckedCreateInput = {
@@ -17817,10 +17954,13 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
     evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
     gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
     events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    revisions?: CareerAnalysisUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisUpdateInput = {
@@ -17833,6 +17973,7 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
     resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
     role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
@@ -17840,6 +17981,8 @@ export namespace Prisma {
     gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+    parent?: CareerAnalysisUpdateOneWithoutRevisionsNestedInput
+    revisions?: CareerAnalysisUpdateManyWithoutParentNestedInput
   }
 
   export type CareerAnalysisUncheckedUpdateInput = {
@@ -17855,10 +17998,13 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    revisions?: CareerAnalysisUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type CareerAnalysisCreateManyInput = {
@@ -17874,6 +18020,8 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
   }
 
   export type CareerAnalysisUpdateManyMutationInput = {
@@ -17886,6 +18034,7 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
   }
 
   export type CareerAnalysisUncheckedUpdateManyInput = {
@@ -17901,6 +18050,8 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
   }
 
   export type CandidateSkillEvidenceCreateInput = {
@@ -18113,6 +18264,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
+    completionNote?: string | null
     createdAt?: Date | string
     roadmap: RoadmapCreateNestedOneWithoutTasksInput
     skillGap?: SkillGapCreateNestedOneWithoutTasksInput
@@ -18131,6 +18283,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
+    completionNote?: string | null
     createdAt?: Date | string
   }
 
@@ -18145,6 +18298,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completionNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roadmap?: RoadmapUpdateOneRequiredWithoutTasksNestedInput
     skillGap?: SkillGapUpdateOneWithoutTasksNestedInput
@@ -18163,6 +18317,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completionNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18179,6 +18334,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
+    completionNote?: string | null
     createdAt?: Date | string
   }
 
@@ -18193,6 +18349,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completionNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18209,6 +18366,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completionNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18833,6 +18991,18 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type UuidNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  }
+
   export type ResumeScalarRelationFilter = {
     is?: ResumeWhereInput
     isNot?: ResumeWhereInput
@@ -18849,8 +19019,18 @@ export namespace Prisma {
     none?: AnalysisEventWhereInput
   }
 
+  export type CareerAnalysisNullableScalarRelationFilter = {
+    is?: CareerAnalysisWhereInput | null
+    isNot?: CareerAnalysisWhereInput | null
+  }
+
   export type AnalysisEventOrderByRelationAggregateInput = {
     _count?: SortOrder
+  }
+
+  export type CareerAnalysisParentAnalysisIdRevisionCompoundUniqueInput = {
+    parentAnalysisId: string
+    revision: number
   }
 
   export type CareerAnalysisCountOrderByAggregateInput = {
@@ -18866,10 +19046,13 @@ export namespace Prisma {
     failureReason?: SortOrder
     createdAt?: SortOrder
     completedAt?: SortOrder
+    parentAnalysisId?: SortOrder
+    revision?: SortOrder
   }
 
   export type CareerAnalysisAvgOrderByAggregateInput = {
     readinessScore?: SortOrder
+    revision?: SortOrder
   }
 
   export type CareerAnalysisMaxOrderByAggregateInput = {
@@ -18882,6 +19065,8 @@ export namespace Prisma {
     failureReason?: SortOrder
     createdAt?: SortOrder
     completedAt?: SortOrder
+    parentAnalysisId?: SortOrder
+    revision?: SortOrder
   }
 
   export type CareerAnalysisMinOrderByAggregateInput = {
@@ -18894,10 +19079,13 @@ export namespace Prisma {
     failureReason?: SortOrder
     createdAt?: SortOrder
     completedAt?: SortOrder
+    parentAnalysisId?: SortOrder
+    revision?: SortOrder
   }
 
   export type CareerAnalysisSumOrderByAggregateInput = {
     readinessScore?: SortOrder
+    revision?: SortOrder
   }
 
   export type EnumCareerAnalysisStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -18950,6 +19138,21 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedJsonNullableFilter<$PrismaModel>
     _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type EnumEvidenceStrengthFilter<$PrismaModel = never> = {
@@ -19106,18 +19309,6 @@ export namespace Prisma {
     weekCount?: SortOrder
   }
 
-  export type UuidNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
-  }
-
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -19146,6 +19337,7 @@ export namespace Prisma {
     resources?: SortOrder
     completed?: SortOrder
     completedAt?: SortOrder
+    completionNote?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -19166,6 +19358,7 @@ export namespace Prisma {
     expectedEvidence?: SortOrder
     completed?: SortOrder
     completedAt?: SortOrder
+    completionNote?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -19181,27 +19374,13 @@ export namespace Prisma {
     expectedEvidence?: SortOrder
     completed?: SortOrder
     completedAt?: SortOrder
+    completionNote?: SortOrder
     createdAt?: SortOrder
   }
 
   export type RoadmapTaskSumOrderByAggregateInput = {
     weekNumber?: SortOrder
     orderInWeek?: SortOrder
-  }
-
-  export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -19767,6 +19946,19 @@ export namespace Prisma {
     connect?: AnalysisEventWhereUniqueInput | AnalysisEventWhereUniqueInput[]
   }
 
+  export type CareerAnalysisCreateNestedOneWithoutRevisionsInput = {
+    create?: XOR<CareerAnalysisCreateWithoutRevisionsInput, CareerAnalysisUncheckedCreateWithoutRevisionsInput>
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutRevisionsInput
+    connect?: CareerAnalysisWhereUniqueInput
+  }
+
+  export type CareerAnalysisCreateNestedManyWithoutParentInput = {
+    create?: XOR<CareerAnalysisCreateWithoutParentInput, CareerAnalysisUncheckedCreateWithoutParentInput> | CareerAnalysisCreateWithoutParentInput[] | CareerAnalysisUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutParentInput | CareerAnalysisCreateOrConnectWithoutParentInput[]
+    createMany?: CareerAnalysisCreateManyParentInputEnvelope
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+  }
+
   export type CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput = {
     create?: XOR<CandidateSkillEvidenceCreateWithoutCareerAnalysisInput, CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput> | CandidateSkillEvidenceCreateWithoutCareerAnalysisInput[] | CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput[]
     connectOrCreate?: CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput | CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput[]
@@ -19792,6 +19984,13 @@ export namespace Prisma {
     connectOrCreate?: AnalysisEventCreateOrConnectWithoutCareerAnalysisInput | AnalysisEventCreateOrConnectWithoutCareerAnalysisInput[]
     createMany?: AnalysisEventCreateManyCareerAnalysisInputEnvelope
     connect?: AnalysisEventWhereUniqueInput | AnalysisEventWhereUniqueInput[]
+  }
+
+  export type CareerAnalysisUncheckedCreateNestedManyWithoutParentInput = {
+    create?: XOR<CareerAnalysisCreateWithoutParentInput, CareerAnalysisUncheckedCreateWithoutParentInput> | CareerAnalysisCreateWithoutParentInput[] | CareerAnalysisUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutParentInput | CareerAnalysisCreateOrConnectWithoutParentInput[]
+    createMany?: CareerAnalysisCreateManyParentInputEnvelope
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
   }
 
   export type EnumCareerAnalysisStatusFieldUpdateOperationsInput = {
@@ -19882,6 +20081,30 @@ export namespace Prisma {
     deleteMany?: AnalysisEventScalarWhereInput | AnalysisEventScalarWhereInput[]
   }
 
+  export type CareerAnalysisUpdateOneWithoutRevisionsNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutRevisionsInput, CareerAnalysisUncheckedCreateWithoutRevisionsInput>
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutRevisionsInput
+    upsert?: CareerAnalysisUpsertWithoutRevisionsInput
+    disconnect?: CareerAnalysisWhereInput | boolean
+    delete?: CareerAnalysisWhereInput | boolean
+    connect?: CareerAnalysisWhereUniqueInput
+    update?: XOR<XOR<CareerAnalysisUpdateToOneWithWhereWithoutRevisionsInput, CareerAnalysisUpdateWithoutRevisionsInput>, CareerAnalysisUncheckedUpdateWithoutRevisionsInput>
+  }
+
+  export type CareerAnalysisUpdateManyWithoutParentNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutParentInput, CareerAnalysisUncheckedCreateWithoutParentInput> | CareerAnalysisCreateWithoutParentInput[] | CareerAnalysisUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutParentInput | CareerAnalysisCreateOrConnectWithoutParentInput[]
+    upsert?: CareerAnalysisUpsertWithWhereUniqueWithoutParentInput | CareerAnalysisUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: CareerAnalysisCreateManyParentInputEnvelope
+    set?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    disconnect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    delete?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    update?: CareerAnalysisUpdateWithWhereUniqueWithoutParentInput | CareerAnalysisUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: CareerAnalysisUpdateManyWithWhereWithoutParentInput | CareerAnalysisUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: CareerAnalysisScalarWhereInput | CareerAnalysisScalarWhereInput[]
+  }
+
   export type CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput = {
     create?: XOR<CandidateSkillEvidenceCreateWithoutCareerAnalysisInput, CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput> | CandidateSkillEvidenceCreateWithoutCareerAnalysisInput[] | CandidateSkillEvidenceUncheckedCreateWithoutCareerAnalysisInput[]
     connectOrCreate?: CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput | CandidateSkillEvidenceCreateOrConnectWithoutCareerAnalysisInput[]
@@ -19932,6 +20155,20 @@ export namespace Prisma {
     update?: AnalysisEventUpdateWithWhereUniqueWithoutCareerAnalysisInput | AnalysisEventUpdateWithWhereUniqueWithoutCareerAnalysisInput[]
     updateMany?: AnalysisEventUpdateManyWithWhereWithoutCareerAnalysisInput | AnalysisEventUpdateManyWithWhereWithoutCareerAnalysisInput[]
     deleteMany?: AnalysisEventScalarWhereInput | AnalysisEventScalarWhereInput[]
+  }
+
+  export type CareerAnalysisUncheckedUpdateManyWithoutParentNestedInput = {
+    create?: XOR<CareerAnalysisCreateWithoutParentInput, CareerAnalysisUncheckedCreateWithoutParentInput> | CareerAnalysisCreateWithoutParentInput[] | CareerAnalysisUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: CareerAnalysisCreateOrConnectWithoutParentInput | CareerAnalysisCreateOrConnectWithoutParentInput[]
+    upsert?: CareerAnalysisUpsertWithWhereUniqueWithoutParentInput | CareerAnalysisUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: CareerAnalysisCreateManyParentInputEnvelope
+    set?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    disconnect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    delete?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    connect?: CareerAnalysisWhereUniqueInput | CareerAnalysisWhereUniqueInput[]
+    update?: CareerAnalysisUpdateWithWhereUniqueWithoutParentInput | CareerAnalysisUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: CareerAnalysisUpdateManyWithWhereWithoutParentInput | CareerAnalysisUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: CareerAnalysisScalarWhereInput | CareerAnalysisScalarWhereInput[]
   }
 
   export type CareerAnalysisCreateNestedOneWithoutEvidenceInput = {
@@ -20381,6 +20618,17 @@ export namespace Prisma {
     not?: NestedEnumCareerAnalysisStatusFilter<$PrismaModel> | $Enums.CareerAnalysisStatus
   }
 
+  export type NestedUuidNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedEnumCareerAnalysisStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.CareerAnalysisStatus | EnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
     in?: $Enums.CareerAnalysisStatus[] | ListEnumCareerAnalysisStatusFieldRefInput<$PrismaModel>
@@ -20441,6 +20689,20 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumEvidenceStrengthFilter<$PrismaModel = never> = {
     equals?: $Enums.EvidenceStrength | EnumEvidenceStrengthFieldRefInput<$PrismaModel>
     in?: $Enums.EvidenceStrength[] | ListEnumEvidenceStrengthFieldRefInput<$PrismaModel>
@@ -20475,34 +20737,9 @@ export namespace Prisma {
     _max?: NestedEnumGapStatusFilter<$PrismaModel>
   }
 
-  export type NestedUuidNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
-  }
-
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -20608,12 +20845,15 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    revision?: number
     resume: ResumeCreateNestedOneWithoutAnalysesInput
     role: RoleCreateNestedOneWithoutAnalysesInput
     evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
     gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
     events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+    parent?: CareerAnalysisCreateNestedOneWithoutRevisionsInput
+    revisions?: CareerAnalysisCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisUncheckedCreateWithoutUserInput = {
@@ -20628,10 +20868,13 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
     evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
     gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
     events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    revisions?: CareerAnalysisUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisCreateOrConnectWithoutUserInput = {
@@ -20739,6 +20982,8 @@ export namespace Prisma {
     failureReason?: StringNullableFilter<"CareerAnalysis"> | string | null
     createdAt?: DateTimeFilter<"CareerAnalysis"> | Date | string
     completedAt?: DateTimeNullableFilter<"CareerAnalysis"> | Date | string | null
+    parentAnalysisId?: UuidNullableFilter<"CareerAnalysis"> | string | null
+    revision?: IntFilter<"CareerAnalysis"> | number
   }
 
   export type UserCreateWithoutRefreshTokensInput = {
@@ -20838,12 +21083,15 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    revision?: number
     user: UserCreateNestedOneWithoutAnalysesInput
     role: RoleCreateNestedOneWithoutAnalysesInput
     evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
     gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
     events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+    parent?: CareerAnalysisCreateNestedOneWithoutRevisionsInput
+    revisions?: CareerAnalysisCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisUncheckedCreateWithoutResumeInput = {
@@ -20858,10 +21106,13 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
     evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
     gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
     events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    revisions?: CareerAnalysisUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisCreateOrConnectWithoutResumeInput = {
@@ -21137,12 +21388,15 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    revision?: number
     user: UserCreateNestedOneWithoutAnalysesInput
     resume: ResumeCreateNestedOneWithoutAnalysesInput
     evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
     gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
     events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+    parent?: CareerAnalysisCreateNestedOneWithoutRevisionsInput
+    revisions?: CareerAnalysisCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisUncheckedCreateWithoutRoleInput = {
@@ -21157,10 +21411,13 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
     evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
     gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
     events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    revisions?: CareerAnalysisUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisCreateOrConnectWithoutRoleInput = {
@@ -21521,6 +21778,105 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CareerAnalysisCreateWithoutRevisionsInput = {
+    id?: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    revision?: number
+    user: UserCreateNestedOneWithoutAnalysesInput
+    resume: ResumeCreateNestedOneWithoutAnalysesInput
+    role: RoleCreateNestedOneWithoutAnalysesInput
+    evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+    parent?: CareerAnalysisCreateNestedOneWithoutRevisionsInput
+  }
+
+  export type CareerAnalysisUncheckedCreateWithoutRevisionsInput = {
+    id?: string
+    userId: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeId: string
+    roleId: string
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
+    evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
+  }
+
+  export type CareerAnalysisCreateOrConnectWithoutRevisionsInput = {
+    where: CareerAnalysisWhereUniqueInput
+    create: XOR<CareerAnalysisCreateWithoutRevisionsInput, CareerAnalysisUncheckedCreateWithoutRevisionsInput>
+  }
+
+  export type CareerAnalysisCreateWithoutParentInput = {
+    id?: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    revision?: number
+    user: UserCreateNestedOneWithoutAnalysesInput
+    resume: ResumeCreateNestedOneWithoutAnalysesInput
+    role: RoleCreateNestedOneWithoutAnalysesInput
+    evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+    revisions?: CareerAnalysisCreateNestedManyWithoutParentInput
+  }
+
+  export type CareerAnalysisUncheckedCreateWithoutParentInput = {
+    id?: string
+    userId: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeId: string
+    roleId: string
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    revision?: number
+    evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
+    events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    revisions?: CareerAnalysisUncheckedCreateNestedManyWithoutParentInput
+  }
+
+  export type CareerAnalysisCreateOrConnectWithoutParentInput = {
+    where: CareerAnalysisWhereUniqueInput
+    create: XOR<CareerAnalysisCreateWithoutParentInput, CareerAnalysisUncheckedCreateWithoutParentInput>
+  }
+
+  export type CareerAnalysisCreateManyParentInputEnvelope = {
+    data: CareerAnalysisCreateManyParentInput | CareerAnalysisCreateManyParentInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutAnalysesInput = {
     update: XOR<UserUpdateWithoutAnalysesInput, UserUncheckedUpdateWithoutAnalysesInput>
     create: XOR<UserCreateWithoutAnalysesInput, UserUncheckedCreateWithoutAnalysesInput>
@@ -21712,6 +22068,75 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"AnalysisEvent"> | Date | string
   }
 
+  export type CareerAnalysisUpsertWithoutRevisionsInput = {
+    update: XOR<CareerAnalysisUpdateWithoutRevisionsInput, CareerAnalysisUncheckedUpdateWithoutRevisionsInput>
+    create: XOR<CareerAnalysisCreateWithoutRevisionsInput, CareerAnalysisUncheckedCreateWithoutRevisionsInput>
+    where?: CareerAnalysisWhereInput
+  }
+
+  export type CareerAnalysisUpdateToOneWithWhereWithoutRevisionsInput = {
+    where?: CareerAnalysisWhereInput
+    data: XOR<CareerAnalysisUpdateWithoutRevisionsInput, CareerAnalysisUncheckedUpdateWithoutRevisionsInput>
+  }
+
+  export type CareerAnalysisUpdateWithoutRevisionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
+    user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
+    resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
+    role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
+    evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+    parent?: CareerAnalysisUpdateOneWithoutRevisionsNestedInput
+  }
+
+  export type CareerAnalysisUncheckedUpdateWithoutRevisionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeId?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
+    evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+  }
+
+  export type CareerAnalysisUpsertWithWhereUniqueWithoutParentInput = {
+    where: CareerAnalysisWhereUniqueInput
+    update: XOR<CareerAnalysisUpdateWithoutParentInput, CareerAnalysisUncheckedUpdateWithoutParentInput>
+    create: XOR<CareerAnalysisCreateWithoutParentInput, CareerAnalysisUncheckedCreateWithoutParentInput>
+  }
+
+  export type CareerAnalysisUpdateWithWhereUniqueWithoutParentInput = {
+    where: CareerAnalysisWhereUniqueInput
+    data: XOR<CareerAnalysisUpdateWithoutParentInput, CareerAnalysisUncheckedUpdateWithoutParentInput>
+  }
+
+  export type CareerAnalysisUpdateManyWithWhereWithoutParentInput = {
+    where: CareerAnalysisScalarWhereInput
+    data: XOR<CareerAnalysisUpdateManyMutationInput, CareerAnalysisUncheckedUpdateManyWithoutParentInput>
+  }
+
   export type CareerAnalysisCreateWithoutEvidenceInput = {
     id?: string
     status?: $Enums.CareerAnalysisStatus
@@ -21722,12 +22147,15 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    revision?: number
     user: UserCreateNestedOneWithoutAnalysesInput
     resume: ResumeCreateNestedOneWithoutAnalysesInput
     role: RoleCreateNestedOneWithoutAnalysesInput
     gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
     events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+    parent?: CareerAnalysisCreateNestedOneWithoutRevisionsInput
+    revisions?: CareerAnalysisCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisUncheckedCreateWithoutEvidenceInput = {
@@ -21743,9 +22171,12 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
     gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
     events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    revisions?: CareerAnalysisUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisCreateOrConnectWithoutEvidenceInput = {
@@ -21803,12 +22234,15 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
     resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
     role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
     gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+    parent?: CareerAnalysisUpdateOneWithoutRevisionsNestedInput
+    revisions?: CareerAnalysisUpdateManyWithoutParentNestedInput
   }
 
   export type CareerAnalysisUncheckedUpdateWithoutEvidenceInput = {
@@ -21824,9 +22258,12 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    revisions?: CareerAnalysisUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type SkillUpsertWithoutEvidenceInput = {
@@ -21874,12 +22311,15 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    revision?: number
     user: UserCreateNestedOneWithoutAnalysesInput
     resume: ResumeCreateNestedOneWithoutAnalysesInput
     role: RoleCreateNestedOneWithoutAnalysesInput
     evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
     events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+    parent?: CareerAnalysisCreateNestedOneWithoutRevisionsInput
+    revisions?: CareerAnalysisCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisUncheckedCreateWithoutGapsInput = {
@@ -21895,9 +22335,12 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
     evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
     events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    revisions?: CareerAnalysisUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisCreateOrConnectWithoutGapsInput = {
@@ -21945,6 +22388,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
+    completionNote?: string | null
     createdAt?: Date | string
     roadmap: RoadmapCreateNestedOneWithoutTasksInput
   }
@@ -21961,6 +22405,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
+    completionNote?: string | null
     createdAt?: Date | string
   }
 
@@ -21995,12 +22440,15 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
     resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
     role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
     evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+    parent?: CareerAnalysisUpdateOneWithoutRevisionsNestedInput
+    revisions?: CareerAnalysisUpdateManyWithoutParentNestedInput
   }
 
   export type CareerAnalysisUncheckedUpdateWithoutGapsInput = {
@@ -22016,9 +22464,12 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    revisions?: CareerAnalysisUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type SkillUpsertWithoutGapsInput = {
@@ -22088,6 +22539,7 @@ export namespace Prisma {
     resources?: JsonNullableFilter<"RoadmapTask">
     completed?: BoolFilter<"RoadmapTask"> | boolean
     completedAt?: DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
+    completionNote?: StringNullableFilter<"RoadmapTask"> | string | null
     createdAt?: DateTimeFilter<"RoadmapTask"> | Date | string
   }
 
@@ -22101,12 +22553,15 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    revision?: number
     user: UserCreateNestedOneWithoutAnalysesInput
     resume: ResumeCreateNestedOneWithoutAnalysesInput
     role: RoleCreateNestedOneWithoutAnalysesInput
     evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
     gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
     events?: AnalysisEventCreateNestedManyWithoutCareerAnalysisInput
+    parent?: CareerAnalysisCreateNestedOneWithoutRevisionsInput
+    revisions?: CareerAnalysisCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisUncheckedCreateWithoutRoadmapInput = {
@@ -22122,9 +22577,12 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
     evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
     gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
     events?: AnalysisEventUncheckedCreateNestedManyWithoutCareerAnalysisInput
+    revisions?: CareerAnalysisUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisCreateOrConnectWithoutRoadmapInput = {
@@ -22143,6 +22601,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
+    completionNote?: string | null
     createdAt?: Date | string
     skillGap?: SkillGapCreateNestedOneWithoutTasksInput
   }
@@ -22159,6 +22618,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
+    completionNote?: string | null
     createdAt?: Date | string
   }
 
@@ -22193,12 +22653,15 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
     resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
     role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
     evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
     gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+    parent?: CareerAnalysisUpdateOneWithoutRevisionsNestedInput
+    revisions?: CareerAnalysisUpdateManyWithoutParentNestedInput
   }
 
   export type CareerAnalysisUncheckedUpdateWithoutRoadmapInput = {
@@ -22214,9 +22677,12 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    revisions?: CareerAnalysisUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type RoadmapTaskUpsertWithWhereUniqueWithoutRoadmapInput = {
@@ -22345,12 +22811,15 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    revision?: number
     user: UserCreateNestedOneWithoutAnalysesInput
     resume: ResumeCreateNestedOneWithoutAnalysesInput
     role: RoleCreateNestedOneWithoutAnalysesInput
     evidence?: CandidateSkillEvidenceCreateNestedManyWithoutCareerAnalysisInput
     gaps?: SkillGapCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapCreateNestedOneWithoutCareerAnalysisInput
+    parent?: CareerAnalysisCreateNestedOneWithoutRevisionsInput
+    revisions?: CareerAnalysisCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisUncheckedCreateWithoutEventsInput = {
@@ -22366,9 +22835,12 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
     evidence?: CandidateSkillEvidenceUncheckedCreateNestedManyWithoutCareerAnalysisInput
     gaps?: SkillGapUncheckedCreateNestedManyWithoutCareerAnalysisInput
     roadmap?: RoadmapUncheckedCreateNestedOneWithoutCareerAnalysisInput
+    revisions?: CareerAnalysisUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type CareerAnalysisCreateOrConnectWithoutEventsInput = {
@@ -22397,12 +22869,15 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
     resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
     role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
     evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
     gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
+    parent?: CareerAnalysisUpdateOneWithoutRevisionsNestedInput
+    revisions?: CareerAnalysisUpdateManyWithoutParentNestedInput
   }
 
   export type CareerAnalysisUncheckedUpdateWithoutEventsInput = {
@@ -22418,9 +22893,12 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
+    revisions?: CareerAnalysisUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type ResumeCreateManyUserInput = {
@@ -22458,6 +22936,8 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
   }
 
   export type ResumeUpdateWithoutUserInput = {
@@ -22541,12 +23021,15 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
     role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
     evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
     gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+    parent?: CareerAnalysisUpdateOneWithoutRevisionsNestedInput
+    revisions?: CareerAnalysisUpdateManyWithoutParentNestedInput
   }
 
   export type CareerAnalysisUncheckedUpdateWithoutUserInput = {
@@ -22561,10 +23044,13 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    revisions?: CareerAnalysisUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type CareerAnalysisUncheckedUpdateManyWithoutUserInput = {
@@ -22579,6 +23065,8 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
   }
 
   export type CareerAnalysisCreateManyResumeInput = {
@@ -22593,6 +23081,8 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
   }
 
   export type CareerAnalysisUpdateWithoutResumeInput = {
@@ -22605,12 +23095,15 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
     role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
     evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
     gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+    parent?: CareerAnalysisUpdateOneWithoutRevisionsNestedInput
+    revisions?: CareerAnalysisUpdateManyWithoutParentNestedInput
   }
 
   export type CareerAnalysisUncheckedUpdateWithoutResumeInput = {
@@ -22625,10 +23118,13 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    revisions?: CareerAnalysisUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type CareerAnalysisUncheckedUpdateManyWithoutResumeInput = {
@@ -22643,6 +23139,8 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
   }
 
   export type RoleSkillRequirementCreateManySkillInput = {
@@ -22780,6 +23278,8 @@ export namespace Prisma {
     failureReason?: string | null
     createdAt?: Date | string
     completedAt?: Date | string | null
+    parentAnalysisId?: string | null
+    revision?: number
   }
 
   export type RoleSkillRequirementUpdateWithoutRoleInput = {
@@ -22819,12 +23319,15 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
     resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
     evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
     gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+    parent?: CareerAnalysisUpdateOneWithoutRevisionsNestedInput
+    revisions?: CareerAnalysisUpdateManyWithoutParentNestedInput
   }
 
   export type CareerAnalysisUncheckedUpdateWithoutRoleInput = {
@@ -22839,10 +23342,13 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
     evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
     roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
     events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    revisions?: CareerAnalysisUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type CareerAnalysisUncheckedUpdateManyWithoutRoleInput = {
@@ -22857,6 +23363,8 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentAnalysisId?: NullableStringFieldUpdateOperationsInput | string | null
+    revision?: IntFieldUpdateOperationsInput | number
   }
 
   export type CandidateSkillEvidenceCreateManyCareerAnalysisInput = {
@@ -22883,6 +23391,22 @@ export namespace Prisma {
     type: $Enums.AnalysisEventType
     payload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+  }
+
+  export type CareerAnalysisCreateManyParentInput = {
+    id?: string
+    userId: string
+    status?: $Enums.CareerAnalysisStatus
+    resumeId: string
+    roleId: string
+    resumeSnapshot: JsonNullValueInput | InputJsonValue
+    roleSnapshot: JsonNullValueInput | InputJsonValue
+    readinessScore?: number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    revision?: number
   }
 
   export type CandidateSkillEvidenceUpdateWithoutCareerAnalysisInput = {
@@ -22965,6 +23489,64 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CareerAnalysisUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
+    user?: UserUpdateOneRequiredWithoutAnalysesNestedInput
+    resume?: ResumeUpdateOneRequiredWithoutAnalysesNestedInput
+    role?: RoleUpdateOneRequiredWithoutAnalysesNestedInput
+    evidence?: CandidateSkillEvidenceUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUpdateManyWithoutCareerAnalysisNestedInput
+    revisions?: CareerAnalysisUpdateManyWithoutParentNestedInput
+  }
+
+  export type CareerAnalysisUncheckedUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeId?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
+    evidence?: CandidateSkillEvidenceUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    gaps?: SkillGapUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    roadmap?: RoadmapUncheckedUpdateOneWithoutCareerAnalysisNestedInput
+    events?: AnalysisEventUncheckedUpdateManyWithoutCareerAnalysisNestedInput
+    revisions?: CareerAnalysisUncheckedUpdateManyWithoutParentNestedInput
+  }
+
+  export type CareerAnalysisUncheckedUpdateManyWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumCareerAnalysisStatusFieldUpdateOperationsInput | $Enums.CareerAnalysisStatus
+    resumeId?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    resumeSnapshot?: JsonNullValueInput | InputJsonValue
+    roleSnapshot?: JsonNullValueInput | InputJsonValue
+    readinessScore?: NullableIntFieldUpdateOperationsInput | number | null
+    readinessBreakdown?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revision?: IntFieldUpdateOperationsInput | number
+  }
+
   export type RoadmapTaskCreateManySkillGapInput = {
     id?: string
     roadmapId: string
@@ -22977,6 +23559,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
+    completionNote?: string | null
     createdAt?: Date | string
   }
 
@@ -22991,6 +23574,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completionNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roadmap?: RoadmapUpdateOneRequiredWithoutTasksNestedInput
   }
@@ -23007,6 +23591,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completionNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -23022,6 +23607,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completionNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -23037,6 +23623,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: boolean
     completedAt?: Date | string | null
+    completionNote?: string | null
     createdAt?: Date | string
   }
 
@@ -23051,6 +23638,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completionNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     skillGap?: SkillGapUpdateOneWithoutTasksNestedInput
   }
@@ -23067,6 +23655,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completionNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -23082,6 +23671,7 @@ export namespace Prisma {
     resources?: NullableJsonNullValueInput | InputJsonValue
     completed?: BoolFieldUpdateOperationsInput | boolean
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completionNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
