@@ -35,12 +35,22 @@ export function useCareerAnalyses(resumeId?: string) {
   };
 }
 
+// Analysis is created with status "analyzing" and the AI call that finishes
+// it runs synchronously inside the original POST — so a GET here observing
+// "analyzing" only happens when that original request died mid-flight (tab
+// closed, network drop) and the backend's stale-analysis reaper hasn't
+// caught it yet (career-analysis.service.ts, reapStaleAnalyses, fires on
+// read after GEMINI_CALL_TIMEOUT_MS * 3). Polling is what lets this page
+// observe that reap instead of showing a frozen "analyzing" state forever.
+const ANALYZING_POLL_INTERVAL_MS = 3000;
+
 export function useCareerAnalysis(id: string) {
   const {
     data: analysis,
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery<CareerAnalysisDetail>({
     queryKey: queryKeys.careerAnalyses.detail(id),
     queryFn: async () => {
@@ -50,6 +60,12 @@ export function useCareerAnalysis(id: string) {
     staleTime: DEFAULT_STALE_TIME,
     retry: defaultQueryRetry,
     enabled: !!id,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      return status === "analyzing" || status === "pending"
+        ? ANALYZING_POLL_INTERVAL_MS
+        : false;
+    },
   });
 
   return {
@@ -57,6 +73,7 @@ export function useCareerAnalysis(id: string) {
     isLoading,
     isError,
     error: isApiError(error) ? error : null,
+    refetch,
   };
 }
 

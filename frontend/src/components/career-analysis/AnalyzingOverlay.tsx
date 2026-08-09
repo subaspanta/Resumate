@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 /**
  * Both the evidence assessment and the roadmap-content Gemini calls
@@ -20,16 +21,27 @@ const DEFAULT_PHASES = [
 
 const PHASE_DURATION_MS = 2600;
 
+// The page polls the analysis every 3s while status stays "analyzing", so
+// this is a real ceiling, not decoration: a request that died mid-flight
+// only recovers once the backend's stale-analysis reaper fires (currently
+// 180s after the analysis started, career-analysis.service.ts). Past this
+// point the user has been staring at phase text describing work that most
+// likely already failed, so trade the animation for an honest fallback.
+const STALL_TIMEOUT_MS = 30_000;
+
 interface AnalyzingOverlayProps {
   title?: string;
   phases?: string[];
+  onRetry?: () => void;
 }
 
 export function AnalyzingOverlay({
   title = DEFAULT_TITLE,
   phases = DEFAULT_PHASES,
+  onRetry,
 }: AnalyzingOverlayProps = {}) {
   const [phase, setPhase] = useState(0);
+  const [stalled, setStalled] = useState(false);
 
   // Advances one phase at a time and stops on the last — looping back to the
   // first phase would suggest the work restarted. A chained timeout rather
@@ -40,6 +52,26 @@ export function AnalyzingOverlay({
     const timer = setTimeout(() => setPhase((p) => p + 1), PHASE_DURATION_MS);
     return () => clearTimeout(timer);
   }, [phase, phases.length]);
+
+  useEffect(() => {
+    if (!onRetry) return;
+    const timer = setTimeout(() => setStalled(true), STALL_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [onRetry]);
+
+  if (stalled && onRetry) {
+    return (
+      <div className="analyzing-overlay" role="status" aria-live="polite">
+        <div className="analyzing-overlay-card">
+          <p className="analyzing-overlay-title">Taking longer than expected</p>
+          <p className="analyzing-overlay-note">
+            This is unusual — check again, or come back in a moment.
+          </p>
+          <Button onClick={onRetry}>Check again</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="analyzing-overlay" role="status" aria-live="polite">

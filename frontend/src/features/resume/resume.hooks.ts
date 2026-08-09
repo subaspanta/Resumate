@@ -51,6 +51,7 @@ export function useResume(id: string) {
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery<Resume>({
     queryKey: queryKeys.resumes.detail(id),
     queryFn: async () => {
@@ -67,6 +68,7 @@ export function useResume(id: string) {
     isLoading,
     isError,
     error: isApiError(error) ? error : null,
+    refetch,
   };
 }
 

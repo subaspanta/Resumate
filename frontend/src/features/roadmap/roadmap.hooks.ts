@@ -16,6 +16,7 @@ export function useRoadmap(analysisId: string) {
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery<Roadmap | null>({
     queryKey: queryKeys.roadmap.byAnalysis(analysisId),
     queryFn: async () => {
@@ -32,6 +33,7 @@ export function useRoadmap(analysisId: string) {
     isLoading,
     isError,
     error: isApiError(error) ? error : null,
+    refetch,
   };
 }
 

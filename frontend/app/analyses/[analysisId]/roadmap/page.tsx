@@ -24,17 +24,32 @@ export default function RoadmapPage({
   const { analysisId } = use(params);
   const router = useRouter();
 
-  const { isLoading: analysisLoading, isError, isRedirecting } =
-    useCareerAnalysisGuard(analysisId);
-  const { roadmap, isLoading: roadmapLoading } = useRoadmap(analysisId);
+  const {
+    analysis,
+    isLoading: analysisLoading,
+    isError,
+    isRedirecting,
+    refetch: refetchAnalysis,
+  } = useCareerAnalysisGuard(analysisId);
+  const {
+    roadmap,
+    isLoading: roadmapLoading,
+    refetch: refetchRoadmap,
+  } = useRoadmap(analysisId);
   const toggleTask = useToggleRoadmapTask(analysisId);
 
   const handleNavigateStep = useCallback(
     (step: string) => {
       if (step === "upload") router.push("/");
+      if (step === "review" && analysis) {
+        router.push(`/resumes/${analysis.resumeId}/review`);
+      }
+      if (step === "role" && analysis) {
+        router.push(`/analyze/${analysis.resumeId}`);
+      }
       if (step === "analysis") router.push(`/analyses/${analysisId}`);
     },
-    [router, analysisId],
+    [router, analysisId, analysis],
   );
 
   const weeks = useMemo(() => {
@@ -81,7 +96,14 @@ export default function RoadmapPage({
           <p className="analysis-error-message">
             We couldn&apos;t load this roadmap.
           </p>
-          <Button onClick={() => window.location.reload()}>Try again</Button>
+          <Button
+            onClick={() => {
+              refetchAnalysis();
+              refetchRoadmap();
+            }}
+          >
+            Try again
+          </Button>
         </div>
       </AppShell>
     );

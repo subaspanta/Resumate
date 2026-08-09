@@ -54,8 +54,9 @@ export default function AnalyzeRolePage({
   const handleNavigateStep = useCallback(
     (step: string) => {
       if (step === "upload") router.push("/");
+      if (step === "review") router.push(`/resumes/${resumeId}/review`);
     },
-    [router],
+    [router, resumeId],
   );
 
   if (isRedirecting) {

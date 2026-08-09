@@ -16,7 +16,7 @@ export function useUploadResumeFlow() {
     try {
       const resume = await uploadResumeMutation.mutateAsync(form);
       toast.success(`"${file.name}" uploaded successfully.`);
-      router.push(`/analyze/${resume.id}`);
+      router.push(`/resumes/${resume.id}/review`);
     } catch (error) {
       if (isApiError(error)) {
         switch (error.code) {

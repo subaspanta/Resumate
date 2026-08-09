@@ -6,11 +6,12 @@ import { toast } from "sonner";
 import { isApiError } from "@/src/api/api-error";
 import { useResume } from "./resume.hooks";
 
-// Gates the job-description step: without a resume there's nothing to tailor.
-// Same 404-means-missing-or-foreign contract as useAnalysisGuard, and the
-// same rule that only a 404 redirects.
+// Gates the profile-review and role-selection steps: without a resume
+// there's nothing to review or analyze. Same 404-means-missing-or-foreign
+// contract as useCareerAnalysisGuard, and the same rule that only a 404
+// redirects.
 export function useResumeGuard(resumeId: string) {
-  const { resume, isLoading, isError, error } = useResume(resumeId);
+  const { resume, isLoading, isError, error, refetch } = useResume(resumeId);
   const router = useRouter();
 
   const isForbidden = isError && isApiError(error) && error.status === 404;
@@ -26,5 +27,6 @@ export function useResumeGuard(resumeId: string) {
     isLoading,
     isError: isError && !isForbidden,
     isRedirecting: isForbidden,
+    refetch,
   };
 }

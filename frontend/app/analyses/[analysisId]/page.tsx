@@ -49,15 +49,21 @@ export default function AnalysisPage({
   const { analysisId } = use(params);
   const router = useRouter();
 
-  const { analysis, isLoading, isError, isRedirecting } =
+  const { analysis, isLoading, isError, isRedirecting, refetch } =
     useCareerAnalysisGuard(analysisId);
   const generateRoadmap = useGenerateRoadmap(analysisId);
 
   const handleNavigateStep = useCallback(
     (step: string) => {
       if (step === "upload") router.push("/");
+      if (step === "review" && analysis) {
+        router.push(`/resumes/${analysis.resumeId}/review`);
+      }
+      if (step === "role" && analysis) {
+        router.push(`/analyze/${analysis.resumeId}`);
+      }
     },
-    [router],
+    [router, analysis],
   );
 
   const handleGenerateRoadmap = () => {
@@ -89,7 +95,7 @@ export default function AnalysisPage({
           <p className="analysis-error-message">
             We couldn&apos;t load this analysis.
           </p>
-          <Button onClick={() => window.location.reload()}>Try again</Button>
+          <Button onClick={() => refetch()}>Try again</Button>
         </div>
       </AppShell>
     );
@@ -123,7 +129,7 @@ export default function AnalysisPage({
         title="Career Analysis"
         onNavigateStep={handleNavigateStep}
       >
-        <AnalyzingOverlay />
+        <AnalyzingOverlay onRetry={() => refetch()} />
       </AppShell>
     );
   }
