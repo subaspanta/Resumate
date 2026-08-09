@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import type { GoogleGenAI } from "@google/genai";
-import { EvidenceAgentService } from "./evidence.agent.js";
-import { EvidenceAgentInput } from "../career-analysis.types.js";
-import { StructuredResume } from "../../parsing/parsing.types.js";
-import { AppError } from "../../../types/app-error.js";
+import { EvidenceAgentService } from "../../../../src/modules/career-analysis/agents/evidence.agent.js";
+import { EvidenceAgentInput } from "../../../../src/modules/career-analysis/career-analysis.types.js";
+import { StructuredResume } from "../../../../src/modules/parsing/parsing.types.js";
+import { AppError } from "../../../../src/types/app-error.js";
 
 function fakeGeminiClient(responseText: string): GoogleGenAI {
   return {

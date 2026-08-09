@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import type { GoogleGenAI } from "@google/genai";
-import { RoadmapAgentService } from "./roadmap.agent.js";
-import { RoadmapAgentInput } from "../roadmap.types.js";
-import { AppError } from "../../../types/app-error.js";
+import { RoadmapAgentService } from "../../../../src/modules/roadmap/agents/roadmap.agent.js";
+import { RoadmapAgentInput } from "../../../../src/modules/roadmap/roadmap.types.js";
+import { AppError } from "../../../../src/types/app-error.js";
 
 function capturingClient(responseText: string) {
   const generateContent = vi.fn().mockResolvedValue({ text: responseText });

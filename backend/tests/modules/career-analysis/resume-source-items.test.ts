@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   buildSourceItems,
   renderSourceItemsForPrompt,
-} from "./resume-source-items.js";
-import { SOURCE_SECTIONS, SourceSection } from "./career-analysis.types.js";
-import { StructuredResume } from "../parsing/parsing.types.js";
-import { normalizeForGrounding } from "../../utils/grounding-normalize.js";
+} from "../../../src/modules/career-analysis/resume-source-items.js";
+import { SOURCE_SECTIONS, SourceSection } from "../../../src/modules/career-analysis/career-analysis.types.js";
+import { StructuredResume } from "../../../src/modules/parsing/parsing.types.js";
+import { normalizeForGrounding } from "../../../src/utils/grounding-normalize.js";
 
 const REAL_BULLET =
   "Containerized the payment service using Docker and deployed it to staging";

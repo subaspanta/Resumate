@@ -4,11 +4,11 @@ import {
   computeReadiness,
   deriveGapStatus,
   ScorableSkill,
-} from "./readiness.js";
+} from "../../../src/modules/career-analysis/readiness.js";
 import {
   GapStatus,
   SkillImportance,
-} from "../../generated/client/index.js";
+} from "../../../src/generated/client/index.js";
 
 function skill(
   slug: string,

@@ -1,20 +1,20 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { prisma } from "../../lib/prisma.js";
+import { prisma } from "../../../src/lib/prisma.js";
 import {
   CareerAnalysisRepository,
   STALE_ANALYSIS_AFTER_MS,
   STALE_ANALYSIS_REASON,
-} from "./career-analysis.repository.js";
-import { CareerAnalysisService } from "./career-analysis.service.js";
-import { ResumeRepository } from "../resume/resume.repository.js";
-import { RoleRepository } from "../role/role.repository.js";
-import { RoleService } from "../role/role.service.js";
-import { AppError } from "../../types/app-error.js";
+} from "../../../src/modules/career-analysis/career-analysis.repository.js";
+import { CareerAnalysisService } from "../../../src/modules/career-analysis/career-analysis.service.js";
+import { ResumeRepository } from "../../../src/modules/resume/resume.repository.js";
+import { RoleRepository } from "../../../src/modules/role/role.repository.js";
+import { RoleService } from "../../../src/modules/role/role.service.js";
+import { AppError } from "../../../src/types/app-error.js";
 import {
   EvidenceAgent,
   EvidenceAgentInput,
   EvidenceAgentOutput,
-} from "./career-analysis.types.js";
+} from "../../../src/modules/career-analysis/career-analysis.types.js";
 
 const REAL_BULLET =
   "Built and shipped REST endpoints in Node.js backed by PostgreSQL";

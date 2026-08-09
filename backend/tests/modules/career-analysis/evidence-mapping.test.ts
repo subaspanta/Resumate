@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { mapAssessmentsToGaps } from "./evidence-mapping.js";
+import { mapAssessmentsToGaps } from "../../../src/modules/career-analysis/evidence-mapping.js";
 import {
   GroundedSkillAssessment,
   RoleSnapshot,
-} from "./career-analysis.types.js";
-import { SkillImportance } from "../../generated/client/index.js";
+} from "../../../src/modules/career-analysis/career-analysis.types.js";
+import { SkillImportance } from "../../../src/generated/client/index.js";
 
 function snapshot(
   skills: [slug: string, importance: SkillImportance][],

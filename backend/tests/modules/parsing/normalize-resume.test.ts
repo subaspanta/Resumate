@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { normalizeStructuredResume } from "./normalize-resume.js";
-import { logger } from "../../config/logger.js";
+import { normalizeStructuredResume } from "../../../src/modules/parsing/normalize-resume.js";
+import { logger } from "../../../src/config/logger.js";
 
 describe("normalizeStructuredResume", () => {
   it("converts a legacy experience description into a single bullet", () => {

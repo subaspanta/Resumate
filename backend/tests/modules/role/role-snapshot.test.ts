@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { buildRoleSnapshot } from "./role-snapshot.js";
-import { RoleDetail } from "./role.types.js";
+import { buildRoleSnapshot } from "../../../src/modules/role/role-snapshot.js";
+import { RoleDetail } from "../../../src/modules/role/role.types.js";
 
 function role(): RoleDetail {
   return {

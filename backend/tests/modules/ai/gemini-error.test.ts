@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { ApiError } from "@google/genai";
-import { classifyGeminiError } from "./gemini-error.js";
-import { ERROR_CODES } from "../../constants/error-codes.js";
-import { HTTP_STATUS } from "../../constants/http-status.js";
+import { classifyGeminiError } from "../../../src/modules/ai/gemini-error.js";
+import { ERROR_CODES } from "../../../src/constants/error-codes.js";
+import { HTTP_STATUS } from "../../../src/constants/http-status.js";
 
 describe("classifyGeminiError", () => {
   it("classifies a 429 ApiError as rate-limited", () => {

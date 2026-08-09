@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { GoogleGenAI } from "@google/genai";
-import { AIStructuringService } from "./ai.service.js";
+import { AIStructuringService } from "../../../src/modules/ai/ai.service.js";
 
 function fakeGeminiClient(responseText: string): GoogleGenAI {
   return {

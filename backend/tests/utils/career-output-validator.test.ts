@@ -2,18 +2,18 @@ import { describe, expect, it } from "vitest";
 import {
   validateEvidenceGrounding,
   validateRoadmapGrounding,
-} from "./career-output-validator.js";
+} from "../../src/utils/career-output-validator.js";
 import {
   isQuoteGrounded,
   normalizeForGrounding,
-} from "./grounding-normalize.js";
-import { buildSourceItems } from "../modules/career-analysis/resume-source-items.js";
-import { StructuredResume } from "../modules/parsing/parsing.types.js";
+} from "../../src/utils/grounding-normalize.js";
+import { buildSourceItems } from "../../src/modules/career-analysis/resume-source-items.js";
+import { StructuredResume } from "../../src/modules/parsing/parsing.types.js";
 import {
   EvidenceAgentOutput,
   RoleSnapshot,
-} from "../modules/career-analysis/career-analysis.types.js";
-import { AppError } from "../types/app-error.js";
+} from "../../src/modules/career-analysis/career-analysis.types.js";
+import { AppError } from "../../src/types/app-error.js";
 
 const REAL_BULLET =
   "Containerized the payment service using Docker and deployed it to staging";

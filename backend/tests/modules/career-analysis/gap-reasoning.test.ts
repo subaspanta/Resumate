@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { buildGapReasoning } from "./gap-reasoning.js";
-import { GroundedEvidenceItem } from "./career-analysis.types.js";
+import { buildGapReasoning } from "../../../src/modules/career-analysis/gap-reasoning.js";
+import { GroundedEvidenceItem } from "../../../src/modules/career-analysis/career-analysis.types.js";
 
 function evidence(
   strength: GroundedEvidenceItem["strength"],

@@ -11,7 +11,7 @@ export default defineConfig({
     // also collects the compiled copies under dist/, which duplicates every
     // test and fails outright — the generated Prisma client is not emitted
     // there, so dist/lib/prisma.js cannot resolve its import.
-    include: ["src/**/*.test.ts"],
+    include: ["tests/**/*.test.ts"],
     exclude: ["dist/**", "node_modules/**"],
   },
 });

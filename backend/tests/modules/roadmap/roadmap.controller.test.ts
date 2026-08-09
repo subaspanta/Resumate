@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
-import app from "../../app.js";
-import { prisma } from "../../lib/prisma.js";
-import { generateAccessToken } from "../../utils/tokens.js";
+import app from "../../../src/app.js";
+import { prisma } from "../../../src/lib/prisma.js";
+import { generateAccessToken } from "../../../src/utils/tokens.js";
 
 // HTTP boundary only — auth, validation, ownership. Every case here is
 // rejected before the route would reach Gemini, so the container's real agent

@@ -6,8 +6,8 @@ import {
   DEFAULT_ROADMAP_WEEKS,
   selectTopGaps,
   sortGapsByPriority,
-} from "./roadmap-ordering.js";
-import { GapStatus } from "../../generated/client/index.js";
+} from "../../../src/modules/roadmap/roadmap-ordering.js";
+import { GapStatus } from "../../../src/generated/client/index.js";
 
 type Gap = {
   id: string;
