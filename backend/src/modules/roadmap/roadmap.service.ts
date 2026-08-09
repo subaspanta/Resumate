@@ -206,6 +206,7 @@ export class RoadmapService {
     // revision's page still finds the same roadmap the root sees, instead of
     // reading back null for a roadmap that genuinely exists.
     const rootId = await this.careerAnalysisService.resolveRootAnalysisId(
+      userId,
       analysisId,
     );
     // An analysis without a roadmap yet is a normal state, not an error.

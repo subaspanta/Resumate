@@ -12,6 +12,7 @@ import {
   CareerAnalysisRepository,
   CareerAnalysisWithResults,
   CompletedCareerAnalysis,
+  RootAnalysisForReassessment,
   STALE_ANALYSIS_AFTER_MS,
 } from "./career-analysis.repository.js";
 import { mapAssessmentsToGaps } from "./evidence-mapping.js";
@@ -183,18 +184,7 @@ export class CareerAnalysisService {
     // Ownership before anything else, including any read that might trigger
     // an AI call further down.
     await this.assertAnalysisOwner(userId, analysisId);
-
-    const root =
-      await this.careerAnalysisRepository.findRootForReassessment(analysisId);
-    // assertAnalysisOwner already proved this row (or its root) exists and
-    // belongs to userId, so a miss here would be a race, not a normal 404.
-    if (!root || root.userId !== userId) {
-      throw new AppError(
-        HTTP_STATUS.NOT_FOUND,
-        ERROR_CODES.RESOURCE_NOT_FOUND,
-        "Analysis not found",
-      );
-    }
+    const root = await this.resolveOwnedRoot(userId, analysisId);
 
     if (root.status !== "complete") {
       throw new AppError(
@@ -410,17 +400,39 @@ export class CareerAnalysisService {
   // Public for the same reason assertAnalysisOwner is: RoadmapService needs
   // the same resolution and must not reach past this service into its
   // repository to get it.
-  async resolveRootAnalysisId(analysisId: string): Promise<string> {
+  async resolveRootAnalysisId(
+    userId: string,
+    analysisId: string,
+  ): Promise<string> {
+    const root = await this.resolveOwnedRoot(userId, analysisId);
+    return root.id;
+  }
+
+  // Resolves analysisId (root or revision) to the full root row, re-checking
+  // ownership on it. The one place all three reassessment-adjacent callers
+  // (reassessAnalysis, getRevisions, resolveRootAnalysisId) do this lookup,
+  // so an ownership rule added here applies to all of them instead of only
+  // whichever one someone remembered to update.
+  //
+  // Requires the CALLER to have already run assertAnalysisOwner(userId,
+  // analysisId) — this is not a substitute for that check, only the
+  // second-hop resolution once ownership on the passed-in id is proven. A
+  // miss here means a race (the row changed between the two reads), not a
+  // normal 404.
+  private async resolveOwnedRoot(
+    userId: string,
+    analysisId: string,
+  ): Promise<RootAnalysisForReassessment> {
     const root =
       await this.careerAnalysisRepository.findRootForReassessment(analysisId);
-    if (!root) {
+    if (!root || root.userId !== userId) {
       throw new AppError(
         HTTP_STATUS.NOT_FOUND,
         ERROR_CODES.RESOURCE_NOT_FOUND,
         "Analysis not found",
       );
     }
-    return root.id;
+    return root;
   }
 
   // Fails this user's abandoned `analyzing` rows before a read returns them.
@@ -473,15 +485,7 @@ export class CareerAnalysisService {
   // or any of its revisions — both resolve to the same list.
   async getRevisions(userId: string, analysisId: string) {
     await this.assertAnalysisOwner(userId, analysisId);
-    const root =
-      await this.careerAnalysisRepository.findRootForReassessment(analysisId);
-    if (!root || root.userId !== userId) {
-      throw new AppError(
-        HTTP_STATUS.NOT_FOUND,
-        ERROR_CODES.RESOURCE_NOT_FOUND,
-        "Analysis not found",
-      );
-    }
+    const root = await this.resolveOwnedRoot(userId, analysisId);
     return this.careerAnalysisRepository.findRevisionsByRootId(root.id);
   }
 
