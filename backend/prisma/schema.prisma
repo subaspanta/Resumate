@@ -242,8 +242,10 @@ model SkillGap {
 
 model Roadmap {
   id               String   @id @default(uuid()) @db.Uuid
-  // 1:1 — regeneration replaces the existing roadmap inside a transaction
-  // rather than accumulating versions, so "the roadmap" stays unambiguous.
+  // 1:1 — a second POST .../roadmap for the same analysis is rejected with
+  // 409 ROADMAP_ALREADY_EXISTS rather than replacing this row, so completed
+  // tasks are never silently discarded. Regeneration, if it ships, must be
+  // an explicit operation with explicit replacement semantics.
   careerAnalysisId String   @unique @db.Uuid
   weekCount        Int      @default(4)
   createdAt        DateTime @default(now()) @db.Timestamp(6)

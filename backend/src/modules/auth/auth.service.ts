@@ -14,9 +14,14 @@ import {
   verifyRefreshToken,
 } from "../../utils/tokens.js";
 import { Prisma } from "../../generated/client/edge.js";
+import { StorageModule } from "../storage/storage.types.js";
+import { logger } from "../../config/logger.js";
 
 export class AuthService {
-  constructor(private readonly authRepository: AuthRepository) {}
+  constructor(
+    private readonly authRepository: AuthRepository,
+    private readonly storageModule: StorageModule,
+  ) {}
   private throwInvalidCredentials(): never {
     throw new AppError(
       401,
@@ -165,5 +170,34 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  // Collects resume file paths before the cascade delete removes the rows
+  // that are the only record of them, then deletes the user — cascading to
+  // resumes, career analyses, evidence, gaps, roadmaps, tasks, analysis
+  // events, and refresh tokens per the schema's onDelete: Cascade. Storage
+  // cleanup is best-effort and runs after the DB delete succeeds, matching
+  // ResumeService.deleteResume: the account is gone either way, and a
+  // leftover Cloudinary object is a cost to clean up later, not a reason to
+  // leave the account undeletable.
+  async deleteAccount(userId: string): Promise<void> {
+    const filePaths = await this.authRepository.findResumeFilePaths(userId);
+
+    const deletedCount = await this.authRepository.deleteUser(userId);
+    if (deletedCount === 0) {
+      throw new AppError(404, ERROR_CODES.RESOURCE_NOT_FOUND, "User not found");
+    }
+
+    for (const filePath of filePaths) {
+      try {
+        await this.storageModule.deleteFile(filePath);
+      } catch (cleanupError) {
+        logger.error("Failed to delete resume file during account deletion", {
+          userId,
+          filePath,
+          cleanupError,
+        });
+      }
+    }
   }
 }

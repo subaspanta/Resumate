@@ -158,6 +158,16 @@ export class ResumeService {
       }
     }
 
-    await this.resumeRepository.deleteById(id);
+    const deletedCount = await this.resumeRepository.deleteByIdAndUserId(
+      id,
+      userId,
+    );
+    if (deletedCount === 0) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Resume not found",
+      );
+    }
   }
 }

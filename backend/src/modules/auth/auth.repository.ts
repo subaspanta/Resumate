@@ -94,4 +94,27 @@ export class AuthRepository {
     });
     return result.count;
   }
+
+  /** Cloudinary paths for every resume the user owns, read before the
+   *  cascade delete removes the rows that would otherwise be the only
+   *  record of them. */
+  async findResumeFilePaths(userId: string): Promise<string[]> {
+    const resumes = await prisma.resume.findMany({
+      where: { userId, filePath: { not: null } },
+      select: { filePath: true },
+    });
+    return resumes
+      .map((r) => r.filePath)
+      .filter((path): path is string => path !== null);
+  }
+
+  /** Deletes the user row. Cascades to resumes, career analyses, evidence,
+   *  gaps, roadmaps, tasks, analysis events, and refresh tokens per the
+   *  schema's onDelete: Cascade — this is the one write that removes all of
+   *  it. Returns the row count so the caller can tell an already-deleted
+   *  user apart from a real failure. */
+  async deleteUser(userId: string): Promise<number> {
+    const result = await prisma.user.deleteMany({ where: { id: userId } });
+    return result.count;
+  }
 }

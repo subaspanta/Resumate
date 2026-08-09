@@ -51,7 +51,14 @@ export class ResumeRepository {
     });
   }
 
-  async deleteById(id: string): Promise<void> {
-    await prisma.resume.delete({ where: { id } });
+  // Ownership-scoped write. deleteMany rather than delete: Prisma's delete
+  // accepts only a unique field in `where`, so a userId filter is impossible
+  // and the write would have to trust the earlier findByIdAndUserId read.
+  // Here the write carries the ownership predicate itself. Returns the row
+  // count so the caller can treat 0 (vanished or reassigned between the read
+  // and this write) as not-found rather than a silent no-op.
+  async deleteByIdAndUserId(id: string, userId: string): Promise<number> {
+    const result = await prisma.resume.deleteMany({ where: { id, userId } });
+    return result.count;
   }
 }

@@ -50,12 +50,21 @@ describe("DELETE /resumes/:id", () => {
     expect(res.status).toBe(401);
   });
 
-  it("returns 404 when deleting another user's resume", async () => {
+  it("returns 404 when deleting another user's resume, and the row survives", async () => {
     const resume = await createResume(owner.user.id);
     const res = await request(app)
       .delete(`/api/v1/resumes/${resume.id}`)
       .set("Cookie", [`accessToken=${intruder.token}`]);
     expect(res.status).toBe(404);
+
+    // Proves the ownership predicate is on the delete write itself, not
+    // just the earlier read — a bare `delete({ where: { id } })` would
+    // return 404 here too (the read still gates the response) while
+    // silently removing the row underneath. Confirm it did not.
+    const stillExists = await prisma.resume.findUnique({
+      where: { id: resume.id },
+    });
+    expect(stillExists).not.toBeNull();
   });
 
   it("returns 404 for a nonexistent resume", async () => {

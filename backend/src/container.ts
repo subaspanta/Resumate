@@ -47,7 +47,7 @@ const evidenceAgent = new EvidenceAgentService(geminiClient);
 const roadmapAgent = new RoadmapAgentService(geminiClient);
 
 // --- services ---
-const authService = new AuthService(authRepository);
+const authService = new AuthService(authRepository, cloudinaryStorageModule);
 const roleService = new RoleService(roleRepository);
 const careerAnalysisService = new CareerAnalysisService(
   careerAnalysisRepository,
