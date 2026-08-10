@@ -1,0 +1,103 @@
+/**
+ * Account settings: read-only profile fields and the destructive delete
+ * action. Used by app/settings/page.tsx.
+ */
+@layer components {
+  .settings-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .settings-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-xl);
+  }
+
+  .settings-field {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding-block: var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border-base);
+  }
+
+  .settings-field:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .settings-field-label {
+    font-family: var(--font-label-std);
+    font-size: var(--text-label-std);
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  .settings-field-value {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    color: var(--color-text-primary);
+    text-align: right;
+  }
+
+  /* Danger zone -------------------------------------------------------------- */
+
+  /* A tinted-danger border, not the sage AI tint or a plain neutral card — the
+     one place this system deliberately breaks the single-accent rule, because
+     the consequence (irreversible deletion) needs its own visual register. */
+  .settings-card--danger {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
+    border-color: color-mix(in srgb, var(--color-danger) 35%, var(--color-border-base));
+  }
+
+  .settings-danger-copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .settings-danger-title {
+    font-family: var(--font-label-std);
+    font-size: var(--text-body-lg);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .settings-danger-body {
+    max-width: 52ch;
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    color: var(--color-text-muted);
+  }
+
+  .settings-danger-button {
+    flex-shrink: 0;
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+  }
+
+  .settings-danger-button:hover {
+    background-color: color-mix(in srgb, var(--color-danger) 8%, transparent);
+  }
+
+  @media (max-width: 640px) {
+    .settings-card--danger {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .settings-danger-button {
+      width: 100%;
+    }
+  }
+}

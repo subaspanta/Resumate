@@ -22,12 +22,28 @@
     width: var(--spacing-sidebar-collapsed-width);
   }
 
+  /* Now a real link home, not inert markup — text-decoration/color reset
+     because the browser default underline/blue would fight the wordmark's
+     own primary-green styling below. */
   .dashboard-sidebar-brand {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-xxl);
     padding-inline: var(--spacing-md);
+    text-decoration: none;
+    color: inherit;
+    border-radius: var(--radius-lg);
+    transition: opacity 150ms ease-out;
+  }
+
+  .dashboard-sidebar-brand:hover {
+    opacity: 0.85;
+  }
+
+  .dashboard-sidebar-brand:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 
   .dashboard-sidebar-brand--collapsed {
@@ -35,11 +51,23 @@
     padding-inline: 0;
   }
 
-  .dashboard-sidebar-brand-icon {
+  /* The rounded-square "R" mark: solid primary fill is the one place a
+     block of accent color is allowed at full strength (DESIGN.md's One
+     Accent Rule reserves that for exactly this kind of brand moment). */
+  .dashboard-sidebar-brand-mark {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-family: var(--font-headline-sm);
+    font-size: var(--text-headline-sm);
+    font-weight: 700;
+    line-height: 1;
   }
 
   .dashboard-sidebar-brand-text {
@@ -119,6 +147,24 @@
   .dashboard-nav-item--collapsed {
     justify-content: center;
     padding-inline: 0;
+    position: relative;
+  }
+
+  /* Collapsed active state needs more than the fill-tone wash the expanded
+     state uses — on a bare icon with no label, that wash reads as barely
+     there. A small solid-primary dot at the item's edge is the same "border
+     + fill-tone" depth language, just concentrated enough to notice at a
+     glance. */
+  .dashboard-nav-item--collapsed.dashboard-nav-item--active::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 9999px;
+    background-color: var(--color-primary);
   }
 
   .dashboard-nav-label {
@@ -161,21 +207,37 @@
     border-top: 1px solid var(--color-border-base);
   }
 
+  /* At icon-only density there's no label text to help the eye parse "nav
+     ends, account starts" — a slightly darker, inset divider reads as a
+     deliberate section break instead of one more thin line among many. */
+  .dashboard-sidebar--collapsed .dashboard-sidebar-footer {
+    margin-inline: var(--spacing-sm);
+    border-top-color: var(--color-border-input);
+  }
+
+  /* Always floats just outside the sidebar's own right edge — left: 100%
+     is relative to the sidebar's current width, so the same rule holds in
+     both expanded (272px) and collapsed (80px) states without a separate
+     inline variant. The main content column's own inline padding is only
+     24px on the collapsed rail's narrow side; a 24px circle plus any gap
+     does not fit inside that without touching text, so the circle itself
+     is sized to fit the gutter with 2px of margin left over (20px circle +
+     2px gap = 22px, under the 24px padding) rather than relying on font
+     metrics to save it. */
   .dashboard-sidebar-toggle {
     position: absolute;
     top: var(--spacing-xl);
-    right: 0;
-    transform: translateX(50%);
+    left: 100%;
+    margin-left: 2px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 9999px;
     border: 1px solid var(--color-border-base);
     background-color: var(--color-surface);
     color: var(--color-text-muted);
-    box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
     cursor: pointer;
     transition: color 150ms ease-out, border-color 150ms ease-out;
     z-index: 51;
@@ -187,7 +249,7 @@
   }
 
   .dashboard-sidebar-toggle:active {
-    transform: translateX(50%) scale(0.92);
+    transform: scale(0.92);
   }
 
   .dashboard-sidebar-toggle svg {
@@ -202,8 +264,13 @@
     border-radius: var(--radius-lg);
   }
 
+  /* flex-direction: column flips the cross-axis to horizontal, so without
+     align-items: center it defaults to stretch — the avatar and sign-out
+     button were stretching/left-aligning to the card's full width instead
+     of centering under the mark/icons above them. */
   .dashboard-sidebar-user-card--collapsed {
     flex-direction: column;
+    align-items: center;
     justify-content: center;
     gap: var(--spacing-md);
     padding-inline: 0;

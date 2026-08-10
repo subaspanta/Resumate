@@ -115,10 +115,27 @@
   }
 
   .dashboard-resume-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
     font-family: var(--font-body-md);
     font-size: var(--text-body-md);
     line-height: var(--text-body-md--line-height);
     color: var(--color-text-muted);
+  }
+
+  /* File-type tag — mono-label uppercase, the system's existing device for
+     technical metadata, rather than trying to fake a distinct PDF/DOCX icon
+     shape Lucide doesn't have. */
+  .dashboard-resume-kind {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 2px 6px;
+    border-radius: var(--radius-DEFAULT);
+    background-color: var(--color-surface-container);
+    color: var(--color-text-body);
   }
 
   .dashboard-resume-row-right {
@@ -127,29 +144,18 @@
     gap: var(--spacing-lg);
   }
 
-  .dashboard-open-btn {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    font-family: var(--font-label-std);
-    font-size: var(--text-label-std);
-    font-weight: 500;
-    color: var(--color-text-body);
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-    transition: color 150ms ease-out;
+  /* Passive affordance, not a control — the row itself is the click target
+     (role=button, keyboard-navigable), so this is decorative "this opens"
+     signal only. Driven by the row's :hover, not its own, since it has no
+     separate interactive state. */
+  .dashboard-resume-row-arrow {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    transition: color 150ms ease-out, transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .dashboard-open-btn:hover {
+  .dashboard-resume-row:hover .dashboard-resume-row-arrow {
     color: var(--color-primary);
-  }
-
-  .dashboard-open-btn svg {
-    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .dashboard-open-btn:hover svg {
     transform: translateX(3px);
   }
 

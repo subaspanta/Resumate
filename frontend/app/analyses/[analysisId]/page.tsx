@@ -385,6 +385,7 @@ export default function AnalysisPage({
             </AlertDialog>
           )}
           <Button
+            size="lg"
             disabled={generateRoadmap.isPending}
             onClick={handleGenerateRoadmap}
           >

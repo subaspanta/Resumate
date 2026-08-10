@@ -1,15 +1,14 @@
 "use client";
 
 import {
+  BarChart3,
   ChevronLeft,
-  FileText,
-  LayoutDashboard,
+  Home,
   LogOut,
   Settings,
-  UserX,
   type LucideIcon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/src/features/auth/auth.hooks";
 import { toast } from "sonner";
 import type { DashboardViewLayout } from "@/src/components/dashboard/dashboardViewConfig";
@@ -44,7 +43,7 @@ interface SidebarProps {
    * pages are both "inside" the resume workspace, so they keep that item lit
    * rather than falsely highlighting Dashboard.
    */
-  activeNav?: "dashboard" | "workspace";
+  activeNav?: "dashboard" | "workspace" | "settings";
 }
 
 interface NavItemProps {
@@ -55,8 +54,12 @@ interface NavItemProps {
   /** Lucide has no fill axis, so an active item reads as heavier stroke. */
   isFilled?: boolean;
   disabled?: boolean;
+  /**
+   * Shown as static copy under the item, never as a toast — a disabled item
+   * gets exactly one explanation, not a click-triggered second one that can
+   * disagree with the first.
+   */
   hint?: string;
-  onClick?: () => void;
   href?: string;
 }
 
@@ -68,7 +71,6 @@ function NavItem({
   isFilled,
   disabled,
   hint,
-  onClick,
   href,
 }: NavItemProps) {
   const className = [
@@ -97,9 +99,20 @@ function NavItem({
     </>
   );
 
+  // One element shape (button) for both enabled and disabled states — a
+  // disabled item used to render as a <button> while every enabled item was
+  // an <a>, so the "same list" had two different interaction models. The
+  // collapsed rail hides the label entirely, so `title` is the one thing
+  // standing in for it on hover; aria-label already covers screen readers.
   if (href && !disabled) {
     return (
-      <a className={className} href={href} aria-label={label}>
+      <a
+        className={className}
+        href={href}
+        aria-label={label}
+        aria-current={isActive ? "page" : undefined}
+        title={isCollapsed ? label : undefined}
+      >
         {content}
       </a>
     );
@@ -109,9 +122,10 @@ function NavItem({
     <>
       <button
         className={className}
-        onClick={onClick}
         disabled={disabled}
         aria-label={label}
+        aria-disabled={disabled}
+        title={isCollapsed ? label : undefined}
         type="button"
       >
         {content}
@@ -138,9 +152,7 @@ export function Sidebar({
   // Read the signed-in user here rather than taking it as a prop: this
   // component already depends on useAuth for logout, and the dashboard used to
   // drill the same name down three levels to reach it.
-  const { user, logout, isLoggingOut, deleteAccount, isDeletingAccount } =
-    useAuth();
-  const router = useRouter();
+  const { user, logout, isLoggingOut } = useAuth();
   const userName = user?.name;
   const userEmail = user?.email;
   const showCollapse = layout.sidebarCollapsible;
@@ -156,38 +168,22 @@ export function Sidebar({
     }
   };
 
-  const handleUnavailable = (feature: string) =>
-    toast.info(`${feature} is not available yet.`);
-
-  const handleDeleteAccount = async () => {
-    try {
-      await deleteAccount();
-      toast.success("Your account has been deleted.");
-      router.push("/welcome");
-    } catch (error) {
-      toast.error("Couldn't delete your account. Please try again.");
-      console.error(error);
-    }
-  };
-
   return (
     <aside
       className={`dashboard-sidebar ${
         collapsed ? "dashboard-sidebar--collapsed" : ""
       }`}
     >
-      <div
+      <Link
+        href="/"
+        aria-label="ResuMate home"
         className={`dashboard-sidebar-brand ${
           collapsed ? "dashboard-sidebar-brand--collapsed" : ""
         }`}
       >
         {layout.sidebarShowBrandIcon && (
-          <span className="dashboard-sidebar-brand-icon">
-            <FileText
-              className="size-7 text-primary"
-              strokeWidth={2.4}
-              aria-hidden="true"
-            />
+          <span className="dashboard-sidebar-brand-mark" aria-hidden="true">
+            R
           </span>
         )}
         <div
@@ -195,16 +191,16 @@ export function Sidebar({
             collapsed ? "dashboard-sidebar-brand-text--collapsed" : ""
           }`}
         >
-          <div className="dashboard-sidebar-brand-name">Resumate</div>
+          <div className="dashboard-sidebar-brand-name">ResuMate</div>
           {layout.sidebarShowTagline && (
             <p className="dashboard-sidebar-tagline">Career Gap Analysis</p>
           )}
         </div>
-      </div>
+      </Link>
 
       <nav className="dashboard-nav" aria-label="Main navigation">
         <NavItem
-          icon={LayoutDashboard}
+          icon={Home}
           label="Dashboard"
           isCollapsed={collapsed}
           isActive={activeNav === "dashboard"}
@@ -212,7 +208,7 @@ export function Sidebar({
           href="/"
         />
         <NavItem
-          icon={FileText}
+          icon={BarChart3}
           label="Analyses"
           isCollapsed={collapsed}
           isActive={activeNav === "workspace"}
@@ -220,61 +216,15 @@ export function Sidebar({
           disabled={layout.sidebarNavDisabled}
           hint={layout.sidebarNavHint}
           href={layout.sidebarNavDisabled ? undefined : "/analyses"}
-          onClick={
-            layout.sidebarNavDisabled
-              ? () => handleUnavailable("Analyses")
-              : undefined
-          }
         />
         <NavItem
           icon={Settings}
           label="Settings"
           isCollapsed={collapsed}
-          onClick={() => handleUnavailable("Settings")}
+          isActive={activeNav === "settings"}
+          isFilled={activeNav === "settings"}
+          href="/settings"
         />
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <button
-              type="button"
-              className={[
-                "dashboard-nav-item",
-                collapsed && "dashboard-nav-item--collapsed",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              disabled={isDeletingAccount}
-              aria-label="Delete account"
-            >
-              <UserX className="size-6 shrink-0" aria-hidden="true" />
-              <span
-                className={`dashboard-nav-label ${
-                  collapsed ? "dashboard-nav-label--collapsed" : ""
-                }`}
-              >
-                Delete account
-              </span>
-            </button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete your account?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Your account, every uploaded resume, and every career
-                analysis and roadmap you&apos;ve created will be permanently
-                removed. This can&apos;t be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                className="dashboard-resume-delete-confirm"
-                onClick={handleDeleteAccount}
-              >
-                Delete account
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
       </nav>
 
       <div className="dashboard-sidebar-footer">
@@ -304,15 +254,32 @@ export function Sidebar({
               <span className="dashboard-sidebar-user-email">{userEmail}</span>
             )}
           </div>
-          <button
-            type="button"
-            className="dashboard-sidebar-signout"
-            aria-label="Sign out"
-            disabled={isLoggingOut}
-            onClick={handleLogout}
-          >
-            <LogOut className="size-5" aria-hidden="true" />
-          </button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button
+                type="button"
+                className="dashboard-sidebar-signout"
+                aria-label="Sign out"
+                disabled={isLoggingOut}
+              >
+                <LogOut className="size-5" aria-hidden="true" />
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Sign out?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  You&apos;ll need to sign back in to continue your roadmap.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleLogout}>
+                  Sign out
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 
@@ -324,7 +291,7 @@ export function Sidebar({
           type="button"
         >
           <ChevronLeft
-            className="size-[18px]"
+            className="size-3.5"
             style={{
               transform: isCollapsed ? "rotate(180deg)" : "rotate(0deg)",
             }}

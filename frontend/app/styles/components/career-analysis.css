@@ -186,11 +186,16 @@
 
   /* Readiness score ----------------------------------------------------------- */
 
+  /* The single most important number in the product gets the system's
+     strongest existing display size (display-lg, previously reserved for
+     welcome titles only) and more room to carry it — every other card on
+     this page uses the same lg padding/radius, which is exactly why this
+     one needs to outweigh them instead of matching them. */
   .readiness-card {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl);
     background-color: var(--color-surface);
     border: 1px solid var(--color-border-base);
     border-radius: var(--radius-xl);
@@ -203,16 +208,20 @@
   }
 
   .readiness-card-label {
-    font-family: var(--font-label-std);
-    font-size: var(--text-body-lg);
-    font-weight: 600;
-    color: var(--color-text-primary);
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
   }
 
   .readiness-card-score {
-    font-family: var(--font-display-md);
-    font-size: var(--text-display-md);
-    font-weight: 700;
+    font-family: var(--font-display-lg);
+    font-size: var(--text-display-lg);
+    font-weight: var(--text-display-lg--font-weight);
+    line-height: var(--text-display-lg--line-height);
+    letter-spacing: var(--text-display-lg--letter-spacing);
   }
 
   .readiness-card-score--excellent {
@@ -228,7 +237,7 @@
   }
 
   .readiness-track {
-    height: 8px;
+    height: 10px;
     border-radius: var(--radius-xxl);
     background-color: var(--color-surface-container);
     overflow: hidden;
@@ -257,10 +266,14 @@
 
   /* Skill gaps ---------------------------------------------------------------- */
 
+  /* headline-sm, not body-lg — DESIGN.md already reserves this size for
+     "section titles, card titles"; this heading was quietly using the
+     paragraph size instead of the one the system built for this job. */
   .section-heading {
-    font-family: var(--font-label-std);
-    font-size: var(--text-body-lg);
-    font-weight: 600;
+    font-family: var(--font-headline-sm);
+    font-size: var(--text-headline-sm);
+    font-weight: var(--text-headline-sm--font-weight);
+    line-height: var(--text-headline-sm--line-height);
     color: var(--color-text-primary);
   }
 
@@ -463,12 +476,19 @@
     gap: var(--spacing-md);
   }
 
+  /* Positions the sibling "View details" link at the card's corner without
+     nesting an <a> inside the radio <button> — see RoleOptionCard.tsx. */
+  .role-option-wrapper {
+    position: relative;
+  }
+
   .role-option {
     display: flex;
     align-items: flex-start;
     gap: var(--spacing-md);
     width: 100%;
     padding: var(--spacing-lg);
+    padding-bottom: calc(var(--spacing-lg) + 20px);
     background-color: var(--color-surface);
     border: 1px solid var(--color-border-base);
     border-radius: var(--radius-xl);
@@ -532,6 +552,30 @@
     font-size: var(--text-body-md);
     line-height: var(--text-body-md--line-height);
     color: var(--color-text-muted);
+  }
+
+  .role-option-details-link {
+    position: absolute;
+    right: var(--spacing-lg);
+    bottom: var(--spacing-md);
+    font-family: var(--font-label-std);
+    font-size: var(--text-label-std);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 150ms ease-out;
+  }
+
+  .role-option-details-link:hover,
+  .role-option-details-link:focus-visible {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  .role-option-details-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-DEFAULT);
   }
 
   .role-empty {

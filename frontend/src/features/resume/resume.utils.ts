@@ -70,3 +70,14 @@ export function getTimeGreeting(): string {
   if (hour < 17) return "Good afternoon";
   return "Good evening";
 }
+
+// The upload endpoint verifies the real type from the file's magic bytes,
+// but ResumeSummary only carries the original filename — this is display-only
+// (which icon to show), not a validation boundary.
+export function resumeFileKind(fileName?: string): "pdf" | "docx" | "file" {
+  if (!fileName) return "file";
+  const ext = fileName.split(".").pop()?.toLowerCase();
+  if (ext === "pdf") return "pdf";
+  if (ext === "docx" || ext === "doc") return "docx";
+  return "file";
+}

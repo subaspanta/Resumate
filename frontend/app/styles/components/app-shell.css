@@ -40,14 +40,6 @@
     gap: var(--spacing-md);
   }
 
-  .app-shell-topline {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-md);
-  }
-
   .app-shell-crumbs {
     display: flex;
     align-items: center;
@@ -139,11 +131,19 @@
 
   /* Step rail ------------------------------------------------------------- */
 
+  /* A contained bar of its own, not a loose row squeezed against the
+     breadcrumb — at four steps deep with labels, markers, connectors, and a
+     counter, it needs room to read as the flow's primary wayfinding element,
+     not an afterthought sharing space with a three-word crumb trail. */
   .flow-rail {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: var(--spacing-md);
-    flex-shrink: 0;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-lg);
   }
 
   .flow-rail-list {
@@ -153,6 +153,7 @@
     list-style: none;
     margin: 0;
     padding: 0;
+    flex-wrap: wrap;
   }
 
   .flow-rail-item {
@@ -212,9 +213,12 @@
     color: var(--color-text-body);
   }
 
+  /* Plain neutral sage-cast fill, not the AI-tint tokens (primary-container /
+     ai-border) — those are reserved for AI-attributed content per DESIGN.md,
+     and a step-progress marker is not that. */
   .flow-rail-step--done .flow-rail-marker {
-    background-color: var(--color-primary-container);
-    border-color: var(--color-ai-border);
+    background-color: var(--color-surface-container);
+    border-color: var(--color-primary);
     color: var(--color-primary);
   }
 
@@ -238,7 +242,7 @@
   }
 
   .flow-rail-connector--done {
-    background-color: var(--color-ai-border);
+    background-color: var(--color-primary);
   }
 
   .flow-rail-count {
@@ -249,6 +253,7 @@
     text-transform: uppercase;
     letter-spacing: 0.06em;
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
   /* Below the medium breakpoint the labels cost more width than they earn;
@@ -267,6 +272,17 @@
 
     .flow-rail-step {
       padding: var(--spacing-xs);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .flow-rail {
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .flow-rail-count {
+      width: 100%;
     }
   }
 }

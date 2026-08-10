@@ -2,6 +2,7 @@
 
 import { ArrowRight, FileText, Trash2 } from "lucide-react";
 import { ResumeSummary } from "@/src/features/resume/types";
+import { resumeFileKind } from "@/src/features/resume/resume.utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,6 +30,8 @@ export function ResumeListItem({
   isDeleting = false,
   isLast,
 }: ResumeListItemProps) {
+  const kind = resumeFileKind(resume.fileName ?? resume.originalFileName);
+
   return (
     <div
       className={`dashboard-resume-row ${
@@ -48,22 +51,25 @@ export function ResumeListItem({
         <div>
           <p className="dashboard-resume-name">{resume.title}</p>
           <p className="dashboard-resume-meta">
-            Last Edited: {resume.lastEditedAt}
+            {kind !== "file" && (
+              <span className="dashboard-resume-kind">
+                {kind.toUpperCase()}
+              </span>
+            )}
+            Last edited {resume.lastEditedAt}
           </p>
         </div>
       </div>
+      {/* No separate "Analyze" button: the whole row already opens the
+          resume (role=button, keyboard-navigable) — a second, redundant
+          click target next to the delete button just adds noise. The arrow
+          is a passive affordance, not a control, and still gets its shift
+          animation from the row's own hover. */}
       <div className="dashboard-resume-row-right">
-        <button
-          className="dashboard-open-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpen(resume.id);
-          }}
-          type="button"
-        >
-          Analyze
-          <ArrowRight className="size-[18px]" aria-hidden="true" />
-        </button>
+        <ArrowRight
+          className="dashboard-resume-row-arrow size-[18px]"
+          aria-hidden="true"
+        />
 
         {onDelete && (
           <AlertDialog>

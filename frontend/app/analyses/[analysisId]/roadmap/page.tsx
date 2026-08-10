@@ -19,6 +19,12 @@ const CRUMBS = [{ label: "Dashboard", href: "/" }, { label: "Roadmap" }];
 // Single field, no cross-field validation — plain useState per the CLAUDE.md
 // resolver rule, same reasoning as JobInputForm. Own component so typing a
 // draft note in one task never re-renders the whole task list.
+//
+// Rendered unconditionally (not gated on task.completed): a user should be
+// able to write what they built as one action, not "check the box, then
+// notice a second box appeared, then fill that in too." Saving a note always
+// marks the task complete alongside it, so this is the one action that does
+// both.
 function TaskCompletionNote({
   task,
   onSave,
@@ -30,12 +36,15 @@ function TaskCompletionNote({
 }) {
   const [note, setNote] = useState(task.completionNote ?? "");
 
-  if (!task.completed) return null;
+  // Disabled once nothing would change: same note, already complete. Not
+  // disabled just because the task isn't complete yet — that's exactly the
+  // case Save is meant to handle in one click.
+  const unchanged = task.completed && note.trim() === (task.completionNote ?? "");
 
   return (
     <div className="roadmap-task-note">
       <label className="roadmap-task-note-label" htmlFor={`note-${task.id}`}>
-        What did you build? (used for reassessment)
+        What did you build?
       </label>
       <textarea
         id={`note-${task.id}`}
@@ -48,10 +57,10 @@ function TaskCompletionNote({
       <Button
         variant="outline"
         size="sm"
-        disabled={saving || note.trim() === (task.completionNote ?? "")}
+        disabled={saving || unchanged}
         onClick={() => onSave(note)}
       >
-        Save note
+        {task.completed ? "Save note" : "Save note & mark complete"}
       </Button>
     </div>
   );
@@ -194,6 +203,7 @@ export default function RoadmapPage({
       title="Your Learning Roadmap"
       subtitle={`${roadmap.weekCount}-week plan built from your skill gaps.`}
       onNavigateStep={handleNavigateStep}
+      hasActionBar
     >
       <div className="roadmap-progress">
         <div className="roadmap-progress-header">
@@ -314,6 +324,21 @@ export default function RoadmapPage({
           </div>
         );
       })}
+
+      <div className="roadmap-action-bar">
+        <div className="roadmap-action-bar-inner">
+          <span className="roadmap-action-bar-hint">
+            Done for now? Head back to your analysis to reassess once
+            you&apos;ve completed a task.
+          </span>
+          <Button
+            variant="outline"
+            onClick={() => router.push(`/analyses/${analysisId}`)}
+          >
+            Back to analysis
+          </Button>
+        </div>
+      </div>
     </AppShell>
   );
 }
