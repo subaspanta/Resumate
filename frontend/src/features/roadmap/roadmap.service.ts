@@ -19,9 +19,6 @@ export const roadmapApi = {
       `/career-analyses/${analysisId}/roadmap`,
     ),
 
-  getById: (roadmapId: string) =>
-    axiosClient.get<ApiResponse<Roadmap>>(`/roadmaps/${roadmapId}`),
-
   setTaskCompletion: (
     taskId: string,
     completed: boolean,
