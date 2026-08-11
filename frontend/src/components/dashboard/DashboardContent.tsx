@@ -41,7 +41,7 @@ function headerFor(
   switch (state) {
     case "firstTime":
       return {
-        title: "Welcome to Resumate.",
+        title: "Welcome to ResuMate.",
         subtitle:
           "Upload your resume to see which skills you can prove for a target role, where the gaps are, and a roadmap to close them.",
       };
@@ -63,6 +63,9 @@ export function DashboardContent({
   onViewAll,
 }: DashboardContentProps) {
   const { user } = useAuth();
+  // Owned here, not in the per-state content components: readyToStart renders
+  // a resume list, and a second useDeleteResumeFlow() would mint a duplicate
+  // mutation observer over the same cache key.
   const { handleDelete, deletingId } = useDeleteResumeFlow();
 
   if (isLoading) {

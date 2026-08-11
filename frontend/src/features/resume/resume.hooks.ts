@@ -120,9 +120,13 @@ export function useDeleteResume() {
     },
     onSettled: (_data, _err, id) => {
       queryClient.invalidateQueries({ queryKey: key });
-      // The deleted resume's own detail entry is now dead cache — a stale
-      // read would render a resume the server no longer has.
+      // The deleted resume's own detail entry and its career-analysis list are
+      // now dead cache — a stale read would render analyses for a resume the
+      // server no longer has.
       queryClient.removeQueries({ queryKey: queryKeys.resumes.detail(id) });
+      queryClient.removeQueries({
+        queryKey: queryKeys.careerAnalyses.list(id),
+      });
     },
   });
 }

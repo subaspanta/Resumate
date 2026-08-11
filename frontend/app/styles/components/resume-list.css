@@ -1,7 +1,6 @@
 /**
- * Recent resumes list/table, score badges, and row actions.
- * Used by RecentResumeSection.tsx, ResumeListItem.tsx, ScoreBadge.tsx,
- * and the resume table in ActiveDashboardContent.tsx.
+ * Recent resumes list and row actions.
+ * Used by RecentResumeSection.tsx and ResumeListItem.tsx.
  */
 @layer components {
   .dashboard-recent-section {
