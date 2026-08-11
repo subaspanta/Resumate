@@ -8,6 +8,15 @@ import {
 import { AppError } from "../../types/app-error.js";
 import { ERROR_CODES } from "../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../constants/http-status.js";
+import { withTimeout } from "../../utils/with-timeout.js";
+
+// Covers local text extraction only (pdf-parse / mammoth), not the Gemini
+// structuring call below — that already has its own budget via
+// GEMINI_CALL_TIMEOUT_MS. Extraction is CPU-bound on a buffer capped at 2MB
+// (see middleware/upload.ts), so this is a much smaller safety margin than
+// a network call would need; it exists to catch a pathological/malformed
+// file, not a slow one.
+const PARSING_TIMEOUT_MS = 10_000;
 
 export class ParsingService implements ParsingModule {
   constructor(private readonly aiStructuringModule: AIStructuringModule) {}
@@ -34,12 +43,20 @@ export class ParsingService implements ParsingModule {
 
   private async extractText(buffer: Buffer, mimeType: string): Promise<string> {
     if (mimeType === "application/pdf") {
-      return extractTextFromPdf(buffer);
+      return withTimeout(
+        extractTextFromPdf(buffer),
+        PARSING_TIMEOUT_MS,
+        "PDF text extraction",
+      );
     } else if (
       mimeType ===
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
-      return extractTextFromDocx(buffer);
+      return withTimeout(
+        extractTextFromDocx(buffer),
+        PARSING_TIMEOUT_MS,
+        "DOCX text extraction",
+      );
     } else {
       throw new AppError(
         HTTP_STATUS.BAD_REQUEST,
