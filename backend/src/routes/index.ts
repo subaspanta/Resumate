@@ -1,14 +1,19 @@
 import { Router } from "express";
 import authRoutes from "../modules/auth/auth.routes.js";
 import resumeRoutes from "../modules/resume/resume.routes.js";
-import analysisRoutes from "../modules/analysis/analysis.routes.js";
-import exportRoutes from "../modules/export/export.routes.js";
+import roleRoutes from "../modules/role/role.routes.js";
+import careerAnalysisRoutes from "../modules/career-analysis/career-analysis.routes.js";
+import roadmapRoutes, {
+  roadmapTaskRouter,
+} from "../modules/roadmap/roadmap.routes.js";
 
 const router = Router();
 
 router.use("/auth", authRoutes);
 router.use("/resumes", resumeRoutes);
-router.use("/analyses", analysisRoutes);
-router.use("/exports", exportRoutes);
+router.use("/roles", roleRoutes);
+router.use("/career-analyses", careerAnalysisRoutes);
+router.use("/roadmaps", roadmapRoutes);
+router.use("/roadmap-tasks", roadmapTaskRouter);
 
 export default router;

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { isApiError } from "@/src/api/api-error";
 import { useUploadResume } from "@/src/features/resume/resume.hooks";
 
-export function useResumeUpload() {
+export function useUploadResumeFlow() {
   const router = useRouter();
   const uploadResumeMutation = useUploadResume();
 
@@ -16,7 +16,7 @@ export function useResumeUpload() {
     try {
       const resume = await uploadResumeMutation.mutateAsync(form);
       toast.success(`"${file.name}" uploaded successfully.`);
-      router.push(`/workspace/${resume.id}`);
+      router.push(`/resumes/${resume.id}/review`);
     } catch (error) {
       if (isApiError(error)) {
         switch (error.code) {

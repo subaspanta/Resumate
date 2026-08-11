@@ -11,8 +11,8 @@ interface DefaultDashboardContentProps {
   onViewAll: () => void;
   isUploading?: boolean;
   // Delete is owned by DashboardContent so both dashboard states share one
-  // mutation observer — calling useResumeDelete here too would mint a second
-  // one over the same cache key.
+  // mutation observer — calling useDeleteResumeFlow here too would mint a
+  // second one over the same cache key.
   onResumeDelete?: (id: string, title: string) => void;
   deletingId?: string;
 }

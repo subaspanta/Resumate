@@ -1,0 +1,165 @@
+@layer components {
+  /* Profile review ---------------------------------------------------------- */
+
+  .profile-review-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-xl);
+  }
+
+  .profile-review-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary-container);
+    color: var(--color-primary);
+  }
+
+  .profile-review-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .profile-review-card-title {
+    font-family: var(--font-label-std);
+    font-size: var(--text-body-lg);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .profile-review-card-contact {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    color: var(--color-text-muted);
+  }
+
+  .profile-review-heading-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: var(--spacing-xs);
+    vertical-align: -2px;
+    color: var(--color-text-muted);
+  }
+
+  .profile-review-summary {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    color: var(--color-text-body);
+  }
+
+  .profile-review-empty {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .profile-review-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .profile-review-entry {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-lg);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-xl);
+  }
+
+  .profile-review-entry-header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+  }
+
+  .profile-review-entry-title {
+    font-family: var(--font-label-std);
+    font-size: var(--text-body-lg);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .profile-review-entry-subtitle {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    color: var(--color-text-muted);
+  }
+
+  .profile-review-entry-meta {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .profile-review-bullets {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin: 0;
+    padding-left: 1.1em;
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    color: var(--color-text-body);
+  }
+
+  .profile-review-skill-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .profile-review-skill-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-xl);
+  }
+
+  .profile-review-skill-category {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .profile-review-skill-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+
+  .profile-review-skill-chip {
+    padding: 4px 10px;
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    color: var(--color-text-body);
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-border-base);
+    border-radius: 9999px;
+  }
+}

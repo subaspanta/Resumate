@@ -15,8 +15,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ResuMate",
-  description: "AI-powered resume optimization built for modern job seekers.",
+  title: "Resumate",
+  description:
+    "AI-powered career gap analysis and learning roadmap for job seekers.",
 };
 
 export default function RootLayout({

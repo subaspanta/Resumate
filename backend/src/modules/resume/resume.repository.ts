@@ -1,6 +1,6 @@
 import { Prisma, Resume } from "../../generated/client/index.js";
 import { prisma } from "../../lib/prisma.js";
-import { RawResumePage } from "./resume.types.js";
+import { ResumePage } from "./resume.types.js";
 
 export class ResumeRepository {
   async create(data: Prisma.ResumeCreateInput): Promise<Resume> {
@@ -9,7 +9,7 @@ export class ResumeRepository {
   async findManyByUserId(
     userId: string,
     options: { limit: number; cursor?: string },
-  ): Promise<RawResumePage> {
+  ): Promise<ResumePage> {
     const { limit, cursor } = options;
 
     // Fetch one extra row to detect whether a further page exists.
@@ -45,37 +45,20 @@ export class ResumeRepository {
         rawText: true,
         fileSize: true,
         filePath: true,
-        enabledSections: true,
         createdAt: true,
         updatedAt: true,
       },
     });
   }
 
-  async updateSectionVisibility(
-    userId: string,
-    id: string,
-    enabledSections: Prisma.InputJsonValue,
-  ) {
-    return prisma.resume.update({
-      where: { id, userId },
-      data: { enabledSections },
-      select: {
-        id: true,
-        title: true,
-        originalFileName: true,
-        structuredResume: true,
-        rawText: true,
-        fileSize: true,
-        filePath: true,
-        enabledSections: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-  }
-
-  async deleteById(id: string): Promise<void> {
-    await prisma.resume.delete({ where: { id } });
+  // Ownership-scoped write. deleteMany rather than delete: Prisma's delete
+  // accepts only a unique field in `where`, so a userId filter is impossible
+  // and the write would have to trust the earlier findByIdAndUserId read.
+  // Here the write carries the ownership predicate itself. Returns the row
+  // count so the caller can treat 0 (vanished or reassigned between the read
+  // and this write) as not-found rather than a silent no-op.
+  async deleteByIdAndUserId(id: string, userId: string): Promise<number> {
+    const result = await prisma.resume.deleteMany({ where: { id, userId } });
+    return result.count;
   }
 }

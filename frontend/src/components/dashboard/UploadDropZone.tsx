@@ -111,8 +111,8 @@ export function UploadDropzone({
             Upload your existing resume
           </h3>
           <p className="dashboard-upload-desc">
-            We&apos;ll parse your details and match them with industry
-            standards.
+            We&apos;ll parse your work history and skills so you can run a
+            new gap analysis against a target role.
           </p>
         </>
       )}

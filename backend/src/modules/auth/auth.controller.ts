@@ -103,4 +103,20 @@ export class AuthController {
       next(error);
     }
   };
+  deleteAccount = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user!.sub;
+      await this.authService.deleteAccount(userId);
+
+      res.clearCookie("accessToken", this.cookieOptions);
+      res.clearCookie("refreshToken", this.refreshCookieOptions);
+
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        message: "Account deleted successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

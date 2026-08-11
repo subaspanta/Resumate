@@ -19,12 +19,12 @@ export default function GlobalError({
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col items-center justify-center bg-white text-neutral-900">
-        <div className="flex flex-col items-center gap-4 text-center max-w-sm px-4">
+        <div className="flex flex-col items-center gap-4 text-center max-w-[24rem] px-4">
           <h1 className="text-xl font-semibold tracking-tight">
             Something went wrong
           </h1>
           <p className="text-sm text-neutral-500">
-            ResuMate hit an unexpected error. Please try again.
+            Resumate hit an unexpected error. Please try again.
           </p>
           <button
             onClick={reset}

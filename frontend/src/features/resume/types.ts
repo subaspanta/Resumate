@@ -1,7 +1,4 @@
-export type DashboardState =
-  "firstTime" | "readyToStart" | "workspaceReady" | "error";
-
-export type AnalysisStatus = "none" | "unexported" | "exported";
+export type DashboardState = "firstTime" | "readyToStart" | "error";
 
 export type DashboardView = "firstTime" | "default" | "active";
 
@@ -11,10 +8,8 @@ export interface ResumeSummary {
   originalFileName: string;
   createdAt: string;
   updatedAt: string;
-  analysisStatus: AnalysisStatus;
   lastEditedAt?: string;
   fileName?: string;
-  suggestionsCount?: number;
 }
 
 // GET /resumes is cursor-paginated — matches backend ResumePage.
@@ -71,18 +66,6 @@ export interface CustomSection {
   bullets: string[];
 }
 
-// Missing key = visible. Only an explicit `false` hides a section — mirrors
-// the backend's filterVisibleSections check (`=== false`, never `!== true`).
-export interface EnabledSections {
-  summary?: boolean;
-  experience?: boolean;
-  projects?: boolean;
-  education?: boolean;
-  skills?: boolean;
-  certifications?: boolean;
-  customSections?: Record<string, boolean>;
-}
-
 export interface StructuredResume {
   name?: string;
   contact?: {
@@ -106,8 +89,6 @@ export interface Resume extends ResumeSummary {
   fileSize: number;
   rawText: string;
   structuredResume: StructuredResume;
-  // null in the DB until the user toggles a section at least once.
-  enabledSections?: EnabledSections | null;
 }
 
 export type CreateResumeInput = FormData;

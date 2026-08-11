@@ -4,22 +4,19 @@ import { uploadSingleFile } from "../../middleware/upload.js";
 import { aiRateLimit } from "../../middleware/ai-rate-limit.js";
 import {
   listResumesQuerySchema,
-  updateSectionVisibilitySchema,
   uploadResumeSchema,
 } from "./resume.schema.js";
 import {
   validateQuery,
   validateRequest,
 } from "../../middleware/validate-request.js";
-import { resumeController, analysisController } from "../../container.js";
+import { resumeController } from "../../container.js";
 
 const router = Router();
 
-// Latest-analysis and history logically belong to the analysis module, but
-// the frontend already calls them under /resumes/:resumeId/... — mirrors
-// export.routes.ts's existing precedent of reusing the shared AnalysisService
-// for a couple of cross-module routes.
-
+// Multipart inverts the usual order: req.body doesn't exist until multer has
+// run, so validateRequest can't go first. requireAuth stays first among what
+// can, so an unauthenticated request never buffers a file into memory.
 router.post(
   "/",
   requireAuth,
@@ -39,24 +36,5 @@ router.get(
 router.get("/:id", requireAuth, resumeController.getById);
 
 router.delete("/:id", requireAuth, resumeController.remove);
-
-router.patch(
-  "/:id/sections",
-  requireAuth,
-  validateRequest(updateSectionVisibilitySchema),
-  resumeController.updateSectionVisibility,
-);
-
-router.get(
-  "/:resumeId/latest-analysis",
-  requireAuth,
-  analysisController.getLatestAnalysis,
-);
-
-router.get(
-  "/:resumeId/analyses",
-  requireAuth,
-  analysisController.getAnalysisHistory,
-);
 
 export default router;

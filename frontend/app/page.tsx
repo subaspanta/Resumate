@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import type { DashboardState } from "@/src/features/resume/types";
 import { deriveDashboardState } from "@/src/features/resume/resume.utils";
 import { useResumes } from "@/src/features/resume/resume.hooks";
-import { useResumeUpload } from "@/src/components/dashboard/use-resume-upload";
+import { useUploadResumeFlow } from "@/src/components/dashboard/use-resume-upload";
 import { DashboardContent } from "@/src/components/dashboard/DashboardContent";
 
 export default function HomePage() {
@@ -18,7 +18,7 @@ export default function HomePage() {
     isError: resumesError,
   } = useResumes();
 
-  const { handleFileSelected, triggerUpload, isUploading } = useResumeUpload();
+  const { handleFileSelected, isUploading } = useUploadResumeFlow();
 
   const dashboardState: DashboardState = useMemo(() => {
     return deriveDashboardState({
@@ -27,11 +27,8 @@ export default function HomePage() {
     });
   }, [resumes, resumesError]);
 
-  const primaryResume =
-    resumes.find((r) => r.analysisStatus === "unexported") ?? resumes[0];
-
   const handleOpenResume = (id: string) => {
-    router.push(`/workspace/${id}`);
+    router.push(`/analyze/${id}`);
   };
 
   const handleViewAll = () => {
@@ -43,10 +40,8 @@ export default function HomePage() {
       dashboardState={dashboardState}
       isLoading={resumesLoading}
       resumes={resumes}
-      primaryResume={primaryResume}
       isUploading={isUploading}
       onFileSelected={handleFileSelected}
-      onUploadClick={triggerUpload}
       onOpenResume={handleOpenResume}
       onViewAll={handleViewAll}
     />

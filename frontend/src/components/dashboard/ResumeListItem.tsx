@@ -2,7 +2,7 @@
 
 import { ArrowRight, FileText, Trash2 } from "lucide-react";
 import { ResumeSummary } from "@/src/features/resume/types";
-import { AnalysisStatusBadge } from "@/src/components/dashboard/ActiveDashboardContent";
+import { resumeFileKind } from "@/src/features/resume/resume.utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,6 +30,8 @@ export function ResumeListItem({
   isDeleting = false,
   isLast,
 }: ResumeListItemProps) {
+  const kind = resumeFileKind(resume.fileName ?? resume.originalFileName);
+
   return (
     <div
       className={`dashboard-resume-row ${
@@ -49,23 +51,25 @@ export function ResumeListItem({
         <div>
           <p className="dashboard-resume-name">{resume.title}</p>
           <p className="dashboard-resume-meta">
-            Last Edited: {resume.lastEditedAt}
+            {kind !== "file" && (
+              <span className="dashboard-resume-kind">
+                {kind.toUpperCase()}
+              </span>
+            )}
+            Last edited {resume.lastEditedAt}
           </p>
         </div>
       </div>
+      {/* No separate "Analyze" button: the whole row already opens the
+          resume (role=button, keyboard-navigable) — a second, redundant
+          click target next to the delete button just adds noise. The arrow
+          is a passive affordance, not a control, and still gets its shift
+          animation from the row's own hover. */}
       <div className="dashboard-resume-row-right">
-        <AnalysisStatusBadge status={resume.analysisStatus} />
-        <button
-          className="dashboard-open-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpen(resume.id);
-          }}
-          type="button"
-        >
-          Open Workspace
-          <ArrowRight className="size-[18px]" aria-hidden="true" />
-        </button>
+        <ArrowRight
+          className="dashboard-resume-row-arrow size-[18px]"
+          aria-hidden="true"
+        />
 
         {onDelete && (
           <AlertDialog>
@@ -90,9 +94,9 @@ export function ResumeListItem({
               <AlertDialogHeader>
                 <AlertDialogTitle>Delete this resume?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  <strong>{resume.title}</strong> and every analysis,
-                  suggestion, and tailored version created from it will be
-                  permanently removed. This can&apos;t be undone.
+                  <strong>{resume.title}</strong> and every career analysis
+                  and roadmap created from it will be permanently removed.
+                  This can&apos;t be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

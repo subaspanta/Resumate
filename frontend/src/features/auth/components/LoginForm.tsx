@@ -84,6 +84,7 @@ export function LoginForm() {
         error={errors.email?.message}
         disabled={isLoading}
         variant="login"
+        index={0}
       />
 
       <AuthFormField
@@ -96,6 +97,7 @@ export function LoginForm() {
         disabled={isLoading}
         showPasswordToggle
         variant="login"
+        index={1}
         labelAction={
           <button
             className="auth-link"

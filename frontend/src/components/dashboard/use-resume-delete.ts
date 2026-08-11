@@ -6,10 +6,10 @@ import { useDeleteResume } from "@/src/features/resume/resume.hooks";
 
 /**
  * Delete flow for a resume: mutation plus error mapping, matching how
- * useResumeUpload handles the upload side. The confirmation dialog lives in
+ * useUploadResumeFlow handles the upload side. The confirmation dialog lives in
  * the list row — by the time this runs, the user has already confirmed.
  */
-export function useResumeDelete() {
+export function useDeleteResumeFlow() {
   const deleteResume = useDeleteResume();
 
   const handleDelete = async (id: string, title: string) => {

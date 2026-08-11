@@ -1,5 +1,5 @@
 /**
- * Design tokens for the OfferForge app (colors, fonts, type scale, spacing, radii).
+ * Design tokens for ResuMate/CareerNavigator (colors, fonts, type scale, spacing, radii).
  * Consumed by Tailwind v4 as utility classes (e.g. bg-primary, text-body-md).
  */
 @theme {
@@ -14,7 +14,7 @@
 
   --color-text-primary: #0F172A;
   --color-text-body: #475569;
-  --color-text-muted: #94A3B8;
+  --color-text-muted: #64748B;
 
   --color-danger: #DC2626;
   --color-ai-bg: #E9F2EC;
@@ -26,6 +26,8 @@
   --color-score-excellent: #16A34A;
   --color-score-good: #CA8A04;
   --color-score-needs-work: #EA580C;
+
+  --color-shadow-sm: #0000000a;
 
   --font-sans: var(--font-sans), Inter, system-ui, sans-serif;
   --font-mono: var(--font-mono), JetBrains Mono, monospace;

@@ -28,7 +28,13 @@ export interface Crumb {
 }
 
 interface AppShellProps {
-  step: FlowStepKey;
+  /** Omit on surfaces outside the linear upload->role->analysis->roadmap
+   * journey (e.g. an analyses list) — the step rail only makes sense inside
+   * that flow. */
+  step?: FlowStepKey;
+  /** Overrides the sidebar highlight derived from `step` — for surfaces
+   * outside the linear flow (settings) that still need a lit nav item. */
+  activeNav?: "dashboard" | "workspace" | "settings";
   view?: DashboardView;
   crumbs: Crumb[];
   title: ReactNode;
@@ -53,6 +59,7 @@ interface AppShellProps {
  */
 export function AppShell({
   step,
+  activeNav,
   view = "active",
   crumbs,
   title,
@@ -83,7 +90,9 @@ export function AppShell({
         isCollapsed={isCollapsed}
         onToggle={toggle}
         layout={layout}
-        activeNav={step === "upload" ? "dashboard" : "workspace"}
+        activeNav={
+          activeNav ?? (step === "upload" ? "dashboard" : "workspace")
+        }
       />
 
       <main className="dashboard-main">
@@ -97,30 +106,27 @@ export function AppShell({
             .join(" ")}
         >
           <header className="app-shell-header">
-            <div className="app-shell-topline">
-              <nav className="app-shell-crumbs" aria-label="Breadcrumb">
-                {crumbs.map((crumb, i) => (
-                  <span key={crumb.label} className="app-shell-crumb-item">
-                    {crumb.href ? (
-                      <Link href={crumb.href} className="app-shell-crumb-link">
-                        {crumb.label}
-                      </Link>
-                    ) : (
-                      <span className="app-shell-crumb-current">
-                        {crumb.label}
-                      </span>
-                    )}
-                    {i < crumbs.length - 1 && (
-                      <ChevronRight
-                        className="app-shell-crumb-sep"
-                        aria-hidden="true"
-                      />
-                    )}
-                  </span>
-                ))}
-              </nav>
-              <FlowStepRail current={step} onNavigate={onNavigateStep} />
-            </div>
+            <nav className="app-shell-crumbs" aria-label="Breadcrumb">
+              {crumbs.map((crumb, i) => (
+                <span key={crumb.label} className="app-shell-crumb-item">
+                  {crumb.href ? (
+                    <Link href={crumb.href} className="app-shell-crumb-link">
+                      {crumb.label}
+                    </Link>
+                  ) : (
+                    <span className="app-shell-crumb-current">
+                      {crumb.label}
+                    </span>
+                  )}
+                  {i < crumbs.length - 1 && (
+                    <ChevronRight
+                      className="app-shell-crumb-sep"
+                      aria-hidden="true"
+                    />
+                  )}
+                </span>
+              ))}
+            </nav>
 
             <div className="app-shell-titlebar">
               <div className="app-shell-titlegroup">
@@ -131,6 +137,10 @@ export function AppShell({
             </div>
 
             {meta && <div className="app-shell-meta">{meta}</div>}
+
+            {step && (
+              <FlowStepRail current={step} onNavigate={onNavigateStep} />
+            )}
           </header>
 
           {children}

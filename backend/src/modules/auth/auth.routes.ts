@@ -18,4 +18,5 @@ router.post("/refresh", authController.refresh);
 
 router.get("/me", requireAuth, authController.me);
 router.post("/logout", requireAuth, authController.logout);
+router.delete("/me", requireAuth, authController.deleteAccount);
 export default router;

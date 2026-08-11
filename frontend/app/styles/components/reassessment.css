@@ -1,0 +1,84 @@
+/**
+ * Reassessment before/after readiness panel. Used by
+ * app/analyses/[analysisId]/page.tsx.
+ */
+@layer components {
+  .reassessment-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-xl);
+  }
+
+  .reassessment-panel-label {
+    font-family: var(--font-label-std);
+    font-size: var(--text-body-lg);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .reassessment-score-change {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-sm);
+    font-family: var(--font-mono-label);
+    font-size: var(--text-headline-sm);
+    font-weight: 600;
+  }
+
+  .reassessment-score-before {
+    color: var(--color-text-muted);
+  }
+
+  .reassessment-score-arrow {
+    color: var(--color-text-muted);
+  }
+
+  .reassessment-score-after {
+    color: var(--color-primary);
+  }
+
+  .reassessment-gap-movements {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .reassessment-gap-movement {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-xs);
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    color: var(--color-text-body);
+  }
+
+  .reassessment-gap-movement-skill {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .reassessment-gap-movement--improved .reassessment-gap-movement-after {
+    color: var(--color-score-excellent);
+    font-weight: 600;
+  }
+
+  .reassessment-gap-movement--regressed .reassessment-gap-movement-after {
+    color: var(--color-score-needs-work);
+    font-weight: 600;
+  }
+
+  /* Non-destructive confirm action, overriding AlertDialogAction's default
+     red — reassessment is not a deletion. */
+  .alert-dialog-btn--reassess {
+    background-color: var(--color-primary);
+    color: var(--color-surface);
+  }
+
+  .alert-dialog-btn--reassess:hover {
+    filter: brightness(0.93);
+  }
+}
