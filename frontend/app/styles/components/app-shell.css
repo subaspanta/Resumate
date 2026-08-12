@@ -251,9 +251,9 @@
     color: var(--color-text-body);
   }
 
-  /* Plain neutral sage-cast fill, not the AI-tint tokens (primary-container /
-     ai-border) — those are reserved for AI-attributed content per DESIGN.md,
-     and a step-progress marker is not that. */
+  /* Plain neutral sage-cast fill, not the AI-tint token (primary-container)
+     — that's reserved for AI-attributed content per DESIGN.md, and a
+     step-progress marker is not that. */
   .flow-rail-step--done .flow-rail-marker {
     background-color: var(--color-surface-container);
     border-color: var(--color-primary);
