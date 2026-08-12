@@ -1,12 +1,53 @@
 import { User, Prisma, RefreshToken } from "../../generated/client/index.js";
 import { prisma } from "../../lib/prisma.js";
-import { SafeUser } from "./auth.types.js";
+import { GoogleLinkedUser, SafeUser } from "./auth.types.js";
 
 export class AuthRepository {
   async findUserByEmail(email: string): Promise<User | null> {
     return prisma.user.findUnique({
       where: { email },
     });
+  }
+
+  /** Selects `googleId` alongside the usual SafeUser fields — not cosmetic:
+   *  AuthService.resolveAfterRace asserts that the row it gets back carries
+   *  exactly the googleId it asked for, and cannot check that if the field
+   *  isn't selected. */
+  async findUserByGoogleId(googleId: string): Promise<GoogleLinkedUser | null> {
+    return prisma.user.findUnique({
+      where: { googleId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        googleId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  /** Attaches a Google identity to an account that has none.
+   *
+   *  `googleId: null` sits on the WRITE, not just on the read that preceded
+   *  it. That predicate is the account-takeover guard, not a nicety: a row
+   *  that gained a different Google identity between our read and this update
+   *  simply matches nothing, so it can never be rebound to the caller's
+   *  identity.
+   *
+   *  Returns 0 for three different reasons — already linked to this same
+   *  googleId (a concurrent callback), linked to a *different* googleId, or
+   *  the row is gone. The caller cannot tell them apart from the count alone
+   *  and must re-resolve by googleId; see AuthService.resolveAfterRace. */
+  async linkGoogleIdIfUnlinked(
+    userId: string,
+    googleId: string,
+  ): Promise<number> {
+    const result = await prisma.user.updateMany({
+      where: { id: userId, googleId: null },
+      data: { googleId },
+    });
+    return result.count;
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<SafeUser> {

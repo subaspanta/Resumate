@@ -32,6 +32,27 @@ export const ERROR_CODES = {
   // so the caller must delete the existing roadmap deliberately instead.
   ROADMAP_ALREADY_EXISTS: "ROADMAP_ALREADY_EXISTS",
   RATE_LIMIT_EXCEEDED: "RATE_LIMIT_EXCEEDED",
+  // The OAuth callback's `state` was missing or didn't match the nonce we
+  // stored in the oauthState cookie — a CSRF attempt, or a stale/duplicated
+  // consent tab whose cookie has already been consumed.
+  OAUTH_STATE_INVALID: "OAUTH_STATE_INVALID",
+  // The code-for-token exchange failed: bad or expired code, network failure,
+  // or an id_token we couldn't verify against Google's keys.
+  OAUTH_EXCHANGE_FAILED: "OAUTH_EXCHANGE_FAILED",
+  // Google reports email_verified !== true. Auto-linking on an unverified
+  // address would let anyone who can register that address at Google take over
+  // an existing ResuMate account.
+  OAUTH_EMAIL_NOT_VERIFIED: "OAUTH_EMAIL_NOT_VERIFIED",
+  // The exchange succeeded, but no account can be safely resolved for this
+  // Google identity: the address is spoken for by a different identity, or the
+  // row that would have carried it is gone. Distinct from
+  // OAUTH_EXCHANGE_FAILED, which means we never got a trustworthy profile at
+  // all — collapsing the two would make a permanent account-state problem look
+  // like a transient network blip. The user-facing message must not say which
+  // condition applied, nor assume the conflicting account has a password: it
+  // may be password-only, Google-only, or both, and disclosing that confirms
+  // an account exists on an address the caller may have just acquired.
+  OAUTH_ACCOUNT_CONFLICT: "OAUTH_ACCOUNT_CONFLICT",
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
