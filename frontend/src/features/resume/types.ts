@@ -91,8 +91,6 @@ export interface Resume extends ResumeSummary {
   structuredResume: StructuredResume;
 }
 
-export type CreateResumeInput = FormData;
-
 export interface DashboardStateInput {
   resumes: ResumeSummary[];
   loadError: boolean;

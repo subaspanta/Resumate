@@ -146,9 +146,6 @@ export const analysisIdParamSchema = z.object({
   id: z.string().uuid(),
 });
 
-export type CreateCareerAnalysisInput = z.infer<
-  typeof createCareerAnalysisSchema
->;
 export type ListCareerAnalysesQuery = z.infer<
   typeof listCareerAnalysesQuerySchema
 >;

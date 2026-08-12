@@ -25,7 +25,6 @@ export const roadmapAgentOutputSchema = z.object({
   tasks: z.array(roadmapTaskContentSchema).min(1),
 });
 
-export type RoadmapTaskContent = z.infer<typeof roadmapTaskContentSchema>;
 export type RoadmapAgentOutput = z.infer<typeof roadmapAgentOutputSchema>;
 
 // What the agent is told about one gap. Deliberately excludes priority and
@@ -65,8 +64,6 @@ export const updateRoadmapTaskSchema = z.object({
   // resume-source-items.ts's buildReassessmentSourceItems.
   completionNote: z.string().max(1000).optional(),
 });
-
-export type UpdateRoadmapTaskInput = z.infer<typeof updateRoadmapTaskSchema>;
 
 // Route params. Without these a malformed id reaches Prisma's uuid cast and
 // surfaces as a generic 500 instead of a 400.

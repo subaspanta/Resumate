@@ -9,5 +9,4 @@ export const listResumesQuerySchema = z.object({
   cursor: z.string().uuid().optional(),
 });
 
-export type UploadResumeInput = z.infer<typeof uploadResumeSchema>;
 export type ListResumesQuery = z.infer<typeof listResumesQuerySchema>;
