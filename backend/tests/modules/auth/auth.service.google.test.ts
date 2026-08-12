@@ -113,15 +113,6 @@ describe("AuthService.loginWithGoogle", () => {
     const service = buildService(fakeProvider(profile));
 
     const first = await service.loginWithGoogle("any-code");
-
-    // Refresh tokens are JWTs over {sub, email, iat} with second-resolution
-    // iat and no nonce, so two logins for one user inside the same second
-    // produce an identical token — and tokenHash is @unique. That is a
-    // pre-existing property of issueTokens shared by every auth path (see the
-    // note in this file's final test); wait out the second so this test
-    // measures account resolution rather than that collision.
-    await new Promise((resolve) => setTimeout(resolve, 1100));
-
     const second = await service.loginWithGoogle("any-code");
 
     expect(second.user.id).toBe(first.user.id);
@@ -168,13 +159,9 @@ describe("AuthService.loginWithGoogle", () => {
   // The interleaving these cover only exists while both calls are in flight,
   // so they must run concurrently rather than as sequential awaits.
   //
-  // What they assert is *account* convergence — one row, one identity. They
-  // deliberately do not require both calls to succeed: two logins for the same
-  // user in the same second mint an identical refresh token, and tokenHash is
-  // @unique, so one of the pair can fail on that constraint. That collision is
-  // a pre-existing property of issueTokens on every auth path, not something
-  // this flow introduces, and asserting on it here would pin unrelated
-  // behaviour. See the standalone test at the end of this file.
+  // What they assert is *account* convergence — one row, one identity — and
+  // that both racers get a session: refresh tokens carry a jti nonce, so two
+  // issuances in the same second no longer collide on the @unique tokenHash.
   it("converges on one row when two sign-ins race for a new identity", async () => {
     const profile = googleProfile();
     const service = buildService(fakeProvider(profile));
@@ -184,18 +171,18 @@ describe("AuthService.loginWithGoogle", () => {
       service.loginWithGoogle("code-b"),
     ]);
 
-    // Whatever happened to token issuance, exactly one account must exist.
+    // Exactly one account must exist.
     const rows = await prisma.user.findMany({ where: { email: profile.email } });
     expect(rows).toHaveLength(1);
     expect(rows[0].googleId).toBe(profile.googleId);
 
-    // And no call may resolve to an account other than that one.
+    // Both racers must succeed, and neither may resolve to another account.
     for (const result of results) {
+      expect(result.status).toBe("fulfilled");
       if (result.status === "fulfilled") {
         expect(result.value.user.id).toBe(rows[0].id);
       }
     }
-    expect(results.some((r) => r.status === "fulfilled")).toBe(true);
   });
 
   it("links once when two sign-ins race for an existing account", async () => {
@@ -227,11 +214,11 @@ describe("AuthService.loginWithGoogle", () => {
     expect(sameEmail).toHaveLength(1);
 
     for (const result of results) {
+      expect(result.status).toBe("fulfilled");
       if (result.status === "fulfilled") {
         expect(result.value.user.id).toBe(existing.id);
       }
     }
-    expect(results.some((r) => r.status === "fulfilled")).toBe(true);
   });
 
   it("refuses to rebind an email already held by a different Google identity", async () => {
@@ -309,44 +296,5 @@ describe("AuthService.loginWithGoogle", () => {
       where: { userId: victim.id },
     });
     expect(tokens).toHaveLength(0);
-  });
-
-  // Documents a PRE-EXISTING limitation of issueTokens, reached by every auth
-  // path (register, login, refresh), not introduced by Google sign-in.
-  //
-  // generateRefreshToken signs {sub, email} with second-resolution iat and no
-  // nonce, so two token issuances for one user inside the same second produce
-  // byte-identical JWTs. RefreshToken.tokenHash is @unique, so the second
-  // insert fails on the constraint and the request surfaces as a generic 500.
-  //
-  // Reaching it needs two concurrent sign-ins by the same user — a
-  // double-clicked button or two tabs. Fixing it means adding a nonce (jti) to
-  // the refresh payload, which changes token issuance for every auth path and
-  // so is deliberately out of scope for this feature.
-  it("documents that concurrent token issuance collides on tokenHash", async () => {
-    const profile = googleProfile();
-    const service = buildService(fakeProvider(profile));
-
-    // Establish the account first, so the race below is purely about tokens.
-    const first = await service.loginWithGoogle("code-a");
-
-    const results = await Promise.allSettled([
-      service.loginWithGoogle("code-b"),
-      service.loginWithGoogle("code-c"),
-    ]);
-
-    const rejected = results.filter((r) => r.status === "rejected");
-
-    // If this stops failing, issueTokens grew a nonce — delete this test and
-    // tighten the two concurrency tests above to require both calls to succeed.
-    expect(rejected.length).toBeGreaterThan(0);
-    expect(String((rejected[0] as PromiseRejectedResult).reason)).toContain(
-      "tokenHash",
-    );
-
-    // The account itself is never harmed by the collision.
-    const rows = await prisma.user.findMany({ where: { email: profile.email } });
-    expect(rows).toHaveLength(1);
-    expect(rows[0].id).toBe(first.user.id);
   });
 });

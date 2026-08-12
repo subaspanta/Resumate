@@ -42,9 +42,18 @@ export function verifyAccessToken(
 }
 
 export function generateRefreshToken(payload: JwtPayload): string {
-  return jwt.sign(payload, REFRESH_TOKEN_SECRET, {
-    expiresIn: Math.floor(env.REFRESH_COOKIE_MAX_AGE / 1000),
-  } as jwt.SignOptions);
+  // jti is a per-issuance nonce, never read back. Without it the payload is
+  // {sub, email, iat} with second-resolution iat, so two issuances for one user
+  // inside the same second are byte-identical — and RefreshToken.tokenHash is
+  // @unique, which turned an ordinary double-click into a 500. Minted here
+  // rather than in issueTokens so a future auth path cannot forget it.
+  return jwt.sign(
+    { ...payload, jti: crypto.randomUUID() },
+    REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: Math.floor(env.REFRESH_COOKIE_MAX_AGE / 1000),
+    } as jwt.SignOptions,
+  );
 }
 
 export function verifyRefreshToken(token: string): JwtPayload | null {
