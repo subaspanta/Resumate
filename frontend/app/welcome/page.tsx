@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { FileText, Sparkles, MapPin, ShieldCheck } from "lucide-react";
+import { FileText, Sparkles, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MarketingNav } from "@/src/components/marketing/MarketingNav";
 import { Reveal } from "@/src/components/marketing/Reveal";
 import { EvidencePreviewCard } from "@/src/components/marketing/EvidencePreviewCard";
-import { RoadmapPreviewCard } from "@/src/components/marketing/RoadmapPreviewCard";
 
 const ROLES = ["Frontend Engineer", "Backend Engineer", "Full Stack Engineer"];
 
@@ -14,26 +13,24 @@ export default function WelcomePage() {
       <MarketingNav />
 
       {/* Hero */}
-      <section className="mx-auto grid w-full max-w-max-content items-center gap-12 px-lg pb-20 pt-16 md:grid-cols-2 md:px-xl md:pb-28 md:pt-24">
+      <section className="mx-auto grid w-full max-w-max-content items-center gap-8 px-lg pb-20 pt-16 md:grid-cols-2 md:gap-12 md:px-xl md:pb-28 md:pt-24">
         <div>
           <h1 className="text-display-md text-text-primary md:text-display-lg">
-            Know exactly where your resume falls short.
+            Stop guessing what&apos;s missing from your resume.
           </h1>
           <p className="mt-5 max-w-[46ch] text-body-lg text-text-body">
-            Upload your resume, pick a target role, and get an evidence-based
-            read on your skill gaps, plus a 4-week roadmap to close them.
+            Upload it, pick the role you&apos;re after, and see exactly which
+            skills you can already prove, which ones you can&apos;t yet, and
+            the plan to close the gap.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button asChild size="lg">
-              <Link href="/register">Get started</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/login">Log in</Link>
+              <Link href="/register">Analyze my resume</Link>
             </Button>
           </div>
         </div>
 
-        <Reveal className="flex justify-center md:justify-end">
+        <Reveal className="flex justify-start md:justify-end">
           <EvidencePreviewCard />
         </Reveal>
       </section>
@@ -55,12 +52,12 @@ export default function WelcomePage() {
       <section className="mx-auto w-full max-w-max-content px-lg py-20 md:px-xl md:py-28">
         <Reveal>
           <h2 className="max-w-[48ch] text-headline-lg text-text-primary">
-            Three steps between your resume and a plan you can act on.
+            Three steps from resume to a plan you can actually work.
           </h2>
         </Reveal>
 
-        <div className="mt-14 grid gap-6 md:grid-cols-[1.2fr_1fr] md:grid-rows-2">
-          <Reveal className="md:row-span-2">
+        <div className="mt-14 grid gap-6 lg:grid-cols-[1.2fr_1fr] lg:grid-rows-2">
+          <Reveal className="lg:row-span-2">
             <div className="flex h-full flex-col justify-between rounded-xl border border-border-base bg-surface p-8">
               <FileText className="size-8 text-primary" strokeWidth={1.5} />
               <div className="mt-8">
@@ -71,8 +68,8 @@ export default function WelcomePage() {
                   Upload your resume
                 </h3>
                 <p className="mt-3 max-w-[38ch] text-body-md text-text-body">
-                  PDF or DOCX. We parse your work history, skills, and projects
-                  into structured evidence we can actually check claims against.
+                  PDF or DOCX. Your work history, skills, and projects become
+                  evidence we can point back to — not just text we skim.
                 </p>
               </div>
             </div>
@@ -88,8 +85,8 @@ export default function WelcomePage() {
                 Pick a target role
               </h3>
               <p className="mt-3 text-body-md text-text-body">
-                We score you against what that role actually requires, not a
-                generic checklist.
+                Scored against what that specific role actually needs, not a
+                one-size-fits-all checklist.
               </p>
             </div>
           </Reveal>
@@ -104,57 +101,19 @@ export default function WelcomePage() {
                 Work your roadmap
               </h3>
               <p className="mt-3 text-body-md text-text-body">
-                A 4-week plan built from your actual gaps. Mark tasks complete
-                as you go.
+                Not another tutorial to watch — tasks built to extend your
+                own projects, so finishing one leaves you with real proof.
               </p>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* Product proof - two real preview tiles, visually distinct */}
-      <section className="bg-surface py-20 md:py-28">
-        <div className="mx-auto w-full max-w-max-content px-lg md:px-xl">
-          <Reveal>
-            <h2 className="max-w-[48ch] text-headline-lg text-text-primary">
-              See the gap, then see the plan to close it.
-            </h2>
-          </Reveal>
-
-          <div className="mt-14 grid gap-8 md:grid-cols-2">
-            <Reveal className="flex justify-center">
-              <EvidencePreviewCard />
-            </Reveal>
-            <Reveal delay={100} className="flex justify-center">
-              <RoadmapPreviewCard />
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* Philosophy / grounding differentiator */}
-      <section className="mx-auto w-full max-w-max-content px-lg py-20 md:px-xl md:py-28">
-        <Reveal className="mx-auto max-w-[56ch] text-center">
-          <ShieldCheck
-            className="mx-auto size-10 text-primary"
-            strokeWidth={1.5}
-          />
-          <h2 className="mt-8 text-headline-lg text-text-primary">
-            The model observes. The scoring is ours.
-          </h2>
-          <p className="mt-5 text-body-lg text-text-body">
-            Role requirements are hand-authored, not generated. Every skill we
-            mark as proven is quoted from your resume, and every score is
-            computed, not guessed.
-          </p>
-        </Reveal>
-      </section>
-
       {/* Roles */}
       <section className="border-t border-border-base bg-surface py-16">
         <div className="mx-auto w-full max-w-max-content px-lg md:px-xl">
           <p className="text-center text-body-md text-text-muted">
-            Built for engineers targeting
+            Live today, with more roles on the way
           </p>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
             {ROLES.map((role) => (
@@ -165,19 +124,22 @@ export default function WelcomePage() {
                 {role}
               </span>
             ))}
+            <span className="rounded-full border border-dashed border-border-input px-4 py-2 text-body-md text-text-muted">
+              More roles soon
+            </span>
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
+      {/* Closing CTA */}
       <section className="mx-auto w-full max-w-max-content px-lg py-20 text-center md:px-xl md:py-28">
         <Reveal className="mx-auto max-w-[36ch]">
           <h2 className="text-headline-lg text-text-primary">
-            Find out what your resume is missing.
+            Upload your resume and see where you actually stand.
           </h2>
           <div className="mt-8">
-            <Button asChild variant="outline" size="lg">
-              <Link href="/register">Get started</Link>
+            <Button asChild size="lg">
+              <Link href="/register">Analyze my resume</Link>
             </Button>
           </div>
         </Reveal>

@@ -40,12 +40,50 @@
     gap: var(--spacing-md);
   }
 
+  /* Opens the off-canvas sidebar drawer below 1024px, where the permanent
+     column is hidden — see sidebar.css. Hidden at 1024px+, where the sidebar
+     is always visible and there is nothing for this button to open. */
+  .app-shell-mobile-menu-trigger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border-base);
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background-color 150ms ease-out;
+  }
+
+  .app-shell-mobile-menu-trigger:hover {
+    background-color: var(--color-surface-container);
+  }
+
+  .app-shell-mobile-menu-trigger:active {
+    transform: scale(0.96);
+  }
+
+  @media (max-width: 1023px) {
+    .app-shell-mobile-menu-trigger {
+      display: flex;
+    }
+  }
+
+  .app-shell-crumb-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
   .app-shell-crumbs {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: var(--spacing-xs);
     min-width: 0;
+    flex: 1;
   }
 
   .app-shell-crumb-item {

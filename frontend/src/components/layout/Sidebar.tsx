@@ -9,6 +9,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { useAuth } from "@/src/features/auth/auth.hooks";
 import { toast } from "sonner";
 import type { DashboardViewLayout } from "@/src/components/dashboard/dashboardViewConfig";
@@ -27,8 +28,6 @@ import {
 type SidebarLayout = Pick<
   DashboardViewLayout,
   | "sidebarCollapsible"
-  | "sidebarShowBrandIcon"
-  | "sidebarShowTagline"
   | "sidebarNavDisabled"
   | "sidebarNavHint"
   | "sidebarAvatarSize"
@@ -44,6 +43,9 @@ interface SidebarProps {
    * rather than falsely highlighting Dashboard.
    */
   activeNav?: "dashboard" | "workspace" | "settings";
+  /** Below 1024px the sidebar is an off-canvas drawer; these control it. */
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
 interface NavItemProps {
@@ -61,6 +63,7 @@ interface NavItemProps {
    */
   hint?: string;
   href?: string;
+  onClick?: () => void;
 }
 
 function NavItem({
@@ -72,6 +75,7 @@ function NavItem({
   disabled,
   hint,
   href,
+  onClick,
 }: NavItemProps) {
   const className = [
     "dashboard-nav-item",
@@ -112,6 +116,7 @@ function NavItem({
         aria-label={label}
         aria-current={isActive ? "page" : undefined}
         title={isCollapsed ? label : undefined}
+        onClick={onClick}
       >
         {content}
       </a>
@@ -148,6 +153,8 @@ export function Sidebar({
   onToggle,
   layout,
   activeNav = "dashboard",
+  isMobileOpen = false,
+  onCloseMobile,
 }: SidebarProps) {
   // Read the signed-in user here rather than taking it as a prop: this
   // component already depends on useAuth for logout, and the dashboard used to
@@ -157,6 +164,7 @@ export function Sidebar({
   const userEmail = user?.email;
   const showCollapse = layout.sidebarCollapsible;
   const collapsed = showCollapse && isCollapsed;
+  const firstNavLinkRef = useRef<HTMLAnchorElement>(null);
 
   const handleLogout = async () => {
     try {
@@ -168,33 +176,55 @@ export function Sidebar({
     }
   };
 
+  // Mobile drawer only: Escape closes it, and opening moves focus into the
+  // nav so keyboard/screen-reader users land somewhere useful rather than
+  // staying on the now-hidden trigger button.
+  useEffect(() => {
+    if (!isMobileOpen) return;
+
+    firstNavLinkRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onCloseMobile?.();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isMobileOpen, onCloseMobile]);
+
   return (
-    <aside
-      className={`dashboard-sidebar ${
-        collapsed ? "dashboard-sidebar--collapsed" : ""
-      }`}
-    >
+    <>
+      {isMobileOpen && (
+        <div
+          className="dashboard-sidebar-backdrop"
+          onClick={onCloseMobile}
+          aria-hidden="true"
+        />
+      )}
+      <aside
+        className={`dashboard-sidebar ${
+          collapsed ? "dashboard-sidebar--collapsed" : ""
+        } ${isMobileOpen ? "dashboard-sidebar--mobile-open" : ""}`}
+      >
       <Link
         href="/"
-        aria-label="ResuMate home"
+        ref={firstNavLinkRef}
+        aria-label="Resumate home"
         className={`dashboard-sidebar-brand ${
           collapsed ? "dashboard-sidebar-brand--collapsed" : ""
         }`}
+        onClick={onCloseMobile}
       >
-        {layout.sidebarShowBrandIcon && (
-          <span className="dashboard-sidebar-brand-mark" aria-hidden="true">
-            R
-          </span>
-        )}
+        <span className="brand-mark" aria-hidden="true">
+          R
+        </span>
         <div
           className={`dashboard-sidebar-brand-text ${
             collapsed ? "dashboard-sidebar-brand-text--collapsed" : ""
           }`}
         >
-          <div className="dashboard-sidebar-brand-name">ResuMate</div>
-          {layout.sidebarShowTagline && (
-            <p className="dashboard-sidebar-tagline">Career Gap Analysis</p>
-          )}
+          <div className="brand-wordmark">Resumate</div>
         </div>
       </Link>
 
@@ -206,6 +236,7 @@ export function Sidebar({
           isActive={activeNav === "dashboard"}
           isFilled={activeNav === "dashboard"}
           href="/"
+          onClick={onCloseMobile}
         />
         <NavItem
           icon={BarChart3}
@@ -216,6 +247,7 @@ export function Sidebar({
           disabled={layout.sidebarNavDisabled}
           hint={layout.sidebarNavHint}
           href={layout.sidebarNavDisabled ? undefined : "/analyses"}
+          onClick={onCloseMobile}
         />
         <NavItem
           icon={Settings}
@@ -224,6 +256,7 @@ export function Sidebar({
           isActive={activeNav === "settings"}
           isFilled={activeNav === "settings"}
           href="/settings"
+          onClick={onCloseMobile}
         />
       </nav>
 
@@ -299,6 +332,7 @@ export function Sidebar({
           />
         </button>
       )}
-    </aside>
+      </aside>
+    </>
   );
 }

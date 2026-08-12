@@ -7,7 +7,7 @@ export function DashboardFooter() {
   return (
     <footer className="dashboard-footer">
       <div className="dashboard-footer-inner">
-        <span className="dashboard-footer-copy">© 2026 ResuMate</span>
+        <span className="dashboard-footer-copy">© 2026 Resumate</span>
       </div>
     </footer>
   );

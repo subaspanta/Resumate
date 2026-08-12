@@ -41,7 +41,7 @@ function headerFor(
   switch (state) {
     case "firstTime":
       return {
-        title: "Welcome to ResuMate.",
+        title: "Welcome to Resumate.",
         subtitle:
           "Upload your resume to see which skills you can prove for a target role, where the gaps are, and a roadmap to close them.",
       };

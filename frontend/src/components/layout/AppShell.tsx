@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Menu } from "lucide-react";
 import Link from "next/link";
 import { Sidebar } from "@/src/components/layout/Sidebar";
 import { DashboardFooter } from "@/src/components/layout/DashboardFooter";
@@ -71,7 +71,8 @@ export function AppShell({
   hasActionBar = false,
   children,
 }: AppShellProps) {
-  const { isCollapsed, toggle } = useSidebar();
+  const { isCollapsed, toggle, isMobileOpen, openMobile, closeMobile } =
+    useSidebar();
   const layout = DASHBOARD_VIEW_LAYOUT[view];
   const sidebarOffset = getSidebarOffset(
     layout.sidebarCollapsible,
@@ -93,6 +94,8 @@ export function AppShell({
         activeNav={
           activeNav ?? (step === "upload" ? "dashboard" : "workspace")
         }
+        isMobileOpen={isMobileOpen}
+        onCloseMobile={closeMobile}
       />
 
       <main className="dashboard-main">
@@ -106,27 +109,39 @@ export function AppShell({
             .join(" ")}
         >
           <header className="app-shell-header">
-            <nav className="app-shell-crumbs" aria-label="Breadcrumb">
-              {crumbs.map((crumb, i) => (
-                <span key={crumb.label} className="app-shell-crumb-item">
-                  {crumb.href ? (
-                    <Link href={crumb.href} className="app-shell-crumb-link">
-                      {crumb.label}
-                    </Link>
-                  ) : (
-                    <span className="app-shell-crumb-current">
-                      {crumb.label}
-                    </span>
-                  )}
-                  {i < crumbs.length - 1 && (
-                    <ChevronRight
-                      className="app-shell-crumb-sep"
-                      aria-hidden="true"
-                    />
-                  )}
-                </span>
-              ))}
-            </nav>
+            <div className="app-shell-crumb-row">
+              <button
+                type="button"
+                className="app-shell-mobile-menu-trigger"
+                onClick={openMobile}
+                aria-label="Open navigation menu"
+                aria-expanded={isMobileOpen}
+              >
+                <Menu className="size-5" aria-hidden="true" />
+              </button>
+
+              <nav className="app-shell-crumbs" aria-label="Breadcrumb">
+                {crumbs.map((crumb, i) => (
+                  <span key={crumb.label} className="app-shell-crumb-item">
+                    {crumb.href ? (
+                      <Link href={crumb.href} className="app-shell-crumb-link">
+                        {crumb.label}
+                      </Link>
+                    ) : (
+                      <span className="app-shell-crumb-current">
+                        {crumb.label}
+                      </span>
+                    )}
+                    {i < crumbs.length - 1 && (
+                      <ChevronRight
+                        className="app-shell-crumb-sep"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </span>
+                ))}
+              </nav>
+            </div>
 
             <div className="app-shell-titlebar">
               <div className="app-shell-titlegroup">

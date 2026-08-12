@@ -12,6 +12,13 @@ import {
 interface SidebarContextValue {
   isCollapsed: boolean;
   toggle: () => void;
+  /** Off-canvas drawer state below the 768px breakpoint — independent of
+   * `isCollapsed`, which is the desktop icon-rail preference. Conflating the
+   * two would mean opening the mobile drawer could leave the sidebar stuck
+   * collapsed on desktop, or vice versa. */
+  isMobileOpen: boolean;
+  openMobile: () => void;
+  closeMobile: () => void;
 }
 
 const SidebarContext = createContext<SidebarContextValue | null>(null);
@@ -30,10 +37,16 @@ const SidebarContext = createContext<SidebarContextValue | null>(null);
  */
 export function SidebarProvider({ children }: { children: ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const toggle = useCallback(() => setIsCollapsed((prev) => !prev), []);
+  const openMobile = useCallback(() => setIsMobileOpen(true), []);
+  const closeMobile = useCallback(() => setIsMobileOpen(false), []);
 
-  const value = useMemo(() => ({ isCollapsed, toggle }), [isCollapsed, toggle]);
+  const value = useMemo(
+    () => ({ isCollapsed, toggle, isMobileOpen, openMobile, closeMobile }),
+    [isCollapsed, toggle, isMobileOpen, openMobile, closeMobile],
+  );
 
   return <SidebarContext value={value}>{children}</SidebarContext>;
 }
