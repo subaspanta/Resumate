@@ -25,6 +25,17 @@
     transition: --shell-offset 200ms ease-out;
   }
 
+  /* 1280px reads as a bare strip on a TV/ultra-wide display once the viewport
+     is well past what any desktop monitor uses — every consumer of
+     --spacing-max-content lives under .dashboard-shell, so overriding it
+     once here reaches all of them (main content, footer, flow pages) without
+     duplicating the breakpoint per file. */
+  @media (min-width: 1600px) {
+    .dashboard-shell {
+      --spacing-max-content: 1600px;
+    }
+  }
+
   .dashboard-main {
     display: flex;
     flex-direction: column;
@@ -33,6 +44,15 @@
     /* DashboardShell sets --shell-offset on this element, so the interpolation
        has to be declared here too. */
     transition: --shell-offset 200ms ease-out;
+  }
+
+  /* Below 1024px the sidebar is an off-canvas drawer, not a permanent column
+     — the main content must not reserve space for it. Matches sidebar.css's
+     breakpoint. */
+  @media (max-width: 1023px) {
+    .dashboard-main {
+      margin-left: 0;
+    }
   }
 
   .dashboard-main-inner {

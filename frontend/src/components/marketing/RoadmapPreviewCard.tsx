@@ -1,10 +1,30 @@
 import { Circle, CheckCircle2 } from "lucide-react";
 
+// Same role as EvidencePreviewCard's "Frontend Engineer" so the two preview
+// tiles read as one continuous story, not two unrelated mockups. Tasks
+// extend the candidate's own project rather than assign a generic tutorial,
+// matching the product's build-over-consume roadmap philosophy.
 const TASKS = [
-  { week: "Week 1", label: "Write unit tests for one existing component", done: true },
-  { week: "Week 2", label: "Build a small feature with integration tests", done: true },
-  { week: "Week 3", label: "Read up on load balancing & caching basics", done: false },
-  { week: "Week 4", label: "Design a system for a mock scaling scenario", done: false },
+  {
+    step: "Task 1",
+    label: "Add integration tests to your existing React project",
+    done: true,
+  },
+  {
+    step: "Task 2",
+    label: "Wrap one feature in an error boundary with a fallback UI",
+    done: true,
+  },
+  {
+    step: "Task 3",
+    label: "Read up on system design fundamentals for frontend apps",
+    done: false,
+  },
+  {
+    step: "Task 4",
+    label: "Add automated tests to your CI pipeline",
+    done: false,
+  },
 ];
 
 /**
@@ -15,12 +35,12 @@ export function RoadmapPreviewCard() {
   return (
     <div className="w-full max-w-[24rem] rounded-xl border border-border-base bg-surface p-6">
       <span className="font-mono-label text-mono-label uppercase tracking-[0.08em] text-text-muted">
-        4-week roadmap
+        Roadmap
       </span>
 
       <div className="mt-5 flex flex-col gap-4">
         {TASKS.map((task) => (
-          <div key={task.week} className="flex items-start gap-3">
+          <div key={task.step} className="flex items-start gap-3">
             {task.done ? (
               <CheckCircle2
                 className="mt-0.5 size-4 shrink-0 text-score-excellent"
@@ -34,7 +54,7 @@ export function RoadmapPreviewCard() {
             )}
             <div>
               <p className="font-mono-label text-mono-label text-text-muted">
-                {task.week}
+                {task.step}
               </p>
               <p
                 className={

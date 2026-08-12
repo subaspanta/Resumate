@@ -29,7 +29,7 @@ export function AuthPageFooter() {
         </Link>
       </div>
       <div className="font-body-md text-body-md text-text-muted">
-        © 2024 Resumate. Built for professional focus.
+        © 2026 Resumate. Built for professional focus.
       </div>
     </footer>
   );

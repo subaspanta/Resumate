@@ -10,6 +10,7 @@
 @import "./styles/base.css";
 
 /* Feature/component styles */
+@import "./styles/components/brand.css";
 @import "./styles/components/auth.css";
 @import "./styles/components/sidebar.css";
 @import "./styles/components/layout.css";

@@ -1,0 +1,55 @@
+/**
+ * Shared ResuMate brand lockup (mark + wordmark).
+ * Used by src/components/brand/Logo.tsx wherever the product identity
+ * appears: sidebar, marketing nav, auth nav, auth loading splash.
+ */
+@layer components {
+  .brand-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* The rounded-square "R" mark: solid primary fill is the one place a
+     block of accent color is allowed at full strength (DESIGN.md's One
+     Accent Rule reserves that for exactly this kind of brand moment). */
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-family: var(--font-headline-sm);
+    font-size: var(--text-headline-sm);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .brand-mark--lg {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-xl);
+    font-family: var(--font-headline-lg);
+    font-size: var(--text-headline-lg);
+  }
+
+  .brand-wordmark {
+    font-family: var(--font-headline-lg);
+    font-size: var(--text-headline-lg);
+    font-weight: 600;
+    line-height: var(--text-headline-lg--line-height);
+    color: var(--color-primary);
+    white-space: nowrap;
+  }
+
+  .brand-wordmark--sm {
+    font-family: var(--font-headline-sm);
+    font-size: var(--text-headline-sm);
+  }
+}

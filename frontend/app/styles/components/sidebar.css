@@ -2,24 +2,35 @@
  * Dashboard sidebar navigation, incl. collapsed state and user card.
  * Used by src/components/layout/Sidebar.tsx.
  */
+/* Same reasoning as --shell-offset in layout.css: animating `width` directly
+   relayouts the sidebar (and anything reading its box) every frame.
+   Registering it as a typed custom property lets the browser interpolate the
+   length itself instead. */
+@property --sidebar-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 272px;
+}
+
 @layer components {
   .dashboard-sidebar {
     position: fixed;
     left: 0;
     top: 0;
     height: 100vh;
-    width: var(--spacing-sidebar-width);
+    --sidebar-width: var(--spacing-sidebar-width);
+    width: var(--sidebar-width);
     background-color: var(--color-surface);
     border-right: 1px solid var(--color-border-base);
     display: flex;
     flex-direction: column;
     padding: var(--spacing-xl) var(--spacing-md);
     z-index: 50;
-    transition: width 200ms ease-out;
+    transition: --sidebar-width 200ms ease-out;
   }
 
   .dashboard-sidebar--collapsed {
-    width: var(--spacing-sidebar-collapsed-width);
+    --sidebar-width: var(--spacing-sidebar-collapsed-width);
   }
 
   /* Now a real link home, not inert markup — text-decoration/color reset
@@ -51,25 +62,6 @@
     padding-inline: 0;
   }
 
-  /* The rounded-square "R" mark: solid primary fill is the one place a
-     block of accent color is allowed at full strength (DESIGN.md's One
-     Accent Rule reserves that for exactly this kind of brand moment). */
-  .dashboard-sidebar-brand-mark {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-lg);
-    background-color: var(--color-primary);
-    color: var(--color-on-primary);
-    font-family: var(--font-headline-sm);
-    font-size: var(--text-headline-sm);
-    font-weight: 700;
-    line-height: 1;
-  }
-
   .dashboard-sidebar-brand-text {
     opacity: 1;
     overflow: hidden;
@@ -79,23 +71,6 @@
   .dashboard-sidebar-brand-text--collapsed {
     width: 0;
     opacity: 0;
-  }
-
-  .dashboard-sidebar-brand-name {
-    font-family: var(--font-headline-lg);
-    font-size: var(--text-headline-lg);
-    font-weight: 600;
-    line-height: var(--text-headline-lg--line-height);
-    color: var(--color-primary);
-    white-space: nowrap;
-  }
-
-  .dashboard-sidebar-tagline {
-    font-family: var(--font-mono-label);
-    font-size: var(--text-mono-label);
-    font-weight: 500;
-    color: var(--color-text-muted);
-    margin-top: var(--spacing-xs);
   }
 
   .dashboard-nav {
@@ -235,7 +210,10 @@
     width: 20px;
     height: 20px;
     border-radius: 9999px;
-    border: 1px solid var(--color-border-base);
+    /* border-input, not border-base: it sits 2px off the sidebar's own
+       border-right on a near-identical canvas background, so the lighter
+       border-base token made it disappear into that seam at rest. */
+    border: 1px solid var(--color-border-input);
     background-color: var(--color-surface);
     color: var(--color-text-muted);
     cursor: pointer;
@@ -364,5 +342,46 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  /* Below 1024px (phone and tablet both — a permanent 272px column is 35% of
+     a 768px tablet screen with no way to reclaim it) the sidebar is a
+     fixed-width off-canvas drawer rather than a permanent column: it always
+     renders at full (expanded) width regardless of the desktop collapse
+     preference — collapsing to an 80px icon rail buys nothing when there's
+     no hover affordance to explain bare icons and the drawer can just close
+     instead — and sits translated out of view until opened. */
+  @media (max-width: 1023px) {
+    .dashboard-sidebar {
+      width: var(--spacing-sidebar-width);
+      transform: translateX(-100%);
+      transition: transform 200ms ease-out;
+      z-index: 60;
+    }
+
+    .dashboard-sidebar--collapsed {
+      width: var(--spacing-sidebar-width);
+    }
+
+    .dashboard-sidebar--mobile-open {
+      transform: translateX(0);
+    }
+
+    .dashboard-sidebar-toggle {
+      display: none;
+    }
+  }
+
+  .dashboard-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgb(15 23 42 / 40%);
+    z-index: 59;
+  }
+
+  @media (min-width: 1024px) {
+    .dashboard-sidebar-backdrop {
+      display: none;
+    }
   }
 }

@@ -54,7 +54,7 @@ export function EvidencePreviewCard() {
 
       <div className="mt-5 border-t border-border-base pt-4">
         <p className="text-body-md text-text-body">
-          2 gaps found. A 4-week roadmap is ready.
+          2 gaps found. Your roadmap is ready.
         </p>
       </div>
     </div>
