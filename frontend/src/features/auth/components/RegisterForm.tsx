@@ -10,6 +10,9 @@ import { AuthFormField } from "./AuthFormField";
 import { PasswordStrengthChecklist } from "./PasswordStrengthChecklist";
 import { AuthFooterPrompt } from "./AuthFooterPrompt";
 import { AuthSubmitButton } from "./AuthSubmitButton";
+import { AuthDivider } from "./AuthDivider";
+import { GoogleAuthButton } from "./GoogleAuthButton";
+import { startGoogleSignIn } from "../auth.service";
 import { registerSchema, type RegisterFormValues } from "../auth.schemas";
 
 export function RegisterForm() {
@@ -132,6 +135,14 @@ export function RegisterForm() {
         >
           Create Account
         </AuthSubmitButton>
+
+        <AuthDivider />
+
+        {/* Same endpoint as the login page: Google sign-in creates the account
+            when the verified email is new and signs into the existing one when
+            it isn't, so registration needs no separate flow. Deliberately not
+            gated on `isValid` — the form fields are irrelevant to OAuth. */}
+        <GoogleAuthButton onClick={startGoogleSignIn} disabled={isLoading} />
       </form>
 
       <div className="auth-register-divider">

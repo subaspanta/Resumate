@@ -11,6 +11,7 @@ import { AuthFormField } from "./AuthFormField";
 import { AuthSubmitButton } from "./AuthSubmitButton";
 import { AuthDivider } from "./AuthDivider";
 import { GoogleAuthButton } from "./GoogleAuthButton";
+import { startGoogleSignIn } from "../auth.service";
 import { loginSchema, type LoginFormValues } from "../auth.schemas";
 
 const INVALID_CREDENTIALS_MESSAGE = "Invalid email or password";
@@ -119,10 +120,7 @@ export function LoginForm() {
 
       <AuthDivider />
 
-      <GoogleAuthButton
-        onClick={() => handleUnavailableFeature("Google sign-in")}
-        disabled={true}
-      />
+      <GoogleAuthButton onClick={startGoogleSignIn} disabled={isLoading} />
     </form>
   );
 }
