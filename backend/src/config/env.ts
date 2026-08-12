@@ -21,6 +21,9 @@ const requiredEnvVars = [
   "CLOUDINARY_API_SECRET",
   "FRONTEND_URL",
   "GEMINI_API_KEY",
+  "GOOGLE_CLIENT_ID",
+  "GOOGLE_CLIENT_SECRET",
+  "GOOGLE_CALLBACK_URL",
 ] as const;
 
 const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
@@ -52,6 +55,9 @@ export const env = {
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
   GEMINI_API_KEY: process.env.GEMINI_API_KEY as string,
   FRONTEND_URL: process.env.FRONTEND_URL as string,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
+  GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string,
 } as const;
 
 if (env.NODE_ENV !== "production") {

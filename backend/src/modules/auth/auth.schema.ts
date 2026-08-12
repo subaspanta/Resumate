@@ -26,5 +26,12 @@ export const loginUserSchema = z.object({
   password: z.string().min(1, { message: "Password is required" }),
 });
 
+// The callback has no body, but it does have query params — so the request
+// chain keeps its validation link via validateQuery.
+export const googleCallbackQuerySchema = z.object({
+  code: z.string().min(1, { message: "Missing authorization code" }),
+  state: z.string().min(1, { message: "Missing state" }),
+});
+
 export type RegisterUserInput = z.infer<typeof registerUserSchema>;
 export type LoginUserInput = z.infer<typeof loginUserSchema>;

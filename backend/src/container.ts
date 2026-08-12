@@ -1,9 +1,11 @@
 import { GoogleGenAI } from "@google/genai";
+import { OAuth2Client } from "google-auth-library";
 import { env } from "./config/env.js";
 
 import { AuthRepository } from "./modules/auth/auth.repository.js";
 import { AuthService } from "./modules/auth/auth.service.js";
 import { AuthController } from "./modules/auth/auth.controller.js";
+import { GoogleOAuthProvider } from "./modules/auth/google/google-auth.provider.js";
 
 import { ResumeRepository } from "./modules/resume/resume.repository.js";
 import { ResumeService } from "./modules/resume/resume.service.js";
@@ -32,6 +34,15 @@ import { RoadmapAgentService } from "./modules/roadmap/agents/roadmap.agent.js";
 // faked in a test without mocking the whole @google/genai module.
 const geminiClient = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
+// One shared Google OAuth client, constructor-injected into the provider for
+// the same reason geminiClient is injected into the agents: a provider that
+// builds its own client can't be faked without mocking the whole SDK.
+const googleOAuthClient = new OAuth2Client({
+  clientId: env.GOOGLE_CLIENT_ID,
+  clientSecret: env.GOOGLE_CLIENT_SECRET,
+  redirectUri: env.GOOGLE_CALLBACK_URL,
+});
+
 // --- repositories ---
 const authRepository = new AuthRepository();
 const resumeRepository = new ResumeRepository();
@@ -41,13 +52,18 @@ const roadmapRepository = new RoadmapRepository();
 
 // --- shared modules / agents ---
 const cloudinaryStorageModule = new CloudinaryStorageModule();
+const googleAuthProvider = new GoogleOAuthProvider(googleOAuthClient);
 const aiStructuringModule = new AIStructuringService(geminiClient);
 const parsingModule = new ParsingService(aiStructuringModule);
 const evidenceAgent = new EvidenceAgentService(geminiClient);
 const roadmapAgent = new RoadmapAgentService(geminiClient);
 
 // --- services ---
-const authService = new AuthService(authRepository, cloudinaryStorageModule);
+const authService = new AuthService(
+  authRepository,
+  cloudinaryStorageModule,
+  googleAuthProvider,
+);
 const roleService = new RoleService(roleRepository);
 const careerAnalysisService = new CareerAnalysisService(
   careerAnalysisRepository,

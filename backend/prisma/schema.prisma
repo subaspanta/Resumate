@@ -8,12 +8,19 @@ generator client {
 }
 
 model User {
-  id           String   @id @default(uuid()) @db.Uuid
-  name         String   @db.VarChar(100)
-  email        String   @unique @db.VarChar(255)
-  passwordHash String   @db.Text
-  createdAt    DateTime @default(now()) @db.Timestamp(6)
-  updatedAt    DateTime @updatedAt @db.Timestamp(6)
+  id    String @id @default(uuid()) @db.Uuid
+  name  String @db.VarChar(100)
+  email String @unique @db.VarChar(255)
+  // Nullable: an account created through Google sign-in has no password.
+  passwordHash String? @db.Text
+  // Google's stable subject id (the `sub` claim). Nullable because a
+  // password-only account has none, unique so one Google identity can never be
+  // attached to two users. A plain column rather than a provider link table:
+  // only one provider exists. onDelete: Restrict doesn't apply here — this is
+  // user-owned data that must vanish with the user, not seed reference data.
+  googleId  String?  @unique @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
 
   resumes       Resume[]
   refreshTokens RefreshToken[]

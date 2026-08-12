@@ -12,6 +12,11 @@ export type SafeUser = {
   updatedAt: Date;
 };
 
+// SafeUser plus the one field AuthService.resolveAfterRace's invariant check
+// reads. Deliberately separate from SafeUser: googleId is an internal identity
+// detail, not something the /auth/me response should start returning.
+export type GoogleLinkedUser = SafeUser & { googleId: string | null };
+
 export type AuthResponse = {
   user: SafeUser;
   accessToken: string;
