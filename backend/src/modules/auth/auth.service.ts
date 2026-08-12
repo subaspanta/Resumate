@@ -14,6 +14,7 @@ import {
   GoogleAuthProvider,
   GoogleProfile,
 } from "./google/google-auth.types.js";
+import { classifyGoogleAuthError } from "./google/google-auth-error.js";
 import { HTTP_STATUS } from "../../constants/http-status.js";
 import { env } from "../../config/env.js";
 import {
@@ -144,26 +145,39 @@ export class AuthService {
    *  this sign-in an account it does not own — the exact takeover this flow
    *  exists to prevent. Do not "simplify" this to findUserByEmail; the email
    *  parameter is for logging only. */
+  /** The ONLY way this service reads a user by Google identity.
+   *
+   *  Every result is checked to actually carry the googleId that was asked
+   *  for. The repository query is already keyed on it, so a mismatch can only
+   *  mean the lookup was rewritten (to findUserByEmail, to a fuzzy match, to a
+   *  cache) or its select drifted — this turns that class of mistake from a
+   *  silent account handover into a loud 409. Callers must not call
+   *  authRepository.findUserByGoogleId directly and skip this. */
+  private async findByGoogleIdChecked(
+    googleId: string,
+  ): Promise<GoogleLinkedUser | null> {
+    const user = await this.authRepository.findUserByGoogleId(googleId);
+    if (!user) return null;
+
+    if (user.googleId !== googleId) {
+      logger.error("Google identity lookup returned a mismatched googleId", {
+        expectedGoogleId: googleId,
+        actualGoogleId: user.googleId,
+        userId: user.id,
+      });
+      throw this.accountConflict();
+    }
+
+    return user;
+  }
+
   private async resolveAfterRace(
     googleId: string,
     email: string,
   ): Promise<GoogleLinkedUser> {
-    const user = await this.authRepository.findUserByGoogleId(googleId);
+    const user = await this.findByGoogleIdChecked(googleId);
 
     if (user) {
-      // Defence in depth. The lookup above is already keyed on googleId, so
-      // this can only fire if someone rewrites that lookup (to
-      // findUserByEmail, to a fuzzy match, to a cache) or the repository's
-      // select drifts. It turns that class of mistake from a silent account
-      // handover into a loud 409 — the doc comment above is advice, this is
-      // the part that actually holds.
-      if (user.googleId !== googleId) {
-        logger.error(
-          "resolveAfterRace resolved a user with a mismatched googleId",
-          { expectedGoogleId: googleId, actualGoogleId: user.googleId, userId: user.id },
-        );
-        throw this.accountConflict();
-      }
       return user;
     }
 
@@ -191,7 +205,16 @@ export class AuthService {
   }
 
   async loginWithGoogle(code: string): Promise<AuthResponse> {
-    const profile = await this.googleAuthProvider.exchangeCodeForProfile(code);
+    // Wrapped here as well as inside GoogleOAuthProvider: the provider is an
+    // injected interface, so this service cannot assume every implementation
+    // classifies its own failures. classifyGoogleAuthError passes an existing
+    // AppError through untouched, so double-wrapping costs nothing.
+    let profile: GoogleProfile;
+    try {
+      profile = await this.googleAuthProvider.exchangeCodeForProfile(code);
+    } catch (err) {
+      throw classifyGoogleAuthError(err);
+    }
 
     // Auto-linking on an unverified address would let anyone who can register
     // that address at Google take over an existing ResuMate account.
@@ -216,9 +239,7 @@ export class AuthService {
   private async resolveGoogleUser(
     profile: GoogleProfile,
   ): Promise<GoogleLinkedUser> {
-    const byGoogleId = await this.authRepository.findUserByGoogleId(
-      profile.googleId,
-    );
+    const byGoogleId = await this.findByGoogleIdChecked(profile.googleId);
     if (byGoogleId) return byGoogleId;
 
     const byEmail = await this.authRepository.findUserByEmail(profile.email);
