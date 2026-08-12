@@ -8,16 +8,21 @@ const AUTH_COOKIE_PATH = "/api/v1/auth";
 
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+  // "lax", not "strict": the Google OAuth callback is reached by a cross-site
+  // top-level navigation from accounts.google.com, and browsers do not carry
+  // strict cookies across one — sign-in would appear to succeed and leave the
+  // user logged out. Lax still withholds the cookie from cross-site POST/XHR,
+  // which is where the CSRF risk actually lives.
   cookieOptions = {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
-    sameSite: "strict" as const,
+    sameSite: "lax" as const,
     maxAge: env.COOKIE_MAX_AGE,
   };
   refreshCookieOptions = {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
-    sameSite: "strict" as const,
+    sameSite: "lax" as const,
     maxAge: env.REFRESH_COOKIE_MAX_AGE,
     path: AUTH_COOKIE_PATH,
   };
