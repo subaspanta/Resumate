@@ -1,6 +1,7 @@
 import app from "./app.js";
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
+import { prisma } from "./lib/prisma.js";
 
 const SHUTDOWN_TIMEOUT_MS = 10_000;
 
@@ -19,23 +20,34 @@ server.on("error", (error) => {
 });
 
 // Graceful shutdown
+let isShuttingDown = false;
+
 const gracefulShutdown = (signal: string) => {
+  if (isShuttingDown) {
+    return;
+  }
+  isShuttingDown = true;
+
   logger.info({
     message: "Graceful shutdown initiated",
     signal,
   });
-  server.close(() => {
-    logger.info("HTTP server closed");
-    logger.info(" Process terminated");
-    process.exit(0);
-  });
 
-  setTimeout(() => {
+  const forceExitTimer = setTimeout(() => {
     logger.error(
       " Could not close connections in time, forcefully shutting down",
     );
     process.exit(1);
   }, SHUTDOWN_TIMEOUT_MS);
+
+  server.close(() => {
+    logger.info("HTTP server closed");
+    void prisma.$disconnect().finally(() => {
+      clearTimeout(forceExitTimer);
+      logger.info(" Process terminated");
+      process.exit(0);
+    });
+  });
 };
 
 process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
