@@ -4,6 +4,9 @@ import { env } from "../config/env.js";
 
 const adapter = new PrismaPg({
   connectionString: env.DATABASE_URL,
+  max: env.DB_POOL_MAX,
+  idleTimeoutMillis: 30_000,
+  connectionTimeoutMillis: 5_000,
 });
 
 const globalForPrisma = globalThis as {

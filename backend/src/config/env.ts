@@ -47,6 +47,7 @@ export const env = {
     process.env.REFRESH_COOKIE_MAX_AGE || "604800000",
     10,
   ),
+  DB_POOL_MAX: parseInt(process.env.DB_POOL_MAX || "10", 10),
   isProduction: process.env.NODE_ENV === "production",
   isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",
