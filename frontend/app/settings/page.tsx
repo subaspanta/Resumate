@@ -16,6 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { AppShell } from "@/src/components/layout/AppShell";
+import { ThemeToggle } from "@/src/components/settings/ThemeToggle";
 import { useAuth } from "@/src/features/auth/auth.hooks";
 
 const CRUMBS = [{ label: "Dashboard", href: "/" }, { label: "Settings" }];
@@ -71,6 +72,16 @@ export default function SettingsPage() {
             </div>
           </div>
         )}
+      </div>
+
+      <div className="settings-section">
+        <h2 className="section-heading">Appearance</h2>
+        <div className="card settings-card">
+          <div className="settings-field">
+            <span className="settings-field-label">Theme</span>
+            <ThemeToggle />
+          </div>
+        </div>
       </div>
 
       <div className="settings-section">

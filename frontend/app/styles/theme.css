@@ -3,28 +3,40 @@
  * Consumed by Tailwind v4 as utility classes (e.g. bg-primary, text-body-md).
  */
 @theme {
-  --color-primary: #075985;
-  --color-primary-container: #EBF2F5;
+  --color-primary: #02747E;
+  --color-primary-container: #E2F1F3;
   --color-on-primary: #FFFFFF;
-  --color-background: #FCF8FF;
-  --color-canvas: #F8FAFC;
+  --color-accent-secondary: #0058AC;
+  /**
+   * Expressive accent for *display typography only* — a picked-out word in a
+   * marketing headline. Never an action, a fill, an icon, or a state.
+   *
+   * It sits between --color-danger (hue 0) and --color-score-needs-work
+   * (hue 21), which mean "error" and "skill gap" in the product UI. Nothing
+   * stops those reading as the same color, so the separation is enforced by
+   * where this is allowed: public marketing surfaces, never product UI.
+   * Teal remains the only color that means "act here".
+   */
+  --color-accent-display: #D52F15;
+  --color-background: #FFFFFF;
+  --color-canvas: #FAF9F5;
   --color-surface: #FFFFFF;
-  --color-border-base: #E2E8F0;
-  --color-border-input: #CBD5E1;
+  --color-border-base: #E6E3D8;
+  --color-border-input: #8A8578;
 
-  --color-text-primary: #0F172A;
-  --color-text-body: #475569;
-  --color-text-muted: #64748B;
+  --color-text-primary: #002D6B;
+  --color-text-body: #444444;
+  --color-text-muted: #555555;
 
-  --color-danger: #DC2626;
-  --color-ai-bg: #EBF2F5;
+  --color-danger: #BD1F1F;
+  --color-ai-bg: #E2F1F3;
 
-  --color-surface-container-low: #EBF2F5;
-  --color-surface-container: #D7E4EB;
+  --color-surface-container-low: #F6F5F0;
+  --color-surface-container: #F0EDE2;
 
-  --color-score-excellent: #16A34A;
-  --color-score-good: #CA8A04;
-  --color-score-needs-work: #EA580C;
+  --color-score-excellent: #107535;
+  --color-score-good: #7F6005;
+  --color-score-needs-work: #913808;
 
   --color-shadow-sm: #0000000a;
 
@@ -121,4 +133,54 @@
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
   --radius-xxl: 16px;
+}
+
+/**
+ * Dark palette. Mirrors the @theme block above hue-for-hue, lightness
+ * inverted — not swapped for a generic gray or blue ramp. The surfaces keep
+ * light mode's warm family (~hue 45) at 4.5-7% saturation, which reads as
+ * warm charcoal rather than brown; primary holds teal's hue 185 and
+ * accent-secondary holds hue 209, both lightened to carry a dark surface.
+ *
+ * Containers sit *away* from --color-surface in both themes: darker than the
+ * card in light, lighter than it here. --color-surface-container is the most
+ * elevated surface and therefore the worst case for text contrast — every
+ * foreground below is checked against it, not just against the page.
+ *
+ * Every pairing is checked against WCAG 2.1 AA (4.5:1 body text, 3:1 large
+ * text / UI boundaries), not eyeballed.
+ */
+.dark {
+  --color-primary: #2FCCDA;
+  --color-primary-container: #1D3335;
+  --color-on-primary: #02282C;
+  --color-accent-secondary: #55A6F1;
+  /* Same hue (8) as light, lifted to carry a dark surface. */
+  --color-accent-display: #EE644F;
+
+  --color-background: #0E0D0C;
+  --color-canvas: #131211;
+  --color-surface: #1E1D1B;
+
+  --color-border-base: #413F3A;
+  --color-border-input: #827E73;
+
+  --color-text-primary: #F7F6F3;
+  --color-text-body: #DFDDD7;
+  --color-text-muted: #B4B1A7;
+
+  --color-danger: #EF8080;
+  /* Same value as --color-primary-container, mirroring the light theme
+     where both tokens are already identical (#E2F1F3). */
+  --color-ai-bg: #1D3335;
+
+  --color-surface-container-low: #282724;
+  --color-surface-container: #353431;
+
+  --color-score-excellent: #61D18A;
+  --color-score-good: #EBC247;
+  --color-score-needs-work: #F0854C;
+
+  /* Black shadows need more alpha to read against an already-dark surface. */
+  --color-shadow-sm: #00000066;
 }

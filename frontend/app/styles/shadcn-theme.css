@@ -45,24 +45,29 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  /* Tells the browser which way to render surfaces it draws itself --
+     scrollbars, autofill backgrounds, date pickers, spellcheck underlines.
+     Without it those stay light even under .dark, since no CSS of ours
+     reaches them. */
+  color-scheme: light;
+  --background: var(--color-canvas);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-text-primary);
   --primary: var(--color-primary);
   --primary-foreground: var(--color-on-primary);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --secondary: var(--color-surface-container-low);
+  --secondary-foreground: var(--color-accent-secondary);
+  --muted: var(--color-surface-container-low);
+  --muted-foreground: var(--color-text-muted);
+  --accent: var(--color-surface-container-low);
+  --accent-foreground: var(--color-text-primary);
+  --destructive: var(--color-danger);
+  --border: var(--color-border-base);
+  --input: var(--color-border-input);
+  --ring: var(--color-accent-secondary);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -79,25 +84,40 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/*
+ * Values below are derived from the .dark palette in theme.css (via var()),
+ * not a second invented palette -- see theme.css for the source hexes.
+ * --chart-* and --sidebar-* are left as shadcn's stock dark scaffold: this
+ * app doesn't render shadcn's own chart or <Sidebar> primitives (the custom
+ * Sidebar.tsx reads --color-* tokens directly through sidebar.css), so
+ * there's nothing visible to derive dark values for.
+ */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
+  color-scheme: dark;
+  --background: var(--color-canvas);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-text-primary);
   --primary: var(--color-primary);
   --primary-foreground: var(--color-on-primary);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --secondary: var(--color-surface-container);
+  --secondary-foreground: var(--color-accent-secondary);
+  --muted: var(--color-surface-container-low);
+  --muted-foreground: var(--color-text-muted);
+  --accent: var(--color-surface-container-low);
+  --accent-foreground: var(--color-text-primary);
+  /* Independent of --color-danger on purpose, unlike :root above (which does
+     alias --destructive to --color-danger -- light's danger red carries
+     white button text at 6.21:1, so aliasing is safe there). --color-danger's
+     dark value (#EF8080) is tuned for *text* legibility on a dark surface and
+     carries white button text at only 2.60:1; this red-600 gives 4.83:1.
+     The two roles genuinely need different reds here. */
+  --destructive: #dc2626;
+  --border: var(--color-border-base);
+  --input: var(--color-border-input);
+  --ring: var(--color-accent-secondary);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

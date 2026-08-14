@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { FileText, Sparkles, MapPin, ArrowRight } from "lucide-react";
+import {
+  FileText,
+  Sparkles,
+  MapPin,
+  ArrowRight,
+  Quote,
+  ListChecks,
+  Route,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MarketingNav } from "@/src/components/marketing/MarketingNav";
 import { Reveal } from "@/src/components/marketing/Reveal";
@@ -8,8 +16,13 @@ import { EvidencePreviewCard } from "@/src/components/marketing/EvidencePreviewC
 const ROLES = ["Frontend Engineer", "Backend Engineer", "Full Stack Engineer"];
 
 export default function WelcomePage() {
+  // overflow-x-clip, not -hidden: .hero-panel bleeds to the viewport edge with
+  // a 100vw calc, and 100vw counts the scrollbar gutter while the containing
+  // block does not — on a platform with classic (non-overlay) scrollbars that
+  // surplus would push a horizontal scrollbar onto the page. `hidden` would
+  // fix it too but silently kills position:sticky on the nav; `clip` does not.
   return (
-    <div className="min-h-[100dvh] bg-canvas">
+    <div className="min-h-[100dvh] overflow-x-clip bg-canvas">
       <MarketingNav />
 
       {/* Hero */}
@@ -17,17 +30,25 @@ export default function WelcomePage() {
           only 328px, and the headline's own jump to display-lg there pushed it
           to four lines in a half-width box — worse than the same headline on a
           phone. Both the split and the type step now land together at 1024px,
-          where the column is wide enough to carry 48px type. */}
-      <section className="mx-auto grid w-full max-w-max-content items-center gap-8 px-lg pb-12 pt-8 md:gap-12 md:px-xl md:pb-20 md:pt-16 lg:grid-cols-2 lg:pb-28 lg:pt-24">
+          where the column is wide enough to carry 48px type.
+
+          The right track is capped rather than a free 1fr: the navy panel
+          bleeds to the viewport edge from xl, so letting it grow with the
+          viewport would keep stretching the band while the card inside it
+          stayed 24rem, opening a widening void on its right. */}
+      <section className="mx-auto grid w-full max-w-max-content items-center gap-10 px-lg pb-12 pt-10 md:gap-12 md:px-xl md:pb-20 md:pt-16 lg:grid-cols-[1fr_minmax(0,29rem)] lg:pb-24 lg:pt-20">
         <div>
-          <h1 className="text-balance text-display-md text-text-primary lg:text-display-lg">
-            Stop guessing what&apos;s missing from your resume.
+          <h1 className="text-balance text-display-md text-text-primary lg:text-display-lg xl:text-[60px] xl:leading-[64px]">
+            Stop guessing what&apos;s{" "}
+            <span className="marketing-accent-word">missing</span> from your
+            resume.
           </h1>
-          <p className="mt-5 max-w-[46ch] text-body-lg text-text-body">
+          <p className="mt-6 max-w-[46ch] text-body-lg text-text-body">
             Upload it, pick the role you&apos;re after, and see exactly which
-            skills you can already prove, which ones you can&apos;t yet, and
-            the plan to close the gap.
+            skills you can already prove, which ones you can&apos;t yet, and the
+            plan to close the gap.
           </p>
+
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button asChild size="lg" className="marketing-cta">
               <Link href="/register">
@@ -38,12 +59,48 @@ export default function WelcomePage() {
                 />
               </Link>
             </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link href="#how-it-works">See how it works</Link>
+            </Button>
           </div>
+
+          {/* Mechanism, not outcome — see .hero-proof in marketing.css. */}
+          {/* role="list" because list-style:none makes Safari/VoiceOver drop
+              the list semantics, so these stop being announced as a group. */}
+          <ul role="list" className="hero-proof mt-10 list-none">
+            <li className="hero-proof-item">
+              <Quote className="hero-proof-icon size-4" aria-hidden="true" />
+              <span className="hero-proof-text">
+                <span className="hero-proof-lead">Quoted, not guessed</span> —
+                every skill traced to a line in your resume
+              </span>
+            </li>
+            <li className="hero-proof-item">
+              <ListChecks
+                className="hero-proof-icon size-4"
+                aria-hidden="true"
+              />
+              <span className="hero-proof-text">
+                <span className="hero-proof-lead">Hand-authored</span> — role
+                requirements written by us, not generated
+              </span>
+            </li>
+            <li className="hero-proof-item">
+              <Route className="hero-proof-icon size-4" aria-hidden="true" />
+              <span className="hero-proof-text">
+                <span className="hero-proof-lead">4 weeks</span> — tasks sized
+                to finish, built on your own projects
+              </span>
+            </li>
+          </ul>
         </div>
 
-        <Reveal className="flex justify-start lg:justify-end">
-          <EvidencePreviewCard />
-        </Reveal>
+        <div className="hero-panel">
+          <p className="hero-panel-label">Live preview</p>
+          <Reveal className="mt-4 flex justify-start">
+            <EvidencePreviewCard />
+          </Reveal>
+        </div>
       </section>
 
       {/* Trust strip */}
@@ -60,10 +117,14 @@ export default function WelcomePage() {
       </section>
 
       {/* How it works - asymmetric, not equal 3-card */}
-      <section className="mx-auto w-full max-w-max-content px-lg py-14 md:px-xl md:py-28">
+      <section
+        id="how-it-works"
+        className="mx-auto w-full max-w-max-content scroll-mt-20 px-lg py-14 md:px-xl md:py-28"
+      >
         <Reveal>
           <h2 className="max-w-[48ch] text-pretty text-headline-lg text-text-primary">
-            Three steps from resume to a plan you can actually work.
+            <span className="marketing-accent-word">Three steps</span> from
+            resume to a plan you can actually work.
           </h2>
         </Reveal>
 
@@ -121,8 +182,8 @@ export default function WelcomePage() {
                 Work your roadmap
               </h3>
               <p className="mt-3 text-body-md text-text-body">
-                Not another tutorial to watch — tasks built to extend your
-                own projects, so finishing one leaves you with real proof.
+                Not another tutorial to watch — tasks built to extend your own
+                projects, so finishing one leaves you with real proof.
               </p>
             </div>
           </Reveal>

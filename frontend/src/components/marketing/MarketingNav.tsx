@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/src/components/brand/Logo";
+import { ThemeToggle } from "@/src/components/settings/ThemeToggle";
 
 /**
  * Condenses once the page scrolls. Driven by a zero-height sentinel above the
@@ -34,9 +35,10 @@ export function MarketingNav() {
         className={`marketing-nav${condensed ? " marketing-nav--condensed" : ""}`}
       >
         <div className="mx-auto flex w-full max-w-max-content items-center justify-between px-lg md:px-xl">
-          <Logo href="/welcome" size="sm" />
+          <Logo href="/welcome" size="sm" hideWordmarkOnMobile />
 
           <nav className="flex items-center gap-3">
+            <ThemeToggle compact />
             <Button
               asChild
               variant="ghost"

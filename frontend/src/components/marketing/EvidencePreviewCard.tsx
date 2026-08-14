@@ -80,14 +80,11 @@ export function EvidencePreviewCard() {
 
   return (
     <motion.div
-      // Two different caps for two different jobs. From lg the hero is two
-      // columns and this sits in a half-width one, where 24rem is the right
-      // size. Below that the hero is a single column: 24rem would strand the
-      // card at 384px inside a ~960px band, but letting it fill that band
-      // would make it dwarf the 46ch paragraph it follows. Matching that
-      // measure keeps the hero reading as one column of content rather than a
-      // narrow paragraph with a wide slab under it.
-      className="w-full max-w-[46ch] rounded-xl border border-border-base bg-surface p-6 lg:max-w-[24rem]"
+      // Below lg the hero is a single column, so this fills the track full
+      // width -- same as the "three steps" tiles further down the page, which
+      // don't cap themselves either. From lg the hero splits into two columns
+      // and this sits in the half-width one, where 24rem is the right size.
+      className="w-full rounded-xl border border-border-base bg-surface p-6 lg:max-w-[24rem]"
       initial={false}
       animate={animate ? { opacity: [0, 1], y: [12, 0] } : { opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}

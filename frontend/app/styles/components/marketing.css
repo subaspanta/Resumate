@@ -33,6 +33,122 @@
     background-color: color-mix(in srgb, var(--color-surface) 96%, transparent);
   }
 
+  /* Hero ------------------------------------------------------------------- */
+
+  /* The picked-out word in a marketing headline. Deliberately NOT the teal:
+     teal is the action color (CTAs, links, icons) and stays that alone, so a
+     headline word tinted teal reads as something you can click. This accent
+     is expressive only and never marks an action. */
+  .marketing-accent-word {
+    color: var(--color-accent-display);
+  }
+
+  /* Proof row under the CTA. The claims are mechanism, not outcome: this
+     product has no users, studies, or testimonials yet, and PRODUCT.md forbids
+     inventing any. Each item states something the app verifiably does. */
+  .hero-proof {
+    display: grid;
+    gap: var(--spacing-md);
+  }
+
+  @media (min-width: 640px) {
+    .hero-proof {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--spacing-lg);
+    }
+  }
+
+  .hero-proof-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .hero-proof-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--color-primary);
+  }
+
+  .hero-proof-text {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    color: var(--color-text-body);
+  }
+
+  /* Each claim leads with a high-contrast phrase. The reference this row was
+     modelled on anchors every item with a bold figure ("30%", "42%"); those
+     were outcome claims this product cannot make, so the anchor is carried by
+     a lead-in phrase instead. Without it the row is 14px muted body copy
+     sitting directly under the page's highest-emphasis element, and reads as
+     an afterthought. */
+  .hero-proof-lead {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  /* Navy panel the preview card sits on. This is the one place in the system
+     where a brand ink color becomes a *surface* rather than type -- a
+     deliberate, contained exception to the single-accent rule, confined to
+     this marketing hero so the product UI keeps its flat neutral character.
+     Containing it to the panel is also what lets the hero's primary CTA stay
+     teal: the button never sits on the navy. */
+  .hero-panel {
+    position: relative;
+    background-color: var(--color-text-primary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+  }
+
+  /* From lg the panel bleeds past its grid track toward the viewport edge, so
+     it reads as a band the layout sits against rather than a second card. */
+  @media (min-width: 1024px) {
+    .hero-panel {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      margin-right: calc(-1 * var(--spacing-xl));
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .hero-panel {
+      /* Half the gap between the max-width column and the window, plus the
+         shell's own padding -- reaches the edge at any viewport above the
+         breakpoint without a fixed magic number. */
+      margin-right: calc(
+        (var(--spacing-max-content) - 100vw) / 2 - var(--spacing-xl)
+      );
+      padding-right: var(--spacing-xxl);
+    }
+  }
+
+  /* --color-text-primary is a near-white in dark mode, so the rule above would
+     invert this panel into a glaring light slab. Dark gets the brand-tinted
+     container instead -- same intent (a surface carrying the brand hue), a
+     value that actually belongs on a dark page. It clears the canvas at
+     1.41:1, and the card keeps its own border on top of it. */
+  .dark .hero-panel {
+    background-color: var(--color-primary-container);
+  }
+
+  .hero-panel-label {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    line-height: var(--text-mono-label--line-height);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    /* Pale tint, not the deep teal: on this navy the deep teal is 2.39:1. */
+    color: var(--color-primary-container);
+  }
+
+  /* In dark the panel *is* --color-primary-container, so the label above would
+     be invisible on it. The deep teal that fails on light's navy is the one
+     that works here: 6.83:1. */
+  .dark .hero-panel-label {
+    color: var(--color-primary);
+  }
+
   /* Bento ------------------------------------------------------------------ */
 
   .marketing-tile {

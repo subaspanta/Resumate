@@ -8,6 +8,58 @@ body {
 }
 
 /**
+ * Thin scrollbars, themed off the existing tokens rather than left to the UA.
+ *
+ * Declared twice on purpose, because no single syntax covers the field:
+ * `scrollbar-width`/`scrollbar-color` are the standard properties (Firefox,
+ * and Chromium 121+), while `::-webkit-scrollbar` is what Safari still needs.
+ * A browser that supports the standard pair ignores the pseudo-elements, so
+ * the two never both apply.
+ *
+ * Both colours come from --color-* tokens, so light and dark are handled by
+ * the same rule -- no .dark override needed. `color-scheme` (shadcn-theme.css)
+ * still matters: it governs the scrollbars this doesn't reach, such as inside
+ * native form controls.
+ *
+ * Note this makes the WebKit scrollbar *classic* (it consumes layout width)
+ * rather than an overlay. That is what `overflow-x-clip` on the /welcome root
+ * guards against, since .hero-panel bleeds using a 100vw calc.
+ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-input) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* The transparent border plus padding-box clip is what keeps the bar thin to
+   look at while leaving the full 10px grabbable -- a 6px-wide hit target
+   would be a real pointing-accuracy problem. */
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-input);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-text-muted);
+}
+
+/* Stops the little blank square where the two bars meet from rendering as a
+   raised UA-grey tile against a themed page. */
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/**
  * One global honouring of the OS "reduce motion" setting, rather than a
  * per-component media query each new animation has to remember to add.
  * Durations collapse to ~0 instead of `animation: none` so entrance

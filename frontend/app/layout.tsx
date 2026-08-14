@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { Toaster } from "sonner";
+import { ThemeProvider } from "@/src/providers/theme-provider";
+import { ThemedToaster } from "@/src/providers/themed-toaster";
 import { QueryProvider } from "@/src/providers/query-provider";
 import { AuthProvider } from "@/src/providers/auth-provider";
 import { SidebarProvider } from "@/src/providers/sidebar-provider";
@@ -46,14 +47,16 @@ export default function RootLayout({
       suppressHydrationWarning={true}
     >
       <body className="min-h-screen font-sans antialiased">
-        <QueryProvider>
-          <AuthProvider>
-            <SidebarProvider>
-              {children}
-              <Toaster position="top-right" richColors />
-            </SidebarProvider>
-          </AuthProvider>
-        </QueryProvider>
+        <ThemeProvider>
+          <QueryProvider>
+            <AuthProvider>
+              <SidebarProvider>
+                {children}
+                <ThemedToaster />
+              </SidebarProvider>
+            </AuthProvider>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
