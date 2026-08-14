@@ -39,10 +39,20 @@
     border: 1px solid var(--color-border-base);
     border-radius: var(--radius-xl);
     background-color: var(--color-surface);
-    padding: var(--spacing-xl);
+    /* Steps down on phones: at 32px, three stacked tiles spend most of a
+       375px screen on their own margins rather than on the step they
+       describe. The desktop value returns once the grid goes multi-column
+       and the tiles are competing for width instead of height. */
+    padding: var(--spacing-lg);
     transition:
       background-color 200ms ease-out,
       border-color 200ms ease-out;
+  }
+
+  @media (min-width: 768px) {
+    .marketing-tile {
+      padding: var(--spacing-xl);
+    }
   }
 
   /* Fill and border step only — this system has no shadows outside the auth

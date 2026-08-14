@@ -13,9 +13,14 @@ export default function WelcomePage() {
       <MarketingNav />
 
       {/* Hero */}
-      <section className="mx-auto grid w-full max-w-max-content items-center gap-8 px-lg pb-20 pt-16 md:grid-cols-2 md:gap-12 md:px-xl md:pb-28 md:pt-24">
+      {/* The two-column split waits for lg, not md: at 768px each column is
+          only 328px, and the headline's own jump to display-lg there pushed it
+          to four lines in a half-width box — worse than the same headline on a
+          phone. Both the split and the type step now land together at 1024px,
+          where the column is wide enough to carry 48px type. */}
+      <section className="mx-auto grid w-full max-w-max-content items-center gap-8 px-lg pb-12 pt-8 md:gap-12 md:px-xl md:pb-20 md:pt-16 lg:grid-cols-2 lg:pb-28 lg:pt-24">
         <div>
-          <h1 className="text-display-md text-text-primary md:text-display-lg">
+          <h1 className="text-balance text-display-md text-text-primary lg:text-display-lg">
             Stop guessing what&apos;s missing from your resume.
           </h1>
           <p className="mt-5 max-w-[46ch] text-body-lg text-text-body">
@@ -36,13 +41,13 @@ export default function WelcomePage() {
           </div>
         </div>
 
-        <Reveal className="flex justify-start md:justify-end">
+        <Reveal className="flex justify-start lg:justify-end">
           <EvidencePreviewCard />
         </Reveal>
       </section>
 
       {/* Trust strip */}
-      <section className="border-y border-border-base bg-surface-container-low py-12">
+      <section className="border-y border-border-base bg-surface-container-low py-8 md:py-12">
         <div className="mx-auto flex w-full max-w-max-content flex-col items-center gap-3 px-lg text-center md:px-xl">
           <p className="text-body-lg font-medium text-text-primary">
             Every skill you&apos;re shown proof for is quoted straight from your
@@ -55,14 +60,14 @@ export default function WelcomePage() {
       </section>
 
       {/* How it works - asymmetric, not equal 3-card */}
-      <section className="mx-auto w-full max-w-max-content px-lg py-20 md:px-xl md:py-28">
+      <section className="mx-auto w-full max-w-max-content px-lg py-14 md:px-xl md:py-28">
         <Reveal>
-          <h2 className="max-w-[48ch] text-headline-lg text-text-primary">
+          <h2 className="max-w-[48ch] text-pretty text-headline-lg text-text-primary">
             Three steps from resume to a plan you can actually work.
           </h2>
         </Reveal>
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-[1.2fr_1fr] lg:grid-rows-2">
+        <div className="mt-8 grid gap-4 md:mt-14 md:gap-6 lg:grid-cols-[1.2fr_1fr] lg:grid-rows-2">
           <Reveal className="lg:row-span-2">
             <div className="marketing-tile marketing-tile--tall">
               <FileText
@@ -125,7 +130,7 @@ export default function WelcomePage() {
       </section>
 
       {/* Roles */}
-      <section className="border-t border-border-base bg-surface py-16">
+      <section className="border-t border-border-base bg-surface py-10 md:py-16">
         <div className="mx-auto w-full max-w-max-content px-lg md:px-xl">
           <p className="text-center text-body-md text-text-muted">
             Live today, with more roles on the way
@@ -144,9 +149,9 @@ export default function WelcomePage() {
       </section>
 
       {/* Closing CTA */}
-      <section className="mx-auto w-full max-w-max-content px-lg py-20 text-center md:px-xl md:py-28">
+      <section className="mx-auto w-full max-w-max-content px-lg py-14 text-center md:px-xl md:py-28">
         <Reveal className="mx-auto max-w-[36ch]">
-          <h2 className="text-headline-lg text-text-primary">
+          <h2 className="text-balance text-headline-lg text-text-primary">
             Upload your resume and see where you actually stand.
           </h2>
           <div className="mt-8">
