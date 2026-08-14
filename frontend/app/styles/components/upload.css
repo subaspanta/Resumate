@@ -37,11 +37,11 @@
   }
 
   /* Dashed border is an SVG rect stroke, not native border-style, so the
-     dash pattern can travel along the path on hover. An SVG path traverses
-     every edge and rounded corner at one constant arc-length rate, so the
-     dashes move at the same visual pace on all four sides — a background
-     gradient can't do that, since a flat axis has no notion of the path's
-     actual corner geometry. */
+     dash pattern can travel along the path while a file is dragged over the
+     zone. An SVG path traverses every edge and rounded corner at one constant
+     arc-length rate, so the dashes move at the same visual pace on all four
+     sides — a background gradient can't do that, since a flat axis has no
+     notion of the path's actual corner geometry. */
   .dashboard-upload-zone-border {
     position: absolute;
     inset: 0;
@@ -59,15 +59,48 @@
     transition: stroke 200ms ease-out;
   }
 
-  .dashboard-upload-zone:hover .dashboard-upload-zone-border rect,
-  .dashboard-upload-zone--active .dashboard-upload-zone-border rect {
+  /* Hover is a colour step, not motion. Marching ants carry a specific
+     meaning everywhere users have met them — something is selected, or
+     something is underway — and on hover neither is true yet: the border is
+     already saying "drop here" and the pointer is already on it. Matching the
+     rest of the system (a border and a fill-tone step, never movement, per
+     DESIGN.md) also keeps the compact row from out-shouting the continue card
+     above it, which is the thing a returning user actually came for. */
+  .dashboard-upload-zone:hover .dashboard-upload-zone-border rect {
     stroke: var(--color-primary);
-    animation: dashboard-upload-marching-ants 6s linear infinite;
   }
 
+  /* The tone step that replaces the old hover animation. Deliberately one
+     stop short of --active's --color-ai-bg fill, so hovering and actually
+     dragging a file over the zone stay distinguishable: hover tints, drag
+     commits to the fuller fill plus the moving dashes. */
+  .dashboard-upload-zone:hover {
+    background-color: var(--color-canvas);
+  }
+
+  /* Dragging a file over the zone is the one moment the ants are accurate:
+     something IS in progress, and the animation reads as the zone accepting
+     the drag rather than as decoration.
+
+     0.3s per 14px cycle ≈ 47px/s. Kept in pixels rather than normalized path
+     units deliberately — normalizing would tie dash *size* to the element's
+     perimeter, so the same border would read as 10px dashes on a wide zone
+     and 3px on a narrow one. Constant dash size across zones matters more
+     here than a constant number of dashes. */
+  .dashboard-upload-zone--active .dashboard-upload-zone-border rect {
+    stroke: var(--color-primary);
+    animation: dashboard-upload-marching-ants 0.3s linear infinite;
+  }
+
+  /* Exactly one dash cycle (7 + 7), so the loop's end state is pixel-identical
+     to its start and it repeats with no visible jump. The previous -280 was
+     20 cycles, which looks the same at a glance but only realigns if the
+     perimeter is also a multiple of 14 — at dashboard width it took ~7.24
+     loops, so the pattern stuttered roughly every six seconds. Animating one
+     cycle makes the offset independent of the element's size. */
   @keyframes dashboard-upload-marching-ants {
     to {
-      stroke-dashoffset: -280;
+      stroke-dashoffset: -14;
     }
   }
 
@@ -75,7 +108,6 @@
      shortens durations — a continuous loop has to stop outright, not run
      0.01ms per cycle forever. The dashes stay, they just hold still. */
   @media (prefers-reduced-motion: reduce) {
-    .dashboard-upload-zone:hover .dashboard-upload-zone-border rect,
     .dashboard-upload-zone--active .dashboard-upload-zone-border rect {
       animation: none;
     }
