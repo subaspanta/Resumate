@@ -1,7 +1,10 @@
 /**
  * Shared ResuMate brand lockup (mark + wordmark).
- * Used by src/components/brand/Logo.tsx wherever the product identity
- * appears: sidebar, marketing nav, auth nav, auth loading splash.
+ *
+ * .brand-mark is rendered by src/components/brand/BrandGlyph.tsx, which the
+ * marketing/auth nav lockup (brand/Logo.tsx) and the auth splash both use.
+ * layout/BrandMark.tsx renders its own motion.span with the same class so it
+ * can tilt, and is the only caller that adds .brand-mark-stage.
  */
 @layer components {
   .brand-lockup {

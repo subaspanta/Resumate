@@ -71,6 +71,9 @@ export function BrandMark() {
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
+      {/* Not BrandGlyph: this one has to be a motion.span to receive the
+          animated rotate values. Making the shared glyph polymorphic enough
+          to be one would cost more than the three lines it would save. */}
       <motion.span className="brand-mark" style={{ rotateX, rotateY }}>
         R
       </motion.span>

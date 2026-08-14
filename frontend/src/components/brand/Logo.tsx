@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandGlyph } from "@/src/components/brand/BrandGlyph";
 
 interface LogoProps {
   href: string;
@@ -19,14 +20,7 @@ export function Logo({
       aria-label="Resumate home"
       className={`brand-lockup ${className}`}
     >
-      {showMark && (
-        <span
-          className={`brand-mark ${size === "lg" ? "brand-mark--lg" : ""}`}
-          aria-hidden="true"
-        >
-          R
-        </span>
-      )}
+      {showMark && <BrandGlyph size={size} />}
       <span
         className={`brand-wordmark ${
           size === "sm" ? "brand-wordmark--sm" : ""
