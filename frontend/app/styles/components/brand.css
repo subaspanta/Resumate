@@ -18,9 +18,6 @@
     outline-offset: 2px;
   }
 
-  /* The rounded-square "R" mark: solid primary fill is the one place a
-     block of accent color is allowed at full strength (DESIGN.md's One
-     Accent Rule reserves that for exactly this kind of brand moment). */
   /* Perspective host for the sidebar mark's cursor tilt (BrandMark.tsx).
      Only that one instance is wrapped — the plain `.brand-mark` used on the
      auth pages stays flat, so the tilt reads as the app's brand responding
@@ -44,6 +41,9 @@
     perspective-origin: center;
   }
 
+  /* The rounded-square "R" mark: solid primary fill is the one place a
+     block of accent color is allowed at full strength (DESIGN.md's One
+     Accent Rule reserves that for exactly this kind of brand moment). */
   .brand-mark {
     display: flex;
     align-items: center;

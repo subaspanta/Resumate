@@ -10,6 +10,7 @@ import { StatusCodes } from "http-status-codes";
 import cookieParser from "cookie-parser";
 import routes from "./routes/index.js";
 import { prisma } from "./lib/prisma.js";
+import { Prisma } from "./generated/client/index.js";
 
 const API_PREFIX = "/api/v1";
 const app = express();
@@ -91,6 +92,27 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
       error: {
         code: ERROR_CODES.MALFORMED_JSON,
         message: "Request body is not valid JSON",
+      },
+    });
+  }
+
+  // A P2024 means the pool has no connection to hand out in time — distinct
+  // from a generic Prisma error, since it points at pool sizing/load rather
+  // than a query bug. Logged distinctly for oncall; client still gets the
+  // same generic 500 as any other unclassified error, no Prisma internals.
+  if (
+    err instanceof Prisma.PrismaClientKnownRequestError &&
+    err.code === "P2024"
+  ) {
+    logger.error({
+      message: "Database connection pool exhausted",
+      code: err.code,
+    });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      error: {
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal Server Error",
       },
     });
   }
