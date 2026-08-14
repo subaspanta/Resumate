@@ -5,12 +5,15 @@ import {
   ChevronLeft,
   Home,
   LogOut,
+  Map,
   Settings,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { useAuth } from "@/src/features/auth/auth.hooks";
+import { useSidebarRoadmapLink } from "@/src/components/layout/use-sidebar-roadmap-link";
+import { BrandMark } from "@/src/components/layout/BrandMark";
 import { toast } from "sonner";
 import type { DashboardViewLayout } from "@/src/components/dashboard/dashboardViewConfig";
 import {
@@ -42,7 +45,7 @@ interface SidebarProps {
    * pages are both "inside" the resume workspace, so they keep that item lit
    * rather than falsely highlighting Dashboard.
    */
-  activeNav?: "dashboard" | "workspace" | "settings";
+  activeNav?: "dashboard" | "workspace" | "roadmap" | "settings";
   /** Below 1024px the sidebar is an off-canvas drawer; these control it. */
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
@@ -166,6 +169,12 @@ export function Sidebar({
   const collapsed = showCollapse && isCollapsed;
   const firstNavLinkRef = useRef<HTMLAnchorElement>(null);
 
+  // Same reasoning as the Analyses item's own gating below, one level
+  // deeper: a returning user with an active roadmap was 4 navigations away
+  // from the one screen the product exists to get them completing tasks in.
+  const { href: roadmapHref, disabled: roadmapDisabled } =
+    useSidebarRoadmapLink();
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -216,9 +225,7 @@ export function Sidebar({
         }`}
         onClick={onCloseMobile}
       >
-        <span className="brand-mark" aria-hidden="true">
-          R
-        </span>
+        <BrandMark />
         <div
           className={`dashboard-sidebar-brand-text ${
             collapsed ? "dashboard-sidebar-brand-text--collapsed" : ""
@@ -247,6 +254,17 @@ export function Sidebar({
           disabled={layout.sidebarNavDisabled}
           hint={layout.sidebarNavHint}
           href={layout.sidebarNavDisabled ? undefined : "/analyses"}
+          onClick={onCloseMobile}
+        />
+        <NavItem
+          icon={Map}
+          label="Roadmap"
+          isCollapsed={collapsed}
+          isActive={activeNav === "roadmap"}
+          isFilled={activeNav === "roadmap"}
+          disabled={roadmapDisabled}
+          hint={roadmapDisabled ? "Generate a roadmap to unlock." : undefined}
+          href={roadmapHref}
           onClick={onCloseMobile}
         />
         <NavItem

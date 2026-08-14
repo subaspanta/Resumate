@@ -1,0 +1,203 @@
+/**
+ * The returning user's "continue where you left off" card — the dashboard's
+ * primary surface once at least one resume exists.
+ * Used by src/components/dashboard/ContinueCard.tsx.
+ */
+@layer components {
+  .continue-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl);
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-xl);
+    background-color: var(--color-surface);
+  }
+
+  .continue-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    min-width: 0;
+    flex: 1;
+  }
+
+  /* Names what the card is about (role, or resume before one is chosen).
+     Mono-label because it's metadata identifying the subject — not a
+     decorative label propping up the heading below it. */
+  .continue-card-subject {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+  }
+
+  .continue-card-headline {
+    font-family: var(--font-headline-lg);
+    font-size: var(--text-headline-lg);
+    font-weight: var(--text-headline-lg--font-weight);
+    line-height: var(--text-headline-lg--line-height);
+    color: var(--color-text-primary);
+    text-wrap: balance;
+  }
+
+  .continue-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xs);
+  }
+
+  .continue-card-status,
+  .continue-card-tasks {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    color: var(--color-text-body);
+  }
+
+  .continue-card-status-icon {
+    color: var(--color-text-muted);
+  }
+
+  .continue-card-status--failed {
+    color: var(--color-danger);
+  }
+
+  .continue-card-status--failed .continue-card-status-icon {
+    color: var(--color-danger);
+  }
+
+  .continue-card-status-icon--spin {
+    animation: continue-card-spin 1.1s linear infinite;
+  }
+
+  @keyframes continue-card-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* The global reduce-motion rule only shortens durations, which would leave
+     this looping forever at 0.01ms a turn. A continuous spinner has to stop
+     outright. */
+  @media (prefers-reduced-motion: reduce) {
+    .continue-card-status-icon--spin {
+      animation: none;
+    }
+  }
+
+  /* Score colours are the semantic score palette, never the brand accent —
+     a passing score is not an action.
+
+     Each is darkened against the text colour before use: these tokens are
+     tuned as badge fills, and `score-good` amber sits at 2.9:1 as plain text
+     on white — under the 4.5:1 body-text floor. Mixing toward text-primary
+     keeps each hue identifiable while making the number actually readable. */
+  .continue-card-score {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    font-weight: 500;
+    line-height: var(--text-body-md--line-height);
+  }
+
+  .continue-card-score--excellent {
+    color: color-mix(
+      in srgb,
+      var(--color-score-excellent) 78%,
+      var(--color-text-primary)
+    );
+  }
+
+  .continue-card-score--good {
+    color: color-mix(
+      in srgb,
+      var(--color-score-good) 62%,
+      var(--color-text-primary)
+    );
+  }
+
+  .continue-card-score--needs-work {
+    color: color-mix(
+      in srgb,
+      var(--color-score-needs-work) 72%,
+      var(--color-text-primary)
+    );
+  }
+
+  /* Same scaleX track as the flow rail — one progress idea reused, not a
+     second one invented for the same meaning. */
+  .continue-card-track {
+    width: 100%;
+    max-width: 320px;
+    height: 4px;
+    margin-top: var(--spacing-sm);
+    border-radius: 9999px;
+    background-color: var(--color-surface-container);
+    overflow: hidden;
+  }
+
+  .continue-card-track-fill {
+    height: 100%;
+    background-color: var(--color-primary);
+    transform-origin: left center;
+    transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .continue-card-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-family: var(--font-label-std);
+    font-size: var(--text-label-std);
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 150ms ease-out;
+  }
+
+  .continue-card-action:hover {
+    opacity: 0.9;
+  }
+
+  .continue-card-action:active {
+    transform: scale(0.98);
+  }
+
+  .continue-card-action:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .continue-card-action-arrow {
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .continue-card-action:hover .continue-card-action-arrow {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 639px) {
+    .continue-card {
+      padding: var(--spacing-lg);
+      align-items: stretch;
+    }
+
+    .continue-card-action {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+}

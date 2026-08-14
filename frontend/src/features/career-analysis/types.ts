@@ -29,15 +29,33 @@ export interface SkillGap {
   skill: SkillRef;
 }
 
+// Task completion counted by the backend, not the client. Completion state is
+// application-owned; a count assembled in a component would be a second
+// definition of "progress" free to drift from the one the roadmap page uses.
+export interface RoadmapProgress {
+  total: number;
+  completed: number;
+  weekCount: number;
+}
+
 // GET /career-analyses list row — summary fields only, no evidence/gaps.
 export interface CareerAnalysisSummary {
   id: string;
   resumeId: string;
   roleId: string;
+  // Joined by the list query so the client renders a role name rather than
+  // fetching the whole role list to map a uuid.
+  role: { slug: string; title: string };
   status: CareerAnalysisStatus;
   readinessScore: number | null;
   createdAt: string;
   completedAt: string | null;
+  // Existence only, not the roadmap itself — lets the sidebar's Roadmap
+  // shortcut know whether this analysis has somewhere to send the user
+  // without fetching every roadmap up front.
+  hasRoadmap: boolean;
+  // null when no roadmap has been generated yet.
+  roadmapProgress: RoadmapProgress | null;
 }
 
 export interface CareerAnalysisDetail extends CareerAnalysisSummary {

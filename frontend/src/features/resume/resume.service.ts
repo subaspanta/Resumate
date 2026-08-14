@@ -17,6 +17,15 @@ export const resumeApi = {
       timeout: 60000,
     }),
 
+  // Same storage+parsing concurrency and timeout reasoning as upload — this
+  // hits the same backend pipeline against an existing row instead of a new
+  // one.
+  replace: (id: string, form: FormData) =>
+    axiosClient.put<ApiResponse<Resume>>(`/resumes/${id}`, form, {
+      headers: { "Content-Type": "multipart/form-data" },
+      timeout: 60000,
+    }),
+
   remove: (id: string) =>
     axiosClient.delete<ApiResponse<{ id: string }>>(`/resumes/${id}`),
 };

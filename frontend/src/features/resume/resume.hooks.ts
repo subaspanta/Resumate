@@ -86,6 +86,34 @@ export function useUploadResume() {
   });
 }
 
+interface ReplaceResumeVariables {
+  id: string;
+  form: FormData;
+}
+
+// Replaces a resume's stored content in place; the resume keeps its id, so
+// every career analysis already pointing at it (via a frozen
+// resumeSnapshot, not a live read) is unaffected. id is a mutate-time
+// variable rather than baked into the hook (unlike a per-resume useResume(id))
+// so one hook instance can serve every row in a list, the same shape
+// useDeleteResume already uses.
+export function useReplaceResume() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, form }: ReplaceResumeVariables) => {
+      const response = await resumeApi.replace(id, form);
+      return response?.data?.data as Resume;
+    },
+    onSuccess: (_data, { id }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.resumes.detail(id),
+      });
+    },
+  });
+}
+
 interface DeleteResumeContext {
   previous?: ResumeSummary[];
 }

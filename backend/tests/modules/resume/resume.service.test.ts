@@ -178,3 +178,159 @@ describe("ResumeService.uploadResume", () => {
     expect(order).toContain("parsing-done");
   });
 });
+
+describe("ResumeService.replaceResume", () => {
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
+
+  async function uploadFixtureResume(overrides: {
+    storage?: StorageModule;
+    parsing?: ParsingModule;
+  } = {}) {
+    const user = await createUser();
+    const service = new ResumeService(
+      new ResumeRepository(),
+      overrides.storage ?? fakeStorageModule(),
+      overrides.parsing ?? fakeParsingModule(),
+    );
+    const resume = await service.uploadResume(user.id, fakeFile(), {});
+    return { user, service, resume };
+  }
+
+  it("updates the row in place, keeping the same id", async () => {
+    const { user, resume } = await uploadFixtureResume();
+    const service = new ResumeService(
+      new ResumeRepository(),
+      fakeStorageModule(),
+      fakeParsingModule({
+        async parseResume() {
+          return {
+            rawText: "Full Stack Engineer with 5 years of experience",
+            structuredResume: {
+              experience: [],
+              education: [],
+              skills: [],
+              projects: [],
+              certifications: [],
+              customSections: [],
+            },
+          };
+        },
+      }),
+    );
+
+    const newFile = { ...fakeFile(), originalname: "new-resume.pdf" };
+    const replaced = await service.replaceResume(user.id, resume.id, newFile, {});
+
+    expect(replaced.id).toBe(resume.id);
+    expect(replaced.originalFileName).toBe("new-resume.pdf");
+
+    const rows = await prisma.resume.findMany({ where: { userId: user.id } });
+    expect(rows).toHaveLength(1);
+  });
+
+  it("does not retroactively change a career analysis already frozen on the old content", async () => {
+    const { user, resume } = await uploadFixtureResume();
+
+    // Freeze a snapshot the same way createAnalysis does, without pulling in
+    // the whole career-analysis module: a minimal CareerAnalysis row whose
+    // resumeSnapshot captures the resume's rawText-derived content at this
+    // point in time.
+    const role = await prisma.role.findFirst();
+    if (!role) throw new Error("Expected seed data — run npm run db:seed against the test database");
+
+    const analysis = await prisma.careerAnalysis.create({
+      data: {
+        userId: user.id,
+        resumeId: resume.id,
+        roleId: role.id,
+        status: "complete",
+        resumeSnapshot: { experience: [], education: [], skills: [], projects: [], certifications: [], customSections: [], _marker: "pre-replace" },
+        roleSnapshot: { skills: [] },
+      },
+    });
+
+    const service = new ResumeService(
+      new ResumeRepository(),
+      fakeStorageModule(),
+      fakeParsingModule({
+        async parseResume() {
+          return {
+            rawText: "Completely different content",
+            structuredResume: {
+              experience: [], education: [], skills: [], projects: [], certifications: [], customSections: [], _marker: "post-replace",
+            } as never,
+          };
+        },
+      }),
+    );
+
+    await service.replaceResume(user.id, resume.id, fakeFile(), {});
+
+    const frozenAnalysis = await prisma.careerAnalysis.findUniqueOrThrow({
+      where: { id: analysis.id },
+    });
+    expect(
+      (frozenAnalysis.resumeSnapshot as Record<string, unknown>)._marker,
+    ).toBe("pre-replace");
+
+    // And the live resume row genuinely did change — proves this isn't
+    // passing merely because the replace itself was a no-op.
+    const liveResume = await prisma.resume.findUniqueOrThrow({
+      where: { id: resume.id },
+    });
+    expect(
+      (liveResume.structuredResume as Record<string, unknown>)._marker,
+    ).toBe("post-replace");
+  });
+
+  it("throws RESOURCE_NOT_FOUND for a resume owned by someone else", async () => {
+    const { resume } = await uploadFixtureResume();
+    const otherUser = await createUser();
+    const service = new ResumeService(
+      new ResumeRepository(),
+      fakeStorageModule(),
+      fakeParsingModule(),
+    );
+
+    await expect(
+      service.replaceResume(otherUser.id, resume.id, fakeFile(), {}),
+    ).rejects.toMatchObject({ code: "RESOURCE_NOT_FOUND" } satisfies Partial<AppError>);
+  });
+
+  it("throws PARSING_FAILED and cleans up the new file when parsing rejects, leaving the old row untouched", async () => {
+    const { user, resume } = await uploadFixtureResume();
+    const storage = fakeStorageModule();
+    const service = new ResumeService(
+      new ResumeRepository(),
+      storage,
+      failingParsingModule(new Error("extraction stalled")),
+    );
+
+    await expect(
+      service.replaceResume(user.id, resume.id, fakeFile(), {}),
+    ).rejects.toMatchObject({ code: "PARSING_FAILED" } satisfies Partial<AppError>);
+
+    expect(storage.deletedPaths).toEqual(["resumes/fake-path"]);
+
+    const stillThere = await prisma.resume.findUniqueOrThrow({
+      where: { id: resume.id },
+    });
+    expect(stillThere.originalFileName).toBe("resume.pdf");
+  });
+
+  it("deletes the previous file from storage only after the new row write succeeds", async () => {
+    const { user, resume } = await uploadFixtureResume();
+    const storage = fakeStorageModule({
+      async saveFile() {
+        return { path: "resumes/second-path", url: "https://example.com/second.pdf" };
+      },
+    });
+    const service = new ResumeService(new ResumeRepository(), storage, fakeParsingModule());
+
+    await service.replaceResume(user.id, resume.id, fakeFile(), {});
+
+    expect(storage.deletedPaths).toEqual(["resumes/fake-path"]);
+  });
+});

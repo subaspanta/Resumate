@@ -34,7 +34,7 @@ interface AppShellProps {
   step?: FlowStepKey;
   /** Overrides the sidebar highlight derived from `step` — for surfaces
    * outside the linear flow (settings) that still need a lit nav item. */
-  activeNav?: "dashboard" | "workspace" | "settings";
+  activeNav?: "dashboard" | "workspace" | "roadmap" | "settings";
   view?: DashboardView;
   crumbs: Crumb[];
   title: ReactNode;
@@ -92,7 +92,12 @@ export function AppShell({
         onToggle={toggle}
         layout={layout}
         activeNav={
-          activeNav ?? (step === "upload" ? "dashboard" : "workspace")
+          activeNav ??
+          (step === "upload"
+            ? "dashboard"
+            : step === "roadmap"
+              ? "roadmap"
+              : "workspace")
         }
         isMobileOpen={isMobileOpen}
         onCloseMobile={closeMobile}
@@ -143,6 +148,15 @@ export function AppShell({
               </nav>
             </div>
 
+            {/* Its own row, below the crumbs rather than appended to them: the
+                rail shows all five steps including the ones still ahead, which
+                needs the full width and would overrun a shared row. */}
+            {step && (
+              <nav aria-label="Progress">
+                <FlowStepRail current={step} onNavigate={onNavigateStep} />
+              </nav>
+            )}
+
             <div className="app-shell-titlebar">
               <div className="app-shell-titlegroup">
                 <h1 className="app-shell-title">{title}</h1>
@@ -152,10 +166,6 @@ export function AppShell({
             </div>
 
             {meta && <div className="app-shell-meta">{meta}</div>}
-
-            {step && (
-              <FlowStepRail current={step} onNavigate={onNavigateStep} />
-            )}
           </header>
 
           {children}

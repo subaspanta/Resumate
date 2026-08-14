@@ -38,19 +38,18 @@ export class ResumeService {
     return detected.mime;
   }
 
-  async uploadResume(
-    userId: string,
-    file: Express.Multer.File,
-    inputData: { title?: string },
-  ) {
-    if (!file) {
-      throw new AppError(
-        HTTP_STATUS.BAD_REQUEST,
-        ERROR_CODES.VALIDATION_FAILED,
-        "No file was uploaded",
-      );
-    }
-
+  // Shared by uploadResume and replaceResume: verify the type, store and
+  // parse concurrently, and on a parse failure clean up the now-orphaned
+  // storage write before throwing. Both callers persist the result
+  // differently (create vs. update), which is why that step stays outside
+  // this method rather than folding it in too.
+  private async saveAndParseFile(file: Express.Multer.File): Promise<{
+    verifiedMimeType: string;
+    fileUrl: string;
+    filePath: string;
+    rawText: string;
+    structuredResume: Record<string, unknown>;
+  }> {
     const verifiedMimeType = await this.detectAndValidateFileType(
       file.buffer,
     );
@@ -63,7 +62,7 @@ export class ResumeService {
     // Storage failed — nothing was written, nothing to clean up
     if (storageOutcome.status === "rejected") {
       throw new AppError(
-        503,
+        HTTP_STATUS.SERVICE_UNAVAILABLE,
         ERROR_CODES.STORAGE_FAILED,
         "Unable to store file at this time. Please try again later.",
       );
@@ -84,15 +83,33 @@ export class ResumeService {
       }
 
       throw new AppError(
-        422,
+        HTTP_STATUS.UNPROCESSABLE_ENTITY,
         ERROR_CODES.PARSING_FAILED,
         "Unable to process this resume. Please try again.",
       );
     }
 
-    // Both successful — persist the resume record in the database
     const { url: fileUrl, path: filePath } = storageOutcome.value;
     const { rawText, structuredResume } = parsingOutcome.value;
+
+    return { verifiedMimeType, fileUrl, filePath, rawText, structuredResume };
+  }
+
+  async uploadResume(
+    userId: string,
+    file: Express.Multer.File,
+    inputData: { title?: string },
+  ) {
+    if (!file) {
+      throw new AppError(
+        HTTP_STATUS.BAD_REQUEST,
+        ERROR_CODES.VALIDATION_FAILED,
+        "No file was uploaded",
+      );
+    }
+
+    const { verifiedMimeType, fileUrl, filePath, rawText, structuredResume } =
+      await this.saveAndParseFile(file);
 
     return this.resumeRepository.create({
       title: inputData.title || file.originalname,
@@ -105,6 +122,98 @@ export class ResumeService {
       structuredResume: structuredResume as Prisma.InputJsonValue,
       user: { connect: { id: userId } },
     });
+  }
+
+  // Updates the same Resume row in place rather than delete+recreate, so
+  // that CareerAnalysis rows already pointing at this resumeId keep working
+  // — their resumeSnapshot is a frozen JSONB copy taken at analysis time
+  // (see createAnalysis in career-analysis.service.ts), never a live read of
+  // this row, so changing the row's content cannot retroactively change a
+  // past analysis. Deleting and recreating would instead cascade-delete
+  // every CareerAnalysis on the old row (schema's onDelete: Cascade),
+  // destroying history a replace is explicitly meant to preserve.
+  async replaceResume(
+    userId: string,
+    id: string,
+    file: Express.Multer.File,
+    inputData: { title?: string },
+  ) {
+    if (!file) {
+      throw new AppError(
+        HTTP_STATUS.BAD_REQUEST,
+        ERROR_CODES.VALIDATION_FAILED,
+        "No file was uploaded",
+      );
+    }
+
+    const existing = await this.resumeRepository.findByIdAndUserId(
+      userId,
+      id,
+    );
+    if (!existing) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Resume not found",
+      );
+    }
+
+    const { verifiedMimeType, fileUrl, filePath, rawText, structuredResume } =
+      await this.saveAndParseFile(file);
+
+    const updatedCount = await this.resumeRepository.updateByIdAndUserId(
+      id,
+      userId,
+      {
+        title: inputData.title || file.originalname,
+        originalFileName: file.originalname,
+        mimeType: verifiedMimeType,
+        fileSize: file.size,
+        fileUrl,
+        filePath,
+        rawText,
+        structuredResume: structuredResume as Prisma.InputJsonValue,
+      },
+    );
+
+    if (updatedCount === 0) {
+      // Row vanished between the read above and this write (e.g. deleted
+      // from another tab). The new file already landed in storage under a
+      // fresh path with nothing pointing at it — clean it up rather than
+      // leaving an orphan, same best-effort discipline saveAndParseFile
+      // already applies to its own parse-failure branch.
+      try {
+        await this.storageModule.deleteFile(filePath);
+      } catch (cleanupError) {
+        console.error("Failed to clean up orphaned file after lost race", {
+          resumeId: id,
+          filePath,
+          cleanupError,
+        });
+      }
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Resume not found",
+      );
+    }
+
+    // Old file is deleted only after the new row write is confirmed, and
+    // only best-effort — a resume uploaded before filePath was tracked has
+    // no old file to clean up, matching deleteResume's same nullable check.
+    if (existing.filePath) {
+      try {
+        await this.storageModule.deleteFile(existing.filePath);
+      } catch (cleanupError) {
+        console.error("Failed to delete previous resume file from storage", {
+          resumeId: id,
+          filePath: existing.filePath,
+          cleanupError,
+        });
+      }
+    }
+
+    return this.getResumeById(userId, id);
   }
 
   async getResumeById(userId: string, id: string) {
