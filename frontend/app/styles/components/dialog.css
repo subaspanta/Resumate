@@ -84,6 +84,10 @@
     gap: var(--spacing-sm);
   }
 
+  /* Content-driven rather than a --breakpoint-* value: this is the width at
+     which two dialog buttons fit side by side, and the dialog is capped well
+     below any viewport breakpoint, so a device-scale number would be
+     measuring the wrong box. */
   @media (min-width: 480px) {
     .alert-dialog-footer {
       flex-direction: row;

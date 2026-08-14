@@ -70,7 +70,7 @@
     background-color: color-mix(in srgb, var(--color-danger) 8%, transparent);
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 639px) {
     .settings-card--danger {
       flex-direction: column;
       align-items: stretch;

@@ -344,7 +344,10 @@
 
   /* Below 900px the five labels can't sit side by side without wrapping into
      each other. They're visually hidden rather than removed, so the markers
-     carry position visually while screen readers still get real step names. */
+     carry position visually while screen readers still get real step names.
+     Content-driven, so deliberately not one of the --breakpoint-* values:
+     this is where these particular five labels stop fitting, which is not a
+     device size and would drift if it were pinned to one. */
   @media (max-width: 899px) {
     .flow-rail-label {
       position: absolute;

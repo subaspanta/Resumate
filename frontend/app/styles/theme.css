@@ -92,6 +92,31 @@
   --spacing-max-content: 1280px;
   --spacing-top-nav-height: 72px;
 
+  /**
+   * Breakpoints. Tailwind v4 reads --breakpoint-* from @theme, so declaring
+   * them here is what makes `md:` in a component and `min-width: 768px` in a
+   * stylesheet the same number rather than two that happen to agree today.
+   *
+   * These match Tailwind's own defaults on purpose — the app already uses
+   * `md:` and `lg:` utilities, so those values are load-bearing whether or
+   * not they are written down. Renaming them silently would move every
+   * existing utility.
+   *
+   * Hand-written CSS cannot interpolate a custom property inside a media
+   * query — `@media (max-width: var(--breakpoint-sm))` is invalid CSS, not
+   * a build limitation. So the media queries below still carry literals;
+   * these tokens are the reference the literals are checked against, and
+   * the source Tailwind's own utilities read.
+   *
+   * A `max-width` query pairs with the breakpoint BELOW its own name:
+   * `min-width: 640px` (sm) and `max-width: 640px` both match at exactly
+   * 640px, so the mobile side of an sm boundary is 639px.
+   */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
   --radius-DEFAULT: 0.25rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;

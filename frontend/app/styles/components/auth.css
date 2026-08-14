@@ -19,7 +19,7 @@
     padding: var(--spacing-md);
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 639px) {
     .auth-page-shell {
       max-width: 100%;
       padding: var(--spacing-lg);
