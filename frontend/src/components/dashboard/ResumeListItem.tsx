@@ -100,8 +100,12 @@ export function ResumeListItem({
         <div className="dashboard-resume-icon">
           <FileText className="size-5" aria-hidden="true" />
         </div>
-        <div>
-          <p className="dashboard-resume-name">{resume.title}</p>
+        <div className="dashboard-resume-row-text">
+          {/* The name truncates on narrow rows, so the full title has to stay
+              reachable somewhere — this is it for pointer users. */}
+          <p className="dashboard-resume-name" title={resume.title}>
+            {resume.title}
+          </p>
           <p className="dashboard-resume-meta">
             {kind !== "file" && (
               <span className="dashboard-resume-kind">

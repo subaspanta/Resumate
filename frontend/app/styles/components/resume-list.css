@@ -100,6 +100,19 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-lg);
+    /* A flex item's default min-width is auto, meaning it refuses to shrink
+       below its content — so a long filename grew this half past the row's
+       own width and shoved the action buttons off the right edge entirely
+       (unreachable, and hidden rather than revealed by the row's
+       overflow: hidden). min-width: 0 lets it yield, which is what allows
+       the name below to truncate instead. */
+    min-width: 0;
+  }
+
+  /* Same reason as above, one level down: the text column has to be allowed
+     to shrink before text-overflow can do anything. */
+  .dashboard-resume-row-text {
+    min-width: 0;
   }
 
   /* Picks up the row's hover alongside the arrow so the row reads as one
@@ -109,6 +122,9 @@
   .dashboard-resume-icon {
     width: 40px;
     height: 40px;
+    /* Now that the row's left half is allowed to shrink, the icon would be
+       squashed out of square along with the text unless it opts out. */
+    flex-shrink: 0;
     background-color: var(--color-surface-container);
     display: flex;
     align-items: center;
@@ -125,12 +141,20 @@
     color: var(--color-primary);
   }
 
+  /* Resume titles default to the uploaded filename, which is routinely long
+     enough to overflow a phone-width row. Truncating keeps the row a single
+     predictable height and, more importantly, keeps the action buttons on
+     screen; the full title stays available via the title attribute and the
+     review page. */
   .dashboard-resume-name {
     font-family: var(--font-body-lg);
     font-size: var(--text-body-lg);
     font-weight: 500;
     line-height: var(--text-body-lg--line-height);
     color: var(--color-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .dashboard-resume-meta {
@@ -141,6 +165,19 @@
     font-size: var(--text-body-md);
     line-height: var(--text-body-md--line-height);
     color: var(--color-text-muted);
+    /* Kept to one line for the same reason as the title: the row is a
+       fixed-rhythm list item, and letting the date wrap under the PDF tag
+       made rows on a phone a third taller than the same rows on a desktop. */
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The type tag is the shortest, most scannable part of the meta line, so
+     the date truncates before it does. */
+  .dashboard-resume-kind {
+    flex-shrink: 0;
   }
 
   /* File-type tag — mono-label uppercase, the system's existing device for
@@ -161,6 +198,10 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-lg);
+    /* The controls keep their full size no matter how long the title is —
+       the title truncates instead. Without this the buttons would be the
+       thing that gives, shrinking below their 44px tap target. */
+    flex-shrink: 0;
   }
 
   /* Passive affordance, not a control — the row itself is the click target

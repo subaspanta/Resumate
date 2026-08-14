@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { QueryProvider } from "@/src/providers/query-provider";
@@ -18,6 +18,20 @@ export const metadata: Metadata = {
   title: "Resumate",
   description:
     "AI-powered career gap analysis and learning roadmap for job seekers.",
+};
+
+/**
+ * Without this, mobile browsers lay the page out in a ~980px virtual
+ * viewport and then scale the result down to fit — every breakpoint below
+ * 1024px never matches, and text renders at a fraction of its intended size.
+ * The responsive CSS in this app was effectively dead on real phones.
+ *
+ * No maximum-scale or user-scalable: pinch-zoom is an accessibility
+ * affordance, and disabling it is a WCAG 1.4.4 failure.
+ */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
