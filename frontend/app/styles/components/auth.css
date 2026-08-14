@@ -138,6 +138,18 @@
     right: var(--spacing-md);
     top: 50%;
     transform: translateY(-50%);
+    /* Text label ("Show"/"Hide") inside the field, kept small so it doesn't
+       crowd the value being typed. Its own box is ~35x20, so the tap area is
+       extended to 44px underneath it rather than by padding the label out
+       into the input's text. Written here instead of composing
+       .tap-target-44 because this element is already absolutely positioned
+       with its own transform — the shared utility's centring assumes a
+       statically positioned control and would fight it. */
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: var(--font-label-std);
     font-size: var(--text-label-std);
     font-weight: 500;

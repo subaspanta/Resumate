@@ -125,7 +125,7 @@ export function ResumeListItem({
 
         {onReplace && (
           <button
-            className="dashboard-resume-replace-btn"
+            className="dashboard-resume-replace-btn tap-target-44"
             onClick={(e) => {
               e.stopPropagation();
               onReplace(resume.id);
@@ -148,7 +148,7 @@ export function ResumeListItem({
                 cancelling also navigates into the workspace. */}
             <AlertDialogTrigger asChild>
               <button
-                className="dashboard-resume-delete-btn"
+                className="dashboard-resume-delete-btn tap-target-44"
                 onClick={(e) => e.stopPropagation()}
                 disabled={isDeleting}
                 type="button"

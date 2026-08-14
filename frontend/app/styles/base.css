@@ -69,6 +69,33 @@ body {
     letter-spacing: 0.04em;
   }
 
+  /**
+   * Extends a control's tap area to the 44px WCAG 2.5.5 minimum without
+   * changing a pixel of what's drawn. Several controls here are deliberately
+   * small — a 16px icon button beside a list row, a text toggle inside an
+   * input — because enlarging the visible box would make them compete with
+   * the content they sit next to. This decouples the two: the circle or glyph
+   * stays its designed size, the finger target grows underneath it.
+   *
+   * Requires a positioned ancestor, which every current caller already has
+   * (or gains alongside this class). The -50%/-50% centring is written
+   * against the control's own box rather than as negative insets, so it stays
+   * correct if that control is ever resized.
+   *
+   * Not for links inside running text: overlapping 44px blocks in a sentence
+   * would swallow taps meant for the words around them, which is exactly why
+   * WCAG exempts inline links from the minimum.
+   */
+  .tap-target-44::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+
   /* Fixed bottom bar shared by the analysis and roadmap pages' single
      page-level action. left tracks --shell-offset (declared in
      layout.css) so it clears the sidebar and animates with its collapse

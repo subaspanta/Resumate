@@ -183,6 +183,8 @@
      neutral-to-primary hover instead of danger, since replacing isn't
      destructive. */
   .dashboard-resume-replace-btn {
+    /* Anchors the .tap-target-44 pseudo-element. */
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -222,6 +224,8 @@
   }
 
   .dashboard-resume-delete-btn {
+    /* Anchors the .tap-target-44 pseudo-element. */
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -309,7 +309,7 @@ export function Sidebar({
             <AlertDialogTrigger asChild>
               <button
                 type="button"
-                className="dashboard-sidebar-signout"
+                className="dashboard-sidebar-signout tap-target-44"
                 aria-label="Sign out"
                 disabled={isLoggingOut}
               >
@@ -342,7 +342,7 @@ export function Sidebar({
           type="button"
         >
           <ChevronLeft
-            className="size-3.5"
+            className="size-4"
             style={{
               transform: isCollapsed ? "rotate(180deg)" : "rotate(0deg)",
             }}

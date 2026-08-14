@@ -241,15 +241,15 @@
        follows any change to that spacing. */
     top: calc(
       var(--spacing-xl) + var(--spacing-brand-mark) +
-        (var(--spacing-xxl) / 2) - 10px
+        (var(--spacing-xxl) / 2) - (var(--spacing-sidebar-toggle) / 2)
     );
     left: 100%;
     margin-left: 2px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    width: var(--spacing-sidebar-toggle);
+    height: var(--spacing-sidebar-toggle);
     border-radius: 9999px;
     border: 1px solid var(--color-border-input);
     background-color: var(--color-surface);
@@ -261,9 +261,34 @@
     z-index: 51;
   }
 
+  /* The circle stays small so it doesn't compete with the nav, but a 28px
+     target is still fussy to hit — this extends the clickable area to 44px
+     (the usual minimum) without changing anything visible. Centred on the
+     button via the -50%/-50% offset rather than negative insets, so it stays
+     correct if the circle's own size changes. */
+  .dashboard-sidebar-toggle::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+
   .dashboard-sidebar:hover .dashboard-sidebar-toggle,
   .dashboard-sidebar-toggle:focus-visible {
     opacity: 1;
+  }
+
+  /* Below 1024px the sidebar is a drawer and this button is hidden outright,
+     so the hover-to-reveal above is desktop-only by construction. A large
+     touch screen is the gap that leaves: it keeps the button but can never
+     fire the hover that reveals it, so show it unconditionally there. */
+  @media (hover: none) {
+    .dashboard-sidebar-toggle {
+      opacity: 1;
+    }
   }
 
   .dashboard-sidebar-toggle:hover {
@@ -320,6 +345,8 @@
   .dashboard-sidebar-signout {
     margin-left: auto;
     flex-shrink: 0;
+    /* Anchors the .tap-target-44 pseudo-element below. */
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
