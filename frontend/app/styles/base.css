@@ -7,10 +7,89 @@ body {
   color: var(--color-text-body);
 }
 
-.no-shadow {
-  box-shadow: none !important;
+/**
+ * One global honouring of the OS "reduce motion" setting, rather than a
+ * per-component media query each new animation has to remember to add.
+ * Durations collapse to ~0 instead of `animation: none` so entrance
+ * keyframes still land on their end state — killing them outright would
+ * leave anything animating in from opacity: 0 permanently invisible.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-.transition-standard {
-  transition: all 150ms ease-out;
+/**
+ * Shared primitives: the repeated shell/typography patterns feature files
+ * kept re-declaring independently. Feature classes compose these via
+ * multi-class (className="card gap-card") and add only their own
+ * modifiers — see the component CSS files for what each adds on top.
+ */
+@layer components {
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-xl);
+  }
+
+  .entry-title {
+    font-family: var(--font-label-std);
+    font-size: var(--text-body-lg);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .body-copy {
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    color: var(--color-text-body);
+  }
+
+  .body-copy--muted {
+    color: var(--color-text-muted);
+  }
+
+  .meta-label {
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* Fixed bottom bar shared by the analysis and roadmap pages' single
+     page-level action. left tracks --shell-offset (declared in
+     layout.css) so it clears the sidebar and animates with its collapse
+     instead of jumping. */
+  .action-bar {
+    position: fixed;
+    left: var(--shell-offset);
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    display: flex;
+    padding: var(--spacing-md) var(--spacing-xl);
+    background-color: color-mix(in srgb, var(--color-canvas) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--color-border-base);
+    transition: --shell-offset 200ms ease-out;
+  }
+
+  .action-bar-inner {
+    width: 100%;
+    max-width: var(--spacing-max-content);
+    display: flex;
+  }
 }

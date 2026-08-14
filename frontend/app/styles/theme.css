@@ -3,8 +3,8 @@
  * Consumed by Tailwind v4 as utility classes (e.g. bg-primary, text-body-md).
  */
 @theme {
-  --color-primary: #0F766E;
-  --color-primary-container: #E6F5F3;
+  --color-primary: #075985;
+  --color-primary-container: #EBF2F5;
   --color-on-primary: #FFFFFF;
   --color-background: #FCF8FF;
   --color-canvas: #F8FAFC;
@@ -17,10 +17,10 @@
   --color-text-muted: #64748B;
 
   --color-danger: #DC2626;
-  --color-ai-bg: #E6F5F3;
+  --color-ai-bg: #EBF2F5;
 
-  --color-surface-container-low: #EDF6F4;
-  --color-surface-container: #E1F0ED;
+  --color-surface-container-low: #EBF2F5;
+  --color-surface-container: #D7E4EB;
 
   --color-score-excellent: #16A34A;
   --color-score-good: #CA8A04;
@@ -80,6 +80,9 @@
   --spacing-lg: 24px;
   --spacing-xl: 32px;
   --spacing-xxl: 48px;
+  /* The brand mark's own size. Lives here because the sidebar positions the
+     collapse toggle against it and would otherwise hardcode a copy. */
+  --spacing-brand-mark: 32px;
   --spacing-sidebar-width: 248px;
   --spacing-sidebar-collapsed-width: 80px;
   --spacing-max-content: 1280px;

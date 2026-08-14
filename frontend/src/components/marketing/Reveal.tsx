@@ -8,37 +8,66 @@ interface RevealProps {
   className?: string;
 }
 
-function prefersReducedMotion() {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
 /**
  * Fades + lifts content in once it enters the viewport. Uses
  * IntersectionObserver rather than a scroll listener (no per-frame React
- * state churn) and collapses to instant-visible under reduced motion.
+ * state churn).
+ *
+ * Content starts *visible* and is hidden only after mount, once we know the
+ * visitor accepts motion. Hiding in the initial render instead would send
+ * `opacity: 0` markup from the server — where the motion preference is
+ * unknowable — and leave reduced-motion visitors staring at an invisible
+ * page until hydration caught up, or forever if the script failed.
  */
 export function Reveal({ children, delay = 0, className }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(prefersReducedMotion);
+  const [hidden, setHidden] = useState(false);
+  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
     const node = ref.current;
-    if (!node || visible) return;
+    if (!node || revealed) return;
 
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // Already on screen at mount (the hero, typically): there is nothing to
+    // scroll into, so animating it would mean hiding content the visitor can
+    // already see.
+    const rect = node.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) return;
+
+    setHidden(true);
+
+    const show = () => {
+      setHidden(false);
+      setRevealed(true);
+    };
+
+    // Any part of the element entering the viewport is enough. A fractional
+    // threshold would strand anything taller than the viewport — it can never
+    // reach 20% visible, so it would stay hidden permanently.
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setVisible(true);
+          show();
           observer.disconnect();
         }
       },
-      { threshold: 0.2 },
+      { rootMargin: "0px 0px -10% 0px" },
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
-  }, [visible]);
+
+    // Backstop: if the observer somehow never fires, content must not stay
+    // invisible. Hiding content is only ever acceptable while an animation is
+    // actually coming.
+    const failsafe = setTimeout(show, 2500);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(failsafe);
+    };
+  }, [revealed]);
 
   return (
     <div
@@ -46,11 +75,11 @@ export function Reveal({ children, delay = 0, className }: RevealProps) {
       className={className}
       style={{
         transitionProperty: "opacity, transform",
-        transitionDuration: "500ms",
-        transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        transitionDuration: "400ms",
+        transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
         transitionDelay: `${delay}ms`,
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(16px)",
+        opacity: hidden ? 0 : 1,
+        transform: hidden ? "translateY(16px)" : "translateY(0)",
       }}
     >
       {children}

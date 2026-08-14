@@ -2,7 +2,6 @@
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import type { DashboardState } from "@/src/features/resume/types";
 import { deriveDashboardState } from "@/src/features/resume/resume.utils";
 import { useResumes } from "@/src/features/resume/resume.hooks";
@@ -32,7 +31,7 @@ export default function HomePage() {
   };
 
   const handleViewAll = () => {
-    toast.info("Viewing all files is not available yet.");
+    router.push("/resumes");
   };
 
   return (

@@ -1,21 +1,84 @@
 @layer components {
+  /* No bottom margin: the dashboard column is a flex stack with its own gap,
+     and a margin here would add to it rather than replace it. */
   .dashboard-upload {
     display: flex;
     justify-content: center;
-    margin-bottom: var(--spacing-xxl);
+  }
+
+  /* Perspective lives on the parent, not the tilting element: applied to the
+     element itself, each axis would be projected independently and the tilt
+     reads as a flat skew rather than a surface turning in space. The value is
+     deliberately long — a short perspective at this element's width would
+     distort the text across it. */
+  .dashboard-upload-stage {
+    perspective: 1200px;
   }
 
   .dashboard-upload-zone {
+    position: relative;
     width: 100%;
     background-color: var(--color-surface);
-    border: 2px dashed var(--color-border-input);
+    border: 2px solid transparent;
     border-radius: var(--radius-xl);
     padding: 64px var(--spacing-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: all 200ms ease-out;
+    /* Children can occupy the zone's Z space (see the icon's translateZ)
+       rather than being flattened onto its surface. */
+    transform-style: preserve-3d;
+    /* Named properties rather than `all`: a transition on `transform` would
+       lag one frame behind every spring update the tilt writes. */
+    transition:
+      background-color 200ms ease-out,
+      border-color 200ms ease-out;
+  }
+
+  /* Dashed border is an SVG rect stroke, not native border-style, so the
+     dash pattern can travel along the path on hover. An SVG path traverses
+     every edge and rounded corner at one constant arc-length rate, so the
+     dashes move at the same visual pace on all four sides — a background
+     gradient can't do that, since a flat axis has no notion of the path's
+     actual corner geometry. */
+  .dashboard-upload-zone-border {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .dashboard-upload-zone-border rect {
+    fill: none;
+    stroke: var(--color-border-input);
+    stroke-width: 2px;
+    stroke-dasharray: 7 7;
+    transition: stroke 200ms ease-out;
+  }
+
+  .dashboard-upload-zone:hover .dashboard-upload-zone-border rect,
+  .dashboard-upload-zone--active .dashboard-upload-zone-border rect {
+    stroke: var(--color-primary);
+    animation: dashboard-upload-marching-ants 6s linear infinite;
+  }
+
+  @keyframes dashboard-upload-marching-ants {
+    to {
+      stroke-dashoffset: -280;
+    }
+  }
+
+  /* Stronger than the global reduce-motion rule in base.css, which only
+     shortens durations — a continuous loop has to stop outright, not run
+     0.01ms per cycle forever. The dashes stay, they just hold still. */
+  @media (prefers-reduced-motion: reduce) {
+    .dashboard-upload-zone:hover .dashboard-upload-zone-border rect,
+    .dashboard-upload-zone--active .dashboard-upload-zone-border rect {
+      animation: none;
+    }
   }
 
   .dashboard-upload-zone--default {
@@ -29,12 +92,79 @@
     cursor: pointer;
   }
 
-  .dashboard-upload-zone--active {
-    border-color: var(--color-primary);
-    background-color: var(--color-ai-bg);
-    transform: scale(1.01);
+  /* Returning-user form: one horizontal row instead of a 64px-padded hero.
+     Still a real drop target — only its claim on the page shrinks, since the
+     continue card above is now what the user came for. */
+  .dashboard-upload-zone--compact {
+    flex-direction: row;
+    justify-content: flex-start;
+    max-width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    gap: var(--spacing-md);
+    cursor: pointer;
   }
 
+  .dashboard-upload-zone--compact:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .dashboard-upload-compact-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background-color: var(--color-surface-container-low);
+    color: var(--color-primary);
+    transition:
+      background-color 200ms ease-out,
+      transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dashboard-upload-zone--compact:hover .dashboard-upload-compact-icon {
+    background-color: var(--color-surface-container);
+    transform: rotate(90deg);
+  }
+
+  .dashboard-upload-compact-label {
+    font-family: var(--font-label-std);
+    font-size: var(--text-label-std);
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+
+  .dashboard-upload-compact-meta {
+    margin-left: auto;
+    font-family: var(--font-mono-label);
+    font-size: var(--text-mono-label);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 639px) {
+    .dashboard-upload-compact-meta {
+      display: none;
+    }
+  }
+
+  /* No transform here: the zone's transform is owned by the tilt in
+     UploadDropZone.tsx, and a CSS `transform` on the same element would
+     replace the rotation outright rather than compose with it. The drag
+     scale is applied as a motion value alongside the rotation instead. */
+  .dashboard-upload-zone--active {
+    background-color: var(--color-ai-bg);
+  }
+
+  /* Sits slightly proud of the zone's surface in Z, so the tilt has
+     something to parallax against and reads as real depth rather than a
+     picture of a tilt. This is the flat system's alternative to a shadow:
+     the depth is in the geometry, not in a cast blur. */
   .dashboard-upload-icon {
     width: 64px;
     height: 64px;
@@ -44,11 +174,26 @@
     align-items: center;
     justify-content: center;
     margin-bottom: var(--spacing-lg);
+    transform: translateZ(28px);
     transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms ease-out, color 200ms ease-out;
   }
 
+  /* Reuses career-analysis.css's orbit motif so the upload wait reads as the
+     same kind of "real work in progress" signal as the analysis and roadmap
+     waits later in the same flow, instead of a generic spinner icon that
+     belongs to no other state in the product. Sized and margined to match
+     the 64px static icon slot it replaces, so title/description spacing
+     doesn't shift between the idle and uploading states. */
+  .analyzing-orbit--inline {
+    width: 44px;
+    height: 44px;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  /* Keeps the resting translateZ — dropping it here would snap the icon flat
+     onto the surface the moment a drag starts. */
   .dashboard-upload-zone--active .dashboard-upload-icon {
-    transform: translateY(-4px) scale(1.08);
+    transform: translateZ(28px) translateY(-4px) scale(1.08);
   }
 
   .dashboard-upload-zone--first-time .dashboard-upload-icon {
@@ -93,11 +238,30 @@
     font-size: var(--text-label-std);
     font-weight: 500;
     cursor: pointer;
-    transition: all 150ms ease-out;
+    /* Named properties, not `all`: the button also carries a :active transform
+       that must snap, and `all` would ease it into a laggy press. */
+    transition:
+      opacity 150ms ease-out,
+      background-color 150ms ease-out;
   }
 
   .dashboard-upload-btn:hover {
     opacity: 0.9;
+  }
+
+  /* The plus turns under the cursor — the button's own :active scale reads
+     as a press, but nothing acknowledged hover before this. */
+  .dashboard-upload-btn svg {
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dashboard-upload-btn:hover svg {
+    transform: rotate(90deg);
+  }
+
+  .dashboard-upload-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 
   .dashboard-upload-btn:active {

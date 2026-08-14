@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FileText, Sparkles, MapPin } from "lucide-react";
+import { FileText, Sparkles, MapPin, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MarketingNav } from "@/src/components/marketing/MarketingNav";
 import { Reveal } from "@/src/components/marketing/Reveal";
@@ -24,8 +24,14 @@ export default function WelcomePage() {
             the plan to close the gap.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Button asChild size="lg">
-              <Link href="/register">Analyze my resume</Link>
+            <Button asChild size="lg" className="marketing-cta">
+              <Link href="/register">
+                Analyze my resume
+                <ArrowRight
+                  className="marketing-cta-arrow size-4"
+                  aria-hidden="true"
+                />
+              </Link>
             </Button>
           </div>
         </div>
@@ -58,9 +64,12 @@ export default function WelcomePage() {
 
         <div className="mt-14 grid gap-6 lg:grid-cols-[1.2fr_1fr] lg:grid-rows-2">
           <Reveal className="lg:row-span-2">
-            <div className="flex h-full flex-col justify-between rounded-xl border border-border-base bg-surface p-8">
-              <FileText className="size-8 text-primary" strokeWidth={1.5} />
-              <div className="mt-8">
+            <div className="marketing-tile marketing-tile--tall">
+              <FileText
+                className="marketing-tile-icon size-8"
+                strokeWidth={1.5}
+              />
+              <div>
                 <p className="font-mono-label text-mono-label uppercase tracking-[0.08em] text-text-primary">
                   Step 1
                 </p>
@@ -76,8 +85,11 @@ export default function WelcomePage() {
           </Reveal>
 
           <Reveal delay={80}>
-            <div className="rounded-xl border border-border-base bg-surface p-8">
-              <Sparkles className="size-8 text-primary" strokeWidth={1.5} />
+            <div className="marketing-tile">
+              <Sparkles
+                className="marketing-tile-icon size-8"
+                strokeWidth={1.5}
+              />
               <p className="mt-6 font-mono-label text-mono-label uppercase tracking-[0.08em] text-text-primary">
                 Step 2
               </p>
@@ -92,8 +104,11 @@ export default function WelcomePage() {
           </Reveal>
 
           <Reveal delay={160}>
-            <div className="rounded-xl border border-border-base bg-surface-container-low p-8">
-              <MapPin className="size-8 text-primary" strokeWidth={1.5} />
+            <div className="marketing-tile marketing-tile--accent">
+              <MapPin
+                className="marketing-tile-icon size-8"
+                strokeWidth={1.5}
+              />
               <p className="mt-6 font-mono-label text-mono-label uppercase tracking-[0.08em] text-primary">
                 Step 3
               </p>
@@ -117,14 +132,11 @@ export default function WelcomePage() {
           </p>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
             {ROLES.map((role) => (
-              <span
-                key={role}
-                className="rounded-full border border-border-base bg-canvas px-4 py-2 text-body-md text-text-body"
-              >
+              <span key={role} className="marketing-pill">
                 {role}
               </span>
             ))}
-            <span className="rounded-full border border-dashed border-border-input px-4 py-2 text-body-md text-text-muted">
+            <span className="marketing-pill marketing-pill--pending">
               More roles soon
             </span>
           </div>
@@ -138,8 +150,14 @@ export default function WelcomePage() {
             Upload your resume and see where you actually stand.
           </h2>
           <div className="mt-8">
-            <Button asChild size="lg">
-              <Link href="/register">Analyze my resume</Link>
+            <Button asChild size="lg" className="marketing-cta">
+              <Link href="/register">
+                Analyze my resume
+                <ArrowRight
+                  className="marketing-cta-arrow size-4"
+                  aria-hidden="true"
+                />
+              </Link>
             </Button>
           </div>
         </Reveal>

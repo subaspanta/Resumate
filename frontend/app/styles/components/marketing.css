@@ -1,0 +1,127 @@
+/**
+ * Public marketing surface (app/welcome/page.tsx) — nav, bento tiles, and
+ * role pills. Everything else on that page stays on Tailwind utilities;
+ * these are the pieces that carry state or hover behaviour and would be
+ * unreadable inlined.
+ */
+@layer components {
+  /* Nav -------------------------------------------------------------------- */
+
+  .marketing-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    height: 68px;
+    border-bottom: 1px solid var(--color-border-base);
+    /* Slightly translucent so content passing underneath registers as
+       movement behind the bar rather than vanishing at a hard edge. */
+    background-color: color-mix(in srgb, var(--color-surface) 90%, transparent);
+    backdrop-filter: blur(8px);
+    transition:
+      height 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 200ms ease-out,
+      background-color 200ms ease-out;
+  }
+
+  /* Once the page has scrolled the bar is competing with content for the top
+     of the screen, so it gives some height back and firms up its edge. */
+  .marketing-nav--condensed {
+    height: 56px;
+    border-bottom-color: var(--color-border-input);
+    background-color: color-mix(in srgb, var(--color-surface) 96%, transparent);
+  }
+
+  /* Bento ------------------------------------------------------------------ */
+
+  .marketing-tile {
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-xl);
+    background-color: var(--color-surface);
+    padding: var(--spacing-xl);
+    transition:
+      background-color 200ms ease-out,
+      border-color 200ms ease-out;
+  }
+
+  /* Fill and border step only — this system has no shadows outside the auth
+     card, so a tile reads as responsive by changing tone, not by lifting. */
+  .marketing-tile:hover {
+    background-color: var(--color-canvas);
+    border-color: var(--color-border-input);
+  }
+
+  /* Anchors its content to the bottom rather than splitting icon and text to
+     opposite ends. Spanning two rows makes this tile much taller than its
+     text needs, and `space-between` turned that surplus into a void running
+     through the middle of the card. */
+  .marketing-tile--tall {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--spacing-lg);
+    height: 100%;
+  }
+
+  .marketing-tile--accent {
+    background-color: var(--color-surface-container-low);
+  }
+
+  .marketing-tile--accent:hover {
+    background-color: var(--color-surface-container);
+  }
+
+  .marketing-tile-icon {
+    color: var(--color-primary);
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .marketing-tile:hover .marketing-tile-icon {
+    transform: translateY(-2px);
+  }
+
+  /* Role pills ------------------------------------------------------------- */
+
+  .marketing-pill {
+    border: 1px solid var(--color-border-base);
+    border-radius: 9999px;
+    background-color: var(--color-canvas);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    color: var(--color-text-body);
+    transition:
+      border-color 150ms ease-out,
+      color 150ms ease-out,
+      background-color 150ms ease-out;
+  }
+
+  .marketing-pill:hover {
+    border-color: var(--color-primary);
+    color: var(--color-text-primary);
+    background-color: var(--color-surface);
+  }
+
+  /* The one that isn't a live role stays dashed and stays inert — it names an
+     absence, so responding to the cursor would promise something. */
+  .marketing-pill--pending {
+    border-style: dashed;
+    border-color: var(--color-border-input);
+    background-color: transparent;
+    color: var(--color-text-muted);
+  }
+
+  /* CTA -------------------------------------------------------------------- */
+
+  /* Matches the resume row's arrow: the same "this moves you forward" signal
+     wherever it appears, rather than a second idea for the same meaning. */
+  .marketing-cta-arrow {
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .marketing-cta:hover .marketing-cta-arrow {
+    transform: translateX(3px);
+  }
+}

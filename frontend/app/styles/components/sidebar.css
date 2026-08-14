@@ -5,7 +5,14 @@
 /* Same reasoning as --shell-offset in layout.css: animating `width` directly
    relayouts the sidebar (and anything reading its box) every frame.
    Registering it as a typed custom property lets the browser interpolate the
-   length itself instead. */
+   length itself instead.
+
+   A clip-path/transform rewrite was tried and reverted: the sidebar's
+   transform is already owned by the mobile drawer, and cropping a
+   full-width box leaves the collapse toggle (which sits outside the right
+   edge) clipped away, the hit area larger than the visible rail, and the
+   nav laid out to a width it no longer occupies. The interpolated custom
+   property remains the cheapest version that keeps this element honest. */
 @property --sidebar-width {
   syntax: "<length>";
   inherits: true;
@@ -57,9 +64,11 @@
     outline-offset: 2px;
   }
 
+  /* Same zero-width-flex-child gap problem as the nav items below. */
   .dashboard-sidebar-brand--collapsed {
     justify-content: center;
     padding-inline: 0;
+    gap: 0;
   }
 
   .dashboard-sidebar-brand-text {
@@ -78,6 +87,9 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xs);
+    /* Containment for the collapsed hint, which is taken out of flow so it
+       stops consuming one of the gaps above. */
+    position: relative;
   }
 
   .dashboard-nav-item {
@@ -119,9 +131,13 @@
     color: var(--color-text-muted);
   }
 
+  /* Gap goes to zero, not just the label's width: the collapsed label is
+     still a flex child at width 0, so the 16px gap would survive it and
+     push the icon half that distance off centre. */
   .dashboard-nav-item--collapsed {
     justify-content: center;
     padding-inline: 0;
+    gap: 0;
     position: relative;
   }
 
@@ -170,10 +186,16 @@
     transition: opacity 150ms ease-out;
   }
 
+  /* Taken out of flow rather than just zero-height: as a zero-height flex
+     child it would still consume one of .dashboard-nav's 4px gaps, leaving
+     an uneven step between the collapsed rail's icons. `position: absolute`
+     rather than `display: none` so the opacity transition still runs. */
   .dashboard-nav-hint--collapsed {
+    position: absolute;
     height: 0;
     opacity: 0;
     padding-block: 0;
+    pointer-events: none;
   }
 
   .dashboard-sidebar-footer {
@@ -202,9 +224,9 @@
      content column's own inline padding is only 24px on the collapsed
      rail's narrow side; a 20px circle plus a 2px gap (22px) stays clear of
      that gutter without touching text.
-     Positioned below the page header's own top padding (also
-     --spacing-xl), not level with it, so it doesn't sit on top of the
-     breadcrumb row.
+     Sits in the gap between the brand mark and the first nav item, which
+     also keeps it clear of the page header's own top padding (also
+     --spacing-xl) so it never overlaps the breadcrumb row.
      Invisible at rest (opacity 0, not display: none — stays in the
      accessibility tree and focusable by keyboard) and only revealed on
      sidebar hover or its own focus, so it doesn't compete with content at
@@ -212,7 +234,15 @@
      rail. */
   .dashboard-sidebar-toggle {
     position: absolute;
-    top: calc(var(--spacing-xl) + var(--spacing-lg));
+    /* Centred in the gap between the brand mark and the first nav item,
+       rather than level with the mark: sidebar padding (xl) + the 32px mark
+       clears the brand block, then half the brand's xxl margin-bottom finds
+       the middle of the space below it. Derived from the tokens so it
+       follows any change to that spacing. */
+    top: calc(
+      var(--spacing-xl) + var(--spacing-brand-mark) +
+        (var(--spacing-xxl) / 2) - 10px
+    );
     left: 100%;
     margin-left: 2px;
     display: flex;

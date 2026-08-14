@@ -23,7 +23,12 @@
     color: var(--color-text-primary);
   }
 
+  /* Underline is drawn as a scaled pseudo-element rather than
+     text-decoration, which can't transition — the previous `transition: all`
+     had nothing animatable to act on, so the link changed with no feedback
+     at all. */
   .dashboard-recent-link {
+    position: relative;
     font-family: var(--font-label-std);
     font-size: var(--text-label-std);
     font-weight: 500;
@@ -31,11 +36,25 @@
     background: transparent;
     border: 0;
     cursor: pointer;
-    transition: all 150ms ease-out;
   }
 
-  .dashboard-recent-link:hover {
-    text-decoration: underline;
+  .dashboard-recent-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dashboard-recent-link:hover::after,
+  .dashboard-recent-link:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
   }
 
   .dashboard-recent-panel {
@@ -48,41 +67,29 @@
   .dashboard-recent-empty {
     padding: var(--spacing-xl);
     text-align: center;
-    font-family: var(--font-body-md);
-    font-size: var(--text-body-md);
-    color: var(--color-text-muted);
   }
 
+  /* Entrance, exit, and the pending-delete state are driven by motion in
+     ResumeListItem.tsx, not from here — a CSS exit transition can't run on
+     an element React is unmounting. Only the hover fill stays in CSS, since
+     it needs no JS to be correct. `overflow: hidden` lets the exit collapse
+     the row's height without its content spilling during the animation. */
   .dashboard-resume-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-lg);
+    overflow: hidden;
     cursor: pointer;
     transition: background-color 150ms ease-out;
-    animation: dashboard-resume-row-in 300ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
   }
 
   .dashboard-resume-row:hover {
     background-color: var(--color-canvas);
   }
 
-  .dashboard-resume-row:nth-child(1) { animation-delay: 0ms; }
-  .dashboard-resume-row:nth-child(2) { animation-delay: 40ms; }
-  .dashboard-resume-row:nth-child(3) { animation-delay: 80ms; }
-  .dashboard-resume-row:nth-child(4) { animation-delay: 120ms; }
-  .dashboard-resume-row:nth-child(5) { animation-delay: 160ms; }
-  .dashboard-resume-row:nth-child(n + 6) { animation-delay: 200ms; }
-
-  @keyframes dashboard-resume-row-in {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .dashboard-resume-row--deleting {
+    pointer-events: none;
   }
 
   .dashboard-resume-row--bordered {
@@ -95,6 +102,10 @@
     gap: var(--spacing-lg);
   }
 
+  /* Picks up the row's hover alongside the arrow so the row reads as one
+     object responding, not a strip where only the right edge is alive.
+     Colour shift only — the tile is an identifier, not a control, so it
+     should not move or lift like something clickable. */
   .dashboard-resume-icon {
     width: 40px;
     height: 40px;
@@ -103,6 +114,15 @@
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-DEFAULT);
+    color: var(--color-text-muted);
+    transition:
+      background-color 150ms ease-out,
+      color 150ms ease-out;
+  }
+
+  .dashboard-resume-row:hover .dashboard-resume-icon {
+    background-color: var(--color-surface-container-low);
+    color: var(--color-primary);
   }
 
   .dashboard-resume-name {
@@ -158,10 +178,11 @@
     transform: translateX(3px);
   }
 
-  /* Destructive, so it stays muted until the row is hovered or the button
-     itself is focused — present when wanted, not competing with the primary
-     "Open Workspace" action the rest of the time. */
-  .dashboard-resume-delete-btn {
+  /* Same reveal-on-hover reasoning as the delete button below — present
+     when wanted, not competing with the row's primary open action — but a
+     neutral-to-primary hover instead of danger, since replacing isn't
+     destructive. */
+  .dashboard-resume-replace-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -175,12 +196,46 @@
     transition:
       opacity 150ms ease-out,
       color 150ms ease-out,
-      background-color 150ms ease-out;
+      background-color 150ms ease-out,
+      transform 120ms ease-out;
   }
 
-  .dashboard-resume-row:hover .dashboard-resume-delete-btn,
-  .dashboard-resume-delete-btn:focus-visible {
+  .dashboard-resume-row:hover .dashboard-resume-replace-btn,
+  .dashboard-resume-replace-btn:focus-visible {
     opacity: 1;
+  }
+
+  .dashboard-resume-replace-btn:hover {
+    color: var(--color-primary);
+    background-color: var(--color-canvas);
+  }
+
+  .dashboard-resume-replace-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  @media (hover: none) {
+    .dashboard-resume-replace-btn {
+      opacity: 1;
+    }
+  }
+
+  .dashboard-resume-delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xs);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    opacity: 1;
+    transition:
+      color 150ms ease-out,
+      background-color 150ms ease-out,
+      transform 120ms ease-out;
   }
 
   .dashboard-resume-delete-btn:hover {
@@ -188,17 +243,23 @@
     background-color: var(--color-canvas);
   }
 
+  /* Press acknowledgment on the destructive control specifically: a
+     confirmation dialog is about to interrupt, so the click that summoned it
+     needs its own beat or the dialog reads as having appeared unbidden. */
+  .dashboard-resume-delete-btn:active,
+  .dashboard-resume-replace-btn:active {
+    transform: scale(0.88);
+  }
+
+  .dashboard-resume-delete-btn:focus-visible,
+  .dashboard-resume-replace-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+  }
+
   .dashboard-resume-delete-btn:disabled {
     cursor: not-allowed;
     opacity: 0.4;
-  }
-
-  /* Touch devices have no hover, so the control would otherwise be
-     permanently invisible. */
-  @media (hover: none) {
-    .dashboard-resume-delete-btn {
-      opacity: 1;
-    }
   }
 
   .dashboard-resume-delete-confirm {

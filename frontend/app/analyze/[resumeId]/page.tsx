@@ -13,13 +13,16 @@ import { ResumeContextCard } from "@/src/components/career-analysis/ResumeContex
 import { RoleOptionCard } from "@/src/components/career-analysis/RoleOptionCard";
 import { AnalyzingOverlay } from "@/src/components/career-analysis/AnalyzingOverlay";
 import { FlowRedirect } from "@/src/components/FlowRedirect";
-import { AppShell } from "@/src/components/layout/AppShell";
+import { AppShell, type Crumb } from "@/src/components/layout/AppShell";
 
 // Search only earns its keep once scrolling a plain list gets tedious; below
 // this count it would just be one more thing to look at before three cards.
 const SEARCH_THRESHOLD = 2;
 
-const CRUMBS = [{ label: "Dashboard", href: "/" }, { label: "Target Role" }];
+// The flow step rail supplies the whole trail (Resume -> ... -> Target
+// Role); a separate "Dashboard" crumb would just duplicate the Resume
+// step, since that step's own destination is the dashboard.
+const CRUMBS: Crumb[] = [];
 
 export default function AnalyzeRolePage({
   params,
@@ -119,7 +122,7 @@ export default function AnalyzeRolePage({
       )}
 
       {!rolesLoading && filteredRoles.length === 0 && (
-        <p className="role-empty">No roles match &ldquo;{query}&rdquo;.</p>
+        <p className="body-copy body-copy--muted role-empty">No roles match &ldquo;{query}&rdquo;.</p>
       )}
 
       {!rolesLoading && filteredRoles.length > 0 && (

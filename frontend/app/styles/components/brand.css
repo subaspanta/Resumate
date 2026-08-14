@@ -10,18 +10,47 @@
     gap: var(--spacing-md);
     text-decoration: none;
     color: inherit;
+    border-radius: var(--radius-lg);
+  }
+
+  .brand-lockup:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 
   /* The rounded-square "R" mark: solid primary fill is the one place a
      block of accent color is allowed at full strength (DESIGN.md's One
      Accent Rule reserves that for exactly this kind of brand moment). */
+  /* Perspective host for the sidebar mark's cursor tilt (BrandMark.tsx).
+     Only that one instance is wrapped — the plain `.brand-mark` used on the
+     auth pages stays flat, so the tilt reads as the app's brand responding
+     rather than a decoration applied to every logo. */
+  /* Perspective is relative to element size: at 32px, a long perspective
+     projects almost no foreshortening and the rotation reads as flat. ~2x
+     the element's own width is what makes the turn legible at this scale. */
+  .brand-mark-stage {
+    display: flex;
+    flex-shrink: 0;
+    perspective: 70px;
+    /* Padding widens the area the cursor is tracked across so the mark
+       responds as you approach it; the matching negative margin keeps the
+       sidebar's brand row laid out exactly as it was without it. */
+    padding: var(--spacing-sm);
+    margin: calc(var(--spacing-sm) * -1);
+    /* The vanishing point belongs over the mark itself. Left at its default
+       it would sit at the padded stage's centre, and since the padding is
+       symmetric that happens to coincide — this states it so the two can't
+       drift apart if the padding ever changes. */
+    perspective-origin: center;
+  }
+
   .brand-mark {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 32px;
-    height: 32px;
+    width: var(--spacing-brand-mark);
+    height: var(--spacing-brand-mark);
     border-radius: var(--radius-lg);
     background-color: var(--color-primary);
     color: var(--color-on-primary);

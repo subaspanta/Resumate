@@ -8,9 +8,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useResumeGuard } from "@/src/features/resume/use-flow-guard";
 import { entryBullets } from "@/src/features/resume/resume.utils";
 import { FlowRedirect } from "@/src/components/FlowRedirect";
-import { AppShell } from "@/src/components/layout/AppShell";
+import { AppShell, type Crumb } from "@/src/components/layout/AppShell";
 
-const CRUMBS = [{ label: "Dashboard", href: "/" }, { label: "Review Profile" }];
+// The flow step rail supplies the whole trail (Resume -> ... -> Review
+// Profile); a separate "Dashboard" crumb would just duplicate the Resume
+// step, since that step's own destination is the dashboard.
+const CRUMBS: Crumb[] = [];
 
 export default function ResumeReviewPage({
   params,
@@ -88,12 +91,12 @@ export default function ResumeReviewPage({
       onNavigateStep={handleNavigateStep}
       hasActionBar
     >
-      <div className="profile-review-card">
+      <div className="card profile-review-card">
         <div className="profile-review-card-icon">
           <User className="size-5" aria-hidden="true" />
         </div>
         <div className="profile-review-card-body">
-          <p className="profile-review-card-title">
+          <p className="entry-title profile-review-card-title">
             {profile.name || "Name not found"}
           </p>
           {hasContact ? (
@@ -113,7 +116,7 @@ export default function ResumeReviewPage({
       {profile.summary && (
         <div className="flex flex-col gap-3">
           <h2 className="section-heading">Summary</h2>
-          <p className="profile-review-summary">{profile.summary}</p>
+          <p className="body-copy profile-review-summary">{profile.summary}</p>
         </div>
       )}
 
@@ -129,9 +132,9 @@ export default function ResumeReviewPage({
         ) : (
           <div className="profile-review-list">
             {profile.experience.map((entry, i) => (
-              <div key={i} className="profile-review-entry">
+              <div key={i} className="card profile-review-entry">
                 <div className="profile-review-entry-header">
-                  <span className="profile-review-entry-title">
+                  <span className="entry-title profile-review-entry-title">
                     {entry.title}
                   </span>
                   {entry.company && (
@@ -141,7 +144,7 @@ export default function ResumeReviewPage({
                   )}
                 </div>
                 {(entry.startDate || entry.endDate) && (
-                  <p className="profile-review-entry-meta">
+                  <p className="meta-label profile-review-entry-meta">
                     {[entry.startDate, entry.endDate].filter(Boolean).join(" – ")}
                   </p>
                 )}
@@ -170,9 +173,9 @@ export default function ResumeReviewPage({
         ) : (
           <div className="profile-review-list">
             {profile.projects.map((entry, i) => (
-              <div key={i} className="profile-review-entry">
+              <div key={i} className="card profile-review-entry">
                 <div className="profile-review-entry-header">
-                  <span className="profile-review-entry-title">
+                  <span className="entry-title profile-review-entry-title">
                     {entry.name}
                   </span>
                 </div>
@@ -198,8 +201,8 @@ export default function ResumeReviewPage({
         ) : (
           <div className="profile-review-skill-groups">
             {profile.skills.map((group, i) => (
-              <div key={i} className="profile-review-skill-group">
-                <span className="profile-review-skill-category">
+              <div key={i} className="card profile-review-skill-group">
+                <span className="meta-label profile-review-skill-category">
                   {group.category ?? "Other"}
                 </span>
                 <div className="profile-review-skill-chips">
@@ -227,9 +230,9 @@ export default function ResumeReviewPage({
         ) : (
           <div className="profile-review-list">
             {profile.education.map((entry, i) => (
-              <div key={i} className="profile-review-entry">
+              <div key={i} className="card profile-review-entry">
                 <div className="profile-review-entry-header">
-                  <span className="profile-review-entry-title">
+                  <span className="entry-title profile-review-entry-title">
                     {entry.degree}
                   </span>
                   <span className="profile-review-entry-subtitle">
@@ -237,7 +240,7 @@ export default function ResumeReviewPage({
                   </span>
                 </div>
                 {entry.year && (
-                  <p className="profile-review-entry-meta">{entry.year}</p>
+                  <p className="meta-label profile-review-entry-meta">{entry.year}</p>
                 )}
               </div>
             ))}
@@ -253,9 +256,9 @@ export default function ResumeReviewPage({
           </h2>
           <div className="profile-review-list">
             {profile.certifications.map((entry, i) => (
-              <div key={i} className="profile-review-entry">
+              <div key={i} className="card profile-review-entry">
                 <div className="profile-review-entry-header">
-                  <span className="profile-review-entry-title">
+                  <span className="entry-title profile-review-entry-title">
                     {entry.name}
                   </span>
                   {entry.issuer && (
@@ -270,8 +273,8 @@ export default function ResumeReviewPage({
         </div>
       )}
 
-      <div className="analysis-action-bar">
-        <div className="analysis-action-bar-inner">
+      <div className="action-bar analysis-action-bar">
+        <div className="action-bar-inner analysis-action-bar-inner">
           <Button onClick={() => router.push(`/analyze/${resumeId}`)}>
             Looks right — choose a role
           </Button>

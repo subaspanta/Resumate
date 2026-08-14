@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -62,7 +63,7 @@ export function AnalyzingOverlay({
   if (stalled && onRetry) {
     return (
       <div className="analyzing-overlay" role="status" aria-live="polite">
-        <div className="analyzing-overlay-card">
+        <div className="card analyzing-overlay-card">
           <p className="analyzing-overlay-title">Taking longer than expected</p>
           <p className="analyzing-overlay-note">
             This is unusual — check again, or come back in a moment.
@@ -82,21 +83,27 @@ export function AnalyzingOverlay({
         </div>
         <p className="analyzing-overlay-title">{title}</p>
         <ol className="analyzing-phases">
-          {phases.map((label, i) => (
-            <li
-              key={label}
-              className={`analyzing-phase ${
-                i < phase
-                  ? "analyzing-phase--done"
-                  : i === phase
-                    ? "analyzing-phase--active"
-                    : ""
-              }`}
-            >
-              <span className="analyzing-phase-dot" aria-hidden="true" />
-              {label}
-            </li>
-          ))}
+          {phases.map((label, i) => {
+            const isDone = i < phase;
+            const isActive = i === phase;
+            return (
+              <li
+                key={label}
+                className={`analyzing-phase ${
+                  isDone
+                    ? "analyzing-phase--done"
+                    : isActive
+                      ? "analyzing-phase--active"
+                      : ""
+                } ${i > 0 ? "analyzing-phase--connected" : ""}`}
+              >
+                <span className="analyzing-phase-dot" aria-hidden="true">
+                  {isDone && <Check className="analyzing-phase-check" strokeWidth={3} />}
+                </span>
+                {label}
+              </li>
+            );
+          })}
         </ol>
         <p className="analyzing-overlay-note">
           This usually takes a few seconds.
