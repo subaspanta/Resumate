@@ -128,7 +128,13 @@ export default function AnalyzeRolePage({
       {!rolesLoading && filteredRoles.length > 0 && (
         <RadioGroupPrimitive.Root
           className="role-list"
-          value={selectedSlug ?? undefined}
+          /* "" rather than undefined for the nothing-selected case: Radix
+             decides controlled vs uncontrolled purely on `value !== undefined`,
+             so passing undefined here makes the group uncontrolled until the
+             first pick and controlled after it. An empty string can never
+             match a role slug, so it reads as "controlled, nothing checked"
+             and the mode never flips. */
+          value={selectedSlug ?? ""}
           onValueChange={setSelectedSlug}
           aria-label="Target role"
         >
