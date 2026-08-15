@@ -1,4 +1,5 @@
 import { axiosClient } from "@/src/api/client";
+import { AI_CALL_TIMEOUT_MS } from "@/src/api/config";
 import type { ApiResponse } from "@/src/api/types";
 import type { ResumePage, Resume } from "@/src/features/resume/types";
 
@@ -7,23 +8,21 @@ export const resumeApi = {
 
   get: (id: string) => axiosClient.get<ApiResponse<Resume>>(`/resumes/${id}`),
 
-  // Storage upload and document parsing/AI structuring run concurrently on
-  // the backend, but the combined wait can still comfortably exceed the
-  // client's default 10s timeout — a real upload was still succeeding
-  // server-side after the client had already given up and shown a failure.
+  // Storage runs concurrently with parsing on the backend, but that
+  // concurrency doesn't shorten the critical path: text extraction and the
+  // AI structuring call are sequential within parsing, so this is the
+  // slowest route in the app and the one AI_CALL_TIMEOUT_MS is sized for.
   upload: (form: FormData) =>
     axiosClient.post<ApiResponse<Resume>>("/resumes", form, {
       headers: { "Content-Type": "multipart/form-data" },
-      timeout: 60000,
+      timeout: AI_CALL_TIMEOUT_MS,
     }),
 
-  // Same storage+parsing concurrency and timeout reasoning as upload — this
-  // hits the same backend pipeline against an existing row instead of a new
-  // one.
+  // Same pipeline as upload, against an existing row instead of a new one.
   replace: (id: string, form: FormData) =>
     axiosClient.put<ApiResponse<Resume>>(`/resumes/${id}`, form, {
       headers: { "Content-Type": "multipart/form-data" },
-      timeout: 60000,
+      timeout: AI_CALL_TIMEOUT_MS,
     }),
 
   remove: (id: string) =>

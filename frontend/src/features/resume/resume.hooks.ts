@@ -83,6 +83,14 @@ export function useUploadResume() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
     },
+    // A failure here does not prove nothing was written. The backend has no
+    // abort-on-disconnect, so a client timeout leaves the upload running and
+    // it may still persist the row. Refetch on the error path too, or the
+    // list keeps claiming there is no resume until the user navigates away
+    // and back.
+    onError: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
+    },
   });
 }
 
@@ -106,6 +114,15 @@ export function useReplaceResume() {
       return response?.data?.data as Resume;
     },
     onSuccess: (_data, { id }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.resumes.detail(id),
+      });
+    },
+    // Same reasoning as useUploadResume: a client-side give-up doesn't mean
+    // the replacement didn't land, and stale cached content here is worse
+    // than a redundant refetch.
+    onError: (_error, { id }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
       queryClient.invalidateQueries({
         queryKey: queryKeys.resumes.detail(id),
