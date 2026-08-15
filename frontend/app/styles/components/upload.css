@@ -6,13 +6,12 @@
     justify-content: center;
   }
 
-  /* Perspective lives on the parent, not the tilting element: applied to the
-     element itself, each axis would be projected independently and the tilt
-     reads as a flat skew rather than a surface turning in space. The value is
-     deliberately long — a short perspective at this element's width would
-     distort the text across it. */
+  /* Kept as the zone's positioning/layout hook. It previously carried a
+     `perspective` for a cursor-tracked 3D tilt; that was removed because it
+     warped the dashed rectangle into a trapezoid, which is the opposite of
+     what a drop target's boundary should do. */
   .dashboard-upload-stage {
-    perspective: 1200px;
+    position: relative;
   }
 
   .dashboard-upload-zone {
@@ -26,11 +25,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* Children can occupy the zone's Z space (see the icon's translateZ)
-       rather than being flattened onto its surface. */
-    transform-style: preserve-3d;
-    /* Named properties rather than `all`: a transition on `transform` would
-       lag one frame behind every spring update the tilt writes. */
     transition:
       background-color 200ms ease-out,
       border-color 200ms ease-out;
@@ -59,23 +53,29 @@
     transition: stroke 200ms ease-out;
   }
 
-  /* Hover is a colour step, not motion. Marching ants carry a specific
-     meaning everywhere users have met them — something is selected, or
-     something is underway — and on hover neither is true yet: the border is
-     already saying "drop here" and the pointer is already on it. Matching the
-     rest of the system (a border and a fill-tone step, never movement, per
-     DESIGN.md) also keeps the compact row from out-shouting the continue card
-     above it, which is the thing a returning user actually came for. */
-  .dashboard-upload-zone:hover .dashboard-upload-zone-border rect {
-    stroke: var(--color-primary);
+  /* Three states, escalating, and only the last one uses hue:
+       rest   neutral dashes            on surface
+       hover  darker neutral dashes     on a tinted fill
+       drag   TEAL dashes + marching    on the AI tint
+     Hover previously took --color-primary, the same stroke the drag state
+     uses, so the border could not tell you which of the two you were in — and
+     it spent the loudest signal in the component on "the pointer is nearby",
+     leaving nothing to escalate to when a file actually arrived. Stepping the
+     neutral instead keeps teal meaningful. */
+  /* :not(--active) is load-bearing, not defensive. A pointer dragging a file
+     is by definition also hovering, and `:hover` adds a class-level component
+     to the selector — so `.zone:hover` (0,2,0) outranks `.zone--active`
+     (0,1,0) and the drag state would never paint. That was already true
+     before hover and drag were given different colours; it just could not be
+     seen while both painted the same teal. */
+  .dashboard-upload-zone:not(.dashboard-upload-zone--active):hover
+    .dashboard-upload-zone-border
+    rect {
+    stroke: var(--color-text-muted);
   }
 
-  /* The tone step that replaces the old hover animation. Deliberately one
-     stop short of --active's --color-ai-bg fill, so hovering and actually
-     dragging a file over the zone stay distinguishable: hover tints, drag
-     commits to the fuller fill plus the moving dashes. */
-  .dashboard-upload-zone:hover {
-    background-color: var(--color-canvas);
+  .dashboard-upload-zone:not(.dashboard-upload-zone--active):hover {
+    background-color: var(--color-surface-container-low);
   }
 
   /* Dragging a file over the zone is the one moment the ants are accurate:
@@ -193,10 +193,6 @@
     background-color: var(--color-ai-bg);
   }
 
-  /* Sits slightly proud of the zone's surface in Z, so the tilt has
-     something to parallax against and reads as real depth rather than a
-     picture of a tilt. This is the flat system's alternative to a shadow:
-     the depth is in the geometry, not in a cast blur. */
   .dashboard-upload-icon {
     width: 64px;
     height: 64px;
@@ -206,8 +202,18 @@
     align-items: center;
     justify-content: center;
     margin-bottom: var(--spacing-lg);
-    transform: translateZ(28px);
-    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms ease-out, color 200ms ease-out;
+    transition:
+      transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 200ms ease-out,
+      color 200ms ease-out;
+  }
+
+  /* The fill step on the zone itself is nearly invisible on a light palette
+     (surface -> surface-container-low is 1.05:1), so the icon carries most of
+     the hover signal by stepping one stop further than the zone behind it. */
+  .dashboard-upload-zone:not(.dashboard-upload-zone--active):hover
+    .dashboard-upload-icon {
+    background-color: var(--color-surface-container);
   }
 
   /* Reuses career-analysis.css's orbit motif so the upload wait reads as the
@@ -222,10 +228,8 @@
     margin-bottom: var(--spacing-lg);
   }
 
-  /* Keeps the resting translateZ — dropping it here would snap the icon flat
-     onto the surface the moment a drag starts. */
   .dashboard-upload-zone--active .dashboard-upload-icon {
-    transform: translateZ(28px) translateY(-4px) scale(1.08);
+    transform: translateY(-4px) scale(1.08);
   }
 
   .dashboard-upload-zone--first-time .dashboard-upload-icon {
@@ -233,9 +237,12 @@
     margin-bottom: var(--spacing-md);
   }
 
-  .dashboard-upload-zone--first-time:hover .dashboard-upload-icon {
-    color: var(--color-primary);
-    background-color: var(--color-surface-container-low);
+  /* This variant already rests on --color-surface-container, so the shared
+     hover rule above would be a no-op here. It also used to step *lighter* on
+     hover, which read as the zone receding under the cursor. */
+  .dashboard-upload-zone--first-time:not(.dashboard-upload-zone--active):hover
+    .dashboard-upload-icon {
+    background-color: var(--color-primary-container);
   }
 
   .dashboard-upload-title {
