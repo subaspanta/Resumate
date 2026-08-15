@@ -136,6 +136,47 @@
 }
 
 /**
+ * Layer ladder and overlay scrims.
+ *
+ * Deliberately a plain :root block rather than part of @theme above — these
+ * are not Tailwind utility namespaces, every consumer reads them through
+ * var() in hand-written CSS, and @theme prunes variables no utility
+ * references.
+ *
+ * The ladder exists so "does this sit above that?" is answered by reading one
+ * ordered list, instead of grepping six stylesheets for hand-picked numbers
+ * that only happened to agree. Steps of 10 leave room for a panel to sit one
+ * rung above the scrim it owns (calc(... + 1)) without earning its own token.
+ * A z-index scoped inside an existing stacking context is a local ordering
+ * question and does not belong on this ladder.
+ */
+:root {
+  --z-chrome: 10; /* sticky/fixed bars that content scrolls under */
+  --z-sidebar: 20; /* desktop sidebar rail */
+  --z-drawer: 30; /* mobile sidebar scrim; the drawer panel is +1 */
+  --z-busy: 40; /* blocking busy overlay — must cover an open drawer */
+  --z-modal: 50; /* dialog scrim; dialog content is +1 */
+
+  /**
+   * Scrims are black at a theme-varied alpha, never a mix of a *foreground*
+   * token: --color-text-primary is near-white in dark mode, so a scrim built
+   * from it brightens the page it is supposed to push back. Black darkens in
+   * both themes, which is the only thing a scrim ever wants to do.
+   *
+   * Two strengths, because they say different things. --overlay-scrim means
+   * "what's behind this is still here, you can come back to it" (dialog,
+   * mobile drawer). --overlay-scrim-blocking means "nothing back there is
+   * actionable until this finishes" (the analyzing overlay).
+   *
+   * Anything drawn on top of either must carry its own surface — at these
+   * alphas bare --color-text-primary is unreadable in light mode.
+   */
+  --overlay-scrim: #00000073;
+  --overlay-scrim-blocking: #000000a6;
+  --overlay-blur: 4px;
+}
+
+/**
  * Dark palette. Mirrors the @theme block above hue-for-hue, lightness
  * inverted — not swapped for a generic gray or blue ramp. The surfaces keep
  * light mode's warm family (~hue 45) at 4.5-7% saturation, which reads as
@@ -183,4 +224,9 @@
 
   /* Black shadows need more alpha to read against an already-dark surface. */
   --color-shadow-sm: #00000066;
+
+  /* Same reasoning as the shadow above: dark content starts closer to black,
+     so the scrim needs more alpha to read as a separate layer over it. */
+  --overlay-scrim: #00000099;
+  --overlay-scrim-blocking: #000000cc;
 }

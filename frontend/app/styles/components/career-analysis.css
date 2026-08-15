@@ -481,16 +481,18 @@
 
   /* Analyzing state ------------------------------------------------------- */
 
+  /* The blocking scrim, not the dismissible one: while this is up the page
+     behind it has nothing the user can usefully act on. */
   .analyzing-overlay {
     position: fixed;
     inset: 0;
-    z-index: 60;
+    z-index: var(--z-busy);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: var(--spacing-lg);
-    background-color: color-mix(in srgb, var(--color-canvas) 82%, transparent);
-    backdrop-filter: blur(6px);
+    background-color: var(--overlay-scrim-blocking);
+    backdrop-filter: blur(var(--overlay-blur));
     animation: analyzing-overlay-in 200ms ease-out both;
   }
 
@@ -503,6 +505,9 @@
     }
   }
 
+  /* Always pairs with .card in the markup — text sitting straight on the
+     scrim would use --color-text-primary against a dark wash, which is
+     unreadable in light mode. */
   .analyzing-overlay-card {
     align-items: center;
     width: 100%;
@@ -683,6 +688,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .analyzing-overlay,
     .analyzing-orbit-ring,
     .analyzing-orbit-core,
     .analyzing-phase-check {

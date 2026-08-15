@@ -60,6 +60,19 @@ export function AnalyzingOverlay({
     return () => clearTimeout(timer);
   }, [onRetry]);
 
+  // This covers the viewport like a modal but isn't one — no Radix, no
+  // portal — so nothing otherwise stops the page scrolling under the scrim
+  // while the user waits. Locking the body is the piece of modal behaviour
+  // it genuinely needs; a focus trap is not, because until the stalled
+  // branch appears there is nothing inside here to trap focus on.
+  useEffect(() => {
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, []);
+
   if (stalled && onRetry) {
     return (
       <div className="analyzing-overlay" role="status" aria-live="polite">
@@ -68,7 +81,12 @@ export function AnalyzingOverlay({
           <p className="analyzing-overlay-note">
             This is unusual — check again, or come back in a moment.
           </p>
-          <Button onClick={onRetry}>Check again</Button>
+          {/* The first thing in this flow the user can act on, arriving 30s
+              after their last interaction. Taking focus means a keyboard
+              user doesn't have to go hunting for what just appeared. */}
+          <Button onClick={onRetry} autoFocus>
+            Check again
+          </Button>
         </div>
       </div>
     );
@@ -76,7 +94,7 @@ export function AnalyzingOverlay({
 
   return (
     <div className="analyzing-overlay" role="status" aria-live="polite">
-      <div className="analyzing-overlay-card">
+      <div className="card analyzing-overlay-card">
         <div className="analyzing-orbit" aria-hidden="true">
           <span className="analyzing-orbit-ring" />
           <span className="analyzing-orbit-core" />
