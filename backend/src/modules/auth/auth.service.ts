@@ -24,7 +24,7 @@ import {
   hashToken,
   verifyRefreshToken,
 } from "../../utils/tokens.js";
-import { Prisma } from "../../generated/client/edge.js";
+import { Prisma } from "../../generated/client/index.js";
 import { StorageModule } from "../storage/storage.types.js";
 import { logger } from "../../config/logger.js";
 

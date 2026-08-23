@@ -317,6 +317,10 @@ model RoadmapTask {
   skillGap SkillGap? @relation(fields: [skillGapId], references: [id], onDelete: SetNull)
 
   @@index([roadmapId, weekNumber, orderInWeek])
+  // skillGap deletion (or a cascading analysis delete) SetNulls every task
+  // that points at it — Postgres does not index FK columns automatically,
+  // so without this that write forces a sequential scan of roadmap_tasks.
+  @@index([skillGapId])
   @@map("roadmap_tasks")
 }
 

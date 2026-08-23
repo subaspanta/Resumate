@@ -6,6 +6,7 @@ import { AppError } from "../../types/app-error.js";
 import { ResumeRepository } from "./resume.repository.js";
 import { ParsingModule, StorageModule } from "./resume.types.js";
 import { normalizeStructuredResume } from "../parsing/normalize-resume.js";
+import { logger } from "../../config/logger.js";
 
 const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
@@ -73,7 +74,7 @@ export class ResumeService {
       try {
         await this.storageModule.deleteFile(storageOutcome.value.path);
       } catch (cleanupError) {
-        console.error(
+        logger.error(
           "Failed to clean up orphaned file after parsing failure",
           {
             path: storageOutcome.value.path,
@@ -185,7 +186,7 @@ export class ResumeService {
       try {
         await this.storageModule.deleteFile(filePath);
       } catch (cleanupError) {
-        console.error("Failed to clean up orphaned file after lost race", {
+        logger.error("Failed to clean up orphaned file after lost race", {
           resumeId: id,
           filePath,
           cleanupError,
@@ -205,7 +206,7 @@ export class ResumeService {
       try {
         await this.storageModule.deleteFile(existing.filePath);
       } catch (cleanupError) {
-        console.error("Failed to delete previous resume file from storage", {
+        logger.error("Failed to delete previous resume file from storage", {
           resumeId: id,
           filePath: existing.filePath,
           cleanupError,
@@ -259,7 +260,7 @@ export class ResumeService {
       try {
         await this.storageModule.deleteFile(resume.filePath);
       } catch (cleanupError) {
-        console.error("Failed to delete resume file from storage", {
+        logger.error("Failed to delete resume file from storage", {
           resumeId: id,
           filePath: resume.filePath,
           cleanupError,
