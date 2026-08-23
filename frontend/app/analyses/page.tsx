@@ -85,10 +85,10 @@ export default function AnalysesListPage() {
       )}
 
       {!isLoading && !isError && analyses.length === 0 && (
-        <div className="analyses-empty">
+        <div className="card analyses-empty">
           <FileSearch className="analyses-empty-icon size-8" aria-hidden="true" />
-          <p className="analyses-empty-title">No analyses yet</p>
-          <p className="analyses-empty-body">
+          <p className="entry-title analyses-empty-title">No analyses yet</p>
+          <p className="body-copy body-copy--muted analyses-empty-body">
             Upload a resume and pick a target role to run your first gap
             analysis.
           </p>
@@ -110,12 +110,12 @@ export default function AnalysesListPage() {
               <div key={analysis.id} className="analyses-row">
                 <button
                   type="button"
-                  className="analyses-row-main"
+                  className="card analyses-row-main"
                   onClick={() => handleOpen(analysis.id, analysis.status)}
                   disabled={analysis.status === "failed"}
                 >
                   <div className="analyses-row-info">
-                    <p className="analyses-row-title">{roleTitle}</p>
+                    <p className="entry-title analyses-row-title">{roleTitle}</p>
                     <p className="analyses-row-date">
                       {new Date(analysis.createdAt).toLocaleDateString(
                         undefined,
@@ -126,13 +126,13 @@ export default function AnalysesListPage() {
 
                   <div className="analyses-row-right">
                     {isBusy && (
-                      <span className="analyses-row-status analyses-row-status--busy">
+                      <span className="meta-label analyses-row-status analyses-row-status--busy">
                         <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
                         {STATUS_LABEL[analysis.status]}
                       </span>
                     )}
                     {analysis.status === "failed" && (
-                      <span className="analyses-row-status analyses-row-status--failed">
+                      <span className="meta-label analyses-row-status analyses-row-status--failed">
                         <XCircle className="size-3.5" aria-hidden="true" />
                         {STATUS_LABEL[analysis.status]}
                       </span>

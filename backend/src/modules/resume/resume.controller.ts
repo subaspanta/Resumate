@@ -75,4 +75,27 @@ export class ResumeController {
       next(error);
     }
   };
+
+  replace = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const userId = req.user!.sub;
+      const { id } = req.params;
+      const resume = await this.resumeService.replaceResume(
+        userId,
+        id,
+        req.file!,
+        req.body,
+      );
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        data: resume,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

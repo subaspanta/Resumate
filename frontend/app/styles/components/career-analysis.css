@@ -15,14 +15,8 @@
 
   .analyses-row-main {
     flex: 1;
-    display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-base);
-    border-radius: var(--radius-xl);
     text-align: left;
     cursor: pointer;
     transition: border-color 150ms ease-out;
@@ -44,13 +38,6 @@
     min-width: 0;
   }
 
-  .analyses-row-title {
-    font-family: var(--font-label-std);
-    font-size: var(--text-body-lg);
-    font-weight: 600;
-    color: var(--color-text-primary);
-  }
-
   .analyses-row-date {
     font-family: var(--font-mono-label);
     font-size: var(--text-mono-label);
@@ -68,11 +55,6 @@
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-xs);
-    font-family: var(--font-mono-label);
-    font-size: var(--text-mono-label);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
   }
 
   .analyses-row-status--busy {
@@ -112,7 +94,9 @@
     background: transparent;
     color: var(--color-text-muted);
     cursor: pointer;
-    transition: color 150ms ease-out, background-color 150ms ease-out;
+    transition:
+      color 150ms ease-out,
+      background-color 150ms ease-out;
   }
 
   .analyses-row-delete:hover:not(:disabled) {
@@ -126,60 +110,26 @@
   }
 
   .analyses-empty {
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: var(--spacing-md);
     padding: var(--spacing-xxl) var(--spacing-lg);
     text-align: center;
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-base);
-    border-radius: var(--radius-xl);
   }
 
   .analyses-empty-icon {
     color: var(--color-text-muted);
   }
 
-  .analyses-empty-title {
-    font-family: var(--font-label-std);
-    font-size: var(--text-body-lg);
-    font-weight: 600;
-    color: var(--color-text-primary);
-  }
-
   .analyses-empty-body {
     max-width: 40ch;
-    font-family: var(--font-body-md);
-    font-size: var(--text-body-md);
-    color: var(--color-text-muted);
   }
 
   /* Action bar ------------------------------------------------------------ */
 
-  /* Fixed so the page's one action (generate the roadmap) stays reachable
-     regardless of how long the gap/evidence lists scroll. left tracks
-     --shell-offset (declared in layout.css) so it clears the sidebar and
-     animates with its collapse instead of jumping. */
   .analysis-action-bar {
-    position: fixed;
-    left: var(--shell-offset);
-    right: 0;
-    bottom: 0;
-    z-index: 40;
-    display: flex;
     justify-content: flex-end;
-    padding: var(--spacing-md) var(--spacing-xl);
-    background-color: color-mix(in srgb, var(--color-canvas) 92%, transparent);
-    backdrop-filter: blur(8px);
-    border-top: 1px solid var(--color-border-base);
-    transition: --shell-offset 200ms ease-out;
   }
 
   .analysis-action-bar-inner {
-    width: 100%;
-    max-width: var(--spacing-max-content);
-    display: flex;
     justify-content: flex-end;
     gap: var(--spacing-sm);
   }
@@ -192,28 +142,14 @@
      this page uses the same lg padding/radius, which is exactly why this
      one needs to outweigh them instead of matching them. */
   .readiness-card {
-    display: flex;
-    flex-direction: column;
     gap: var(--spacing-lg);
     padding: var(--spacing-xl);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-base);
-    border-radius: var(--radius-xl);
   }
 
   .readiness-card-header {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-  }
-
-  .readiness-card-label {
-    font-family: var(--font-mono-label);
-    font-size: var(--text-mono-label);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--color-text-muted);
   }
 
   .readiness-card-score {
@@ -284,12 +220,7 @@
   }
 
   .gap-card {
-    display: flex;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-base);
-    border-radius: var(--radius-xl);
+    flex-direction: row;
   }
 
   .gap-card-icon {
@@ -327,21 +258,6 @@
     flex-wrap: wrap;
   }
 
-  .gap-card-title {
-    font-family: var(--font-label-std);
-    font-size: var(--text-body-lg);
-    font-weight: 600;
-    color: var(--color-text-primary);
-  }
-
-  .gap-card-status {
-    font-family: var(--font-mono-label);
-    font-size: var(--text-mono-label);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
   .gap-card-status--missing {
     color: var(--color-danger);
   }
@@ -358,13 +274,6 @@
     color: var(--color-score-excellent);
   }
 
-  .gap-card-reasoning {
-    font-family: var(--font-body-md);
-    font-size: var(--text-body-md);
-    line-height: var(--text-body-md--line-height);
-    color: var(--color-text-body);
-  }
-
   /* Evidence -------------------------------------------------------------- */
 
   .evidence-list {
@@ -374,12 +283,7 @@
   }
 
   .evidence-card {
-    display: flex;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-base);
-    border-radius: var(--radius-xl);
+    flex-direction: row;
   }
 
   .evidence-card-icon {
@@ -402,28 +306,11 @@
     gap: var(--spacing-sm);
   }
 
-  .evidence-card-title {
-    font-family: var(--font-label-std);
-    font-size: var(--text-body-lg);
-    font-weight: 600;
-    color: var(--color-text-primary);
-  }
-
   .evidence-card-strength {
     flex-shrink: 0;
-    font-family: var(--font-mono-label);
-    font-size: var(--text-mono-label);
-    font-weight: 500;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
   }
 
   .evidence-card-quote {
-    font-family: var(--font-body-md);
-    font-size: var(--text-body-md);
-    line-height: var(--text-body-md--line-height);
-    color: var(--color-text-body);
     font-style: italic;
   }
 
@@ -457,7 +344,9 @@
     font-family: var(--font-body-md);
     font-size: var(--text-body-md);
     color: var(--color-text-primary);
-    transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+    transition:
+      border-color 150ms ease-out,
+      box-shadow 150ms ease-out;
   }
 
   .role-search-input::placeholder {
@@ -483,19 +372,16 @@
   }
 
   .role-option {
-    display: flex;
+    flex-direction: row;
     align-items: flex-start;
-    gap: var(--spacing-md);
     width: 100%;
-    padding: var(--spacing-lg);
     padding-bottom: calc(var(--spacing-lg) + 20px);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-base);
-    border-radius: var(--radius-xl);
     font: inherit;
     text-align: left;
     cursor: pointer;
-    transition: border-color 150ms ease-out, background-color 150ms ease-out;
+    transition:
+      border-color 150ms ease-out,
+      background-color 150ms ease-out;
   }
 
   .role-option:hover {
@@ -539,19 +425,11 @@
 
   .role-option-title {
     display: block;
-    font-family: var(--font-label-std);
-    font-size: var(--text-body-lg);
-    font-weight: 600;
-    color: var(--color-text-primary);
   }
 
   .role-option-desc {
     display: block;
     margin-top: var(--spacing-xs);
-    font-family: var(--font-body-md);
-    font-size: var(--text-body-md);
-    line-height: var(--text-body-md--line-height);
-    color: var(--color-text-muted);
   }
 
   .role-option-details-link {
@@ -581,9 +459,6 @@
   .role-empty {
     padding: var(--spacing-xxl) var(--spacing-lg);
     text-align: center;
-    font-family: var(--font-body-md);
-    font-size: var(--text-body-md);
-    color: var(--color-text-muted);
   }
 
   /* Error state ------------------------------------------------------------ */
@@ -606,16 +481,18 @@
 
   /* Analyzing state ------------------------------------------------------- */
 
+  /* The blocking scrim, not the dismissible one: while this is up the page
+     behind it has nothing the user can usefully act on. */
   .analyzing-overlay {
     position: fixed;
     inset: 0;
-    z-index: 60;
+    z-index: var(--z-busy);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: var(--spacing-lg);
-    background-color: color-mix(in srgb, var(--color-canvas) 82%, transparent);
-    backdrop-filter: blur(6px);
+    background-color: var(--overlay-scrim-blocking);
+    backdrop-filter: blur(var(--overlay-blur));
     animation: analyzing-overlay-in 200ms ease-out both;
   }
 
@@ -628,17 +505,14 @@
     }
   }
 
+  /* Always pairs with .card in the markup — text sitting straight on the
+     scrim would use --color-text-primary against a dark wash, which is
+     unreadable in light mode. */
   .analyzing-overlay-card {
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: var(--spacing-md);
     width: 100%;
     max-width: 380px;
     padding: var(--spacing-xl);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-base);
-    border-radius: var(--radius-xl);
     text-align: center;
   }
 
@@ -704,6 +578,7 @@
   }
 
   .analyzing-phase {
+    position: relative;
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
@@ -715,22 +590,87 @@
     transition: color 240ms ease-out;
   }
 
+  /* Fixed 14px slot regardless of dot/check size, so the connecting line
+     (drawn on the row itself, not this smaller dot) always lands on the
+     same x-axis as the row above and below it. */
   .analyzing-phase-dot {
-    width: 6px;
-    height: 6px;
+    position: relative;
+    width: 14px;
+    height: 14px;
     flex-shrink: 0;
-    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Anchored to the row's own box (which spans the full line-height, not
+     just the 14px dot) and stretched up to the vertical center of the row
+     above — the dot's own 14px box is shorter than the text line-height
+     around it, so a line anchored to the dot instead of the row
+     undershoots the previous dot's center. Center-to-center distance is
+     one row's line-height plus one list gap (20px + 8px); anchoring
+     bottom at this row's own center (50%) and reaching up exactly that
+     far lands the top edge on the previous row's center without needing
+     to know the previous row's box directly. Colored per-segment, not as
+     one long bar, so the line itself shows exactly how far the process
+     has gotten. */
+  .analyzing-phase--connected::before {
+    content: "";
+    position: absolute;
+    bottom: 50%;
+    height: calc(var(--text-body-md--line-height) + var(--spacing-sm));
+    left: 7px;
+    width: 1px;
     background-color: var(--color-border-input);
     transition: background-color 240ms ease-out;
   }
 
-  .analyzing-phase--done {
-    color: var(--color-text-body);
+  .analyzing-phase--done.analyzing-phase--connected::before,
+  .analyzing-phase--active.analyzing-phase--connected::before {
+    background-color: var(--color-primary);
   }
 
-  .analyzing-phase--done .analyzing-phase-dot,
-  .analyzing-phase--active .analyzing-phase-dot {
+  .analyzing-phase-dot::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background-color: var(--color-border-input);
+    transition:
+      background-color 240ms ease-out,
+      transform 240ms ease-out;
+  }
+
+  .analyzing-phase--done .analyzing-phase-dot::after,
+  .analyzing-phase--active .analyzing-phase-dot::after {
     background-color: var(--color-primary);
+  }
+
+  .analyzing-phase-check {
+    position: absolute;
+    inset: 0;
+    width: 14px;
+    height: 14px;
+    padding: 2px;
+    color: var(--color-on-primary);
+    background-color: var(--color-primary);
+    border-radius: 9999px;
+    animation: analyzing-check-in 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes analyzing-check-in {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .analyzing-phase--done {
+    color: var(--color-text-body);
   }
 
   .analyzing-phase--active {
@@ -748,8 +688,10 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .analyzing-overlay,
     .analyzing-orbit-ring,
-    .analyzing-orbit-core {
+    .analyzing-orbit-core,
+    .analyzing-phase-check {
       animation: none;
     }
 

@@ -1,13 +1,18 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { FileUp, Loader2, Plus, Upload } from "lucide-react";
+import { FileUp, Plus, Upload } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import { toast } from "sonner";
 import { validateResumeFile } from "@/src/features/resume/resume.utils";
 
 interface UploadDropzoneProps {
   onFileSelected: (file: File) => void;
-  variant?: "default" | "firstTime";
+  /**
+   * `compact` is the returning-user form: still a full drop target, but no
+   * longer the page's headline once a continue card is leading instead.
+   */
+  variant?: "default" | "firstTime" | "compact";
   isUploading?: boolean;
 }
 
@@ -18,7 +23,10 @@ export function UploadDropzone({
 }: UploadDropzoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const zoneRef = useRef<HTMLDivElement>(null);
   const isFirstTime = variant === "firstTime";
+  const isCompact = variant === "compact";
+  const reduceMotion = useReducedMotion();
 
   const selectFile = useCallback(
     (file: File) => {
@@ -32,22 +40,52 @@ export function UploadDropzone({
     [onFileSelected],
   );
 
-  const handleDragOver = useCallback(
+  // preventDefault only: without it the browser refuses the drop entirely. The
+  // active state is owned by the enter/leave counter, not by this — dragover
+  // fires continuously, and having it re-assert `true` every few milliseconds
+  // is exactly what masked the flicker as a pulse rather than a stuck state.
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  }, []);
+
+  // `dragenter`/`dragleave` fire for every descendant the pointer crosses and
+  // both bubble here, so dragging a file across the icon or the button used to
+  // clear the active state while the file was still over the zone — `dragover`
+  // re-set it a frame later, which pulsed the fill and restarted the
+  // marching-ants animation mid-drag.
+  //
+  // Counting enters against leaves is what fixes it. The obvious alternative —
+  // ignoring a leave whose `relatedTarget` is inside the zone — is not
+  // reliable: browsers disagree on whether dragleave carries a relatedTarget
+  // at all, and it is frequently null. The counter needs no such support.
+  const dragDepth = useRef(0);
+
+  const handleDragEnter = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
-      if (!isUploading) setIsDragging(true);
+      if (isUploading) return;
+      dragDepth.current += 1;
+      setIsDragging(true);
     },
     [isUploading],
   );
 
   const handleDragLeave = useCallback(() => {
+    dragDepth.current = Math.max(0, dragDepth.current - 1);
+    if (dragDepth.current > 0) return;
+    setIsDragging(false);
+  }, []);
+
+  // A drop ends the drag outright, however many nested enters are outstanding.
+  const resetDrag = useCallback(() => {
+    dragDepth.current = 0;
     setIsDragging(false);
   }, []);
 
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
-      setIsDragging(false);
+      resetDrag();
       if (isUploading) return;
       const files = e.dataTransfer.files;
       if (files.length > 1) {
@@ -57,7 +95,7 @@ export function UploadDropzone({
       const file = files[0];
       if (file) selectFile(file);
     },
-    [selectFile, isUploading],
+    [selectFile, isUploading, resetDrag],
   );
 
   const handleFileInput = useCallback(
@@ -74,11 +112,15 @@ export function UploadDropzone({
     inputRef.current?.click();
   };
 
+  const variantClass = isFirstTime
+    ? "dashboard-upload-zone--first-time"
+    : isCompact
+      ? "dashboard-upload-zone--compact"
+      : "dashboard-upload-zone--default";
+
   const zoneClass = [
     "dashboard-upload-zone",
-    isFirstTime
-      ? "dashboard-upload-zone--first-time"
-      : "dashboard-upload-zone--default",
+    variantClass,
     isDragging ? "dashboard-upload-zone--active" : "",
     isUploading ? "opacity-60 pointer-events-none" : "",
   ]
@@ -87,13 +129,35 @@ export function UploadDropzone({
 
   const content = isUploading ? (
     <>
-      <div className="dashboard-upload-icon">
-        <Loader2 className="size-8 animate-spin text-primary" aria-hidden="true" />
+      <div className="analyzing-orbit analyzing-orbit--inline" aria-hidden="true">
+        <span className="analyzing-orbit-ring" />
+        <span className="analyzing-orbit-core" />
       </div>
       <h3 className="dashboard-upload-title">
         Uploading and reading your resume…
       </h3>
       <p className="dashboard-upload-desc">This usually takes a few seconds.</p>
+    </>
+  ) : isCompact ? (
+    // One row, no hero block: the continue card above already owns the page's
+    // attention, so this only has to stay findable and remain a drop target.
+    <>
+      <span className="dashboard-upload-compact-icon">
+        <Plus className="size-[18px]" aria-hidden="true" />
+      </span>
+      <span className="dashboard-upload-compact-label">
+        Upload another resume
+      </span>
+      <span className="dashboard-upload-compact-meta">PDF or DOCX, max 2MB</span>
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".pdf,.docx"
+        className="hidden"
+        onChange={handleFileInput}
+        disabled={isUploading}
+      />
     </>
   ) : (
     <>
@@ -122,7 +186,13 @@ export function UploadDropzone({
         className={`dashboard-upload-btn ${
           isFirstTime ? "dashboard-upload-btn--compact" : ""
         }`}
-        onClick={openFilePicker}
+        // The zone itself is also click-to-open, and this button sits inside
+        // it, so without stopping propagation one press ran openFilePicker
+        // twice — once here and once as the click bubbled to the zone.
+        onClick={(e) => {
+          e.stopPropagation();
+          openFilePicker();
+        }}
         disabled={isUploading}
       >
         {!isFirstTime && <Plus className="size-[18px]" aria-hidden="true" />}
@@ -147,19 +217,63 @@ export function UploadDropzone({
   );
 
   return (
-    <section className={isFirstTime ? undefined : "dashboard-upload"}>
-      <div
+    <section
+      className={[
+        isFirstTime || isCompact ? "" : "dashboard-upload",
+        "dashboard-upload-stage",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      <motion.div
+        ref={zoneRef}
         className={zoneClass}
+        // The only movement left, and it fires on drag rather than hover: at
+        // that point something genuinely is in progress, which is the same
+        // reason the marching ants are allowed to run. Hover is a colour step
+        // only, per DESIGN.md's border-and-fill rule.
+        animate={{ scale: isDragging && !reduceMotion ? 1.01 : 1 }}
+        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={openFilePicker}
-        role="region"
-        aria-label="Resume upload area"
+        // The compact variant has no inner button to carry the action, so the
+        // zone itself becomes the control. The other variants keep their own
+        // button and stay a plain region, so making them focusable too would
+        // put two tab stops on one action.
+        {...(isCompact
+          ? {
+              role: "button" as const,
+              tabIndex: isUploading ? -1 : 0,
+              onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openFilePicker();
+                }
+              },
+              "aria-label": "Upload another resume",
+            }
+          : { role: "region" as const, "aria-label": "Resume upload area" })}
         aria-busy={isUploading}
       >
+        <svg
+          className="dashboard-upload-zone-border"
+          aria-hidden="true"
+          preserveAspectRatio="none"
+        >
+          <rect
+            x="1"
+            y="1"
+            width="calc(100% - 2px)"
+            height="calc(100% - 2px)"
+            rx={isFirstTime ? 8 : 12}
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
         {content}
-      </div>
+      </motion.div>
     </section>
   );
 }

@@ -36,6 +36,16 @@ export type NewGapRow = {
   reasoning: string;
 };
 
+// How far through its roadmap an analysis is. Counted in the repository
+// rather than the client: completion state is application-owned, and a count
+// assembled in a component would be a second definition of "progress" free to
+// drift from this one.
+export type RoadmapProgress = {
+  total: number;
+  completed: number;
+  weekCount: number;
+};
+
 export type CompleteAnalysisInput = {
   analysisId: string;
   readinessScore: number;
@@ -355,7 +365,7 @@ export class CareerAnalysisRepository {
     userId: string,
     filter: { resumeId?: string } = {},
   ): Promise<
-    Pick<
+    (Pick<
       CareerAnalysis,
       | "id"
       | "resumeId"
@@ -364,9 +374,13 @@ export class CareerAnalysisRepository {
       | "readinessScore"
       | "createdAt"
       | "completedAt"
-    >[]
+    > & {
+      hasRoadmap: boolean;
+      roadmapProgress: RoadmapProgress | null;
+      role: { slug: string; title: string };
+    })[]
   > {
-    return prisma.careerAnalysis.findMany({
+    const rows = await prisma.careerAnalysis.findMany({
       where: {
         userId,
         parentAnalysisId: null,
@@ -380,9 +394,36 @@ export class CareerAnalysisRepository {
         readinessScore: true,
         createdAt: true,
         completedAt: true,
+        // The list row renders the role by name; without this join the client
+        // would have to fetch the whole role list purely to map a uuid.
+        role: { select: { slug: true, title: true } },
+        // Existence plus progress. The dashboard's "continue where you left
+        // off" card needs how many tasks are done, and _count aggregates in
+        // Postgres — the completed-task select returns ids only, never the
+        // task prose columns, which are large and useless to a counter.
+        roadmap: {
+          select: {
+            id: true,
+            weekCount: true,
+            _count: { select: { tasks: true } },
+            tasks: { where: { completed: true }, select: { id: true } },
+          },
+        },
       },
       orderBy: { createdAt: "desc" },
     });
+
+    return rows.map(({ roadmap, ...rest }) => ({
+      ...rest,
+      hasRoadmap: roadmap !== null,
+      roadmapProgress: roadmap
+        ? {
+            total: roadmap._count.tasks,
+            completed: roadmap.tasks.length,
+            weekCount: roadmap.weekCount,
+          }
+        : null,
+    }));
   }
 
   // Revision summaries under one root, oldest first — for GET

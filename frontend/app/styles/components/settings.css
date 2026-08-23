@@ -9,16 +9,6 @@
     gap: var(--spacing-md);
   }
 
-  .settings-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-base);
-    border-radius: var(--radius-xl);
-  }
-
   .settings-field {
     display: flex;
     align-items: baseline;
@@ -47,6 +37,61 @@
     text-align: right;
   }
 
+  /* Appearance ----------------------------------------------------------- */
+
+  .theme-toggle {
+    display: inline-flex;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs);
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-lg);
+    width: fit-content;
+  }
+
+  .theme-toggle-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    height: 36px;
+    padding-inline: var(--spacing-md);
+    border-radius: var(--radius-DEFAULT);
+    font-family: var(--font-label-std);
+    font-size: var(--text-label-std);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    transition: all 150ms ease-out;
+  }
+
+  .theme-toggle-option:hover {
+    color: var(--color-text-primary);
+  }
+
+  .theme-toggle-option--active {
+    background-color: var(--color-surface);
+    color: var(--color-primary);
+    box-shadow: 0 1px 2px var(--color-shadow-sm);
+  }
+
+  .theme-toggle-option-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Icon-only rendering for the marketing nav, where three labeled buttons
+     don't fit alongside the logo and auth CTAs. */
+  .theme-toggle--compact {
+    padding: 2px;
+    gap: 2px;
+  }
+
+  .theme-toggle-option--compact {
+    width: 32px;
+    height: 32px;
+    padding-inline: 0;
+    justify-content: center;
+  }
+
   /* Danger zone -------------------------------------------------------------- */
 
   /* A tinted-danger border, not the sage AI tint or a plain neutral card — the
@@ -66,18 +111,8 @@
     gap: var(--spacing-xs);
   }
 
-  .settings-danger-title {
-    font-family: var(--font-label-std);
-    font-size: var(--text-body-lg);
-    font-weight: 600;
-    color: var(--color-text-primary);
-  }
-
   .settings-danger-body {
     max-width: 52ch;
-    font-family: var(--font-body-md);
-    font-size: var(--text-body-md);
-    color: var(--color-text-muted);
   }
 
   .settings-danger-button {
@@ -90,7 +125,7 @@
     background-color: color-mix(in srgb, var(--color-danger) 8%, transparent);
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 639px) {
     .settings-card--danger {
       flex-direction: column;
       align-items: stretch;

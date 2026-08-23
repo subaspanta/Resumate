@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowRight, FileText, Trash2 } from "lucide-react";
+import { ArrowRight, FileText, RefreshCw, Trash2 } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import { ResumeSummary } from "@/src/features/resume/types";
 import { resumeFileKind } from "@/src/features/resume/resume.utils";
 import {
@@ -17,39 +18,94 @@ import {
 
 interface ResumeListItemProps {
   resume: ResumeSummary;
+  /** Position in the list, used to stagger the entrance. */
+  index: number;
   onOpen: (id: string) => void;
   onDelete?: (id: string, title: string) => void;
   isDeleting?: boolean;
+  // Kept separate from onOpen rather than folded into a menu: replacing a
+  // resume is rare enough that a full row click target for it isn't
+  // justified, but common enough (wrong file, updated resume) to deserve a
+  // direct button rather than being buried behind delete-and-reupload.
+  onReplace?: (id: string) => void;
+  isReplacing?: boolean;
   isLast: boolean;
 }
 
 export function ResumeListItem({
   resume,
+  index,
   onOpen,
   onDelete,
   isDeleting = false,
+  onReplace,
+  isReplacing = false,
   isLast,
 }: ResumeListItemProps) {
   const kind = resumeFileKind(resume.fileName ?? resume.originalFileName);
+  // The CSS-level reduce-motion guard in base.css only shortens durations;
+  // motion drives these values from JS, so it has to be asked directly.
+  const reduceMotion = useReducedMotion();
 
   return (
-    <div
-      className={`dashboard-resume-row ${
-        isLast ? "" : "dashboard-resume-row--bordered"
-      }`}
+    <motion.div
+      layout={!reduceMotion}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{
+        opacity: isDeleting ? 0.45 : 1,
+        y: 0,
+        // Withdraws while the delete mutation is in flight, so the removal
+        // reads as the end of something the user started rather than a row
+        // silently disappearing.
+        scale: isDeleting ? 0.99 : 1,
+      }}
+      // Padding collapses with the height, or the row leaves a 48px stub
+      // behind mid-exit.
+      exit={{
+        opacity: 0,
+        height: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+      }}
+      transition={
+        reduceMotion
+          ? { duration: 0 }
+          : {
+              duration: 0.3,
+              ease: [0.16, 1, 0.3, 1],
+              // Only the initial paint staggers; a row arriving later (after
+              // an upload) should land immediately, not wait its turn behind
+              // rows that are already on screen.
+              delay: Math.min(index * 0.04, 0.2),
+            }
+      }
+      className={[
+        "dashboard-resume-row",
+        isLast ? "" : "dashboard-resume-row--bordered",
+        isDeleting ? "dashboard-resume-row--deleting" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
       onClick={() => onOpen(resume.id)}
       role="button"
       tabIndex={0}
+      aria-busy={isDeleting}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") onOpen(resume.id);
       }}
     >
       <div className="dashboard-resume-row-left">
+        {/* Colour comes from the tile so the row's hover can reach it —
+            a hardcoded text-* class here would win over that. */}
         <div className="dashboard-resume-icon">
-          <FileText className="size-5 text-text-muted" aria-hidden="true" />
+          <FileText className="size-5" aria-hidden="true" />
         </div>
-        <div>
-          <p className="dashboard-resume-name">{resume.title}</p>
+        <div className="dashboard-resume-row-text">
+          {/* The name truncates on narrow rows, so the full title has to stay
+              reachable somewhere — this is it for pointer users. */}
+          <p className="dashboard-resume-name" title={resume.title}>
+            {resume.title}
+          </p>
           <p className="dashboard-resume-meta">
             {kind !== "file" && (
               <span className="dashboard-resume-kind">
@@ -71,6 +127,24 @@ export function ResumeListItem({
           aria-hidden="true"
         />
 
+        {onReplace && (
+          <button
+            className="dashboard-resume-replace-btn tap-target-44"
+            onClick={(e) => {
+              e.stopPropagation();
+              onReplace(resume.id);
+            }}
+            disabled={isReplacing}
+            type="button"
+            aria-label={`Replace ${resume.title}`}
+          >
+            <RefreshCw
+              className={`size-4 ${isReplacing ? "animate-spin" : ""}`}
+              aria-hidden="true"
+            />
+          </button>
+        )}
+
         {onDelete && (
           <AlertDialog>
             {/* The whole row is a click target, so every handler inside the
@@ -78,7 +152,7 @@ export function ResumeListItem({
                 cancelling also navigates into the workspace. */}
             <AlertDialogTrigger asChild>
               <button
-                className="dashboard-resume-delete-btn"
+                className="dashboard-resume-delete-btn tap-target-44"
                 onClick={(e) => e.stopPropagation()}
                 disabled={isDeleting}
                 type="button"
@@ -112,6 +186,6 @@ export function ResumeListItem({
           </AlertDialog>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

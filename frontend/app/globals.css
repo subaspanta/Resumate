@@ -11,11 +11,13 @@
 
 /* Feature/component styles */
 @import "./styles/components/brand.css";
+@import "./styles/components/marketing.css";
 @import "./styles/components/auth.css";
 @import "./styles/components/sidebar.css";
 @import "./styles/components/layout.css";
 @import "./styles/components/app-shell.css";
 @import "./styles/components/upload.css";
+@import "./styles/components/continue-card.css";
 @import "./styles/components/resume-list.css";
 @import "./styles/components/dialog.css";
 @import "./styles/components/profile-review.css";

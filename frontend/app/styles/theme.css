@@ -3,28 +3,40 @@
  * Consumed by Tailwind v4 as utility classes (e.g. bg-primary, text-body-md).
  */
 @theme {
-  --color-primary: #0F766E;
-  --color-primary-container: #E6F5F3;
+  --color-primary: #02747E;
+  --color-primary-container: #E2F1F3;
   --color-on-primary: #FFFFFF;
-  --color-background: #FCF8FF;
-  --color-canvas: #F8FAFC;
+  --color-accent-secondary: #0058AC;
+  /**
+   * Expressive accent for *display typography only* — a picked-out word in a
+   * marketing headline. Never an action, a fill, an icon, or a state.
+   *
+   * It sits between --color-danger (hue 0) and --color-score-needs-work
+   * (hue 21), which mean "error" and "skill gap" in the product UI. Nothing
+   * stops those reading as the same color, so the separation is enforced by
+   * where this is allowed: public marketing surfaces, never product UI.
+   * Teal remains the only color that means "act here".
+   */
+  --color-accent-display: #D52F15;
+  --color-background: #FFFFFF;
+  --color-canvas: #FAF9F5;
   --color-surface: #FFFFFF;
-  --color-border-base: #E2E8F0;
-  --color-border-input: #CBD5E1;
+  --color-border-base: #E6E3D8;
+  --color-border-input: #8A8578;
 
-  --color-text-primary: #0F172A;
-  --color-text-body: #475569;
-  --color-text-muted: #64748B;
+  --color-text-primary: #002D6B;
+  --color-text-body: #444444;
+  --color-text-muted: #555555;
 
-  --color-danger: #DC2626;
-  --color-ai-bg: #E6F5F3;
+  --color-danger: #BD1F1F;
+  --color-ai-bg: #E2F1F3;
 
-  --color-surface-container-low: #EDF6F4;
-  --color-surface-container: #E1F0ED;
+  --color-surface-container-low: #F6F5F0;
+  --color-surface-container: #F0EDE2;
 
-  --color-score-excellent: #16A34A;
-  --color-score-good: #CA8A04;
-  --color-score-needs-work: #EA580C;
+  --color-score-excellent: #107535;
+  --color-score-good: #7F6005;
+  --color-score-needs-work: #913808;
 
   --color-shadow-sm: #0000000a;
 
@@ -80,13 +92,141 @@
   --spacing-lg: 24px;
   --spacing-xl: 32px;
   --spacing-xxl: 48px;
-  --spacing-sidebar-width: 272px;
+  /* The brand mark's own size. Lives here because the sidebar positions the
+     collapse toggle against it and would otherwise hardcode a copy. */
+  --spacing-brand-mark: 32px;
+  --spacing-sidebar-width: 248px;
   --spacing-sidebar-collapsed-width: 80px;
+  /* Visual size of the collapse toggle. Its vertical position is derived
+     from this, so the two can't drift apart. The clickable area is larger
+     than the circle — see .dashboard-sidebar-toggle::before. */
+  --spacing-sidebar-toggle: 28px;
   --spacing-max-content: 1280px;
   --spacing-top-nav-height: 72px;
+
+  /**
+   * Breakpoints. Tailwind v4 reads --breakpoint-* from @theme, so declaring
+   * them here is what makes `md:` in a component and `min-width: 768px` in a
+   * stylesheet the same number rather than two that happen to agree today.
+   *
+   * These match Tailwind's own defaults on purpose — the app already uses
+   * `md:` and `lg:` utilities, so those values are load-bearing whether or
+   * not they are written down. Renaming them silently would move every
+   * existing utility.
+   *
+   * Hand-written CSS cannot interpolate a custom property inside a media
+   * query — `@media (max-width: var(--breakpoint-sm))` is invalid CSS, not
+   * a build limitation. So the media queries below still carry literals;
+   * these tokens are the reference the literals are checked against, and
+   * the source Tailwind's own utilities read.
+   *
+   * A `max-width` query pairs with the breakpoint BELOW its own name:
+   * `min-width: 640px` (sm) and `max-width: 640px` both match at exactly
+   * 640px, so the mobile side of an sm boundary is 639px.
+   */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
 
   --radius-DEFAULT: 0.25rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
   --radius-xxl: 16px;
+}
+
+/**
+ * Layer ladder and overlay scrims.
+ *
+ * Deliberately a plain :root block rather than part of @theme above — these
+ * are not Tailwind utility namespaces, every consumer reads them through
+ * var() in hand-written CSS, and @theme prunes variables no utility
+ * references.
+ *
+ * The ladder exists so "does this sit above that?" is answered by reading one
+ * ordered list, instead of grepping six stylesheets for hand-picked numbers
+ * that only happened to agree. Steps of 10 leave room for a panel to sit one
+ * rung above the scrim it owns (calc(... + 1)) without earning its own token.
+ * A z-index scoped inside an existing stacking context is a local ordering
+ * question and does not belong on this ladder.
+ */
+:root {
+  --z-chrome: 10; /* sticky/fixed bars that content scrolls under */
+  --z-sidebar: 20; /* desktop sidebar rail */
+  --z-drawer: 30; /* mobile sidebar scrim; the drawer panel is +1 */
+  --z-busy: 40; /* blocking busy overlay — must cover an open drawer */
+  --z-modal: 50; /* dialog scrim; dialog content is +1 */
+
+  /**
+   * Scrims are black at a theme-varied alpha, never a mix of a *foreground*
+   * token: --color-text-primary is near-white in dark mode, so a scrim built
+   * from it brightens the page it is supposed to push back. Black darkens in
+   * both themes, which is the only thing a scrim ever wants to do.
+   *
+   * Two strengths, because they say different things. --overlay-scrim means
+   * "what's behind this is still here, you can come back to it" (dialog,
+   * mobile drawer). --overlay-scrim-blocking means "nothing back there is
+   * actionable until this finishes" (the analyzing overlay).
+   *
+   * Anything drawn on top of either must carry its own surface — at these
+   * alphas bare --color-text-primary is unreadable in light mode.
+   */
+  --overlay-scrim: #00000073;
+  --overlay-scrim-blocking: #000000a6;
+  --overlay-blur: 4px;
+}
+
+/**
+ * Dark palette. Mirrors the @theme block above hue-for-hue, lightness
+ * inverted — not swapped for a generic gray or blue ramp. The surfaces keep
+ * light mode's warm family (~hue 45) at 4.5-7% saturation, which reads as
+ * warm charcoal rather than brown; primary holds teal's hue 185 and
+ * accent-secondary holds hue 209, both lightened to carry a dark surface.
+ *
+ * Containers sit *away* from --color-surface in both themes: darker than the
+ * card in light, lighter than it here. --color-surface-container is the most
+ * elevated surface and therefore the worst case for text contrast — every
+ * foreground below is checked against it, not just against the page.
+ *
+ * Every pairing is checked against WCAG 2.1 AA (4.5:1 body text, 3:1 large
+ * text / UI boundaries), not eyeballed.
+ */
+.dark {
+  --color-primary: #2FCCDA;
+  --color-primary-container: #1D3335;
+  --color-on-primary: #02282C;
+  --color-accent-secondary: #55A6F1;
+  /* Same hue (8) as light, lifted to carry a dark surface. */
+  --color-accent-display: #EE644F;
+
+  --color-background: #0E0D0C;
+  --color-canvas: #131211;
+  --color-surface: #1E1D1B;
+
+  --color-border-base: #413F3A;
+  --color-border-input: #827E73;
+
+  --color-text-primary: #F7F6F3;
+  --color-text-body: #DFDDD7;
+  --color-text-muted: #B4B1A7;
+
+  --color-danger: #EF8080;
+  /* Same value as --color-primary-container, mirroring the light theme
+     where both tokens are already identical (#E2F1F3). */
+  --color-ai-bg: #1D3335;
+
+  --color-surface-container-low: #282724;
+  --color-surface-container: #353431;
+
+  --color-score-excellent: #61D18A;
+  --color-score-good: #EBC247;
+  --color-score-needs-work: #F0854C;
+
+  /* Black shadows need more alpha to read against an already-dark surface. */
+  --color-shadow-sm: #00000066;
+
+  /* Same reasoning as the shadow above: dark content starts closer to black,
+     so the scrim needs more alpha to read as a separate layer over it. */
+  --overlay-scrim: #00000099;
+  --overlay-scrim-blocking: #000000cc;
 }

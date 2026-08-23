@@ -48,7 +48,10 @@ function headerFor(
     default:
       return {
         title: `${getTimeGreeting()}, ${getGreetingName(userName)}.`,
-        subtitle: "Upload a resume to start a new gap analysis.",
+        // The continue card below carries the specific next step, so the
+        // subtitle no longer names one — it would contradict the card
+        // whenever the user's actual next move isn't an upload.
+        subtitle: "Here's where your career analysis stands.",
       };
   }
 }

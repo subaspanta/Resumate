@@ -16,6 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { AppShell } from "@/src/components/layout/AppShell";
+import { ThemeToggle } from "@/src/components/settings/ThemeToggle";
 import { useAuth } from "@/src/features/auth/auth.hooks";
 
 const CRUMBS = [{ label: "Dashboard", href: "/" }, { label: "Settings" }];
@@ -45,12 +46,12 @@ export default function SettingsPage() {
       <div className="settings-section">
         <h2 className="section-heading">Account</h2>
         {isLoading || !user ? (
-          <div className="settings-card">
+          <div className="card settings-card">
             <Skeleton className="h-5 w-40" />
             <Skeleton className="h-5 w-56" />
           </div>
         ) : (
-          <div className="settings-card">
+          <div className="card settings-card">
             <div className="settings-field">
               <span className="settings-field-label">Name</span>
               <span className="settings-field-value">{user.name}</span>
@@ -74,11 +75,21 @@ export default function SettingsPage() {
       </div>
 
       <div className="settings-section">
+        <h2 className="section-heading">Appearance</h2>
+        <div className="card settings-card">
+          <div className="settings-field">
+            <span className="settings-field-label">Theme</span>
+            <ThemeToggle />
+          </div>
+        </div>
+      </div>
+
+      <div className="settings-section">
         <h2 className="section-heading">Danger zone</h2>
-        <div className="settings-card settings-card--danger">
+        <div className="card settings-card settings-card--danger">
           <div className="settings-danger-copy">
-            <p className="settings-danger-title">Delete account</p>
-            <p className="settings-danger-body">
+            <p className="entry-title settings-danger-title">Delete account</p>
+            <p className="body-copy body-copy--muted settings-danger-body">
               Permanently removes your account, every uploaded resume, and
               every career analysis and roadmap you&apos;ve created. This
               can&apos;t be undone.

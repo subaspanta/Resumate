@@ -61,4 +61,23 @@ export class ResumeRepository {
     const result = await prisma.resume.deleteMany({ where: { id, userId } });
     return result.count;
   }
+
+  // Same ownership-scoped updateMany reasoning as deleteByIdAndUserId:
+  // update() only accepts a unique `where`, so the predicate has to live on
+  // this write rather than trusting the caller's earlier read. Replace keeps
+  // the same row id on purpose — CareerAnalysis.resumeSnapshot is a frozen
+  // JSONB copy taken at analysis time, not a live join to this row, so
+  // updating the content in place cannot retroactively change any existing
+  // analysis, while a delete+recreate would cascade-delete all of them.
+  async updateByIdAndUserId(
+    id: string,
+    userId: string,
+    data: Prisma.ResumeUpdateManyMutationInput,
+  ): Promise<number> {
+    const result = await prisma.resume.updateMany({
+      where: { id, userId },
+      data,
+    });
+    return result.count;
+  }
 }

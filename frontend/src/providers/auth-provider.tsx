@@ -13,23 +13,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  const isGuestRoute = GUEST_ROUTES.includes(pathname);
+  // The session and the current route disagree, so a redirect is owed. The
+  // effect below can only fire after a paint, so this same condition also
+  // gates rendering — otherwise the wrong page shows for one frame first.
+  const isRedirecting =
+    !isLoading && isAuthenticated === isGuestRoute;
+
   useEffect(() => {
-    if (isLoading) return;
+    if (!isRedirecting) return;
 
-    const isGuestRoute = GUEST_ROUTES.includes(pathname);
-
-    if (isAuthenticated && isGuestRoute) {
+    if (isAuthenticated) {
       router.replace("/");
-    } else if (!isAuthenticated && !isGuestRoute) {
+    } else {
       router.replace(
         pathname === "/"
           ? "/welcome"
           : `/login?next=${encodeURIComponent(pathname)}`,
       );
     }
-  }, [isAuthenticated, isLoading, pathname, router]);
+  }, [isRedirecting, isAuthenticated, pathname, router]);
 
-  if (isLoading) {
+  if (isLoading || isRedirecting) {
     return <AuthLoading />;
   }
 

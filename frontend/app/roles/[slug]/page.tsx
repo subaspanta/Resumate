@@ -86,13 +86,11 @@ export default function RoleDetailPage({
           </h2>
           <div className="gap-list">
             {group.requirements.map((req) => (
-              <div key={req.skillId} className="gap-card">
-                <div className="gap-card-body">
-                  <div className="gap-card-header">
-                    <span className="gap-card-title">{req.name}</span>
-                  </div>
-                  <p className="gap-card-reasoning">{req.rationale}</p>
+              <div key={req.skillId} className="card">
+                <div className="gap-card-header">
+                  <span className="entry-title gap-card-title">{req.name}</span>
                 </div>
+                <p className="body-copy gap-card-reasoning">{req.rationale}</p>
               </div>
             ))}
           </div>

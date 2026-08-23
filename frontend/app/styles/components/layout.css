@@ -55,32 +55,32 @@
     }
   }
 
+  /* No padding: this sits inside .app-shell-inner, which already pads the
+     content column. It used to add another --spacing-xxl on top, which is why
+     the dashboard read as floating well inside its own chrome while every
+     other route sat correctly against it. Its job here is stacking, not
+     insetting. */
   .dashboard-main-inner {
     flex: 1;
     width: 100%;
-    max-width: var(--spacing-max-content);
-    margin-inline: auto;
-    padding: var(--spacing-xxl);
-  }
-
-  .dashboard-main-inner--first-time {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xl);
-    padding-top: var(--spacing-top-nav-height);
-    padding-inline: var(--spacing-lg);
-    padding-bottom: var(--spacing-xl);
+  }
+
+  /* Narrower than the full column so the empty-state dropzone doesn't stretch
+     the width of a desktop display. The old top padding/margin dated from
+     when this element supplied the page's own inset; the shell pads it now,
+     and keeping them stacked a full nav-height of dead space above the zone. */
+  .dashboard-main-inner--first-time {
     max-width: 800px;
-    margin-top: var(--spacing-xxl);
+    margin-inline: auto;
   }
 
   /* Footer */
   .dashboard-footer {
     padding-block: var(--spacing-md);
     padding-inline: var(--spacing-xxl);
-  }
-
-  .dashboard-footer-inner {
     max-width: var(--spacing-max-content);
     margin-inline: auto;
   }

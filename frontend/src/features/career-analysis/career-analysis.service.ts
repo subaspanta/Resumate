@@ -1,4 +1,5 @@
 import { axiosClient } from "@/src/api/client";
+import { AI_CALL_TIMEOUT_MS } from "@/src/api/config";
 import type { ApiResponse } from "@/src/api/types";
 import type {
   CareerAnalysisSummary,
@@ -8,14 +9,12 @@ import type {
 
 export const careerAnalysisApi = {
   // Synchronous on the backend — evidence assessment is a Gemini call that
-  // routinely runs several seconds and can take up to 60s, matching the
-  // server's own GEMINI_CALL_TIMEOUT_MS-derived budget (see resumeApi.upload
-  // for the same reasoning).
+  // routinely runs several seconds, plus the completion transaction after it.
   create: (input: { resumeId: string; roleSlug: string }) =>
     axiosClient.post<ApiResponse<CreatedCareerAnalysis>>(
       "/career-analyses",
       input,
-      { timeout: 60000 },
+      { timeout: AI_CALL_TIMEOUT_MS },
     ),
 
   list: (resumeId?: string) =>

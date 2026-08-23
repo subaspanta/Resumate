@@ -1,0 +1,10 @@
+import { chromium } from "playwright";
+const browser = await chromium.launch();
+const context = await browser.newContext({ viewport: { width: 980, height: 900 } });
+const page = await context.newPage();
+await page.goto("http://localhost:3000/welcome", { waitUntil: "domcontentloaded" });
+await page.waitForSelector("header.marketing-nav", { timeout: 15000 });
+await page.waitForTimeout(500);
+await page.screenshot({ path: "/tmp/claude-1000/-home-subaspanta-ResuMate/b60244d5-267d-423e-bc0b-63693ae6c1dd/scratchpad/width-check.png" });
+await context.close();
+await browser.close();

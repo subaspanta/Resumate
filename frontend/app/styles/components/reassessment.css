@@ -3,16 +3,6 @@
  * app/analyses/[analysisId]/page.tsx.
  */
 @layer components {
-  .reassessment-panel {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-base);
-    border-radius: var(--radius-xl);
-  }
-
   .reassessment-panel-label {
     font-family: var(--font-label-std);
     font-size: var(--text-body-lg);

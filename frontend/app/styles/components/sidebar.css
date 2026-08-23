@@ -5,7 +5,14 @@
 /* Same reasoning as --shell-offset in layout.css: animating `width` directly
    relayouts the sidebar (and anything reading its box) every frame.
    Registering it as a typed custom property lets the browser interpolate the
-   length itself instead. */
+   length itself instead.
+
+   A clip-path/transform rewrite was tried and reverted: the sidebar's
+   transform is already owned by the mobile drawer, and cropping a
+   full-width box leaves the collapse toggle (which sits outside the right
+   edge) clipped away, the hit area larger than the visible rail, and the
+   nav laid out to a width it no longer occupies. The interpolated custom
+   property remains the cheapest version that keeps this element honest. */
 @property --sidebar-width {
   syntax: "<length>";
   inherits: true;
@@ -25,7 +32,7 @@
     display: flex;
     flex-direction: column;
     padding: var(--spacing-xl) var(--spacing-md);
-    z-index: 50;
+    z-index: var(--z-sidebar);
     transition: --sidebar-width 200ms ease-out;
   }
 
@@ -57,9 +64,11 @@
     outline-offset: 2px;
   }
 
+  /* Same zero-width-flex-child gap problem as the nav items below. */
   .dashboard-sidebar-brand--collapsed {
     justify-content: center;
     padding-inline: 0;
+    gap: 0;
   }
 
   .dashboard-sidebar-brand-text {
@@ -78,6 +87,9 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xs);
+    /* Containment for the collapsed hint, which is taken out of flow so it
+       stops consuming one of the gaps above. */
+    position: relative;
   }
 
   .dashboard-nav-item {
@@ -119,9 +131,13 @@
     color: var(--color-text-muted);
   }
 
+  /* Gap goes to zero, not just the label's width: the collapsed label is
+     still a flex child at width 0, so the 16px gap would survive it and
+     push the icon half that distance off centre. */
   .dashboard-nav-item--collapsed {
     justify-content: center;
     padding-inline: 0;
+    gap: 0;
     position: relative;
   }
 
@@ -170,10 +186,16 @@
     transition: opacity 150ms ease-out;
   }
 
+  /* Taken out of flow rather than just zero-height: as a zero-height flex
+     child it would still consume one of .dashboard-nav's 4px gaps, leaving
+     an uneven step between the collapsed rail's icons. `position: absolute`
+     rather than `display: none` so the opacity transition still runs. */
   .dashboard-nav-hint--collapsed {
+    position: absolute;
     height: 0;
     opacity: 0;
     padding-block: 0;
+    pointer-events: none;
   }
 
   .dashboard-sidebar-footer {
@@ -190,35 +212,86 @@
     border-top-color: var(--color-border-input);
   }
 
-  /* Always floats just outside the sidebar's own right edge — left: 100%
-     is relative to the sidebar's current width, so the same rule holds in
+  /* Floats just outside the sidebar's own right edge — left: 100% is
+     relative to the sidebar's current width, so the same rule holds in
      both expanded (272px) and collapsed (80px) states without a separate
-     inline variant. The main content column's own inline padding is only
-     24px on the collapsed rail's narrow side; a 24px circle plus any gap
-     does not fit inside that without touching text, so the circle itself
-     is sized to fit the gutter with 2px of margin left over (20px circle +
-     2px gap = 22px, under the 24px padding) rather than relying on font
-     metrics to save it. */
+     inline variant. Does not straddle the border (no negative margin): a
+     circle bisecting the edge has its inner half sitting over the
+     sidebar's own opaque background and its outer half over the canvas
+     behind main content, and the two paint differently enough that the
+     inner half reads as clipped/missing even though nothing is actually
+     clipping it. Sitting fully outside avoids that illusion. The main
+     content column's own inline padding is only 24px on the collapsed
+     rail's narrow side; a 20px circle plus a 2px gap (22px) stays clear of
+     that gutter without touching text.
+     Sits in the gap between the brand mark and the first nav item, which
+     also keeps it clear of the page header's own top padding (also
+     --spacing-xl) so it never overlaps the breadcrumb row.
+     Invisible at rest (opacity 0, not display: none — stays in the
+     accessibility tree and focusable by keyboard) and only revealed on
+     sidebar hover or its own focus, so it doesn't compete with content at
+     rest but is discoverable the moment the user's pointer reaches the
+     rail. */
   .dashboard-sidebar-toggle {
     position: absolute;
-    top: var(--spacing-xl);
+    /* Centred in the gap between the brand mark and the first nav item,
+       rather than level with the mark: sidebar padding (xl) + the 32px mark
+       clears the brand block, then half the brand's xxl margin-bottom finds
+       the middle of the space below it. Derived from the tokens so it
+       follows any change to that spacing. */
+    top: calc(
+      var(--spacing-xl) + var(--spacing-brand-mark) +
+        (var(--spacing-xxl) / 2) - (var(--spacing-sidebar-toggle) / 2)
+    );
     left: 100%;
     margin-left: 2px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    width: var(--spacing-sidebar-toggle);
+    height: var(--spacing-sidebar-toggle);
     border-radius: 9999px;
-    /* border-input, not border-base: it sits 2px off the sidebar's own
-       border-right on a near-identical canvas background, so the lighter
-       border-base token made it disappear into that seam at rest. */
     border: 1px solid var(--color-border-input);
     background-color: var(--color-surface);
     color: var(--color-text-muted);
     cursor: pointer;
-    transition: color 150ms ease-out, border-color 150ms ease-out;
-    z-index: 51;
+    opacity: 0;
+    transition: opacity 150ms ease-out, color 150ms ease-out,
+      border-color 150ms ease-out;
+    /* Local ordering inside .dashboard-sidebar's own stacking context (it has
+       a z-index), so this competes only with the rail's other children — not
+       a rung on the --z-* ladder in theme.css. */
+    z-index: 1;
+  }
+
+  /* The circle stays small so it doesn't compete with the nav, but a 28px
+     target is still fussy to hit — this extends the clickable area to 44px
+     (the usual minimum) without changing anything visible. Centred on the
+     button via the -50%/-50% offset rather than negative insets, so it stays
+     correct if the circle's own size changes. */
+  .dashboard-sidebar-toggle::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+
+  .dashboard-sidebar:hover .dashboard-sidebar-toggle,
+  .dashboard-sidebar-toggle:focus-visible {
+    opacity: 1;
+  }
+
+  /* Below 1024px the sidebar is a drawer and this button is hidden outright,
+     so the hover-to-reveal above is desktop-only by construction. A large
+     touch screen is the gap that leaves: it keeps the button but can never
+     fire the hover that reveals it, so show it unconditionally there. */
+  @media (hover: none) {
+    .dashboard-sidebar-toggle {
+      opacity: 1;
+    }
   }
 
   .dashboard-sidebar-toggle:hover {
@@ -250,8 +323,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-md);
-    padding-inline: 0;
+    gap: 0;
+    padding: 0;
   }
 
   .dashboard-sidebar-user-text {
@@ -266,6 +339,8 @@
 
   .dashboard-sidebar-user-text--collapsed {
     width: 0;
+    height: 0;
+    margin: 0;
     opacity: 0;
     flex: 0;
   }
@@ -273,6 +348,8 @@
   .dashboard-sidebar-signout {
     margin-left: auto;
     flex-shrink: 0;
+    /* Anchors the .tap-target-44 pseudo-element below. */
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -356,7 +433,9 @@
       width: var(--spacing-sidebar-width);
       transform: translateX(-100%);
       transition: transform 200ms ease-out;
-      z-index: 60;
+      /* As a drawer it has to clear its own scrim, so it leaves the
+         --z-sidebar rung it occupies on desktop. */
+      z-index: calc(var(--z-drawer) + 1);
     }
 
     .dashboard-sidebar--collapsed {
@@ -372,11 +451,35 @@
     }
   }
 
+  /* Fades in rather than popping, matching the 200ms the drawer beside it
+     takes to slide. An animation, not a transition: the element is mounted
+     conditionally, so there is no prior state for a transition to run from.
+     No exit animation to pair with it — that needs the element kept mounted
+     through its own removal, which the drawer's plain conditional render
+     doesn't do, and a scrim that vanishes with the panel still reads
+     correctly. */
   .dashboard-sidebar-backdrop {
     position: fixed;
     inset: 0;
-    background-color: rgb(15 23 42 / 40%);
-    z-index: 59;
+    background-color: var(--overlay-scrim);
+    backdrop-filter: blur(var(--overlay-blur));
+    z-index: var(--z-drawer);
+    animation: sidebar-backdrop-in 200ms ease-out both;
+  }
+
+  @keyframes sidebar-backdrop-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dashboard-sidebar-backdrop {
+      animation: none;
+    }
   }
 
   @media (min-width: 1024px) {

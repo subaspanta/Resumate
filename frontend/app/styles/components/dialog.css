@@ -8,9 +8,9 @@
   .alert-dialog-overlay {
     position: fixed;
     inset: 0;
-    z-index: 50;
-    background-color: rgb(15 23 42 / 0.45);
-    backdrop-filter: blur(2px);
+    z-index: var(--z-modal);
+    background-color: var(--overlay-scrim);
+    backdrop-filter: blur(var(--overlay-blur));
   }
 
   .alert-dialog-overlay[data-state="open"] {
@@ -26,7 +26,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 51;
+    z-index: calc(var(--z-modal) + 1);
     display: flex;
     flex-direction: column;
     gap: var(--spacing-lg);
@@ -37,8 +37,8 @@
     border: 1px solid var(--color-border-base);
     border-radius: var(--radius-xl);
     box-shadow:
-      0 10px 15px -3px rgb(15 23 42 / 0.1),
-      0 4px 6px -4px rgb(15 23 42 / 0.1);
+      0 10px 15px -3px color-mix(in srgb, var(--color-text-primary) 10%, transparent),
+      0 4px 6px -4px color-mix(in srgb, var(--color-text-primary) 10%, transparent);
   }
 
   .alert-dialog-content[data-state="open"] {
@@ -84,6 +84,10 @@
     gap: var(--spacing-sm);
   }
 
+  /* Content-driven rather than a --breakpoint-* value: this is the width at
+     which two dialog buttons fit side by side, and the dialog is capped well
+     below any viewport breakpoint, so a device-scale number would be
+     measuring the wrong box. */
   @media (min-width: 480px) {
     .alert-dialog-footer {
       flex-direction: row;

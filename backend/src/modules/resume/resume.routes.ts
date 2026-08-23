@@ -35,6 +35,17 @@ router.get(
 
 router.get("/:id", requireAuth, resumeController.getById);
 
+// Same middleware inversion as POST / above, and for the same reason —
+// multer has to run before validateRequest can read req.body.
+router.put(
+  "/:id",
+  requireAuth,
+  aiRateLimit,
+  uploadSingleFile("resume"),
+  validateRequest(uploadResumeSchema),
+  resumeController.replace,
+);
+
 router.delete("/:id", requireAuth, resumeController.remove);
 
 export default router;

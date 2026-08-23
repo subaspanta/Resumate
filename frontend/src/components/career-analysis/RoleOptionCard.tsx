@@ -20,13 +20,13 @@ interface RoleOptionCardProps {
 export function RoleOptionCard({ role }: RoleOptionCardProps) {
   return (
     <div className="role-option-wrapper">
-      <RadioGroupPrimitive.Item value={role.slug} className="role-option">
+      <RadioGroupPrimitive.Item value={role.slug} className="card role-option">
         <span className="role-option-radio" aria-hidden="true">
           <RadioGroupPrimitive.Indicator className="role-option-radio-dot" />
         </span>
         <span>
-          <span className="role-option-title">{role.title}</span>
-          <span className="role-option-desc">{role.description}</span>
+          <span className="entry-title role-option-title">{role.title}</span>
+          <span className="body-copy body-copy--muted role-option-desc">{role.description}</span>
         </span>
       </RadioGroupPrimitive.Item>
       <Link

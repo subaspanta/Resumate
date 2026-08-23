@@ -463,6 +463,77 @@ describe("CareerAnalysisService ownership", () => {
     ).rejects.toMatchObject({ statusCode: 404 });
   });
 
+  it("reports hasRoadmap only for analyses that actually have one", async () => {
+    const service = buildService(fakeAgent(() => ({ assessments: [] })));
+
+    const beforeList = await service.listAnalyses(ownerId);
+    const beforeRow = beforeList.find((a) => a.id === analysisId);
+    expect(beforeRow?.hasRoadmap).toBe(false);
+
+    await prisma.roadmap.create({
+      data: { careerAnalysisId: analysisId },
+    });
+
+    const afterList = await service.listAnalyses(ownerId);
+    const afterRow = afterList.find((a) => a.id === analysisId);
+    expect(afterRow?.hasRoadmap).toBe(true);
+
+    // Cleanup so later tests in this describe block (which also read
+    // beforeAll's analysisId) see the pre-roadmap state they expect.
+    await prisma.roadmap.delete({ where: { careerAnalysisId: analysisId } });
+  });
+
+  it("counts roadmap task progress on the list row", async () => {
+    const service = buildService(fakeAgent(() => ({ assessments: [] })));
+
+    const beforeRow = (await service.listAnalyses(ownerId)).find(
+      (a) => a.id === analysisId,
+    );
+    expect(beforeRow?.roadmapProgress).toBeNull();
+
+    const roadmap = await prisma.roadmap.create({
+      data: { careerAnalysisId: analysisId, weekCount: 2 },
+    });
+    await prisma.roadmapTask.createMany({
+      data: [0, 1, 2].map((i) => ({
+        roadmapId: roadmap.id,
+        weekNumber: 1,
+        orderInWeek: i,
+        title: `Task ${i}`,
+        description: "d",
+        projectTask: "p",
+        expectedEvidence: "e",
+        // Only the first is done, so a count that ignored `completed` would
+        // report 3 and pass a weaker assertion.
+        completed: i === 0,
+      })),
+    });
+
+    const afterRow = (await service.listAnalyses(ownerId)).find(
+      (a) => a.id === analysisId,
+    );
+    expect(afterRow?.roadmapProgress).toEqual({
+      total: 3,
+      completed: 1,
+      weekCount: 2,
+    });
+
+    // Tasks cascade with the roadmap.
+    await prisma.roadmap.delete({ where: { careerAnalysisId: analysisId } });
+  });
+
+  it("joins the role title onto the list row", async () => {
+    const service = buildService(fakeAgent(() => ({ assessments: [] })));
+    const row = (await service.listAnalyses(ownerId)).find(
+      (a) => a.id === analysisId,
+    );
+
+    // The dashboard renders this instead of fetching the whole role list to
+    // map a uuid it already has.
+    expect(row?.role.title).toBeTruthy();
+    expect(row?.role.slug).toBeTruthy();
+  });
+
   it("deletes the analysis and its results when the owner asks", async () => {
     const resume = await createResume(ownerId);
     const service = buildService(

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -59,15 +60,33 @@ export function AnalyzingOverlay({
     return () => clearTimeout(timer);
   }, [onRetry]);
 
+  // This covers the viewport like a modal but isn't one — no Radix, no
+  // portal — so nothing otherwise stops the page scrolling under the scrim
+  // while the user waits. Locking the body is the piece of modal behaviour
+  // it genuinely needs; a focus trap is not, because until the stalled
+  // branch appears there is nothing inside here to trap focus on.
+  useEffect(() => {
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, []);
+
   if (stalled && onRetry) {
     return (
       <div className="analyzing-overlay" role="status" aria-live="polite">
-        <div className="analyzing-overlay-card">
+        <div className="card analyzing-overlay-card">
           <p className="analyzing-overlay-title">Taking longer than expected</p>
           <p className="analyzing-overlay-note">
             This is unusual — check again, or come back in a moment.
           </p>
-          <Button onClick={onRetry}>Check again</Button>
+          {/* The first thing in this flow the user can act on, arriving 30s
+              after their last interaction. Taking focus means a keyboard
+              user doesn't have to go hunting for what just appeared. */}
+          <Button onClick={onRetry} autoFocus>
+            Check again
+          </Button>
         </div>
       </div>
     );
@@ -75,28 +94,34 @@ export function AnalyzingOverlay({
 
   return (
     <div className="analyzing-overlay" role="status" aria-live="polite">
-      <div className="analyzing-overlay-card">
+      <div className="card analyzing-overlay-card">
         <div className="analyzing-orbit" aria-hidden="true">
           <span className="analyzing-orbit-ring" />
           <span className="analyzing-orbit-core" />
         </div>
         <p className="analyzing-overlay-title">{title}</p>
         <ol className="analyzing-phases">
-          {phases.map((label, i) => (
-            <li
-              key={label}
-              className={`analyzing-phase ${
-                i < phase
-                  ? "analyzing-phase--done"
-                  : i === phase
-                    ? "analyzing-phase--active"
-                    : ""
-              }`}
-            >
-              <span className="analyzing-phase-dot" aria-hidden="true" />
-              {label}
-            </li>
-          ))}
+          {phases.map((label, i) => {
+            const isDone = i < phase;
+            const isActive = i === phase;
+            return (
+              <li
+                key={label}
+                className={`analyzing-phase ${
+                  isDone
+                    ? "analyzing-phase--done"
+                    : isActive
+                      ? "analyzing-phase--active"
+                      : ""
+                } ${i > 0 ? "analyzing-phase--connected" : ""}`}
+              >
+                <span className="analyzing-phase-dot" aria-hidden="true">
+                  {isDone && <Check className="analyzing-phase-check" strokeWidth={3} />}
+                </span>
+                {label}
+              </li>
+            );
+          })}
         </ol>
         <p className="analyzing-overlay-note">
           This usually takes a few seconds.

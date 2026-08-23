@@ -11,10 +11,13 @@ import {
   useToggleRoadmapTask,
 } from "@/src/features/roadmap/roadmap.hooks";
 import { FlowRedirect } from "@/src/components/FlowRedirect";
-import { AppShell } from "@/src/components/layout/AppShell";
+import { AppShell, type Crumb } from "@/src/components/layout/AppShell";
 import type { RoadmapTask } from "@/src/features/roadmap/types";
 
-const CRUMBS = [{ label: "Dashboard", href: "/" }, { label: "Roadmap" }];
+// The flow step rail supplies the whole trail (Resume -> ... -> Roadmap);
+// a separate "Dashboard" crumb would just duplicate the Resume step, since
+// that step's own destination is the dashboard.
+const CRUMBS: Crumb[] = [];
 
 // Single field, no cross-field validation — plain useState per the CLAUDE.md
 // resolver rule, same reasoning as JobInputForm. Own component so typing a
@@ -205,9 +208,9 @@ export default function RoadmapPage({
       onNavigateStep={handleNavigateStep}
       hasActionBar
     >
-      <div className="roadmap-progress">
+      <div className="card roadmap-progress">
         <div className="roadmap-progress-header">
-          <span className="roadmap-progress-label">Overall progress</span>
+          <span className="entry-title roadmap-progress-label">Overall progress</span>
           <span className="roadmap-progress-count">
             {progress.completed} of {progress.total} tasks
           </span>
@@ -225,7 +228,7 @@ export default function RoadmapPage({
         return (
           <div key={week.weekNumber} className="roadmap-week">
             <div className="roadmap-week-header">
-              <h2 className="roadmap-week-title">Week {week.weekNumber}</h2>
+              <h2 className="entry-title roadmap-week-title">Week {week.weekNumber}</h2>
               <span className="roadmap-week-count">
                 {weekDone}/{week.tasks.length} done
               </span>
@@ -234,7 +237,7 @@ export default function RoadmapPage({
               {week.tasks.map((task) => (
                 <div
                   key={task.id}
-                  className={`roadmap-task ${
+                  className={`card roadmap-task ${
                     task.completed ? "roadmap-task--completed" : ""
                   }`}
                 >
@@ -268,13 +271,13 @@ export default function RoadmapPage({
                   </button>
                   <div className="roadmap-task-body">
                     <p
-                      className={`roadmap-task-title ${
+                      className={`entry-title roadmap-task-title ${
                         task.completed ? "roadmap-task-title--completed" : ""
                       }`}
                     >
                       {task.title}
                     </p>
-                    <p className="roadmap-task-description">
+                    <p className="body-copy roadmap-task-description">
                       {task.description}
                     </p>
                     {task.skillGap && (
@@ -282,13 +285,13 @@ export default function RoadmapPage({
                         {task.skillGap.skill.name}
                       </span>
                     )}
-                    <p className="roadmap-task-detail">
+                    <p className="body-copy roadmap-task-detail">
                       <span className="roadmap-task-detail-label">
                         Build:{" "}
                       </span>
                       {task.projectTask}
                     </p>
-                    <p className="roadmap-task-detail">
+                    <p className="body-copy roadmap-task-detail">
                       <span className="roadmap-task-detail-label">
                         Proves:{" "}
                       </span>
@@ -300,7 +303,7 @@ export default function RoadmapPage({
                           Free Resources
                         </p>
                         {task.resources.map((resource, i) => (
-                          <p key={i} className="roadmap-task-resource">
+                          <p key={i} className="body-copy roadmap-task-resource">
                             {resource}
                           </p>
                         ))}
@@ -325,9 +328,9 @@ export default function RoadmapPage({
         );
       })}
 
-      <div className="roadmap-action-bar">
-        <div className="roadmap-action-bar-inner">
-          <span className="roadmap-action-bar-hint">
+      <div className="action-bar roadmap-action-bar">
+        <div className="action-bar-inner roadmap-action-bar-inner">
+          <span className="body-copy body-copy--muted roadmap-action-bar-hint">
             Done for now? Head back to your analysis to reassess once
             you&apos;ve completed a task.
           </span>

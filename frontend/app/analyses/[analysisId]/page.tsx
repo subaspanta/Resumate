@@ -27,14 +27,17 @@ import { diffGapStatuses } from "@/src/features/reassessment/reassessment.utils"
 import { isApiError } from "@/src/api/api-error";
 import { AnalyzingOverlay } from "@/src/components/career-analysis/AnalyzingOverlay";
 import { FlowRedirect } from "@/src/components/FlowRedirect";
-import { AppShell } from "@/src/components/layout/AppShell";
+import { AppShell, type Crumb } from "@/src/components/layout/AppShell";
 import { scoreBand } from "@/src/features/career-analysis/career-analysis.utils";
 import type {
   EvidenceStrength,
   GapStatus,
 } from "@/src/features/career-analysis/types";
 
-const CRUMBS = [{ label: "Dashboard", href: "/" }, { label: "Analysis" }];
+// The flow step rail supplies the whole trail (Resume -> ... -> Analysis);
+// a separate "Dashboard" crumb would just duplicate the Resume step, since
+// that step's own destination is the dashboard.
+const CRUMBS: Crumb[] = [];
 
 const GAP_STATUS_LABEL: Record<GapStatus, string> = {
   strong: "Strong",
@@ -218,9 +221,9 @@ export default function AnalysisPage({
       onNavigateStep={handleNavigateStep}
       hasActionBar
     >
-      <div className="readiness-card">
+      <div className="card readiness-card">
         <div className="readiness-card-header">
-          <span className="readiness-card-label">Readiness score</span>
+          <span className="meta-label readiness-card-label">Readiness score</span>
           <span className={`readiness-card-score readiness-card-score--${band}`}>
             {score}%
           </span>
@@ -238,7 +241,7 @@ export default function AnalysisPage({
       </div>
 
       {showRevisionPanel && (
-        <div className="reassessment-panel">
+        <div className="card reassessment-panel">
           <span className="reassessment-panel-label">
             After your latest reassessment
           </span>
@@ -282,19 +285,19 @@ export default function AnalysisPage({
           {analysis.gaps.map((gap) => {
             const Icon = GAP_STATUS_ICON[gap.status];
             return (
-              <div key={gap.id} className="gap-card">
+              <div key={gap.id} className="card gap-card">
                 <Icon
                   className={`gap-card-icon gap-card-icon--${gap.status} size-5`}
                   aria-hidden="true"
                 />
                 <div className="gap-card-body">
                   <div className="gap-card-header">
-                    <span className="gap-card-title">{gap.skill.name}</span>
-                    <span className={`gap-card-status gap-card-status--${gap.status}`}>
+                    <span className="entry-title gap-card-title">{gap.skill.name}</span>
+                    <span className={`meta-label gap-card-status gap-card-status--${gap.status}`}>
                       {GAP_STATUS_LABEL[gap.status]}
                     </span>
                   </div>
-                  <p className="gap-card-reasoning">{gap.reasoning}</p>
+                  <p className="body-copy gap-card-reasoning">{gap.reasoning}</p>
                 </div>
               </div>
             );
@@ -307,21 +310,21 @@ export default function AnalysisPage({
           <h2 className="section-heading">Evidence found</h2>
           <div className="evidence-list">
             {analysis.evidence.map((item) => (
-              <div key={item.id} className="evidence-card">
+              <div key={item.id} className="card evidence-card">
                 <Quote
                   className="evidence-card-icon size-5"
                   aria-hidden="true"
                 />
                 <div className="evidence-card-body">
                   <div className="evidence-card-header">
-                    <span className="evidence-card-title">
+                    <span className="entry-title evidence-card-title">
                       {item.skill.name}
                     </span>
-                    <span className="evidence-card-strength">
+                    <span className="meta-label evidence-card-strength">
                       {EVIDENCE_STRENGTH_LABEL[item.strength]}
                     </span>
                   </div>
-                  <p className="evidence-card-quote">
+                  <p className="body-copy evidence-card-quote">
                     &ldquo;{item.quote}&rdquo;
                   </p>
                   <p className="evidence-card-source">{item.sourceLabel}</p>
@@ -354,8 +357,8 @@ export default function AnalysisPage({
         />
       )}
 
-      <div className="analysis-action-bar">
-        <div className="analysis-action-bar-inner">
+      <div className="action-bar analysis-action-bar">
+        <div className="action-bar-inner analysis-action-bar-inner">
           {canReassess && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
