@@ -372,16 +372,22 @@ export class AuthService {
       throw new AppError(404, ERROR_CODES.RESOURCE_NOT_FOUND, "User not found");
     }
 
-    for (const filePath of filePaths) {
-      try {
-        await this.storageModule.deleteFile(filePath);
-      } catch (cleanupError) {
-        logger.error("Failed to delete resume file during account deletion", {
-          userId,
-          filePath,
-          cleanupError,
-        });
-      }
-    }
+    // Parallel, not sequential: each deleteFile is an independent Cloudinary
+    // round trip, and a serial loop pays their full latency once per resume.
+    // Each iteration catches its own failure, so one bad delete can neither
+    // reject the whole Promise.all nor block the ones after it — matching
+    // the account-still-gone-either-way reasoning above.
+    await Promise.all(
+      filePaths.map(async (filePath) => {
+        try {
+          await this.storageModule.deleteFile(filePath);
+        } catch (cleanupError) {
+          logger.error(
+            "Failed to delete resume file during account deletion",
+            { userId, filePath, cleanupError },
+          );
+        }
+      }),
+    );
   }
 }
