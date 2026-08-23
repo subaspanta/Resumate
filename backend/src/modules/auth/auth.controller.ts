@@ -162,7 +162,7 @@ export class AuthController {
 
       res.status(HTTP_STATUS.OK).json({
         success: true,
-        message: "Logged out successfully",
+        data: null,
       });
     } catch (error) {
       next(error);
@@ -190,7 +190,7 @@ export class AuthController {
 
       res.status(HTTP_STATUS.OK).json({
         success: true,
-        message: "Account deleted successfully",
+        data: null,
       });
     } catch (error) {
       next(error);
