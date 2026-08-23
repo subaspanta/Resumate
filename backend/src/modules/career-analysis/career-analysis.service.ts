@@ -133,6 +133,7 @@ export class CareerAnalysisService {
 
       return await this.careerAnalysisRepository.completeAnalysis({
         analysisId: analysis.id,
+        eventType: "analysis_completed",
         readinessScore: readiness.score,
         readinessBreakdown: readiness as unknown as Prisma.InputJsonValue,
         evidence: assessments.flatMap((assessment) =>
@@ -313,6 +314,7 @@ export class CareerAnalysisService {
 
       return await this.careerAnalysisRepository.completeAnalysis({
         analysisId: revision.id,
+        eventType: "reassessment_completed",
         readinessScore: readiness.score,
         readinessBreakdown: readiness as unknown as Prisma.InputJsonValue,
         evidence: assessments.flatMap((assessment) =>

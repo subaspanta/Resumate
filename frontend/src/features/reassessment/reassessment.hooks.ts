@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { reassessmentApi } from "./reassessment.service";
 import type { RevisionSummary } from "./types";
-import type { CareerAnalysisDetail } from "@/src/features/career-analysis/types";
+import type { CreatedCareerAnalysis } from "@/src/features/career-analysis/types";
 import { isApiError } from "@/src/api/api-error";
 import { queryKeys } from "@/src/lib/query-keys";
 import { DEFAULT_STALE_TIME, defaultQueryRetry } from "@/src/lib/query-client";
@@ -40,15 +40,20 @@ export function useRevisions(analysisId: string) {
 export function useReassessAnalysis(analysisId: string) {
   const queryClient = useQueryClient();
 
-  return useMutation<CareerAnalysisDetail, unknown, void>({
+  return useMutation<CreatedCareerAnalysis, unknown, void>({
     mutationFn: async () => {
       const response = await reassessmentApi.reassess(analysisId);
-      return response?.data?.data as CareerAnalysisDetail;
+      return response?.data?.data as CreatedCareerAnalysis;
     },
     onSuccess: (data) => {
-      // Seed the new revision's own detail cache so navigating to it doesn't
-      // refetch — it is a different analysis id from the root.
-      queryClient.setQueryData(queryKeys.careerAnalyses.detail(data.id), data);
+      // Invalidate rather than write: the response omits both frozen
+      // snapshots (CreatedCareerAnalysis), a different shape than the
+      // CareerAnalysisDetail a GET /:id returns, so it must never be written
+      // into the detail cache as if it were a full read — same reasoning as
+      // useCreateCareerAnalysis.
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.careerAnalyses.detail(data.id),
+      });
       queryClient.invalidateQueries({
         queryKey: queryKeys.careerAnalyses.revisions(analysisId),
       });

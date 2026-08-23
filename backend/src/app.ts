@@ -50,12 +50,19 @@ app.get(`${API_PREFIX}/health`, async (req: Request, res: Response) => {
     });
   } catch (error) {
     logger.error({ message: "Health check failed", error });
+    // Unlike the global error handler's AppError.details (gated to dev
+    // because it can carry Prisma schema internals), this payload is
+    // operational status infra polls for — never gated behind isDevelopment.
     res.status(StatusCodes.SERVICE_UNAVAILABLE).json({
       success: false,
-      data: {
-        status: "degraded",
-        environment: env.NODE_ENV,
-        timestamp: new Date().toISOString(),
+      error: {
+        code: ERROR_CODES.INTERNAL_SERVER_ERROR,
+        message: "Service is degraded",
+        details: {
+          status: "degraded",
+          environment: env.NODE_ENV,
+          timestamp: new Date().toISOString(),
+        },
       },
     });
   }
@@ -69,7 +76,7 @@ app.use((req: Request, res: Response) => {
   res.status(StatusCodes.NOT_FOUND).json({
     success: false,
     error: {
-      code: StatusCodes.NOT_FOUND,
+      code: ERROR_CODES.RESOURCE_NOT_FOUND,
       message: `Route ${req.method} ${req.path} not found`,
     },
   });

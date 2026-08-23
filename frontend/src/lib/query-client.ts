@@ -14,8 +14,8 @@ export const DEFAULT_STALE_TIME = 1000 * 60 * 5;
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000,
-      retry: false,
+      staleTime: DEFAULT_STALE_TIME,
+      retry: defaultQueryRetry,
       refetchOnWindowFocus: false,
     },
   },

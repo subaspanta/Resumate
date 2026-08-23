@@ -46,8 +46,21 @@ export type RoadmapProgress = {
   weekCount: number;
 };
 
+// Narrowed rather than the full AnalysisEventType: this write always marks
+// an analysis complete, so only the two "completed" variants are valid here
+// — accepting the wider enum would let a caller pass "task_completed" or
+// similar and have it silently accepted as this row's completion event.
+export type CompletionEventType = Extract<
+  AnalysisEventType,
+  "analysis_completed" | "reassessment_completed"
+>;
+
 export type CompleteAnalysisInput = {
   analysisId: string;
+  // Distinguishes an original analysis from a reassessment revision in the
+  // audit trail. The caller decides which — this repository has no way to
+  // tell the two apart on its own, since both write through the same method.
+  eventType: CompletionEventType;
   readinessScore: number;
   readinessBreakdown: Prisma.InputJsonValue;
   evidence: NewEvidenceRow[];
@@ -223,7 +236,7 @@ export class CareerAnalysisRepository {
         await tx.analysisEvent.create({
           data: {
             careerAnalysisId: input.analysisId,
-            type: "analysis_completed",
+            type: input.eventType,
             payload: { readinessScore: input.readinessScore },
           },
         });
