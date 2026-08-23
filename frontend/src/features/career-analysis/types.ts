@@ -58,6 +58,13 @@ export interface CareerAnalysisSummary {
   roadmapProgress: RoadmapProgress | null;
 }
 
+// GET /career-analyses response shape — cursor-paginated, mirroring
+// ResumePage on the resume feature.
+export interface CareerAnalysisPage {
+  items: CareerAnalysisSummary[];
+  nextCursor: string | null;
+}
+
 // Neither this nor the POST /career-analyses response carries either frozen
 // snapshot — both are large JSONB blobs no client consumer reads, and the
 // backend omits them from every response except the internal roadmap-

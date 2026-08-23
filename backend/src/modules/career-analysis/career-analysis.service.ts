@@ -536,7 +536,12 @@ export class CareerAnalysisService {
     return this.careerAnalysisRepository.findRevisionsByRootId(root.id);
   }
 
-  async listAnalyses(userId: string, resumeId?: string) {
+  async listAnalyses(
+    userId: string,
+    options: { resumeId?: string; limit: number; cursor?: string },
+  ) {
+    const { resumeId, limit, cursor } = options;
+
     // Verify the resume belongs to the caller before filtering by it —
     // otherwise a foreign resumeId would silently return an empty list, which
     // reads as "no analyses" rather than "not yours".
@@ -557,7 +562,11 @@ export class CareerAnalysisService {
     // The list is where a user actually notices a stuck analysis, so reap
     // before building it rather than showing a spinner row that never resolves.
     await this.reapStaleAnalyses(userId);
-    return this.careerAnalysisRepository.findManyByUserId(userId, { resumeId });
+    return this.careerAnalysisRepository.findManyByUserId(userId, {
+      resumeId,
+      limit,
+      cursor,
+    });
   }
 
   async deleteAnalysis(userId: string, analysisId: string): Promise<void> {

@@ -204,12 +204,15 @@ describe("GET /career-analyses", () => {
       .set("Cookie", [`accessToken=${owner.token}`]);
 
     expect(res.status).toBe(200);
-    expect(res.body.data.map((a: { id: string }) => a.id)).toEqual([mine.id]);
+    expect(
+      res.body.data.items.map((a: { id: string }) => a.id),
+    ).toEqual([mine.id]);
+    expect(res.body.data.nextCursor).toBeNull();
 
     const theirs = await request(app)
       .get("/api/v1/career-analyses")
       .set("Cookie", [`accessToken=${other.token}`]);
-    expect(theirs.body.data).toEqual([]);
+    expect(theirs.body.data.items).toEqual([]);
   });
 
   it("rejects a non-uuid resumeId filter", async () => {
