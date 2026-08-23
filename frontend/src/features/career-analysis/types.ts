@@ -58,20 +58,17 @@ export interface CareerAnalysisSummary {
   roadmapProgress: RoadmapProgress | null;
 }
 
+// Neither this nor the POST /career-analyses response carries either frozen
+// snapshot — both are large JSONB blobs no client consumer reads, and the
+// backend omits them from every response except the internal roadmap-
+// generation read, which never reaches the client.
 export interface CareerAnalysisDetail extends CareerAnalysisSummary {
   role: { slug: string; title: string };
   evidence: CandidateSkillEvidence[];
   gaps: SkillGap[];
   readinessBreakdown: unknown;
   failureReason: string | null;
-  resumeSnapshot: unknown;
-  roleSnapshot: unknown;
 }
 
-// POST /career-analyses response — same shape minus both frozen snapshots,
-// which are large JSONB blobs no create-response consumer reads. A later
-// GET of the same id returns the full CareerAnalysisDetail.
-export type CreatedCareerAnalysis = Omit<
-  CareerAnalysisDetail,
-  "resumeSnapshot" | "roleSnapshot"
->;
+// POST /career-analyses and POST .../reassess both return this same shape.
+export type CreatedCareerAnalysis = CareerAnalysisDetail;

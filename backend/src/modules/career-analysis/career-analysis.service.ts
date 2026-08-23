@@ -9,9 +9,10 @@ import { normalizeStructuredResume } from "../parsing/normalize-resume.js";
 import { validateEvidenceGrounding } from "../../utils/career-output-validator.js";
 import { logger } from "../../config/logger.js";
 import {
+  AnalysisForRoadmapGeneration,
   CareerAnalysisRepository,
-  CareerAnalysisWithResults,
   CompletedCareerAnalysis,
+  OwnedAnalysisRootId,
   RootAnalysisForReassessment,
   STALE_ANALYSIS_AFTER_MS,
 } from "./career-analysis.repository.js";
@@ -406,7 +407,7 @@ export class CareerAnalysisService {
     userId: string,
     analysisId: string,
   ): Promise<string> {
-    const root = await this.resolveOwnedRoot(userId, analysisId);
+    const root = await this.resolveOwnedRootId(userId, analysisId);
     return root.id;
   }
 
@@ -427,6 +428,25 @@ export class CareerAnalysisService {
   ): Promise<RootAnalysisForReassessment> {
     const root =
       await this.careerAnalysisRepository.findRootForReassessment(analysisId);
+    if (!root || root.userId !== userId) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Analysis not found",
+      );
+    }
+    return root;
+  }
+
+  // Same resolution and race-vs-404 reasoning as resolveOwnedRoot, without
+  // fetching either snapshot — for resolveRootAnalysisId and getRevisions,
+  // neither of which ever reads one.
+  private async resolveOwnedRootId(
+    userId: string,
+    analysisId: string,
+  ): Promise<OwnedAnalysisRootId> {
+    const root =
+      await this.careerAnalysisRepository.findRootIdAndOwner(analysisId);
     if (!root || root.userId !== userId) {
       throw new AppError(
         HTTP_STATUS.NOT_FOUND,
@@ -467,7 +487,7 @@ export class CareerAnalysisService {
   async getAnalysisById(
     userId: string,
     analysisId: string,
-  ): Promise<CareerAnalysisWithResults> {
+  ): Promise<CompletedCareerAnalysis> {
     await this.assertAnalysisOwner(userId, analysisId);
     await this.reapStaleAnalyses(userId);
 
@@ -483,11 +503,36 @@ export class CareerAnalysisService {
     return analysis;
   }
 
+  // Narrow read for RoadmapService.generateRoadmap: status, gaps, and both
+  // snapshots, nothing else — deliberately not getAnalysisById, whose
+  // findByIdWithResults omits the snapshots this caller actually needs and
+  // pulls an evidence include this caller never reads. Ownership is checked
+  // against the row's own userId rather than a second findByIdWithOwner
+  // round trip; the caller has already run assertAnalysisOwner once before
+  // reaching here, so a mismatch here means a race, not a normal 404.
+  async getAnalysisForRoadmapGeneration(
+    userId: string,
+    analysisId: string,
+  ): Promise<AnalysisForRoadmapGeneration> {
+    const analysis =
+      await this.careerAnalysisRepository.findForRoadmapGeneration(
+        analysisId,
+      );
+    if (!analysis || analysis.userId !== userId) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Analysis not found",
+      );
+    }
+    return analysis;
+  }
+
   // Revision summaries for the before/after view. analysisId may be the root
   // or any of its revisions — both resolve to the same list.
   async getRevisions(userId: string, analysisId: string) {
     await this.assertAnalysisOwner(userId, analysisId);
-    const root = await this.resolveOwnedRoot(userId, analysisId);
+    const root = await this.resolveOwnedRootId(userId, analysisId);
     return this.careerAnalysisRepository.findRevisionsByRootId(root.id);
   }
 
