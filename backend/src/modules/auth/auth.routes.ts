@@ -10,22 +10,33 @@ import {
 } from "../../middleware/validate-request.js";
 import { requireAuth } from "../../middleware/requireAuth.js";
 import { oauthRateLimit } from "../../middleware/oauth-rate-limit.js";
+import {
+  authCredentialsRateLimit,
+  authRefreshRateLimit,
+} from "../../middleware/auth-rate-limit.js";
 import { authController } from "../../container.js";
 
 const router = Router();
 
+// Rate limit runs first so a flood is rejected before any Zod work, same
+// ordering as the OAuth routes below.
 router.post(
   "/register",
+  authCredentialsRateLimit,
   validateRequest(registerUserSchema),
   authController.register,
 );
 
-router.post("/login", validateRequest(loginUserSchema), authController.login);
+router.post(
+  "/login",
+  authCredentialsRateLimit,
+  validateRequest(loginUserSchema),
+  authController.login,
+);
 
-router.post("/refresh", authController.refresh);
+router.post("/refresh", authRefreshRateLimit, authController.refresh);
 
 // Neither route gets requireAuth — there is no session yet, by definition.
-// Rate limit runs first so a flood is rejected before any Zod work.
 router.get("/google", oauthRateLimit, authController.googleRedirect);
 router.get(
   "/google/callback",
