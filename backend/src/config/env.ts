@@ -36,7 +36,7 @@ if (missingEnvVars.length > 0) {
 
 export const env = {
   PORT: parseInt(process.env.PORT || "3000", 10),
-  SALT_ROUNDS: parseInt(process.env.BCRYPT_SALT_ROUNDS || "12", 12),
+  SALT_ROUNDS: parseInt(process.env.BCRYPT_SALT_ROUNDS || "12", 10),
   NODE_ENV: process.env.NODE_ENV || "development",
   DATABASE_URL: process.env.DATABASE_URL as string,
   JWT_SECRET: process.env.JWT_SECRET as string,
