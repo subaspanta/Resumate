@@ -310,6 +310,14 @@ export default function RoadmapPage({
                       </div>
                     )}
                     <TaskCompletionNote
+                      // Remounts (resetting local draft state) whenever the
+                      // server-confirmed note changes — including an
+                      // optimistic update rolling back on a failed save.
+                      // Without this, a failed save left the draft stuck at
+                      // the just-rejected text while `unchanged` compared it
+                      // against the reverted server value, silently
+                      // re-enabling Save.
+                      key={task.completionNote ?? ""}
                       task={task}
                       saving={toggleTask.isPending}
                       onSave={(note) =>
