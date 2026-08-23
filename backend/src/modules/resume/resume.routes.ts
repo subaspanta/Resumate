@@ -4,9 +4,11 @@ import { uploadSingleFile } from "../../middleware/upload.js";
 import { aiRateLimit } from "../../middleware/ai-rate-limit.js";
 import {
   listResumesQuerySchema,
+  resumeIdParamSchema,
   uploadResumeSchema,
 } from "./resume.schema.js";
 import {
+  validateParams,
   validateQuery,
   validateRequest,
 } from "../../middleware/validate-request.js";
@@ -33,7 +35,12 @@ router.get(
   resumeController.list,
 );
 
-router.get("/:id", requireAuth, resumeController.getById);
+router.get(
+  "/:id",
+  requireAuth,
+  validateParams(resumeIdParamSchema),
+  resumeController.getById,
+);
 
 // Same middleware inversion as POST / above, and for the same reason —
 // multer has to run before validateRequest can read req.body.
@@ -46,6 +53,11 @@ router.put(
   resumeController.replace,
 );
 
-router.delete("/:id", requireAuth, resumeController.remove);
+router.delete(
+  "/:id",
+  requireAuth,
+  validateParams(resumeIdParamSchema),
+  resumeController.remove,
+);
 
 export default router;
