@@ -115,10 +115,26 @@ export default function RoadmapPage({
       bucket.push(task);
       byWeek.set(task.weekNumber, bucket);
     }
-    return Array.from({ length: roadmap.weekCount }, (_, i) => ({
+    const scheduled = Array.from({ length: roadmap.weekCount }, (_, i) => ({
       weekNumber: i + 1,
+      label: `Week ${i + 1}`,
       tasks: byWeek.get(i + 1) ?? [],
     }));
+
+    // A task whose weekNumber falls outside 1..weekCount is a data
+    // inconsistency the write path shouldn't produce, not an expected
+    // state — rendered in a trailing bucket rather than silently dropped,
+    // so a bug here stays visible instead of quietly disagreeing with the
+    // "Overall progress" count above (which sums every task regardless).
+    const overflow = Array.from(byWeek.entries())
+      .filter(([weekNumber]) => weekNumber < 1 || weekNumber > roadmap.weekCount)
+      .flatMap(([, tasks]) => tasks);
+
+    if (overflow.length === 0) return scheduled;
+    return [
+      ...scheduled,
+      { weekNumber: roadmap.weekCount + 1, label: "Other", tasks: overflow },
+    ];
   }, [roadmap]);
 
   const progress = useMemo(() => {
@@ -215,7 +231,14 @@ export default function RoadmapPage({
             {progress.completed} of {progress.total} tasks
           </span>
         </div>
-        <div className="roadmap-progress-track">
+        <div
+          className="roadmap-progress-track"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={progress.total}
+          aria-valuenow={progress.completed}
+          aria-label="Roadmap tasks completed"
+        >
           <div
             className="roadmap-progress-fill"
             style={{ "--roadmap-fill": progress.fraction } as React.CSSProperties}
@@ -228,7 +251,7 @@ export default function RoadmapPage({
         return (
           <div key={week.weekNumber} className="roadmap-week">
             <div className="roadmap-week-header">
-              <h2 className="entry-title roadmap-week-title">Week {week.weekNumber}</h2>
+              <h2 className="entry-title roadmap-week-title">{week.label}</h2>
               <span className="roadmap-week-count">
                 {weekDone}/{week.tasks.length} done
               </span>
@@ -319,7 +342,14 @@ export default function RoadmapPage({
                       // re-enabling Save.
                       key={task.completionNote ?? ""}
                       task={task}
-                      saving={toggleTask.isPending}
+                      // One mutation instance backs every task, so
+                      // toggleTask.isPending alone would disable every
+                      // task's Save button while any one of them saves.
+                      // Narrowed to the in-flight request's own taskId.
+                      saving={
+                        toggleTask.isPending &&
+                        toggleTask.variables?.taskId === task.id
+                      }
                       onSave={(note) =>
                         toggleTask.mutate({
                           taskId: task.id,

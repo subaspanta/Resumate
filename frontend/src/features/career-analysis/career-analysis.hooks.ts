@@ -17,6 +17,7 @@ export function useCareerAnalyses(resumeId?: string) {
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery<CareerAnalysisSummary[]>({
     queryKey: queryKeys.careerAnalyses.list(resumeId),
     queryFn: async () => {
@@ -35,6 +36,7 @@ export function useCareerAnalyses(resumeId?: string) {
     isLoading,
     isError,
     error: isApiError(error) ? error : null,
+    refetch,
   };
 }
 
