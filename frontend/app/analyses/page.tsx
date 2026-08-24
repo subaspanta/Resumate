@@ -37,7 +37,7 @@ const STATUS_LABEL: Record<CareerAnalysisStatus, string> = {
 
 export default function AnalysesListPage() {
   const router = useRouter();
-  const { analyses, isLoading, isError } = useCareerAnalyses();
+  const { analyses, isLoading, isError, refetch } = useCareerAnalyses();
   const { roles } = useRoles();
   const deleteAnalysis = useDeleteCareerAnalysis();
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -48,8 +48,7 @@ export default function AnalysesListPage() {
     return map;
   }, [roles]);
 
-  const handleOpen = (id: string, status: CareerAnalysisStatus) => {
-    if (status === "failed") return;
+  const handleOpen = (id: string) => {
     router.push(`/analyses/${id}`);
   };
 
@@ -80,7 +79,7 @@ export default function AnalysesListPage() {
           <p className="analysis-error-message">
             We couldn&apos;t load your analyses.
           </p>
-          <Button onClick={() => window.location.reload()}>Try again</Button>
+          <Button onClick={() => refetch()}>Try again</Button>
         </div>
       )}
 
@@ -111,8 +110,7 @@ export default function AnalysesListPage() {
                 <button
                   type="button"
                   className="card analyses-row-main"
-                  onClick={() => handleOpen(analysis.id, analysis.status)}
-                  disabled={analysis.status === "failed"}
+                  onClick={() => handleOpen(analysis.id)}
                 >
                   <div className="analyses-row-info">
                     <p className="entry-title analyses-row-title">{roleTitle}</p>
@@ -142,9 +140,7 @@ export default function AnalysesListPage() {
                         {analysis.readinessScore}%
                       </span>
                     )}
-                    {analysis.status !== "failed" && (
-                      <ArrowRight className="size-[18px] text-text-muted" aria-hidden="true" />
-                    )}
+                    <ArrowRight className="size-[18px] text-text-muted" aria-hidden="true" />
                   </div>
                 </button>
 
