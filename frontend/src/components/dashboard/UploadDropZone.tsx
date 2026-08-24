@@ -238,11 +238,13 @@ export function UploadDropzone({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={openFilePicker}
         // The compact variant has no inner button to carry the action, so the
-        // zone itself becomes the control. The other variants keep their own
-        // button and stay a plain region, so making them focusable too would
-        // put two tab stops on one action.
+        // zone itself becomes the control and needs the click handler. The
+        // other variants keep their own accessible button and are a plain
+        // non-interactive region — giving the region itself a click handler
+        // with no keyboard equivalent would be a mouse-only trap, so the
+        // container-level onClick only applies to compact.
+        onClick={isCompact ? openFilePicker : undefined}
         {...(isCompact
           ? {
               role: "button" as const,
