@@ -133,7 +133,7 @@ export class AuthController {
       const { user, accessToken, refreshToken } = await this.authService.login(
         req.body,
       );
-      this.sendAuthResponse(res, user, accessToken, refreshToken, 200);
+      this.sendAuthResponse(res, user, accessToken, refreshToken, HTTP_STATUS.OK);
     } catch (error) {
       next(error);
     }

@@ -438,6 +438,36 @@ export class CareerAnalysisService {
     return root;
   }
 
+  // Resolves analysisId (root or revision) straight to the root's id from a
+  // single query, splitting 404 (missing) from 403 (foreign) like
+  // assertAnalysisOwner — for a caller that would otherwise call
+  // assertAnalysisOwner and then resolveRootAnalysisId back to back, paying
+  // two round trips to learn what findRootIdAndOwner already answers in one
+  // (it returns the owner alongside the root id). See
+  // RoadmapService.getRoadmapForAnalysis.
+  async resolveOwnedRootAnalysisId(
+    userId: string,
+    analysisId: string,
+  ): Promise<string> {
+    const root =
+      await this.careerAnalysisRepository.findRootIdAndOwner(analysisId);
+    if (!root) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Analysis not found",
+      );
+    }
+    if (root.userId !== userId) {
+      throw new AppError(
+        HTTP_STATUS.FORBIDDEN,
+        ERROR_CODES.FORBIDDEN,
+        "You do not have access to this analysis",
+      );
+    }
+    return root.id;
+  }
+
   // Same resolution and race-vs-404 reasoning as resolveOwnedRoot, without
   // fetching either snapshot — for resolveRootAnalysisId and getRevisions,
   // neither of which ever reads one.

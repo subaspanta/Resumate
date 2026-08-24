@@ -69,7 +69,13 @@ export interface CareerAnalysisPage {
 // snapshot — both are large JSONB blobs no client consumer reads, and the
 // backend omits them from every response except the internal roadmap-
 // generation read, which never reaches the client.
-export interface CareerAnalysisDetail extends CareerAnalysisSummary {
+//
+// hasRoadmap/roadmapProgress are also omitted: the backend only computes
+// them in the list query (for the sidebar's "continue where you left off"
+// card), never in the single-analysis read — GET /career-analyses/:id has
+// never returned them.
+export interface CareerAnalysisDetail
+  extends Omit<CareerAnalysisSummary, "hasRoadmap" | "roadmapProgress"> {
   role: { slug: string; title: string };
   evidence: CandidateSkillEvidence[];
   gaps: SkillGap[];
