@@ -64,6 +64,15 @@ describe("GET /roles/:slug", () => {
     expect(res.status).toBe(401);
   });
 
+  it("rejects a malformed slug", async () => {
+    const res = await request(app)
+      .get("/api/v1/roles/Not_A_Valid-Slug!")
+      .set("Cookie", [`accessToken=${user.token}`]);
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_FAILED");
+  });
+
   it("returns 404 for an unknown slug", async () => {
     const res = await request(app)
       .get("/api/v1/roles/underwater-basket-weaver")
