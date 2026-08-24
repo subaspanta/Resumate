@@ -36,14 +36,14 @@ export class AuthService {
   ) {}
   private throwInvalidCredentials(): never {
     throw new AppError(
-      401,
+      HTTP_STATUS.UNAUTHORIZED,
       ERROR_CODES.INVALID_CREDENTIALS,
       "Invalid email or password",
     );
   }
   private throwInvalidRefreshToken(): never {
     throw new AppError(
-      401,
+      HTTP_STATUS.UNAUTHORIZED,
       ERROR_CODES.REFRESH_TOKEN_INVALID,
       "Refresh token is invalid or expired",
     );
@@ -87,7 +87,7 @@ export class AuthService {
         err.code === "P2002"
       ) {
         throw new AppError(
-          409,
+          HTTP_STATUS.CONFLICT,
           ERROR_CODES.EMAIL_ALREADY_EXISTS,
           "User with this email already exists",
         );
@@ -350,7 +350,11 @@ export class AuthService {
     const user = await this.authRepository.findUserByIdOmittingPassword(userId);
 
     if (!user) {
-      throw new AppError(404, ERROR_CODES.RESOURCE_NOT_FOUND, "User not found");
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "User not found",
+      );
     }
 
     return user;
@@ -369,7 +373,11 @@ export class AuthService {
 
     const deletedCount = await this.authRepository.deleteUser(userId);
     if (deletedCount === 0) {
-      throw new AppError(404, ERROR_CODES.RESOURCE_NOT_FOUND, "User not found");
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "User not found",
+      );
     }
 
     // Parallel, not sequential: each deleteFile is an independent Cloudinary

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../types/app-error.js";
 import { ERROR_CODES } from "../constants/error-codes.js";
+import { HTTP_STATUS } from "../constants/http-status.js";
 import { verifyAccessToken } from "../utils/tokens.js";
 
 export const requireAuth = (
@@ -11,7 +12,7 @@ export const requireAuth = (
   const token = req.cookies.accessToken;
   if (!token) {
     throw new AppError(
-      401,
+      HTTP_STATUS.UNAUTHORIZED,
       ERROR_CODES.UNAUTHORIZED,
       "Authentication token is missing or invalid",
     );
@@ -19,7 +20,7 @@ export const requireAuth = (
   const payload = verifyAccessToken(token);
   if (!payload) {
     throw new AppError(
-      401,
+      HTTP_STATUS.UNAUTHORIZED,
       ERROR_CODES.UNAUTHORIZED,
       "Authentication token is missing or invalid",
     );
