@@ -241,14 +241,30 @@ export class ResumeService {
   }
 
   // Deletes the resume row (cascades to its career analyses via the
-  // schema's onDelete: Cascade) and best-effort cleans up the Cloudinary
-  // file. Resumes uploaded before filePath was tracked have no way to
-  // locate their Cloudinary object, so cleanup is skipped for those (logged,
-  // not thrown) rather than failing the whole delete over storage cleanup —
-  // matches the same best-effort pattern already used on the upload path.
+  // schema's onDelete: Cascade) first, then best-effort cleans up the
+  // Cloudinary file — matches AuthService.deleteAccount's ordering. Deleting
+  // the DB row first means a failed or short-circuited delete never leaves
+  // storage cleaned up under a row that's still there; the reverse order
+  // could destroy the file and then 404 on the DB delete, leaving the row
+  // pointing at nothing. Resumes uploaded before filePath was tracked have
+  // no way to locate their Cloudinary object, so cleanup is skipped for
+  // those (logged, not thrown) rather than failing the whole delete over
+  // storage cleanup.
   async deleteResume(userId: string, id: string): Promise<void> {
     const resume = await this.resumeRepository.findByIdAndUserId(userId, id);
     if (!resume) {
+      throw new AppError(
+        HTTP_STATUS.NOT_FOUND,
+        ERROR_CODES.RESOURCE_NOT_FOUND,
+        "Resume not found",
+      );
+    }
+
+    const deletedCount = await this.resumeRepository.deleteByIdAndUserId(
+      id,
+      userId,
+    );
+    if (deletedCount === 0) {
       throw new AppError(
         HTTP_STATUS.NOT_FOUND,
         ERROR_CODES.RESOURCE_NOT_FOUND,
@@ -266,18 +282,6 @@ export class ResumeService {
           cleanupError,
         });
       }
-    }
-
-    const deletedCount = await this.resumeRepository.deleteByIdAndUserId(
-      id,
-      userId,
-    );
-    if (deletedCount === 0) {
-      throw new AppError(
-        HTTP_STATUS.NOT_FOUND,
-        ERROR_CODES.RESOURCE_NOT_FOUND,
-        "Resume not found",
-      );
     }
   }
 }
