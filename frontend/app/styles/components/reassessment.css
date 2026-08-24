@@ -39,6 +39,7 @@
 
   .reassessment-gap-movement {
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     gap: var(--spacing-xs);
     font-family: var(--font-body-md);
