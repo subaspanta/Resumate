@@ -21,6 +21,11 @@ export class RoleRepository {
         title: true,
         description: true,
         seedVersion: true,
+        // Ordered by skill slug: this list becomes roleSnapshot.skills, whose
+        // order is what the evidence agent's prompt numbers requirements by.
+        // Without an explicit order, Postgres may return a different order
+        // across two analyses of the same role, changing the snapshot's [n]
+        // numbering for no reason.
         requirements: {
           select: {
             importance: true,
@@ -35,6 +40,7 @@ export class RoleRepository {
               },
             },
           },
+          orderBy: { skill: { slug: "asc" } },
         },
       },
     });

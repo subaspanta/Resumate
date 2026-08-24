@@ -56,13 +56,17 @@ export class RoadmapService {
       );
     }
 
-    // Re-checks ownership internally. That second lookup is one indexed read
-    // on a row already in cache, and paying it keeps this module from
-    // reaching past CareerAnalysisService into its repository.
-    const analysis = await this.careerAnalysisService.getAnalysisById(
-      userId,
-      analysisId,
-    );
+    // Narrow read: status, gaps, and both snapshots, nothing else — no
+    // evidence include, no getAnalysisById detour through a call whose
+    // findByIdWithResults no longer even carries the snapshots this method
+    // needs. Re-checks ownership internally against the row's own userId,
+    // which keeps this module from reaching past CareerAnalysisService into
+    // its repository.
+    const analysis =
+      await this.careerAnalysisService.getAnalysisForRoadmapGeneration(
+        userId,
+        analysisId,
+      );
     if (analysis.status !== "complete") {
       throw new AppError(
         HTTP_STATUS.UNPROCESSABLE_ENTITY,

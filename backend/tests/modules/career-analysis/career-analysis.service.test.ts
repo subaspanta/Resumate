@@ -446,11 +446,11 @@ describe("CareerAnalysisService ownership", () => {
 
   it("lists only the requesting user's analyses", async () => {
     const service = buildService(fakeAgent(() => ({ assessments: [] })));
-    const mine = await service.listAnalyses(ownerId);
-    const theirs = await service.listAnalyses(intruderId);
+    const mine = await service.listAnalyses(ownerId, { limit: 20 });
+    const theirs = await service.listAnalyses(intruderId, { limit: 20 });
 
-    expect(mine.some((a) => a.id === analysisId)).toBe(true);
-    expect(theirs.some((a) => a.id === analysisId)).toBe(false);
+    expect(mine.items.some((a) => a.id === analysisId)).toBe(true);
+    expect(theirs.items.some((a) => a.id === analysisId)).toBe(false);
   });
 
   it("returns 404 when filtering the list by someone else's resume", async () => {
@@ -459,23 +459,26 @@ describe("CareerAnalysisService ownership", () => {
 
     // An empty list would read as "no analyses" rather than "not yours".
     await expect(
-      service.listAnalyses(intruderId, foreignResume.id),
+      service.listAnalyses(intruderId, {
+        resumeId: foreignResume.id,
+        limit: 20,
+      }),
     ).rejects.toMatchObject({ statusCode: 404 });
   });
 
   it("reports hasRoadmap only for analyses that actually have one", async () => {
     const service = buildService(fakeAgent(() => ({ assessments: [] })));
 
-    const beforeList = await service.listAnalyses(ownerId);
-    const beforeRow = beforeList.find((a) => a.id === analysisId);
+    const beforeList = await service.listAnalyses(ownerId, { limit: 20 });
+    const beforeRow = beforeList.items.find((a) => a.id === analysisId);
     expect(beforeRow?.hasRoadmap).toBe(false);
 
     await prisma.roadmap.create({
       data: { careerAnalysisId: analysisId },
     });
 
-    const afterList = await service.listAnalyses(ownerId);
-    const afterRow = afterList.find((a) => a.id === analysisId);
+    const afterList = await service.listAnalyses(ownerId, { limit: 20 });
+    const afterRow = afterList.items.find((a) => a.id === analysisId);
     expect(afterRow?.hasRoadmap).toBe(true);
 
     // Cleanup so later tests in this describe block (which also read
@@ -486,9 +489,9 @@ describe("CareerAnalysisService ownership", () => {
   it("counts roadmap task progress on the list row", async () => {
     const service = buildService(fakeAgent(() => ({ assessments: [] })));
 
-    const beforeRow = (await service.listAnalyses(ownerId)).find(
-      (a) => a.id === analysisId,
-    );
+    const beforeRow = (
+      await service.listAnalyses(ownerId, { limit: 20 })
+    ).items.find((a) => a.id === analysisId);
     expect(beforeRow?.roadmapProgress).toBeNull();
 
     const roadmap = await prisma.roadmap.create({
@@ -509,9 +512,9 @@ describe("CareerAnalysisService ownership", () => {
       })),
     });
 
-    const afterRow = (await service.listAnalyses(ownerId)).find(
-      (a) => a.id === analysisId,
-    );
+    const afterRow = (
+      await service.listAnalyses(ownerId, { limit: 20 })
+    ).items.find((a) => a.id === analysisId);
     expect(afterRow?.roadmapProgress).toEqual({
       total: 3,
       completed: 1,
@@ -524,9 +527,9 @@ describe("CareerAnalysisService ownership", () => {
 
   it("joins the role title onto the list row", async () => {
     const service = buildService(fakeAgent(() => ({ assessments: [] })));
-    const row = (await service.listAnalyses(ownerId)).find(
-      (a) => a.id === analysisId,
-    );
+    const row = (
+      await service.listAnalyses(ownerId, { limit: 20 })
+    ).items.find((a) => a.id === analysisId);
 
     // The dashboard renders this instead of fetching the whole role list to
     // map a uuid it already has.
@@ -621,9 +624,11 @@ describe("CareerAnalysisService stale analysis reaping", () => {
     const stale = await createAbandonedAnalysis(STALE_ANALYSIS_AFTER_MS + 60_000);
     const service = buildService(fakeAgent(() => ({ assessments: [] })));
 
-    const listed = await service.listAnalyses(userId);
+    const listed = await service.listAnalyses(userId, { limit: 20 });
 
-    expect(listed.find((a) => a.id === stale.id)?.status).toBe("failed");
+    expect(listed.items.find((a) => a.id === stale.id)?.status).toBe(
+      "failed",
+    );
   });
 
   it("never touches another user's stale rows", async () => {
@@ -631,7 +636,7 @@ describe("CareerAnalysisService stale analysis reaping", () => {
     const intruderId = (await createUser("StaleIntruder")).id;
     const service = buildService(fakeAgent(() => ({ assessments: [] })));
 
-    await service.listAnalyses(intruderId);
+    await service.listAnalyses(intruderId, { limit: 20 });
 
     const untouched = await prisma.careerAnalysis.findUniqueOrThrow({
       where: { id: stale.id },
@@ -962,11 +967,11 @@ describe("CareerAnalysisService.reassessAnalysis", () => {
     const service = buildService(agent, reader);
     const revision = await service.reassessAnalysis(userId, parent.id);
 
-    const listed = await service.listAnalyses(userId);
+    const listed = await service.listAnalyses(userId, { limit: 20 });
 
     // The dashboard shows one entry for the analysis, not one per revision.
-    expect(listed.filter((a) => a.id === parent.id).length).toBe(1);
-    expect(listed.some((a) => a.id === revision.id)).toBe(false);
+    expect(listed.items.filter((a) => a.id === parent.id).length).toBe(1);
+    expect(listed.items.some((a) => a.id === revision.id)).toBe(false);
   });
 
   it("returns revisions oldest-first via getRevisions", async () => {

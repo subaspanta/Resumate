@@ -118,7 +118,7 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       error: {
-        code: "INTERNAL_SERVER_ERROR",
+        code: ERROR_CODES.INTERNAL_SERVER_ERROR,
         message: "Internal Server Error",
       },
     });
@@ -131,7 +131,7 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   const statusCode = isAppError
     ? err.statusCode
     : StatusCodes.INTERNAL_SERVER_ERROR;
-  const code = isAppError ? err.code : "INTERNAL_SERVER_ERROR";
+  const code = isAppError ? err.code : ERROR_CODES.INTERNAL_SERVER_ERROR;
   const message = isAppError ? err.message : "Internal Server Error";
 
   res.status(statusCode).json({

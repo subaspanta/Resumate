@@ -43,11 +43,13 @@ export class CareerAnalysisController {
   list = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user!.sub;
-      const { resumeId } = req.query as unknown as ListCareerAnalysesQuery;
-      const data = await this.careerAnalysisService.listAnalyses(
-        userId,
+      const { resumeId, limit, cursor } =
+        req.query as unknown as ListCareerAnalysesQuery;
+      const data = await this.careerAnalysisService.listAnalyses(userId, {
         resumeId,
-      );
+        limit,
+        cursor,
+      });
       res.status(HTTP_STATUS.OK).json({ success: true, data });
     } catch (error) {
       next(error);

@@ -20,8 +20,11 @@ export function useCareerAnalyses(resumeId?: string) {
   } = useQuery<CareerAnalysisSummary[]>({
     queryKey: queryKeys.careerAnalyses.list(resumeId),
     queryFn: async () => {
+      // The backend cursor-paginates (default 20/page); nothing here reads
+      // nextCursor yet, matching useResumes' own unused-cursor precedent —
+      // this bounds the worst case rather than adding a "load more" UI.
       const response = await careerAnalysisApi.list(resumeId);
-      return response?.data?.data ?? [];
+      return response?.data?.data?.items ?? [];
     },
     staleTime: DEFAULT_STALE_TIME,
     retry: defaultQueryRetry,

@@ -46,6 +46,30 @@ export type RoadmapProgress = {
   weekCount: number;
 };
 
+// One row of GET /career-analyses.
+export type CareerAnalysisListItem = Pick<
+  CareerAnalysis,
+  | "id"
+  | "resumeId"
+  | "roleId"
+  | "status"
+  | "readinessScore"
+  | "createdAt"
+  | "completedAt"
+> & {
+  hasRoadmap: boolean;
+  roadmapProgress: RoadmapProgress | null;
+  role: { slug: string; title: string };
+};
+
+// Cursor-paginated page of the same shape ResumeRepository.findManyByUserId
+// returns, for the same reason: an unbounded list would return a heavy
+// user's entire analysis history on every dashboard load.
+export type CareerAnalysisPage = {
+  items: CareerAnalysisListItem[];
+  nextCursor: string | null;
+};
+
 // Narrowed rather than the full AnalysisEventType: this write always marks
 // an analysis complete, so only the two "completed" variants are valid here
 // — accepting the wider enum would let a caller pass "task_completed" or
@@ -102,6 +126,34 @@ export type RootAnalysisForReassessment = {
   completedAt: Date | null;
   resumeSnapshot: Prisma.JsonValue;
   roleSnapshot: Prisma.JsonValue;
+};
+
+// Narrow counterpart to RootAnalysisForReassessment for callers that only
+// need the root's id (or its owner, to check it) — resolveRootAnalysisId and
+// getRevisions never touch a snapshot. findRootForReassessment stays the
+// only path that pulls both JSONB blobs, for the one caller
+// (reassessAnalysis) that actually rebuilds the agent input from them.
+export type OwnedAnalysisRootId = {
+  id: string;
+  userId: string;
+  parentAnalysisId: string | null;
+};
+
+// Everything generateRoadmap needs and nothing it doesn't: no evidence (it
+// never reads it), no `role` join (roleSnapshot.title already carries the
+// title), and userId travels with the row so the caller can check ownership
+// without a second round trip.
+export type AnalysisForRoadmapGeneration = {
+  userId: string;
+  status: CareerAnalysis["status"];
+  resumeSnapshot: Prisma.JsonValue;
+  roleSnapshot: Prisma.JsonValue;
+  gaps: {
+    id: string;
+    priority: number;
+    status: GapStatus;
+    skill: { slug: string; name: string };
+  }[];
 };
 
 export class CareerAnalysisRepository {
@@ -188,6 +240,50 @@ export class CareerAnalysisRepository {
         completedAt: true,
         resumeSnapshot: true,
         roleSnapshot: true,
+      },
+    });
+  }
+
+  // Same root-resolution walk as findRootForReassessment, without the two
+  // JSONB snapshots — for callers that only need the root's id or its owner.
+  async findRootIdAndOwner(
+    analysisId: string,
+  ): Promise<OwnedAnalysisRootId | null> {
+    const row = await prisma.careerAnalysis.findUnique({
+      where: { id: analysisId },
+      select: { id: true, userId: true, parentAnalysisId: true },
+    });
+    if (!row) return null;
+    if (row.parentAnalysisId === null) return row;
+    return prisma.careerAnalysis.findUnique({
+      where: { id: row.parentAnalysisId },
+      select: { id: true, userId: true, parentAnalysisId: true },
+    });
+  }
+
+  // Narrow read for roadmap generation: status, gaps, and both snapshots —
+  // no evidence (generateRoadmap never reads it) and no `role` join
+  // (roleSnapshot.title already carries the title). userId travels with the
+  // row so the caller can verify ownership without a second round trip.
+  async findForRoadmapGeneration(
+    analysisId: string,
+  ): Promise<AnalysisForRoadmapGeneration | null> {
+    return prisma.careerAnalysis.findUnique({
+      where: { id: analysisId },
+      select: {
+        userId: true,
+        status: true,
+        resumeSnapshot: true,
+        roleSnapshot: true,
+        gaps: {
+          select: {
+            id: true,
+            priority: true,
+            status: true,
+            skill: { select: { slug: true, name: true } },
+          },
+          orderBy: { priority: "asc" },
+        },
       },
     });
   }
@@ -350,11 +446,16 @@ export class CareerAnalysisRepository {
     });
   }
 
+  // Snapshots omitted: nothing that reads this call's result touches them —
+  // generateRoadmap has its own narrower findForRoadmapGeneration for that.
+  // A later reassessment still reaches its snapshots through
+  // findRootForReassessment, which is unaffected by this.
   async findByIdWithResults(
     analysisId: string,
-  ): Promise<CareerAnalysisWithResults | null> {
+  ): Promise<CompletedCareerAnalysis | null> {
     return prisma.careerAnalysis.findUnique({
       where: { id: analysisId },
+      omit: { resumeSnapshot: true, roleSnapshot: true },
       include: {
         role: { select: { slug: true, title: true } },
         evidence: { include: { skill: { select: { slug: true, name: true } } } },
@@ -374,30 +475,23 @@ export class CareerAnalysisRepository {
   // root (via GET /:id/revisions), not as a sibling list row. Every row
   // written before reassessment existed has parentAnalysisId null already, so
   // this is a no-op until the first reassessment is created.
+  //
+  // Cursor-paginated like ResumeRepository.findManyByUserId — without a
+  // bound, a heavy user's full analysis history (each row carrying a
+  // roadmap-progress join) comes back on every dashboard load regardless of
+  // how much of it is ever shown.
   async findManyByUserId(
     userId: string,
-    filter: { resumeId?: string } = {},
-  ): Promise<
-    (Pick<
-      CareerAnalysis,
-      | "id"
-      | "resumeId"
-      | "roleId"
-      | "status"
-      | "readinessScore"
-      | "createdAt"
-      | "completedAt"
-    > & {
-      hasRoadmap: boolean;
-      roadmapProgress: RoadmapProgress | null;
-      role: { slug: string; title: string };
-    })[]
-  > {
+    filter: { resumeId?: string; limit: number; cursor?: string },
+  ): Promise<CareerAnalysisPage> {
+    const { resumeId, limit, cursor } = filter;
+
+    // Fetch one extra row to detect whether a further page exists.
     const rows = await prisma.careerAnalysis.findMany({
       where: {
         userId,
         parentAnalysisId: null,
-        ...(filter.resumeId ? { resumeId: filter.resumeId } : {}),
+        ...(resumeId ? { resumeId } : {}),
       },
       select: {
         id: true,
@@ -424,9 +518,15 @@ export class CareerAnalysisRepository {
         },
       },
       orderBy: { createdAt: "desc" },
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     });
 
-    return rows.map(({ roadmap, ...rest }) => ({
+    const hasMore = rows.length > limit;
+    const page = hasMore ? rows.slice(0, limit) : rows;
+    const nextCursor = hasMore ? page[page.length - 1].id : null;
+
+    const items = page.map(({ roadmap, ...rest }) => ({
       ...rest,
       hasRoadmap: roadmap !== null,
       roadmapProgress: roadmap
@@ -437,6 +537,8 @@ export class CareerAnalysisRepository {
           }
         : null,
     }));
+
+    return { items, nextCursor };
   }
 
   // Revision summaries under one root, oldest first — for GET

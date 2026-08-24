@@ -2,8 +2,8 @@ import { axiosClient } from "@/src/api/client";
 import { AI_CALL_TIMEOUT_MS } from "@/src/api/config";
 import type { ApiResponse } from "@/src/api/types";
 import type {
-  CareerAnalysisSummary,
   CareerAnalysisDetail,
+  CareerAnalysisPage,
   CreatedCareerAnalysis,
 } from "./types";
 
@@ -18,7 +18,7 @@ export const careerAnalysisApi = {
     ),
 
   list: (resumeId?: string) =>
-    axiosClient.get<ApiResponse<CareerAnalysisSummary[]>>("/career-analyses", {
+    axiosClient.get<ApiResponse<CareerAnalysisPage>>("/career-analyses", {
       params: resumeId ? { resumeId } : undefined,
     }),
 
