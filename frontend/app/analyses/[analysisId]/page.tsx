@@ -228,7 +228,14 @@ export default function AnalysisPage({
             {score}%
           </span>
         </div>
-        <div className="readiness-track">
+        <div
+          className="readiness-track"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={score}
+          aria-label="Readiness score"
+        >
           <div
             className={`readiness-track-fill readiness-track-fill--${band}`}
             style={
@@ -281,28 +288,42 @@ export default function AnalysisPage({
         <h2 className="section-heading">
           Skill gaps ({analysis.gaps.length})
         </h2>
-        <div className="gap-list">
-          {analysis.gaps.map((gap) => {
-            const Icon = GAP_STATUS_ICON[gap.status];
-            return (
-              <div key={gap.id} className="card gap-card">
-                <Icon
-                  className={`gap-card-icon gap-card-icon--${gap.status} size-5`}
-                  aria-hidden="true"
-                />
-                <div className="gap-card-body">
-                  <div className="gap-card-header">
-                    <span className="entry-title gap-card-title">{gap.skill.name}</span>
-                    <span className={`meta-label gap-card-status gap-card-status--${gap.status}`}>
-                      {GAP_STATUS_LABEL[gap.status]}
-                    </span>
+        {analysis.gaps.length > 0 ? (
+          <div className="gap-list">
+            {analysis.gaps.map((gap) => {
+              const Icon = GAP_STATUS_ICON[gap.status];
+              return (
+                <div key={gap.id} className="card gap-card">
+                  <Icon
+                    className={`gap-card-icon gap-card-icon--${gap.status} size-5`}
+                    aria-hidden="true"
+                  />
+                  <div className="gap-card-body">
+                    <div className="gap-card-header">
+                      <span className="entry-title gap-card-title">{gap.skill.name}</span>
+                      <span className={`meta-label gap-card-status gap-card-status--${gap.status}`}>
+                        {GAP_STATUS_LABEL[gap.status]}
+                      </span>
+                    </div>
+                    <p className="body-copy gap-card-reasoning">{gap.reasoning}</p>
                   </div>
-                  <p className="body-copy gap-card-reasoning">{gap.reasoning}</p>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="card gap-card">
+            <CheckCircle2
+              className="gap-card-icon gap-card-icon--strong size-5"
+              aria-hidden="true"
+            />
+            <div className="gap-card-body">
+              <p className="body-copy gap-card-reasoning">
+                No skill gaps found — nice work.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {analysis.evidence.length > 0 && (
@@ -387,13 +408,22 @@ export default function AnalysisPage({
               </AlertDialogContent>
             </AlertDialog>
           )}
-          <Button
-            size="lg"
-            disabled={generateRoadmap.isPending}
-            onClick={handleGenerateRoadmap}
-          >
-            Generate roadmap
-          </Button>
+          {roadmap ? (
+            <Button
+              size="lg"
+              onClick={() => router.push(`/analyses/${analysisId}/roadmap`)}
+            >
+              View roadmap
+            </Button>
+          ) : (
+            <Button
+              size="lg"
+              disabled={generateRoadmap.isPending}
+              onClick={handleGenerateRoadmap}
+            >
+              Generate roadmap
+            </Button>
+          )}
         </div>
       </div>
     </AppShell>
