@@ -31,6 +31,8 @@ describe("runExtraction — real worker, no mocks", () => {
   });
 
   it("rejects promptly on structurally invalid content, not a hang", async () => {
+    const start = Date.now();
+
     await expect(
       runExtraction(
         GARBAGE_PDF,
@@ -39,6 +41,13 @@ describe("runExtraction — real worker, no mocks", () => {
         "PDF text extraction",
       ),
     ).rejects.toThrow();
+
+    // Without this bound, a future regression that makes pdf-parse hang on
+    // garbage input instead of throwing would still pass — it would just
+    // eat the full 10s timeout and reject with TimeoutError, which also
+    // satisfies .rejects.toThrow(). This is what actually proves "not a
+    // hang" rather than "eventually rejects".
+    expect(Date.now() - start).toBeLessThan(2_000);
   });
 });
 

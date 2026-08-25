@@ -23,7 +23,7 @@ export default defineConfig({
     // itself) is what actually reaches the worker's process.execArgv —
     // scoped to tests only, npm run dev/start are untouched.
     env: {
-      NODE_OPTIONS: "--import tsx",
+      NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ""} --import tsx`.trim(),
     },
   },
 });
