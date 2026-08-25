@@ -1,5 +1,3 @@
-import { extractTextFromPdf } from "./extractors/pdf-extractor.js";
-import { extractTextFromDocx } from "./extractors/docx-extractor.js";
 import {
   AIStructuringModule,
   ParsingModule,
@@ -8,7 +6,7 @@ import {
 import { AppError } from "../../types/app-error.js";
 import { ERROR_CODES } from "../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../constants/http-status.js";
-import { withTimeout } from "../../utils/with-timeout.js";
+import { runExtraction } from "./extraction-runner.js";
 
 // Covers local text extraction only (pdf-parse / mammoth), not the Gemini
 // structuring call below — that already has its own budget via
@@ -43,8 +41,9 @@ export class ParsingService implements ParsingModule {
 
   private async extractText(buffer: Buffer, mimeType: string): Promise<string> {
     if (mimeType === "application/pdf") {
-      return withTimeout(
-        extractTextFromPdf(buffer),
+      return runExtraction(
+        buffer,
+        mimeType,
         PARSING_TIMEOUT_MS,
         "PDF text extraction",
       );
@@ -52,8 +51,9 @@ export class ParsingService implements ParsingModule {
       mimeType ===
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
-      return withTimeout(
-        extractTextFromDocx(buffer),
+      return runExtraction(
+        buffer,
+        mimeType,
         PARSING_TIMEOUT_MS,
         "DOCX text extraction",
       );

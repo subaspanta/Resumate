@@ -13,5 +13,17 @@ export default defineConfig({
     // there, so dist/lib/prisma.js cannot resolve its import.
     include: ["tests/**/*.test.ts"],
     exclude: ["dist/**", "node_modules/**"],
+    // extraction-runner.ts spawns a real worker_threads Worker to load the
+    // .ts extraction worker directly (see extraction-runner.ts's execArgv
+    // comment). Vitest transforms test/source files itself but does not
+    // register a Node-level loader hook the way `tsx watch` does, so a
+    // worker spawned from inside a test can't otherwise resolve a .ts file.
+    // Vitest launches its own process from this config, and worker threads
+    // inherit env, so setting NODE_OPTIONS here (rather than in the runner
+    // itself) is what actually reaches the worker's process.execArgv —
+    // scoped to tests only, npm run dev/start are untouched.
+    env: {
+      NODE_OPTIONS: "--import tsx",
+    },
   },
 });
