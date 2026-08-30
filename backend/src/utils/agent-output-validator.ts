@@ -3,10 +3,7 @@ import { AppError } from "../types/app-error.js";
 import { ERROR_CODES } from "../constants/error-codes.js";
 import { HTTP_STATUS } from "../constants/http-status.js";
 
-// Shared guardrail for every AI agent: re-validate parsed AI JSON against its Zod
-// schema rather than trusting Gemini's responseSchema enforcement blindly, then
-// run cheap sanity checks that catch empty/hallucinated output the schema alone
-// would accept.
+// Re-validates AI output against its Zod schema and checks for required content.
 export function validateAgentOutput<T>(
   schema: z.ZodType<T>,
   raw: unknown,
