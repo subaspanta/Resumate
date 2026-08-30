@@ -3,21 +3,25 @@ import { Request, Response, NextFunction } from "express";
 import { AppError } from "../types/app-error.js";
 import { ERROR_CODES } from "../constants/error-codes.js";
 import { HTTP_STATUS } from "../constants/http-status.js";
+import path from "path";
 
 const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
 
 const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/octet-stream",
 ]);
+
+const allowedExtensions = new Set([".pdf", ".docx"]);
 
 const fileFilter = (
   _req: Request,
   file: Express.Multer.File,
   cb: FileFilterCallback,
 ) => {
-  if (!ALLOWED_MIME_TYPES.has(file.mimetype)) {
+  const ext = path.extname(file.originalname).toLowerCase();
+
+  if (!ALLOWED_MIME_TYPES.has(file.mimetype) && !allowedExtensions.has(ext)) {
     cb(
       new AppError(
         HTTP_STATUS.BAD_REQUEST,
