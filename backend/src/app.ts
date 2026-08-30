@@ -23,20 +23,17 @@ app.use(
   }),
 );
 
-// Logging middleware
 if (env.isDevelopment) {
   app.use(morgan("dev"));
 }
 
-// Body parsing middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(cookieParser());
 
 // Health check endpoint — actually checks DB connectivity, not just that the
-// process is alive, so infra can tell "up" apart from "up but can't serve
-// real requests" (e.g. Postgres unreachable) and route/restart accordingly.
+// process is alive
 app.get(`${API_PREFIX}/health`, async (req: Request, res: Response) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
@@ -68,7 +65,6 @@ app.get(`${API_PREFIX}/health`, async (req: Request, res: Response) => {
   }
 });
 
-// API routes
 app.use(API_PREFIX, routes);
 
 // 404 handler

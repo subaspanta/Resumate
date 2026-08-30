@@ -16,9 +16,6 @@ import { resumeController } from "../../container.js";
 
 const router = Router();
 
-// Multipart inverts the usual order: req.body doesn't exist until multer has
-// run, so validateRequest can't go first. requireAuth stays first among what
-// can, so an unauthenticated request never buffers a file into memory.
 router.post(
   "/",
   requireAuth,
@@ -42,8 +39,6 @@ router.get(
   resumeController.getById,
 );
 
-// Same middleware inversion as POST / above, and for the same reason —
-// multer has to run before validateRequest can read req.body.
 router.put(
   "/:id",
   requireAuth,
