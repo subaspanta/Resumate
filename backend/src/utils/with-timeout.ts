@@ -1,8 +1,3 @@
-// Races a promise against a deadline. This can only stop *waiting* for the
-// underlying work — it has no way to cancel a Cloudinary upload already in
-// flight or a synchronous parsing call already running, since neither of
-// those APIs exposes cancellation. A "timed out" result may still complete
-// in the background after the caller has moved on.
 export class TimeoutError extends Error {
   constructor(label: string, ms: number) {
     super(`${label} timed out after ${ms}ms`);
