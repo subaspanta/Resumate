@@ -27,13 +27,11 @@ interface DashboardContentProps {
   onViewAll: () => void;
 }
 
-// Fixed for this route — hoisted so AppShell doesn't see a new array every
-// render, matching the analysis page's CRUMBS.
+// Hoisted to prevent AppShell from receiving a new array on every render
 const CRUMBS = [{ label: "Dashboard" }];
 
-// Each dashboard state gets its own header copy. The shell renders it, so the
-// per-state content components no longer carry their own <h1> — that split is
-// what let the dashboard's chrome drift from the flow pages'.
+// Returns header copy per dashboard state. Title/subtitle live in the shell
+// so content components don't render their own headings.
 function headerFor(
   state: DashboardState,
   userName?: string,
@@ -48,9 +46,6 @@ function headerFor(
     default:
       return {
         title: `${getTimeGreeting()}, ${getGreetingName(userName)}.`,
-        // The continue card below carries the specific next step, so the
-        // subtitle no longer names one — it would contradict the card
-        // whenever the user's actual next move isn't an upload.
         subtitle: "Here's where your career analysis stands.",
       };
   }
@@ -66,9 +61,8 @@ export function DashboardContent({
   onViewAll,
 }: DashboardContentProps) {
   const { user } = useAuth();
-  // Owned here, not in the per-state content components: readyToStart renders
-  // a resume list, and a second useDeleteResumeFlow() would mint a duplicate
-  // mutation observer over the same cache key.
+  // Delete mutation lives here, not in child components, to avoid duplicate
+  // mutation observers over the same cache key.
   const { handleDelete, deletingId } = useDeleteResumeFlow();
 
   if (isLoading) {

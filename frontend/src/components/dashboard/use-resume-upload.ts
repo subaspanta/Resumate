@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { isApiError } from "@/src/api/api-error";
 import { useUploadResume } from "@/src/features/resume/resume.hooks";
+import { pickSingleFile } from "@/src/lib/file-picker";
 
 export function useUploadResumeFlow() {
   const router = useRouter();
@@ -21,8 +22,6 @@ export function useUploadResumeFlow() {
       if (isApiError(error)) {
         switch (error.code) {
           case "RATE_LIMIT_EXCEEDED":
-            // Our own aiRateLimit (10 req / 5 min), not Gemini's — the
-            // server's message names the actual wait, so prefer it.
             toast.error(error.message);
             return;
           case "GEMINI_RATE_LIMITED":
@@ -37,9 +36,6 @@ export function useUploadResumeFlow() {
             );
             return;
           case "PARSING_FAILED":
-            // Deliberately not "try again" — the server's own message says
-            // that, but re-uploading the same file fails identically. This is
-            // almost always a scanned-image PDF with no text layer.
             toast.error(
               "No readable text found in that file. If it's a scan, export a text-based PDF and re-upload.",
             );
@@ -57,15 +53,12 @@ export function useUploadResumeFlow() {
     }
   };
 
-  const triggerUpload = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".pdf,.docx";
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) handleFileSelected(file);
-    };
-    input.click();
+  const triggerUpload = async () => {
+    const file = await pickSingleFile({ accept: ".pdf,.docx" });
+    if (file) {
+      await handleFileSelected(file);
+    }
+    // If no file selected (user cancelled), do nothing
   };
 
   return {

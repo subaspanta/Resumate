@@ -4,11 +4,6 @@ import { toast } from "sonner";
 import { isApiError } from "@/src/api/api-error";
 import { useDeleteResume } from "@/src/features/resume/resume.hooks";
 
-/**
- * Delete flow for a resume: mutation plus error mapping, matching how
- * useUploadResumeFlow handles the upload side. The confirmation dialog lives in
- * the list row — by the time this runs, the user has already confirmed.
- */
 export function useDeleteResumeFlow() {
   const deleteResume = useDeleteResume();
 
@@ -17,10 +12,8 @@ export function useDeleteResumeFlow() {
       await deleteResume.mutateAsync(id);
       toast.success(`"${title}" deleted.`);
     } catch (error) {
+      // 404 = already deleted in another tab; treat as success
       if (isApiError(error) && error.status === 404) {
-        // Already gone — someone deleted it in another tab. The optimistic
-        // removal already took the row out, so this is the state the user
-        // wanted; saying "failed" would be a lie.
         toast.success(`"${title}" deleted.`);
         return;
       }
@@ -33,9 +26,6 @@ export function useDeleteResumeFlow() {
   return {
     handleDelete,
     isDeleting: deleteResume.isPending,
-    // Gated on isPending: `variables` keeps the last id after the mutation
-    // settles, so reading it alone would leave a failed row's button disabled
-    // forever once the optimistic removal rolled it back into the list.
     deletingId: deleteResume.isPending ? deleteResume.variables : undefined,
   };
 }

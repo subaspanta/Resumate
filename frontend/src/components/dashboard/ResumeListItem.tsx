@@ -18,15 +18,12 @@ import {
 
 interface ResumeListItemProps {
   resume: ResumeSummary;
-  /** Position in the list, used to stagger the entrance. */
-  index: number;
+  index: number; // For staggered entrance animation
   onOpen: (id: string) => void;
   onDelete?: (id: string, title: string) => void;
   isDeleting?: boolean;
-  // Kept separate from onOpen rather than folded into a menu: replacing a
-  // resume is rare enough that a full row click target for it isn't
-  // justified, but common enough (wrong file, updated resume) to deserve a
-  // direct button rather than being buried behind delete-and-reupload.
+  // Separate from onOpen — replace is rare but common enough to deserve a
+  // direct button without hiding behind delete-and-reupload.
   onReplace?: (id: string) => void;
   isReplacing?: boolean;
   isLast: boolean;
@@ -43,9 +40,7 @@ export function ResumeListItem({
   isLast,
 }: ResumeListItemProps) {
   const kind = resumeFileKind(resume.fileName ?? resume.originalFileName);
-  // The CSS-level reduce-motion guard in base.css only shortens durations;
-  // motion drives these values from JS, so it has to be asked directly.
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotion(); // CSS media query doesn't affect motion.js
 
   return (
     <motion.div
@@ -54,18 +49,13 @@ export function ResumeListItem({
       animate={{
         opacity: isDeleting ? 0.45 : 1,
         y: 0,
-        // Withdraws while the delete mutation is in flight, so the removal
-        // reads as the end of something the user started rather than a row
-        // silently disappearing.
-        scale: isDeleting ? 0.99 : 1,
+        scale: isDeleting ? 0.99 : 1, // Slight shrink during delete to signal removal
       }}
-      // Padding collapses with the height, or the row leaves a 48px stub
-      // behind mid-exit.
       exit={{
         opacity: 0,
         height: 0,
         paddingTop: 0,
-        paddingBottom: 0,
+        paddingBottom: 0, // Collapse padding to avoid stub during exit
       }}
       transition={
         reduceMotion
@@ -73,9 +63,7 @@ export function ResumeListItem({
           : {
               duration: 0.3,
               ease: [0.16, 1, 0.3, 1],
-              // Only the initial paint staggers; a row arriving later (after
-              // an upload) should land immediately, not wait its turn behind
-              // rows that are already on screen.
+              // Stagger only initial paint; new rows appear immediately
               delay: Math.min(index * 0.04, 0.2),
             }
       }
@@ -95,14 +83,10 @@ export function ResumeListItem({
       }}
     >
       <div className="dashboard-resume-row-left">
-        {/* Colour comes from the tile so the row's hover can reach it —
-            a hardcoded text-* class here would win over that. */}
         <div className="dashboard-resume-icon">
           <FileText className="size-5" aria-hidden="true" />
         </div>
         <div className="dashboard-resume-row-text">
-          {/* The name truncates on narrow rows, so the full title has to stay
-              reachable somewhere — this is it for pointer users. */}
           <p className="dashboard-resume-name" title={resume.title}>
             {resume.title}
           </p>
@@ -116,12 +100,9 @@ export function ResumeListItem({
           </p>
         </div>
       </div>
-      {/* No separate "Analyze" button: the whole row already opens the
-          resume (role=button, keyboard-navigable) — a second, redundant
-          click target next to the delete button just adds noise. The arrow
-          is a passive affordance, not a control, and still gets its shift
-          animation from the row's own hover. */}
+
       <div className="dashboard-resume-row-right">
+        {/* Passive affordance, not a separate control — whole row is clickable */}
         <ArrowRight
           className="dashboard-resume-row-arrow size-[18px]"
           aria-hidden="true"
@@ -147,9 +128,7 @@ export function ResumeListItem({
 
         {onDelete && (
           <AlertDialog>
-            {/* The whole row is a click target, so every handler inside the
-                dialog has to stop propagation — otherwise confirming or
-                cancelling also navigates into the workspace. */}
+            {/* Stop propagation so clicking dialog controls doesn't open resume */}
             <AlertDialogTrigger asChild>
               <button
                 className="dashboard-resume-delete-btn tap-target-44"
@@ -168,9 +147,9 @@ export function ResumeListItem({
               <AlertDialogHeader>
                 <AlertDialogTitle>Delete this resume?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  <strong>{resume.title}</strong> and every career analysis
-                  and roadmap created from it will be permanently removed.
-                  This can&apos;t be undone.
+                  <strong>{resume.title}</strong> and every career analysis and
+                  roadmap created from it will be permanently removed. This
+                  can&apos;t be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
