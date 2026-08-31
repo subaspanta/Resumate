@@ -1,12 +1,8 @@
 // src/api/api-error.ts
 import { AxiosError } from "axios";
 
-// Mirrors ERROR_CODES in backend/src/constants/error-codes.ts. Keep both in
-// lockstep: a `code` the backend sends but this union omits still arrives at
-// runtime (normalizeAxiosError casts it below without checking), so the only
-// symptom of drift is a `===` comparison that refuses to compile. Adding a
-// backend code without adding it here silently removes the ability to branch
-// on it.
+// Must match ERROR_CODES in backend/src/constants/error-codes.ts.
+// Omitting a code here removes type safety for branching, but runtime still works.
 export type ApiErrorCode =
   | "INVALID_CREDENTIALS"
   | "EMAIL_ALREADY_EXISTS"

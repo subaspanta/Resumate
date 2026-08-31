@@ -1,15 +1,11 @@
-// Budget for the routes that make a Gemini call. This has to be strictly
-// larger than the server's worst case for those routes, not equal to it:
-// the client's clock starts when the request is dispatched, the server's
-// GEMINI_CALL_TIMEOUT_MS clock only starts once auth, body transfer and
-// prompt building are done. Equal numbers therefore always expire on the
-// client first, which both hides the server's classified AI error and — since
-// nothing on the backend aborts on client disconnect — reports "failed" for
-// work that goes on to succeed and persist.
+// Client timeout for Gemini routes must exceed server's worst-case total.
+// Server timers start after auth/body/prompt are processed, so equal values
+// would always expire client-side first — hiding real AI errors and marking
+// successful operations as failed.
 //
-// Worst case is the upload pipeline: text extraction (10s) then structuring
-// (60s), run in sequence. 90s clears that with room for transfer and the DB
-// write. Keep this above backend GEMINI_CALL_TIMEOUT_MS + PARSING_TIMEOUT_MS.
+// Worst-case upload: text extraction (10s) + structuring (60s) = 90s total,
+// plus overhead for transfer and DB writes. Must stay above backend's
+// GEMINI_CALL_TIMEOUT_MS + PARSING_TIMEOUT_MS.
 export const AI_CALL_TIMEOUT_MS = 90_000;
 
 export const apiConfig = {
