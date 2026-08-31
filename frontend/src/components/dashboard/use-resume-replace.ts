@@ -4,10 +4,8 @@ import { toast } from "sonner";
 import { isApiError } from "@/src/api/api-error";
 import { useReplaceResume } from "@/src/features/resume/resume.hooks";
 import { validateResumeFile } from "@/src/features/resume/resume.utils";
+import { pickSingleFile } from "@/src/lib/file-picker";
 
-// Replace flow for a resume: same error-code mapping as
-// useUploadResumeFlow, since both hit the same backend storage+parsing
-// pipeline and can fail the same ways.
 export function useReplaceResumeFlow() {
   const replaceResume = useReplaceResume();
 
@@ -62,22 +60,17 @@ export function useReplaceResumeFlow() {
     }
   };
 
-  const triggerReplace = (id: string, title: string) => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".pdf,.docx";
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) handleFileSelected(id, title, file);
-    };
-    input.click();
+  const triggerReplace = async (id: string, title: string) => {
+    const file = await pickSingleFile();
+    if (file) {
+      await handleFileSelected(id, title, file);
+    }
+    // If no file selected (user cancelled), do nothing
   };
 
   return {
     triggerReplace,
     isReplacing: replaceResume.isPending,
-    // Same isPending-gated read as useDeleteResumeFlow's deletingId — keeps
-    // the spinner on exactly the row that's in flight, not every row.
     replacingId: replaceResume.isPending
       ? replaceResume.variables?.id
       : undefined,

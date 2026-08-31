@@ -7,18 +7,11 @@ import { scoreBand } from "@/src/features/career-analysis/career-analysis.utils"
 
 interface ContinueCardProps {
   action: ContinueAction;
-  /** Filename of the resume being carried through the flow, when known. */
-  resumeName?: string;
+  resumeName?: string; // Filename when known, used as fallback subject
 }
 
-/**
- * The returning user's landing spot: what they were doing, and the one
- * control that resumes it.
- *
- * Leads with the work, not the score. A readiness figure set as the headline
- * would make the dashboard a report card — the number is here as supporting
- * context for the action, which is the thing the page exists to offer.
- */
+// Landing spot for returning users: shows current work and primary action.
+// Score is supporting context, not the headline — avoids feeling like a report card.
 export function ContinueCard({ action, resumeName }: ContinueCardProps) {
   const { intent, href, actionLabel, roleTitle, readinessScore, progress } =
     action;
@@ -107,9 +100,8 @@ export function ContinueCard({ action, resumeName }: ContinueCardProps) {
   );
 }
 
-// Names the state in the user's own terms. Each one has to work as the single
-// largest line on the dashboard, so none of them restate the role title
-// already sitting directly above.
+// User-friendly headlines for each state. Each must stand alone as the
+// largest text on the dashboard, so none repeat the role title above.
 function headlineFor(action: ContinueAction): string {
   switch (action.intent) {
     case "choose-role":

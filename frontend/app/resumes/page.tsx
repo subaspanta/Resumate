@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AppShell } from "@/src/components/layout/AppShell";
 import { ResumeListItem } from "@/src/components/dashboard/ResumeListItem";
 import { useResumes } from "@/src/features/resume/resume.hooks";
-import { useDeleteResumeFlow } from "@/src/components/dashboard/use-resume-delete";
+import { useDeleteResumeFlow } from "@/src/features/resume/use-resume-delete";
 import { useReplaceResumeFlow } from "@/src/components/dashboard/use-resume-replace";
 
 const CRUMBS = [{ label: "Dashboard", href: "/" }, { label: "Resumes" }];

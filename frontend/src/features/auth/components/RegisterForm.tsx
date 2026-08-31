@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/features/auth/auth.hooks";
@@ -22,7 +22,7 @@ export function RegisterForm() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setError,
     formState: { errors, isValid },
   } = useForm<RegisterFormValues>({
@@ -36,7 +36,12 @@ export function RegisterForm() {
     mode: "onChange",
   });
 
-  const password = watch("password", "");
+  // Use useWatch instead of watch to avoid React Compiler warning
+  const password = useWatch({
+    control,
+    name: "password",
+    defaultValue: "",
+  });
 
   const onSubmit = async (values: RegisterFormValues) => {
     try {

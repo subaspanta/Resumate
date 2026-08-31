@@ -38,10 +38,6 @@ function AlertDialogOverlay({
   );
 }
 
-// Sizing and spacing live in styles/components/dialog.css, not Tailwind
-// utilities. This project's theme defines --spacing-lg/sm/xl, and Tailwind v4
-// resolves `max-w-lg` against that scale — so the stock shadcn `sm:max-w-lg`
-// compiled to `max-width: 24px` and collapsed the panel to a sliver.
 function AlertDialogContent({
   className,
   ...props

@@ -38,14 +38,11 @@ export function RecentResumesSection({
         )}
       </div>
 
-      {/* AnimatePresence is what CSS couldn't do here: a deleted row is
-          unmounted by React the moment the mutation resolves, so a CSS exit
-          transition never gets to run. This keeps the row mounted long
-          enough to collapse out, which is what makes a deletion read as
-          "that one left" rather than "the list is suddenly different". */}
       <div className="dashboard-recent-panel">
         {resumes.length === 0 ? (
-          <p className="body-copy body-copy--muted dashboard-recent-empty">{emptyMessage}</p>
+          <p className="body-copy body-copy--muted dashboard-recent-empty">
+            {emptyMessage}
+          </p>
         ) : (
           <AnimatePresence initial={false}>
             {resumes.map((resume, i) => (
