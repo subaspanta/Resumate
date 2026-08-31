@@ -44,7 +44,8 @@ export function openFilePicker(
     // Handle cases where the picker might be blocked
     try {
       input.click();
-    } catch (error) {
+    } catch {
+      // User cancelled or picker was blocked - resolve with no files
       cleanup();
       resolve({ files: null, input });
     }

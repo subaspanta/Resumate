@@ -15,7 +15,17 @@ import {
   stateToLayoutKey,
 } from "@/src/features/resume/resume.utils";
 import { useAuth } from "@/src/features/auth/auth.hooks";
-import { useDeleteResumeFlow } from "@/src/components/dashboard/use-resume-delete";
+import { useDeleteResumeFlow } from "../../features/resume/use-resume-delete";
+
+// ============================================================================
+// Constants
+// ============================================================================
+
+const CRUMBS = [{ label: "Dashboard" }];
+
+// ============================================================================
+// Types
+// ============================================================================
 
 interface DashboardContentProps {
   dashboardState: DashboardState;
@@ -27,15 +37,52 @@ interface DashboardContentProps {
   onViewAll: () => void;
 }
 
-// Hoisted to prevent AppShell from receiving a new array on every render
-const CRUMBS = [{ label: "Dashboard" }];
+// ============================================================================
+// Subcomponents
+// ============================================================================
 
-// Returns header copy per dashboard state. Title/subtitle live in the shell
-// so content components don't render their own headings.
-function headerFor(
-  state: DashboardState,
-  userName?: string,
-): { title: string; subtitle?: string } {
+const DashboardSkeleton = () => (
+  <AppShell
+    step="upload"
+    view="default"
+    crumbs={CRUMBS}
+    title={<Skeleton className="h-9 w-64 bg-surface-container" />}
+  >
+    <div className="dashboard-main-inner flex flex-col gap-xl">
+      <Skeleton className="h-5 w-96 max-w-full bg-surface-container" />
+      <Skeleton className="h-48 w-full rounded-xl bg-surface-container" />
+      <div className="flex flex-col gap-md">
+        <Skeleton className="h-6 w-40 bg-surface-container" />
+        <Skeleton className="h-16 w-full rounded-lg bg-surface-container" />
+        <Skeleton className="h-16 w-full rounded-lg bg-surface-container" />
+      </div>
+    </div>
+  </AppShell>
+);
+
+const DashboardErrorState = () => (
+  <div className="dashboard-main-inner flex items-center justify-center">
+    <div className="dashboard-side-panel items-center text-center max-w-[24rem]">
+      <CircleAlert className="size-8 text-danger mb-sm" aria-hidden="true" />
+      <p className="font-body-md text-body-md text-text-primary mb-lg">
+        Failed to load your resumes.
+      </p>
+      <button
+        type="button"
+        onClick={() => window.location.reload()}
+        className="dashboard-btn-primary"
+      >
+        Retry
+      </button>
+    </div>
+  </div>
+);
+
+// ============================================================================
+// Helpers
+// ============================================================================
+
+const getDashboardHeader = (state: DashboardState, userName?: string) => {
   switch (state) {
     case "firstTime":
       return {
@@ -49,7 +96,11 @@ function headerFor(
         subtitle: "Here's where your career analysis stands.",
       };
   }
-}
+};
+
+// ============================================================================
+// Main Component
+// ============================================================================
 
 export function DashboardContent({
   dashboardState,
@@ -61,32 +112,14 @@ export function DashboardContent({
   onViewAll,
 }: DashboardContentProps) {
   const { user } = useAuth();
-  // Delete mutation lives here, not in child components, to avoid duplicate
-  // mutation observers over the same cache key.
   const { handleDelete, deletingId } = useDeleteResumeFlow();
 
+  // Early return for loading state
   if (isLoading) {
-    return (
-      <AppShell
-        step="upload"
-        view="default"
-        crumbs={CRUMBS}
-        title={<Skeleton className="h-9 w-64 bg-surface-container" />}
-      >
-        <div className="dashboard-main-inner flex flex-col gap-xl">
-          <Skeleton className="h-5 w-96 max-w-full bg-surface-container" />
-          <Skeleton className="h-48 w-full rounded-xl bg-surface-container" />
-          <div className="flex flex-col gap-md">
-            <Skeleton className="h-6 w-40 bg-surface-container" />
-            <Skeleton className="h-16 w-full rounded-lg bg-surface-container" />
-            <Skeleton className="h-16 w-full rounded-lg bg-surface-container" />
-          </div>
-        </div>
-      </AppShell>
-    );
+    return <DashboardSkeleton />;
   }
 
-  const header = headerFor(dashboardState, user?.name);
+  const header = getDashboardHeader(dashboardState, user?.name);
 
   return (
     <AppShell
@@ -96,45 +129,75 @@ export function DashboardContent({
       title={header.title}
       subtitle={header.subtitle}
     >
-      {dashboardState === "firstTime" && (
+      {renderContent({
+        dashboardState,
+        resumes,
+        isUploading,
+        onFileSelected,
+        onOpenResume,
+        onViewAll,
+        onResumeDelete: handleDelete,
+        deletingId,
+      })}
+    </AppShell>
+  );
+}
+
+// ============================================================================
+// Content Renderer
+// ============================================================================
+
+interface RenderContentParams {
+  dashboardState: DashboardState;
+  resumes: ResumeSummary[];
+  isUploading: boolean;
+  onFileSelected: (file: File) => void;
+  onOpenResume: (id: string) => void;
+  onViewAll: () => void;
+  onResumeDelete: (id: string, title: string) => Promise<void>;
+  deletingId: string | undefined;
+}
+
+function renderContent(params: RenderContentParams) {
+  const {
+    dashboardState,
+    resumes,
+    isUploading,
+    onFileSelected,
+    onOpenResume,
+    onViewAll,
+    onResumeDelete,
+    deletingId,
+  } = params;
+
+  switch (dashboardState) {
+    case "firstTime":
+      return (
         <FirstTimeDashboardContent
           onFileSelected={onFileSelected}
           isUploading={isUploading}
         />
-      )}
+      );
 
-      {dashboardState === "readyToStart" && (
+    case "readyToStart":
+      return (
         <DefaultDashboardContent
           resumes={resumes}
           onFileSelected={onFileSelected}
           onOpenResume={onOpenResume}
           onViewAll={onViewAll}
           isUploading={isUploading}
-          onResumeDelete={handleDelete}
+          onResumeDelete={onResumeDelete}
           deletingId={deletingId}
         />
-      )}
+      );
 
-      {dashboardState === "error" && (
-        <div className="dashboard-main-inner flex items-center justify-center">
-          <div className="dashboard-side-panel items-center text-center max-w-[24rem]">
-            <CircleAlert
-              className="size-8 text-danger mb-sm"
-              aria-hidden="true"
-            />
-            <p className="font-body-md text-body-md text-text-primary mb-lg">
-              Failed to load your resumes.
-            </p>
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className="dashboard-btn-primary"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      )}
-    </AppShell>
-  );
+    case "error":
+      return <DashboardErrorState />;
+
+    default:
+      // This line ensures TypeScript knows all cases are handled
+      // The variable is used as a type assertion
+      return dashboardState satisfies never;
+  }
 }
