@@ -1,8 +1,4 @@
 import { BrandGlyph } from "@/src/components/brand/BrandGlyph";
-
-// Not the shared Logo: that renders a <Link>, and a loading splash has
-// nowhere to navigate to. It stacks the glyph over the wordmark rather than
-// sitting them in a row, so it owns its own layout and borrows only the mark.
 export function AuthLoading() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-canvas">
