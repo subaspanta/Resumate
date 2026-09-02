@@ -1,4 +1,3 @@
-// Mirrors backend/src/modules/role/role.types.ts.
 export type SkillImportance = "critical" | "important" | "nice_to_have";
 
 export interface RoleSummary {
