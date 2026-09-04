@@ -17,10 +17,7 @@ export const requireAuth = (
   next: NextFunction,
 ) => {
   const token = req.cookies.accessToken;
-  if (!token) {
-    throw unauthorizedError();
-  }
-  const payload = verifyAccessToken(token);
+  const payload = token ? verifyAccessToken(token) : null;
   if (!payload) {
     throw unauthorizedError();
   }
