@@ -1,5 +1,9 @@
-import { Prisma, Roadmap, RoadmapTask } from "../../generated/client/index.js";
-import { prisma } from "../../lib/prisma.js";
+import {
+  Prisma,
+  PrismaClient,
+  Roadmap,
+  RoadmapTask,
+} from "../../generated/client/index.js";
 
 export type NewRoadmapTaskRow = {
   skillGapId: string;
@@ -46,6 +50,8 @@ export interface CompletedWorkReader {
 }
 
 export class RoadmapRepository implements CompletedWorkReader {
+  constructor(private readonly prisma: PrismaClient) {}
+
   // Creates the roadmap and every task in one transaction. A roadmap with a
   // partial set of tasks would present the user with a plan missing weeks,
   // indistinguishable from one that was deliberately shorter.
@@ -61,7 +67,7 @@ export class RoadmapRepository implements CompletedWorkReader {
     weekCount: number;
     tasks: NewRoadmapTaskRow[];
   }): Promise<RoadmapWithTasks> {
-    return prisma.$transaction(async (tx) => {
+    return this.prisma.$transaction(async (tx) => {
       const roadmap = await tx.roadmap.create({
         data: {
           careerAnalysisId: input.careerAnalysisId,
@@ -97,7 +103,7 @@ export class RoadmapRepository implements CompletedWorkReader {
   async findByAnalysisId(
     careerAnalysisId: string,
   ): Promise<RoadmapWithTasks | null> {
-    return prisma.roadmap.findUnique({
+    return this.prisma.roadmap.findUnique({
       where: { careerAnalysisId },
       include: {
         tasks: {
@@ -113,7 +119,7 @@ export class RoadmapRepository implements CompletedWorkReader {
   }
 
   async existsForAnalysis(careerAnalysisId: string): Promise<boolean> {
-    const existing = await prisma.roadmap.findUnique({
+    const existing = await this.prisma.roadmap.findUnique({
       where: { careerAnalysisId },
       select: { id: true },
     });
@@ -132,7 +138,7 @@ export class RoadmapRepository implements CompletedWorkReader {
     completed: boolean;
     roadmap: { careerAnalysis: { id: string; userId: string } };
   } | null> {
-    return prisma.roadmapTask.findUnique({
+    return this.prisma.roadmapTask.findUnique({
       where: { id: taskId },
       select: {
         id: true,
@@ -162,7 +168,7 @@ export class RoadmapRepository implements CompletedWorkReader {
     completed: boolean,
     completionNote?: string,
   ): Promise<RoadmapTask | null> {
-    const result = await prisma.roadmapTask.updateMany({
+    const result = await this.prisma.roadmapTask.updateMany({
       where: { id: taskId, roadmap: { careerAnalysis: { userId } } },
       data: {
         // completedAt is derived here, never accepted from the client — a
@@ -182,7 +188,7 @@ export class RoadmapRepository implements CompletedWorkReader {
     // proven. Re-filtering here would only re-ask a question the write
     // answered. updateMany cannot return the updated row, hence the second
     // round-trip.
-    return prisma.roadmapTask.findUnique({ where: { id: taskId } });
+    return this.prisma.roadmapTask.findUnique({ where: { id: taskId } });
   }
 
   async recordTaskEvent(
@@ -190,7 +196,7 @@ export class RoadmapRepository implements CompletedWorkReader {
     completed: boolean,
     taskId: string,
   ): Promise<void> {
-    await prisma.analysisEvent.create({
+    await this.prisma.analysisEvent.create({
       data: {
         careerAnalysisId,
         type: completed ? "task_completed" : "task_uncompleted",
@@ -204,7 +210,7 @@ export class RoadmapRepository implements CompletedWorkReader {
     id: string;
     careerAnalysis: { userId: string };
   } | null> {
-    return prisma.roadmap.findUnique({
+    return this.prisma.roadmap.findUnique({
       where: { id: roadmapId },
       select: {
         id: true,
@@ -214,7 +220,7 @@ export class RoadmapRepository implements CompletedWorkReader {
   }
 
   async findById(roadmapId: string): Promise<RoadmapWithTasks | null> {
-    return prisma.roadmap.findUnique({
+    return this.prisma.roadmap.findUnique({
       where: { id: roadmapId },
       include: {
         tasks: {
@@ -234,7 +240,7 @@ export class RoadmapRepository implements CompletedWorkReader {
   async findCompletedTasksForAnalysis(
     careerAnalysisId: string,
   ): Promise<CompletedTaskRow[]> {
-    return prisma.roadmapTask.findMany({
+    return this.prisma.roadmapTask.findMany({
       where: { roadmap: { careerAnalysisId }, completed: true },
       select: {
         id: true,

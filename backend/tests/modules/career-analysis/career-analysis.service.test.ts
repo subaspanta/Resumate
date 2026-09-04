@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { prisma } from "../../../src/lib/prisma.js";
+import { logger } from "../../../src/config/logger.js";
 import {
   CareerAnalysisRepository,
   STALE_ANALYSIS_AFTER_MS,
@@ -64,13 +65,14 @@ function buildService(
   agent: EvidenceAgent,
   completedWorkReader: CompletedWorkReader = fakeCompletedWorkReader(),
 ) {
-  const roleRepository = new RoleRepository();
+  const roleRepository = new RoleRepository(prisma);
   return new CareerAnalysisService(
-    new CareerAnalysisRepository(),
+    new CareerAnalysisRepository(prisma),
     new ResumeRepository(prisma),
     new RoleService(roleRepository),
     agent,
     completedWorkReader,
+    logger,
   );
 }
 
@@ -310,7 +312,7 @@ describe("CareerAnalysisService.createAnalysis", () => {
     ).createAnalysis(userId, resumeId, "backend-engineer");
     expect(analysis.status).toBe("complete");
 
-    const repository = new CareerAnalysisRepository();
+    const repository = new CareerAnalysisRepository(prisma);
     const transitioned = await repository.markFailed(
       analysis.id,
       "late failure",

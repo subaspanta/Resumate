@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { prisma } from "../../../src/lib/prisma.js";
+import { logger } from "../../../src/config/logger.js";
 import { RoadmapRepository } from "../../../src/modules/roadmap/roadmap.repository.js";
 import { RoadmapService } from "../../../src/modules/roadmap/roadmap.service.js";
 import { CareerAnalysisRepository } from "../../../src/modules/career-analysis/career-analysis.repository.js";
@@ -72,7 +73,7 @@ const evidenceAgent: EvidenceAgent = {
 
 function buildRoadmapService(agent: RoadmapAgent) {
   return new RoadmapService(
-    new RoadmapRepository(),
+    new RoadmapRepository(prisma),
     // The real CareerAnalysisService, not its repository: ownership and the
     // 404/403 split are its rules, and this test asserts them.
     buildAnalysisService(),
@@ -82,11 +83,12 @@ function buildRoadmapService(agent: RoadmapAgent) {
 
 function buildAnalysisService(agent: EvidenceAgent = evidenceAgent) {
   return new CareerAnalysisService(
-    new CareerAnalysisRepository(),
+    new CareerAnalysisRepository(prisma),
     new ResumeRepository(prisma),
-    new RoleService(new RoleRepository()),
+    new RoleService(new RoleRepository(prisma)),
     agent,
-    new RoadmapRepository(),
+    new RoadmapRepository(prisma),
+    logger,
   );
 }
 
@@ -257,7 +259,7 @@ describe("RoadmapService.generateRoadmap", () => {
     });
 
     // The original roadmap and its tasks must be untouched.
-    const still = await new RoadmapRepository().findByAnalysisId(analysis.id);
+    const still = await new RoadmapRepository(prisma).findByAnalysisId(analysis.id);
     expect(still!.id).toBe(first.id);
     expect(still!.tasks).toHaveLength(4);
   });
@@ -417,7 +419,7 @@ describe("RoadmapService.generateRoadmap", () => {
 
     // Nothing may have been written.
     expect(
-      await new RoadmapRepository().findByAnalysisId(analysis.id),
+      await new RoadmapRepository(prisma).findByAnalysisId(analysis.id),
     ).toBeNull();
   });
 
@@ -594,7 +596,7 @@ describe("RoadmapService.getRoadmapForAnalysis — reassessment revisions", () =
     const analysis = await seedAnalysis(userId);
     const analysisService = buildAnalysisService();
     const roadmapService = new RoadmapService(
-      new RoadmapRepository(),
+      new RoadmapRepository(prisma),
       analysisService,
       fakeRoadmapAgent(),
     );

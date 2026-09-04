@@ -1,9 +1,9 @@
 import {
   AnalysisEventType,
   CareerAnalysis,
+  PrismaClient,
   Prisma,
 } from "../../generated/client/index.js";
-import { prisma } from "../../lib/prisma.js";
 import { GapStatus, EvidenceStrength } from "../../generated/client/index.js";
 import { GEMINI_CALL_TIMEOUT_MS } from "../ai/gemini-timeout.js";
 
@@ -157,6 +157,8 @@ export type AnalysisForRoadmapGeneration = {
 };
 
 export class CareerAnalysisRepository {
+  constructor(private readonly prisma: PrismaClient) {}
+
   async createPending(input: {
     userId: string;
     resumeId: string;
@@ -164,7 +166,7 @@ export class CareerAnalysisRepository {
     resumeSnapshot: Prisma.InputJsonValue;
     roleSnapshot: Prisma.InputJsonValue;
   }): Promise<CareerAnalysis> {
-    return prisma.careerAnalysis.create({
+    return this.prisma.careerAnalysis.create({
       data: {
         userId: input.userId,
         resumeId: input.resumeId,
@@ -189,7 +191,7 @@ export class CareerAnalysisRepository {
     resumeSnapshot: Prisma.InputJsonValue;
     roleSnapshot: Prisma.InputJsonValue;
   }): Promise<CareerAnalysis> {
-    return prisma.careerAnalysis.create({
+    return this.prisma.careerAnalysis.create({
       data: {
         userId: input.userId,
         resumeId: input.resumeId,
@@ -211,7 +213,7 @@ export class CareerAnalysisRepository {
   async findRootForReassessment(
     analysisId: string,
   ): Promise<RootAnalysisForReassessment | null> {
-    const row = await prisma.careerAnalysis.findUnique({
+    const row = await this.prisma.careerAnalysis.findUnique({
       where: { id: analysisId },
       select: {
         id: true,
@@ -229,7 +231,7 @@ export class CareerAnalysisRepository {
     if (row.parentAnalysisId === null) return row;
     // A revision id was passed. Revisions form a flat list under one root —
     // never a chain — so this is at most one more hop.
-    return prisma.careerAnalysis.findUnique({
+    return this.prisma.careerAnalysis.findUnique({
       where: { id: row.parentAnalysisId },
       select: {
         id: true,
@@ -249,13 +251,13 @@ export class CareerAnalysisRepository {
   async findRootIdAndOwner(
     analysisId: string,
   ): Promise<OwnedAnalysisRootId | null> {
-    const row = await prisma.careerAnalysis.findUnique({
+    const row = await this.prisma.careerAnalysis.findUnique({
       where: { id: analysisId },
       select: { id: true, userId: true, parentAnalysisId: true },
     });
     if (!row) return null;
     if (row.parentAnalysisId === null) return row;
-    return prisma.careerAnalysis.findUnique({
+    return this.prisma.careerAnalysis.findUnique({
       where: { id: row.parentAnalysisId },
       select: { id: true, userId: true, parentAnalysisId: true },
     });
@@ -268,7 +270,7 @@ export class CareerAnalysisRepository {
   async findForRoadmapGeneration(
     analysisId: string,
   ): Promise<AnalysisForRoadmapGeneration | null> {
-    return prisma.careerAnalysis.findUnique({
+    return this.prisma.careerAnalysis.findUnique({
       where: { id: analysisId },
       select: {
         userId: true,
@@ -294,7 +296,7 @@ export class CareerAnalysisRepository {
   async findLatestRevision(
     parentAnalysisId: string,
   ): Promise<{ id: string; revision: number; createdAt: Date } | null> {
-    return prisma.careerAnalysis.findFirst({
+    return this.prisma.careerAnalysis.findFirst({
       where: { parentAnalysisId },
       select: { id: true, revision: true, createdAt: true },
       orderBy: { revision: "desc" },
@@ -311,7 +313,7 @@ export class CareerAnalysisRepository {
   async completeAnalysis(
     input: CompleteAnalysisInput,
   ): Promise<CompletedCareerAnalysis> {
-    return prisma.$transaction(
+    return this.prisma.$transaction(
       async (tx) => {
         if (input.evidence.length > 0) {
           await tx.candidateSkillEvidence.createMany({
@@ -382,7 +384,7 @@ export class CareerAnalysisRepository {
   // Returns whether the row actually transitioned, so the event log can stay
   // consistent with the status: no transition, no analysis_failed event.
   async markFailed(analysisId: string, reason: string): Promise<boolean> {
-    const result = await prisma.careerAnalysis.updateMany({
+    const result = await this.prisma.careerAnalysis.updateMany({
       where: { id: analysisId, status: "analyzing" },
       data: { status: "failed", failureReason: reason },
     });
@@ -391,7 +393,7 @@ export class CareerAnalysisRepository {
 
     // Separate statement rather than a nested `events: { create }`, which
     // updateMany does not support. Only reached when the guard above held.
-    await prisma.analysisEvent.create({
+    await this.prisma.analysisEvent.create({
       data: {
         careerAnalysisId: analysisId,
         type: "analysis_failed" as AnalysisEventType,
@@ -421,7 +423,7 @@ export class CareerAnalysisRepository {
     userId: string,
     startedBefore: Date,
   ): Promise<number> {
-    const result = await prisma.careerAnalysis.updateMany({
+    const result = await this.prisma.careerAnalysis.updateMany({
       where: {
         userId,
         status: "analyzing",
@@ -440,7 +442,7 @@ export class CareerAnalysisRepository {
   async findByIdWithOwner(
     analysisId: string,
   ): Promise<{ id: string; userId: string } | null> {
-    return prisma.careerAnalysis.findUnique({
+    return this.prisma.careerAnalysis.findUnique({
       where: { id: analysisId },
       select: { id: true, userId: true },
     });
@@ -453,7 +455,7 @@ export class CareerAnalysisRepository {
   async findByIdWithResults(
     analysisId: string,
   ): Promise<CompletedCareerAnalysis | null> {
-    return prisma.careerAnalysis.findUnique({
+    return this.prisma.careerAnalysis.findUnique({
       where: { id: analysisId },
       omit: { resumeSnapshot: true, roleSnapshot: true },
       include: {
@@ -487,7 +489,7 @@ export class CareerAnalysisRepository {
     const { resumeId, limit, cursor } = filter;
 
     // Fetch one extra row to detect whether a further page exists.
-    const rows = await prisma.careerAnalysis.findMany({
+    const rows = await this.prisma.careerAnalysis.findMany({
       where: {
         userId,
         parentAnalysisId: null,
@@ -550,7 +552,7 @@ export class CareerAnalysisRepository {
       "id" | "revision" | "status" | "readinessScore" | "createdAt" | "completedAt"
     >[]
   > {
-    return prisma.careerAnalysis.findMany({
+    return this.prisma.careerAnalysis.findMany({
       where: { parentAnalysisId: rootId },
       select: {
         id: true,
@@ -571,7 +573,7 @@ export class CareerAnalysisRepository {
     analysisId: string,
     userId: string,
   ): Promise<boolean> {
-    const result = await prisma.careerAnalysis.deleteMany({
+    const result = await this.prisma.careerAnalysis.deleteMany({
       where: { id: analysisId, userId },
     });
     return result.count > 0;
