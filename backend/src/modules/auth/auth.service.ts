@@ -26,13 +26,14 @@ import {
 } from "../../utils/tokens.js";
 import { Prisma } from "../../generated/client/index.js";
 import { StorageModule } from "../storage/storage.types.js";
-import { logger } from "../../config/logger.js";
+import { Logger } from "../../config/logger.js";
 
 export class AuthService {
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly storageModule: StorageModule,
     private readonly googleAuthProvider: GoogleAuthProvider,
+    private readonly logger: Logger,
   ) {}
   private throwInvalidCredentials(): never {
     throw new AppError(
@@ -137,7 +138,7 @@ export class AuthService {
     if (!user) return null;
 
     if (user.googleId !== googleId) {
-      logger.error("Google identity lookup returned a mismatched googleId", {
+      this.logger.error("Google identity lookup returned a mismatched googleId", {
         expectedGoogleId: googleId,
         actualGoogleId: user.googleId,
         userId: user.id,
@@ -158,7 +159,7 @@ export class AuthService {
       return user;
     }
     // Cannot fall back to email-based lookup - would enable account takeover
-    logger.warn(
+    this.logger.warn(
       "Google sign-in could not resolve an account after a conflict",
       {
         googleId,
@@ -182,7 +183,7 @@ export class AuthService {
     try {
       profile = await this.googleAuthProvider.exchangeCodeForProfile(code);
     } catch (err) {
-      throw classifyGoogleAuthError(err);
+      throw classifyGoogleAuthError(err, this.logger);
     }
 
     // Prevents takeover of unverified email addresses
@@ -240,7 +241,7 @@ export class AuthService {
         err.code === "P2002"
       ) {
         // Unique constraint race: googleId or email conflict
-        logger.warn("Google sign-in insert lost a unique-constraint race", {
+        this.logger.warn("Google sign-in insert lost a unique-constraint race", {
           googleId: profile.googleId,
           constraint: (err.meta as { target?: string[] } | undefined)?.target,
         });
@@ -339,7 +340,7 @@ export class AuthService {
         try {
           await this.storageModule.deleteFile(filePath);
         } catch (cleanupError) {
-          logger.error("Failed to delete resume file during account deletion", {
+          this.logger.error("Failed to delete resume file during account deletion", {
             userId,
             filePath,
             cleanupError,

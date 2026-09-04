@@ -2,6 +2,7 @@ import { afterAll, describe, expect, it } from "vitest";
 import { AuthService } from "../../../src/modules/auth/auth.service.js";
 import { AuthRepository } from "../../../src/modules/auth/auth.repository.js";
 import { prisma } from "../../../src/lib/prisma.js";
+import { logger } from "../../../src/config/logger.js";
 import { AppError } from "../../../src/types/app-error.js";
 import { ERROR_CODES } from "../../../src/constants/error-codes.js";
 import {
@@ -40,9 +41,9 @@ const unusedStorage: StorageModule = {
 
 function buildService(
   provider: GoogleAuthProvider,
-  repository: AuthRepository = new AuthRepository(),
+  repository: AuthRepository = new AuthRepository(prisma),
 ) {
-  return new AuthService(repository, unusedStorage, provider);
+  return new AuthService(repository, unusedStorage, provider, logger);
 }
 
 function googleProfile(overrides: Partial<GoogleProfile> = {}): GoogleProfile {
@@ -258,7 +259,7 @@ describe("AuthService.loginWithGoogle", () => {
       },
     });
 
-    const repository = new AuthRepository();
+    const repository = new AuthRepository(prisma);
     const contractViolatingRepo = Object.assign(
       Object.create(AuthRepository.prototype) as AuthRepository,
       repository,

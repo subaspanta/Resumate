@@ -1,6 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 import { OAuth2Client } from "google-auth-library";
 import { env } from "./config/env.js";
+import { logger } from "./config/logger.js";
+import { prisma } from "./lib/prisma.js";
 
 import { AuthRepository } from "./modules/auth/auth.repository.js";
 import { AuthService } from "./modules/auth/auth.service.js";
@@ -44,7 +46,7 @@ const googleOAuthClient = new OAuth2Client({
 });
 
 // --- repositories ---
-const authRepository = new AuthRepository();
+const authRepository = new AuthRepository(prisma);
 const resumeRepository = new ResumeRepository();
 const roleRepository = new RoleRepository();
 const careerAnalysisRepository = new CareerAnalysisRepository();
@@ -52,7 +54,7 @@ const roadmapRepository = new RoadmapRepository();
 
 // --- shared modules / agents ---
 const cloudinaryStorageModule = new CloudinaryStorageModule();
-const googleAuthProvider = new GoogleOAuthProvider(googleOAuthClient);
+const googleAuthProvider = new GoogleOAuthProvider(googleOAuthClient, logger);
 const aiStructuringModule = new AIStructuringService(geminiClient);
 const parsingModule = new ParsingService(aiStructuringModule);
 const evidenceAgent = new EvidenceAgentService(geminiClient);
@@ -63,6 +65,7 @@ const authService = new AuthService(
   authRepository,
   cloudinaryStorageModule,
   googleAuthProvider,
+  logger,
 );
 const roleService = new RoleService(roleRepository);
 const careerAnalysisService = new CareerAnalysisService(

@@ -3,6 +3,7 @@ import { afterAll, describe, expect, it } from "vitest";
 import { AuthService } from "../../../src/modules/auth/auth.service.js";
 import { AuthRepository } from "../../../src/modules/auth/auth.repository.js";
 import { prisma } from "../../../src/lib/prisma.js";
+import { logger } from "../../../src/config/logger.js";
 import { ERROR_CODES } from "../../../src/constants/error-codes.js";
 import { GoogleAuthProvider } from "../../../src/modules/auth/google/google-auth.types.js";
 import { StorageModule } from "../../../src/modules/storage/storage.types.js";
@@ -26,9 +27,10 @@ const unusedGoogleProvider: GoogleAuthProvider = {
 
 function buildService() {
   return new AuthService(
-    new AuthRepository(),
+    new AuthRepository(prisma),
     unusedStorage,
     unusedGoogleProvider,
+    logger,
   );
 }
 

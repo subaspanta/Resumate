@@ -3,6 +3,7 @@ import { AppError } from "../../../types/app-error.js";
 import { ERROR_CODES } from "../../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../../constants/http-status.js";
 import { env } from "../../../config/env.js";
+import { Logger } from "../../../config/logger.js";
 import { classifyGoogleAuthError } from "./google-auth-error.js";
 import { GoogleAuthProvider, GoogleProfile } from "./google-auth.types.js";
 
@@ -11,7 +12,10 @@ const GOOGLE_SCOPES = ["openid", "email", "profile"];
 
 export class GoogleOAuthProvider implements GoogleAuthProvider {
   // Injected client for testability
-  constructor(private readonly client: OAuth2Client) {}
+  constructor(
+    private readonly client: OAuth2Client,
+    private readonly logger: Logger,
+  ) {}
 
   buildAuthUrl(state: string): string {
     return this.client.generateAuthUrl({
@@ -57,7 +61,7 @@ export class GoogleOAuthProvider implements GoogleAuthProvider {
         name: payload.name ?? payload.email.split("@")[0], // Fallback to email local part
       };
     } catch (err) {
-      throw classifyGoogleAuthError(err);
+      throw classifyGoogleAuthError(err, this.logger);
     }
   }
 }

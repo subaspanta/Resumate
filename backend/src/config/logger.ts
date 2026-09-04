@@ -20,3 +20,5 @@ export const logger = {
     }
   },
 };
+
+export type Logger = Pick<typeof logger, "info" | "error" | "warn" | "debug">;

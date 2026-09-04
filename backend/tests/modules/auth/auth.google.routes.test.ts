@@ -7,6 +7,7 @@ import { prisma } from "../../../src/lib/prisma.js";
 import { AuthController } from "../../../src/modules/auth/auth.controller.js";
 import { AuthService } from "../../../src/modules/auth/auth.service.js";
 import { AuthRepository } from "../../../src/modules/auth/auth.repository.js";
+import { logger } from "../../../src/config/logger.js";
 import { AppError } from "../../../src/types/app-error.js";
 import { ERROR_CODES } from "../../../src/constants/error-codes.js";
 import {
@@ -99,7 +100,7 @@ function buildAppWithFakeProvider(profile: GoogleProfile) {
   };
 
   const controller = new AuthController(
-    new AuthService(new AuthRepository(), storage, provider),
+    new AuthService(new AuthRepository(prisma), storage, provider, logger),
   );
 
   const testApp = express();

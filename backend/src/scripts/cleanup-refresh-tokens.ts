@@ -6,7 +6,7 @@ import { AuthRepository } from "../modules/auth/auth.repository.js";
 const REVOKED_RETENTION_MS = 24 * 60 * 60 * 1000;
 
 async function main() {
-  const authRepository = new AuthRepository();
+  const authRepository = new AuthRepository(prisma);
   const deletedCount =
     await authRepository.deleteStaleRefreshTokens(REVOKED_RETENTION_MS);
   console.log(`Deleted ${deletedCount} stale refresh token(s).`);
