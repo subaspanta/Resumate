@@ -6,29 +6,19 @@ import { env } from "../../../config/env.js";
 import { classifyGoogleAuthError } from "./google-auth-error.js";
 import { GoogleAuthProvider, GoogleProfile } from "./google-auth.types.js";
 
-// `openid` must lead the list — it is what makes this an OpenID Connect
-// request and therefore what makes Google return an id_token at all. `email`
-// yields the email and email_verified claims; `profile` yields name.
+// `openid` must be first to receive an id_token; `email` and `profile` provide user data
 const GOOGLE_SCOPES = ["openid", "email", "profile"];
 
 export class GoogleOAuthProvider implements GoogleAuthProvider {
-  // Takes the client rather than building one, for the same reason the agents
-  // take GoogleGenAI: a provider that constructs its own SDK client cannot be
-  // faked in a test without mocking the entire module.
+  // Injected client for testability
   constructor(private readonly client: OAuth2Client) {}
 
   buildAuthUrl(state: string): string {
     return this.client.generateAuthUrl({
-      // "online": we never need to call Google on the user's behalf later, so
-      // asking for a refresh token would be requesting a long-lived credential
-      // we have no use for. Session lifetime is our own refresh-token
-      // rotation, not Google's.
-      access_type: "online",
+      access_type: "online", // No refresh token needed for one-time auth
       scope: GOOGLE_SCOPES,
       state,
-      // Always show the account chooser. Without it a user signed into several
-      // Google accounts is silently bound to whichever one Google picks.
-      prompt: "select_account",
+      prompt: "select_account", // Always show account chooser
     });
   }
 
@@ -44,9 +34,7 @@ export class GoogleOAuthProvider implements GoogleAuthProvider {
         );
       }
 
-      // The trust anchor of this whole flow. verifyIdToken checks Google's
-      // signature against its published keys and that `aud` equals our client
-      // id — without it, the claims below are just attacker-supplied JSON.
+      // Verify signature and audience; prevents forged tokens
       const ticket = await this.client.verifyIdToken({
         idToken: tokens.id_token,
         audience: env.GOOGLE_CLIENT_ID,
@@ -65,12 +53,8 @@ export class GoogleOAuthProvider implements GoogleAuthProvider {
       return {
         googleId: payload.sub,
         email: payload.email,
-        // Strict true. The claim is optional and may be absent or a string;
-        // anything other than boolean true must not count as verified.
-        emailVerified: payload.email_verified === true,
-        // `profile` scope grants name but Google documents it as not
-        // guaranteed, so fall back to the local part of the address.
-        name: payload.name ?? payload.email.split("@")[0],
+        emailVerified: payload.email_verified === true, // Strict boolean check
+        name: payload.name ?? payload.email.split("@")[0], // Fallback to email local part
       };
     } catch (err) {
       throw classifyGoogleAuthError(err);

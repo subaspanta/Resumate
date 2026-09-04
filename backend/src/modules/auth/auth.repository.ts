@@ -9,10 +9,7 @@ export class AuthRepository {
     });
   }
 
-  /** Selects `googleId` alongside the usual SafeUser fields — not cosmetic:
-   *  AuthService.resolveAfterRace asserts that the row it gets back carries
-   *  exactly the googleId it asked for, and cannot check that if the field
-   *  isn't selected. */
+  // Includes googleId to verify ownership after race conditions
   async findUserByGoogleId(googleId: string): Promise<GoogleLinkedUser | null> {
     return prisma.user.findUnique({
       where: { googleId },
@@ -27,18 +24,7 @@ export class AuthRepository {
     });
   }
 
-  /** Attaches a Google identity to an account that has none.
-   *
-   *  `googleId: null` sits on the WRITE, not just on the read that preceded
-   *  it. That predicate is the account-takeover guard, not a nicety: a row
-   *  that gained a different Google identity between our read and this update
-   *  simply matches nothing, so it can never be rebound to the caller's
-   *  identity.
-   *
-   *  Returns 0 for three different reasons — already linked to this same
-   *  googleId (a concurrent callback), linked to a *different* googleId, or
-   *  the row is gone. The caller cannot tell them apart from the count alone
-   *  and must re-resolve by googleId; see AuthService.resolveAfterRace. */
+  // Atomically links googleId only if currently null (prevents takeover)
   async linkGoogleIdIfUnlinked(
     userId: string,
     googleId: string,
@@ -92,9 +78,7 @@ export class AuthRepository {
     });
   }
 
-  /** Atomically revokes a single token iff it's still live. Returns false if
-   *  it was already revoked — either by a concurrent request winning the
-   *  race, or by reuse of a previously-rotated token. */
+  // Atomically revokes only if not already revoked (prevents replay)
   async revokeRefreshTokenIfLive(id: string): Promise<boolean> {
     const result = await prisma.refreshToken.updateMany({
       where: { id, revokedAt: null },
@@ -117,8 +101,7 @@ export class AuthRepository {
     });
   }
 
-  /** Deletes naturally-expired rows immediately, and revoked rows after
-   *  `revokedRetentionMs` so a just-detected theft stays inspectable. */
+  // Cleanup: expired tokens immediately, revoked after retention period
   async deleteStaleRefreshTokens(revokedRetentionMs: number): Promise<number> {
     const result = await prisma.refreshToken.deleteMany({
       where: {
@@ -136,9 +119,7 @@ export class AuthRepository {
     return result.count;
   }
 
-  /** Cloudinary paths for every resume the user owns, read before the
-   *  cascade delete removes the rows that would otherwise be the only
-   *  record of them. */
+  // Fetch file paths before cascade delete removes resume records
   async findResumeFilePaths(userId: string): Promise<string[]> {
     const resumes = await prisma.resume.findMany({
       where: { userId, filePath: { not: null } },
@@ -149,11 +130,7 @@ export class AuthRepository {
       .filter((path): path is string => path !== null);
   }
 
-  /** Deletes the user row. Cascades to resumes, career analyses, evidence,
-   *  gaps, roadmaps, tasks, analysis events, and refresh tokens per the
-   *  schema's onDelete: Cascade — this is the one write that removes all of
-   *  it. Returns the row count so the caller can tell an already-deleted
-   *  user apart from a real failure. */
+  // Cascades to all related records; returns count to detect missing user
   async deleteUser(userId: string): Promise<number> {
     const result = await prisma.user.deleteMany({ where: { id: userId } });
     return result.count;

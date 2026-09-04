@@ -98,14 +98,7 @@ export class AuthService {
   async login(data: LoginUserInput): Promise<AuthResponse> {
     const user = await this.authRepository.findUserByEmail(data.email);
 
-    // A Google-only account has no password to compare against. The dummy-hash
-    // fallback below would handle the null safely, but it would tell the user
-    // their password is wrong when the real answer is that this account has no
-    // password — a dead end they can never resolve by retyping it.
-    //
-    // This branch returns faster than a bcrypt compare, which reveals that an
-    // account exists on this address and is Google-linked. Accepted: the
-    // alternative is a sign-in page that can never explain itself.
+    // Google-only accounts have no password; fail fast with clear message
     if (user && user.passwordHash === null) {
       throw new AppError(
         HTTP_STATUS.UNAUTHORIZED,
@@ -136,23 +129,7 @@ export class AuthService {
     return this.googleAuthProvider.buildAuthUrl(state);
   }
 
-  /** Resolves an account after a conflict on the sign-in path: the link-write
-   *  matched nothing, or the insert lost a unique-constraint race. Both mean
-   *  another request touched this account between our read and our write.
-   *
-   *  Keyed on googleId and ONLY googleId. Re-reading by email here would
-   *  resolve to a row that may carry a *different* Google identity, handing
-   *  this sign-in an account it does not own — the exact takeover this flow
-   *  exists to prevent. Do not "simplify" this to findUserByEmail; the email
-   *  parameter is for logging only. */
-  /** The ONLY way this service reads a user by Google identity.
-   *
-   *  Every result is checked to actually carry the googleId that was asked
-   *  for. The repository query is already keyed on it, so a mismatch can only
-   *  mean the lookup was rewritten (to findUserByEmail, to a fuzzy match, to a
-   *  cache) or its select drifted — this turns that class of mistake from a
-   *  silent account handover into a loud 409. Callers must not call
-   *  authRepository.findUserByGoogleId directly and skip this. */
+  // Resolves by googleId ONLY. Re-reading by email would risk account takeover.
   private async findByGoogleIdChecked(
     googleId: string,
   ): Promise<GoogleLinkedUser | null> {
@@ -180,22 +157,18 @@ export class AuthService {
     if (user) {
       return user;
     }
-
-    // Nothing carries this googleId, so either the winning insert rolled back,
-    // or this email is already bound to a different Google identity (a
-    // recycled or reassigned address). Neither is recoverable here, and
-    // neither may fall through to an email-keyed lookup.
-    logger.warn("Google sign-in could not resolve an account after a conflict", {
-      googleId,
-      email,
-    });
+    // Cannot fall back to email-based lookup - would enable account takeover
+    logger.warn(
+      "Google sign-in could not resolve an account after a conflict",
+      {
+        googleId,
+        email,
+      },
+    );
     throw this.accountConflict();
   }
 
-  // Deliberately does not say *why*. The conflicting account may be
-  // password-only, Google-only, or both, and naming the cause would confirm
-  // that an account exists on this address at all — exactly what someone who
-  // just acquired a recycled address would want to learn.
+  // Deliberately vague to avoid email enumeration
   private accountConflict(): AppError {
     return new AppError(
       HTTP_STATUS.CONFLICT,
@@ -205,10 +178,6 @@ export class AuthService {
   }
 
   async loginWithGoogle(code: string): Promise<AuthResponse> {
-    // Wrapped here as well as inside GoogleOAuthProvider: the provider is an
-    // injected interface, so this service cannot assume every implementation
-    // classifies its own failures. classifyGoogleAuthError passes an existing
-    // AppError through untouched, so double-wrapping costs nothing.
     let profile: GoogleProfile;
     try {
       profile = await this.googleAuthProvider.exchangeCodeForProfile(code);
@@ -216,8 +185,7 @@ export class AuthService {
       throw classifyGoogleAuthError(err);
     }
 
-    // Auto-linking on an unverified address would let anyone who can register
-    // that address at Google take over an existing ResuMate account.
+    // Prevents takeover of unverified email addresses
     if (!profile.emailVerified) {
       throw new AppError(
         HTTP_STATUS.UNAUTHORIZED,
@@ -250,9 +218,7 @@ export class AuthService {
         profile.googleId,
       );
 
-      // count === 0 means the row gained a googleId between the read above and
-      // this write. Do NOT reuse `byEmail` here — the identity it now carries
-      // may not be this caller's.
+      // Race condition: another request linked this account first
       if (linked === 0) {
         return this.resolveAfterRace(profile.googleId, profile.email);
       }
@@ -273,10 +239,7 @@ export class AuthService {
         err instanceof Prisma.PrismaClientKnownRequestError &&
         err.code === "P2002"
       ) {
-        // Either unique index can fire: googleId means a concurrent callback
-        // for this same identity committed first; email means the address was
-        // claimed between our read and this insert. The recovery is the same
-        // either way, and is safe because it resolves by googleId, never email.
+        // Unique constraint race: googleId or email conflict
         logger.warn("Google sign-in insert lost a unique-constraint race", {
           googleId: profile.googleId,
           constraint: (err.meta as { target?: string[] } | undefined)?.target,
@@ -307,17 +270,12 @@ export class AuthService {
       this.throwInvalidRefreshToken();
     }
 
-    // Natural expiry is not a theft signal — don't cascade-revoke a
-    // legitimate session that simply went stale.
+    // Natural expiry is not a theft signal
     if (stored.expiresAt < new Date()) {
       this.throwInvalidRefreshToken();
     }
 
-    // Atomically claim the token: succeeds only if it hasn't been revoked
-    // yet. Losing this claim means either the token was already rotated
-    // (reuse — theft signal) or a concurrent request won a genuine race.
-    // Both are indistinguishable at the DB layer, so both revoke the whole
-    // family — the standard, accepted tradeoff of refresh-token rotation.
+    // Atomically claim token; if already revoked, cascade revoke whole family
     const claimed = await this.authRepository.revokeRefreshTokenIfLive(
       stored.id,
     );
@@ -327,7 +285,9 @@ export class AuthService {
       this.throwInvalidRefreshToken();
     }
 
-    const user = await this.authRepository.findUserByIdOmittingPassword(payload.sub);
+    const user = await this.authRepository.findUserByIdOmittingPassword(
+      payload.sub,
+    );
 
     if (!user) {
       this.throwInvalidRefreshToken();
@@ -360,14 +320,7 @@ export class AuthService {
     return user;
   }
 
-  // Collects resume file paths before the cascade delete removes the rows
-  // that are the only record of them, then deletes the user — cascading to
-  // resumes, career analyses, evidence, gaps, roadmaps, tasks, analysis
-  // events, and refresh tokens per the schema's onDelete: Cascade. Storage
-  // cleanup is best-effort and runs after the DB delete succeeds, matching
-  // ResumeService.deleteResume: the account is gone either way, and a
-  // leftover Cloudinary object is a cost to clean up later, not a reason to
-  // leave the account undeletable.
+  // Collects file paths before cascade delete; storage cleanup is best-effort
   async deleteAccount(userId: string): Promise<void> {
     const filePaths = await this.authRepository.findResumeFilePaths(userId);
 
@@ -380,20 +333,17 @@ export class AuthService {
       );
     }
 
-    // Parallel, not sequential: each deleteFile is an independent Cloudinary
-    // round trip, and a serial loop pays their full latency once per resume.
-    // Each iteration catches its own failure, so one bad delete can neither
-    // reject the whole Promise.all nor block the ones after it — matching
-    // the account-still-gone-either-way reasoning above.
+    // Parallel deletion; failures logged but don't block account deletion
     await Promise.all(
       filePaths.map(async (filePath) => {
         try {
           await this.storageModule.deleteFile(filePath);
         } catch (cleanupError) {
-          logger.error(
-            "Failed to delete resume file during account deletion",
-            { userId, filePath, cleanupError },
-          );
+          logger.error("Failed to delete resume file during account deletion", {
+            userId,
+            filePath,
+            cleanupError,
+          });
         }
       }),
     );

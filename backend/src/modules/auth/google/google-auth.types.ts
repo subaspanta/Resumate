@@ -1,18 +1,14 @@
-// The subset of Google's verified id_token claims this application acts on.
-// Deliberately narrow: whatever else the token carries, nothing downstream can
-// read a field that isn't listed here.
+// The subset of Google's verified id_token claims this application uses.
+// Narrowly defined to prevent downstream access to unlisted fields.
 export type GoogleProfile = {
-  /** Google's stable subject id (the `sub` claim). */
-  googleId: string;
+  googleId: string; // Google's stable subject id (sub claim)
   email: string;
-  /** From the `email_verified` claim. Auto-linking requires this to be true. */
-  emailVerified: boolean;
+  emailVerified: boolean; // Must be true for auto-linking
   name: string;
 };
 
-// Narrow port over google-auth-library so AuthService never touches the SDK
-// and tests can supply a fake, mirroring StorageModule and the injected
-// GoogleGenAI client.
+// Abstraction over google-auth-library for testability.
+// AuthService depends on this interface, not the SDK directly.
 export interface GoogleAuthProvider {
   buildAuthUrl(state: string): string;
   exchangeCodeForProfile(code: string): Promise<GoogleProfile>;

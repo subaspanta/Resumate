@@ -11,11 +11,8 @@ const AUTH_COOKIE_PATH = "/api/v1/auth";
 
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  // "lax", not "strict": the Google OAuth callback is reached by a cross-site
-  // top-level navigation from accounts.google.com, and browsers do not carry
-  // strict cookies across one — sign-in would appear to succeed and leave the
-  // user logged out. Lax still withholds the cookie from cross-site POST/XHR,
-  // which is where the CSRF risk actually lives.
+
+  // Lax: allows OAuth return navigation, blocks cross-site POST/XHR CSRF
   cookieOptions = {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
@@ -29,9 +26,8 @@ export class AuthController {
     maxAge: env.REFRESH_COOKIE_MAX_AGE,
     path: AUTH_COOKIE_PATH,
   };
-  // Short-lived CSRF nonce for the OAuth round trip. Lax so it survives the
-  // return navigation from Google; scoped to the auth path so it never rides
-  // along on ordinary API calls.
+
+  // Short-lived OAuth nonce, path-scoped to auth routes
   private oauthStateCookieOptions = {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
@@ -40,8 +36,6 @@ export class AuthController {
     path: AUTH_COOKIE_PATH,
   };
 
-  // Extracted so the OAuth callback can set exactly these cookies without also
-  // sending a JSON body — it answers with a redirect instead.
   private setAuthCookies(
     res: Response,
     accessToken: string,
@@ -77,14 +71,10 @@ export class AuthController {
 
   googleCallback = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // Shape already validated by googleCallbackQuerySchema on the route.
       const { code, state } = req.query as { code: string; state: string };
       const expectedState = req.cookies.oauthState;
 
-      // Verified here rather than in the service because it is a property of
-      // this HTTP exchange — a cookie against a query param — not a business
-      // rule. The service has access to neither and shouldn't grow a cookie
-      // parameter to get it.
+      // Verify state cookie matches query param
       if (!expectedState || state !== expectedState) {
         throw new AppError(
           HTTP_STATUS.BAD_REQUEST,
@@ -93,11 +83,7 @@ export class AuthController {
         );
       }
 
-      // Same options object it was set with, deliberately. Express documents
-      // that clients only clear a cookie when clearCookie's options are
-      // identical to res.cookie's — a differing Path emits a normal-looking
-      // Set-Cookie while the stale nonce survives in the browser, replayable
-      // for its full 10-minute life. (maxAge here is ignored by clearCookie.)
+      // Clear nonce with matching options (path matters)
       res.clearCookie("oauthState", this.oauthStateCookieOptions);
 
       const { accessToken, refreshToken } =
@@ -105,8 +91,7 @@ export class AuthController {
 
       this.setAuthCookies(res, accessToken, refreshToken);
 
-      // A browser navigation, not a fetch — cookies plus a redirect, never a
-      // JSON body.
+      // Redirect browser, not JSON response
       res.redirect(env.FRONTEND_URL);
     } catch (error) {
       next(error);
@@ -133,7 +118,13 @@ export class AuthController {
       const { user, accessToken, refreshToken } = await this.authService.login(
         req.body,
       );
-      this.sendAuthResponse(res, user, accessToken, refreshToken, HTTP_STATUS.OK);
+      this.sendAuthResponse(
+        res,
+        user,
+        accessToken,
+        refreshToken,
+        HTTP_STATUS.OK,
+      );
     } catch (error) {
       next(error);
     }
