@@ -48,17 +48,17 @@ const googleOAuthClient = new OAuth2Client({
 // --- repositories ---
 const authRepository = new AuthRepository(prisma);
 const resumeRepository = new ResumeRepository(prisma);
-const roleRepository = new RoleRepository();
-const careerAnalysisRepository = new CareerAnalysisRepository();
-const roadmapRepository = new RoadmapRepository();
+const roleRepository = new RoleRepository(prisma);
+const careerAnalysisRepository = new CareerAnalysisRepository(prisma);
+const roadmapRepository = new RoadmapRepository(prisma);
 
 // --- shared modules / agents ---
 const cloudinaryStorageModule = new CloudinaryStorageModule();
 const googleAuthProvider = new GoogleOAuthProvider(googleOAuthClient, logger);
-const aiStructuringModule = new AIStructuringService(geminiClient);
+const aiStructuringModule = new AIStructuringService(geminiClient, logger);
 const parsingModule = new ParsingService(aiStructuringModule);
-const evidenceAgent = new EvidenceAgentService(geminiClient);
-const roadmapAgent = new RoadmapAgentService(geminiClient);
+const evidenceAgent = new EvidenceAgentService(geminiClient, logger);
+const roadmapAgent = new RoadmapAgentService(geminiClient, logger);
 
 // --- services ---
 const authService = new AuthService(
@@ -76,6 +76,7 @@ const careerAnalysisService = new CareerAnalysisService(
   // Narrow read-only port onto roadmapRepository, used only by reassessment.
   // roadmapRepository is constructed above, so no reordering is needed.
   roadmapRepository,
+  logger,
 );
 const resumeService = new ResumeService(
   resumeRepository,
