@@ -83,7 +83,7 @@ function buildRoadmapService(agent: RoadmapAgent) {
 function buildAnalysisService(agent: EvidenceAgent = evidenceAgent) {
   return new CareerAnalysisService(
     new CareerAnalysisRepository(),
-    new ResumeRepository(),
+    new ResumeRepository(prisma),
     new RoleService(new RoleRepository()),
     agent,
     new RoadmapRepository(),

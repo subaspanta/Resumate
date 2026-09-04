@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { prisma } from "../../../src/lib/prisma.js";
+import { logger } from "../../../src/config/logger.js";
 import { ResumeRepository } from "../../../src/modules/resume/resume.repository.js";
 import { ResumeService } from "../../../src/modules/resume/resume.service.js";
 import { ParsingModule, StorageModule } from "../../../src/modules/resume/resume.types.js";
@@ -89,9 +90,10 @@ describe("ResumeService.uploadResume", () => {
   it("persists the resume when both storage and parsing succeed", async () => {
     const user = await createUser();
     const service = new ResumeService(
-      new ResumeRepository(),
+      new ResumeRepository(prisma),
       fakeStorageModule(),
       fakeParsingModule(),
+      logger,
     );
 
     const resume = await service.uploadResume(user.id, fakeFile(), {});
@@ -106,9 +108,10 @@ describe("ResumeService.uploadResume", () => {
   it("throws STORAGE_FAILED and does not persist a row when storage rejects", async () => {
     const user = await createUser();
     const service = new ResumeService(
-      new ResumeRepository(),
+      new ResumeRepository(prisma),
       failingStorageModule(new Error("upload stalled")),
       fakeParsingModule(),
+      logger,
     );
 
     await expect(service.uploadResume(user.id, fakeFile(), {})).rejects.toMatchObject(
@@ -123,9 +126,10 @@ describe("ResumeService.uploadResume", () => {
     const user = await createUser();
     const storage = fakeStorageModule();
     const service = new ResumeService(
-      new ResumeRepository(),
+      new ResumeRepository(prisma),
       storage,
       failingParsingModule(new Error("extraction stalled")),
+      logger,
     );
 
     await expect(service.uploadResume(user.id, fakeFile(), {})).rejects.toMatchObject(
@@ -168,7 +172,12 @@ describe("ResumeService.uploadResume", () => {
       },
     });
 
-    const service = new ResumeService(new ResumeRepository(), storage, parsing);
+    const service = new ResumeService(
+      new ResumeRepository(prisma),
+      storage,
+      parsing,
+      logger,
+    );
     await service.uploadResume(user.id, fakeFile(), {});
 
     // storage-start fires synchronously on the same tick Promise.allSettled
@@ -190,9 +199,10 @@ describe("ResumeService.replaceResume", () => {
   } = {}) {
     const user = await createUser();
     const service = new ResumeService(
-      new ResumeRepository(),
+      new ResumeRepository(prisma),
       overrides.storage ?? fakeStorageModule(),
       overrides.parsing ?? fakeParsingModule(),
+      logger,
     );
     const resume = await service.uploadResume(user.id, fakeFile(), {});
     return { user, service, resume };
@@ -201,7 +211,7 @@ describe("ResumeService.replaceResume", () => {
   it("updates the row in place, keeping the same id", async () => {
     const { user, resume } = await uploadFixtureResume();
     const service = new ResumeService(
-      new ResumeRepository(),
+      new ResumeRepository(prisma),
       fakeStorageModule(),
       fakeParsingModule({
         async parseResume() {
@@ -218,6 +228,7 @@ describe("ResumeService.replaceResume", () => {
           };
         },
       }),
+      logger,
     );
 
     const newFile = { ...fakeFile(), originalname: "new-resume.pdf" };
@@ -252,7 +263,7 @@ describe("ResumeService.replaceResume", () => {
     });
 
     const service = new ResumeService(
-      new ResumeRepository(),
+      new ResumeRepository(prisma),
       fakeStorageModule(),
       fakeParsingModule({
         async parseResume() {
@@ -264,6 +275,7 @@ describe("ResumeService.replaceResume", () => {
           };
         },
       }),
+      logger,
     );
 
     await service.replaceResume(user.id, resume.id, fakeFile(), {});
@@ -289,9 +301,10 @@ describe("ResumeService.replaceResume", () => {
     const { resume } = await uploadFixtureResume();
     const otherUser = await createUser();
     const service = new ResumeService(
-      new ResumeRepository(),
+      new ResumeRepository(prisma),
       fakeStorageModule(),
       fakeParsingModule(),
+      logger,
     );
 
     await expect(
@@ -303,9 +316,10 @@ describe("ResumeService.replaceResume", () => {
     const { user, resume } = await uploadFixtureResume();
     const storage = fakeStorageModule();
     const service = new ResumeService(
-      new ResumeRepository(),
+      new ResumeRepository(prisma),
       storage,
       failingParsingModule(new Error("extraction stalled")),
+      logger,
     );
 
     await expect(
@@ -327,7 +341,12 @@ describe("ResumeService.replaceResume", () => {
         return { path: "resumes/second-path", url: "https://example.com/second.pdf" };
       },
     });
-    const service = new ResumeService(new ResumeRepository(), storage, fakeParsingModule());
+    const service = new ResumeService(
+      new ResumeRepository(prisma),
+      storage,
+      fakeParsingModule(),
+      logger,
+    );
 
     await service.replaceResume(user.id, resume.id, fakeFile(), {});
 

@@ -67,7 +67,7 @@ function buildService(
   const roleRepository = new RoleRepository();
   return new CareerAnalysisService(
     new CareerAnalysisRepository(),
-    new ResumeRepository(),
+    new ResumeRepository(prisma),
     new RoleService(roleRepository),
     agent,
     completedWorkReader,

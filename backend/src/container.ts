@@ -47,7 +47,7 @@ const googleOAuthClient = new OAuth2Client({
 
 // --- repositories ---
 const authRepository = new AuthRepository(prisma);
-const resumeRepository = new ResumeRepository();
+const resumeRepository = new ResumeRepository(prisma);
 const roleRepository = new RoleRepository();
 const careerAnalysisRepository = new CareerAnalysisRepository();
 const roadmapRepository = new RoadmapRepository();
@@ -81,6 +81,7 @@ const resumeService = new ResumeService(
   resumeRepository,
   cloudinaryStorageModule,
   parsingModule,
+  logger,
 );
 
 // --- controllers ---
