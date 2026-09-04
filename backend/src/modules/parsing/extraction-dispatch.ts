@@ -1,5 +1,6 @@
 import { extractTextFromPdf } from "./extractors/pdf-extractor.js";
 import { extractTextFromDocx } from "./extractors/docx-extractor.js";
+import { Logger } from "../../config/logger.js";
 
 // Pure mime-to-extractor routing, no timeout/worker concerns — this is the
 // seam extraction.worker.ts calls inside the worker thread and unit tests
@@ -11,9 +12,10 @@ import { extractTextFromDocx } from "./extractors/docx-extractor.js";
 export async function dispatchExtraction(
   buffer: Buffer,
   mimeType: string,
+  logger?: Logger,
 ): Promise<string> {
   if (mimeType === "application/pdf") {
     return extractTextFromPdf(buffer);
   }
-  return extractTextFromDocx(buffer);
+  return logger ? extractTextFromDocx(buffer, logger) : extractTextFromDocx(buffer);
 }

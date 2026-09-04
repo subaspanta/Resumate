@@ -1,5 +1,6 @@
 import { parentPort } from "node:worker_threads";
 import { dispatchExtraction } from "./extraction-dispatch.js";
+import { logger } from "../../config/logger.js";
 
 // AppError isn't clonable across the worker/main-thread boundary, so a
 // failure crosses as a plain {ok:false, message} envelope — the runner
@@ -9,7 +10,7 @@ parentPort!.once(
   "message",
   async ({ buffer, mimeType }: { buffer: Buffer; mimeType: string }) => {
     try {
-      const text = await dispatchExtraction(buffer, mimeType);
+      const text = await dispatchExtraction(buffer, mimeType, logger);
       parentPort!.postMessage({ ok: true, text });
     } catch (err) {
       parentPort!.postMessage({

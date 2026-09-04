@@ -267,6 +267,7 @@ describe("normalizeStructuredResume — logging", () => {
         skills: ["Python", "Django"],
       },
       { resumeId: "resume-123", source: "createCareerAnalysis" },
+      logger,
     );
 
     expect(warn).toHaveBeenCalledTimes(1);
@@ -289,7 +290,7 @@ describe("normalizeStructuredResume — logging", () => {
       experience: [
         { title: "Engineer", description: "Led the payments migration." },
       ],
-    });
+    }, undefined, logger);
 
     const serialized = JSON.stringify(warn.mock.calls[0]);
     expect(serialized).not.toContain("Jane Doe");
@@ -304,7 +305,7 @@ describe("normalizeStructuredResume — logging", () => {
     normalizeStructuredResume({
       experience: [{ title: "Engineer", bullets: "not an array" }],
       projects: "not an array",
-    });
+    }, undefined, logger);
 
     const { repairs } = warn.mock.calls[0][1];
     expect(repairs).toContain("experience[0].bullets:bullets-not-an-array");
@@ -345,7 +346,7 @@ describe("normalizeStructuredResume — logging", () => {
       ],
       projects: [{ name: "P", description: "three" }],
       skills: [1, 2, 3],
-    });
+    }, undefined, logger);
 
     expect(warn).toHaveBeenCalledTimes(1);
   });

@@ -1,5 +1,5 @@
 import { SkillGroup, StructuredResume } from "./parsing.types.js";
-import { logger } from "../../config/logger.js";
+import { Logger } from "../../config/logger.js";
 
 // `structuredResume` / `resumeSnapshot` are Json columns. Prisma neither
 // validates their contents nor migrates them when the TS type changes, so
@@ -124,6 +124,7 @@ export function normalizeStructuredResume(
   // Identifies the offending row in the warning. Optional so the function stays
   // callable from tests and any future non-DB path.
   context?: { resumeId?: string; source?: string },
+  logger?: Logger,
 ): StructuredResume {
   const repairs: Repairs = [];
   const source = isRecord(raw) ? raw : {};
@@ -205,7 +206,7 @@ export function normalizeStructuredResume(
     })) as StructuredResume["customSections"];
 
   // Warn once per row, after every field has had its say.
-  if (repairs.length > 0) {
+  if (repairs.length > 0 && logger) {
     logger.warn("Repaired malformed stored resume JSON", {
       resumeId: context?.resumeId ?? "unknown",
       source: context?.source ?? "unknown",

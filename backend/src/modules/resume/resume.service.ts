@@ -237,7 +237,7 @@ export class ResumeService {
       structuredResume: normalizeStructuredResume(resume.structuredResume, {
         resumeId: id,
         source: "getResumeById",
-      }) as unknown as Prisma.JsonValue,
+      }, this.logger) as unknown as Prisma.JsonValue,
     };
   }
 

@@ -7,7 +7,7 @@ import { RoleService } from "../role/role.service.js";
 import { buildRoleSnapshot } from "../role/role-snapshot.js";
 import { normalizeStructuredResume } from "../parsing/normalize-resume.js";
 import { validateEvidenceGrounding } from "../../utils/career-output-validator.js";
-import { logger } from "../../config/logger.js";
+import { Logger } from "../../config/logger.js";
 import {
   AnalysisForRoadmapGeneration,
   CareerAnalysisRepository,
@@ -33,6 +33,7 @@ export class CareerAnalysisService {
     // Deliberately not RoadmapService: RoadmapService already depends on this
     // service for ownership, so depending back would cycle container.ts.
     private readonly completedWorkReader: CompletedWorkReader,
+    private readonly logger: Logger,
   ) {}
 
   // The full analysis pipeline. The ordering is the product's core guarantee,
@@ -82,7 +83,7 @@ export class CareerAnalysisService {
     const resumeSnapshot = normalizeStructuredResume(resume.structuredResume, {
       resumeId,
       source: "createCareerAnalysis",
-    });
+    }, this.logger);
     const roleSnapshot = buildRoleSnapshot(role);
 
     const analysis = await this.careerAnalysisRepository.createPending({
@@ -116,7 +117,7 @@ export class CareerAnalysisService {
       if (rejections.length > 0) {
         // Logged, never surfaced: over-rejection would otherwise show up only
         // as an unexplained low score. Details carry no resume content.
-        logger.warn("Dropped ungrounded evidence during career analysis", {
+        this.logger.warn("Dropped ungrounded evidence during career analysis", {
           analysisId: analysis.id,
           rejected: rejections.length,
           reasons: rejections.map((r) => `${r.skillSlug}:${r.reason}`),
@@ -294,7 +295,7 @@ export class CareerAnalysisService {
       });
 
       if (rejections.length > 0) {
-        logger.warn("Dropped ungrounded evidence during reassessment", {
+        this.logger.warn("Dropped ungrounded evidence during reassessment", {
           analysisId: revision.id,
           rootAnalysisId: root.id,
           rejected: rejections.length,
@@ -355,7 +356,7 @@ export class CareerAnalysisService {
     try {
       await this.careerAnalysisRepository.markFailed(analysisId, reason);
     } catch (markError) {
-      logger.error("Failed to mark career analysis as failed", {
+      this.logger.error("Failed to mark career analysis as failed", {
         analysisId,
         markError,
       });
@@ -505,12 +506,12 @@ export class CareerAnalysisService {
         cutoff,
       );
       if (failed > 0) {
-        logger.warn("Failed stale career analyses on read", { userId, failed });
+        this.logger.warn("Failed stale career analyses on read", { userId, failed });
       }
     } catch (error) {
       // Housekeeping must never break the read it was attached to. The row
       // stays stale and the next read tries again.
-      logger.error("Could not reap stale career analyses", { userId, error });
+      this.logger.error("Could not reap stale career analyses", { userId, error });
     }
   }
 
