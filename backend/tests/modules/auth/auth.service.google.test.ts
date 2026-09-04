@@ -117,7 +117,9 @@ describe("AuthService.loginWithGoogle", () => {
     const second = await service.loginWithGoogle("any-code");
 
     expect(second.user.id).toBe(first.user.id);
-    const rows = await prisma.user.findMany({ where: { email: profile.email } });
+    const rows = await prisma.user.findMany({
+      where: { email: profile.email },
+    });
     expect(rows).toHaveLength(1);
   });
 
@@ -130,7 +132,9 @@ describe("AuthService.loginWithGoogle", () => {
       code: ERROR_CODES.OAUTH_EMAIL_NOT_VERIFIED,
     });
 
-    const rows = await prisma.user.findMany({ where: { email: profile.email } });
+    const rows = await prisma.user.findMany({
+      where: { email: profile.email },
+    });
     expect(rows).toHaveLength(0);
   });
 
@@ -173,7 +177,9 @@ describe("AuthService.loginWithGoogle", () => {
     ]);
 
     // Exactly one account must exist.
-    const rows = await prisma.user.findMany({ where: { email: profile.email } });
+    const rows = await prisma.user.findMany({
+      where: { email: profile.email },
+    });
     expect(rows).toHaveLength(1);
     expect(rows[0].googleId).toBe(profile.googleId);
 
@@ -225,11 +231,20 @@ describe("AuthService.loginWithGoogle", () => {
   it("refuses to rebind an email already held by a different Google identity", async () => {
     const email = `recycled-${crypto.randomUUID()}@example.com`;
     const original = await prisma.user.create({
-      data: { name: "Original", email, googleId: `sub-original-${crypto.randomUUID()}` },
+      data: {
+        name: "Original",
+        email,
+        googleId: `sub-original-${crypto.randomUUID()}`,
+      },
     });
 
     const service = buildService(
-      fakeProvider(googleProfile({ email, googleId: `sub-different-${crypto.randomUUID()}` })),
+      fakeProvider(
+        googleProfile({
+          email,
+          googleId: `sub-different-${crypto.randomUUID()}`,
+        }),
+      ),
     );
 
     await expect(service.loginWithGoogle("any-code")).rejects.toMatchObject({

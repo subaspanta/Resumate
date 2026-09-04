@@ -138,11 +138,14 @@ export class AuthService {
     if (!user) return null;
 
     if (user.googleId !== googleId) {
-      this.logger.error("Google identity lookup returned a mismatched googleId", {
-        expectedGoogleId: googleId,
-        actualGoogleId: user.googleId,
-        userId: user.id,
-      });
+      this.logger.error(
+        "Google identity lookup returned a mismatched googleId",
+        {
+          expectedGoogleId: googleId,
+          actualGoogleId: user.googleId,
+          userId: user.id,
+        },
+      );
       throw this.accountConflict();
     }
 
@@ -241,10 +244,13 @@ export class AuthService {
         err.code === "P2002"
       ) {
         // Unique constraint race: googleId or email conflict
-        this.logger.warn("Google sign-in insert lost a unique-constraint race", {
-          googleId: profile.googleId,
-          constraint: (err.meta as { target?: string[] } | undefined)?.target,
-        });
+        this.logger.warn(
+          "Google sign-in insert lost a unique-constraint race",
+          {
+            googleId: profile.googleId,
+            constraint: (err.meta as { target?: string[] } | undefined)?.target,
+          },
+        );
         return this.resolveAfterRace(profile.googleId, profile.email);
       }
       throw err;
@@ -340,11 +346,14 @@ export class AuthService {
         try {
           await this.storageModule.deleteFile(filePath);
         } catch (cleanupError) {
-          this.logger.error("Failed to delete resume file during account deletion", {
-            userId,
-            filePath,
-            cleanupError,
-          });
+          this.logger.error(
+            "Failed to delete resume file during account deletion",
+            {
+              userId,
+              filePath,
+              cleanupError,
+            },
+          );
         }
       }),
     );

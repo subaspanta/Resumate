@@ -103,12 +103,12 @@ describe("AuthService.refresh", () => {
 
     const rotated = await service.refresh(registered.refreshToken);
 
-    await expect(service.refresh(registered.refreshToken)).rejects.toMatchObject(
-      {
-        statusCode: 401,
-        code: ERROR_CODES.REFRESH_TOKEN_INVALID,
-      },
-    );
+    await expect(
+      service.refresh(registered.refreshToken),
+    ).rejects.toMatchObject({
+      statusCode: 401,
+      code: ERROR_CODES.REFRESH_TOKEN_INVALID,
+    });
 
     // The token minted by the legitimate rotation is collateral — that is the
     // point of family revocation, since we cannot tell victim from attacker.

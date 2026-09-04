@@ -129,12 +129,18 @@ function buildAppWithFakeProvider(profile: GoogleProfile) {
       if (err instanceof AppError) {
         res
           .status(err.statusCode)
-          .json({ success: false, error: { code: err.code, message: err.message } });
+          .json({
+            success: false,
+            error: { code: err.code, message: err.message },
+          });
         return;
       }
       res.status(500).json({
         success: false,
-        error: { code: ERROR_CODES.INTERNAL_SERVER_ERROR, message: "Internal Server Error" },
+        error: {
+          code: ERROR_CODES.INTERNAL_SERVER_ERROR,
+          message: "Internal Server Error",
+        },
       });
     },
   );
