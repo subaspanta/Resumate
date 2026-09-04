@@ -2,6 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { AppError } from "../../../types/app-error.js";
 import { ERROR_CODES } from "../../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../../constants/http-status.js";
+import { Logger } from "../../../config/logger.js";
 import { validateAgentOutput } from "../../../utils/agent-output-validator.js";
 import { classifyGeminiError } from "../../ai/gemini-error.js";
 import { GEMINI_CALL_TIMEOUT_MS } from "../../ai/gemini-timeout.js";
@@ -65,7 +66,10 @@ export class EvidenceAgentService implements EvidenceAgent {
   // Client injected rather than constructed at module scope. The agents this
   // replaces built their own, which is why neither could be tested without
   // mocking the whole @google/genai module.
-  constructor(private readonly ai: GoogleGenAI) {}
+  constructor(
+    private readonly ai: GoogleGenAI,
+    private readonly logger: Logger,
+  ) {}
 
   async assessEvidence(
     input: EvidenceAgentInput,
@@ -166,7 +170,7 @@ candidate's own words from a numbered section.
       });
       return response.text ?? "";
     } catch (err) {
-      throw classifyGeminiError(err, "analyze this resume");
+      throw classifyGeminiError(err, "analyze this resume", this.logger);
     }
   }
 

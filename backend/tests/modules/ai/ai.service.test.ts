@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import type { GoogleGenAI } from "@google/genai";
 import { AIStructuringService } from "../../../src/modules/ai/ai.service.js";
+import { logger } from "../../../src/config/logger.js";
 
 function fakeGeminiClient(responseText: string): GoogleGenAI {
   return {
@@ -25,7 +26,10 @@ describe("AIStructuringService.structureResume", () => {
       certifications: [],
       customSections: [],
     });
-    const service = new AIStructuringService(fakeGeminiClient(mockResponse));
+    const service = new AIStructuringService(
+      fakeGeminiClient(mockResponse),
+      logger,
+    );
 
     const result = await service.structureResume("raw resume text");
 
@@ -60,7 +64,10 @@ describe("AIStructuringService.structureResume", () => {
         { heading: "Publications", bullets: ["Co-authored a paper."] },
       ],
     });
-    const service = new AIStructuringService(fakeGeminiClient(mockResponse));
+    const service = new AIStructuringService(
+      fakeGeminiClient(mockResponse),
+      logger,
+    );
 
     const result = await service.structureResume("raw resume text");
 

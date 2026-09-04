@@ -2,6 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { AppError } from "../../../types/app-error.js";
 import { ERROR_CODES } from "../../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../../constants/http-status.js";
+import { Logger } from "../../../config/logger.js";
 import { validateAgentOutput } from "../../../utils/agent-output-validator.js";
 import { classifyGeminiError } from "../../ai/gemini-error.js";
 import { GEMINI_CALL_TIMEOUT_MS } from "../../ai/gemini-timeout.js";
@@ -49,7 +50,10 @@ const ROADMAP_OUTPUT_SCHEMA = {
 export class RoadmapAgentService implements RoadmapAgent {
   // Client injected so the agent can be faked in tests, matching the evidence
   // agent and AIStructuringService.
-  constructor(private readonly ai: GoogleGenAI) {}
+  constructor(
+    private readonly ai: GoogleGenAI,
+    private readonly logger: Logger,
+  ) {}
 
   async generateTasks(input: RoadmapAgentInput): Promise<RoadmapAgentOutput> {
     const responseText = await this.callGemini(this.buildPrompt(input));
@@ -116,7 +120,7 @@ ${projectList}`;
       });
       return response.text ?? "";
     } catch (err) {
-      throw classifyGeminiError(err, "generate your roadmap");
+      throw classifyGeminiError(err, "generate your roadmap", this.logger);
     }
   }
 

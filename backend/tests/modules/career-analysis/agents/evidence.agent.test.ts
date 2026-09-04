@@ -4,6 +4,7 @@ import { EvidenceAgentService } from "../../../../src/modules/career-analysis/ag
 import { EvidenceAgentInput } from "../../../../src/modules/career-analysis/career-analysis.types.js";
 import { StructuredResume } from "../../../../src/modules/parsing/parsing.types.js";
 import { AppError } from "../../../../src/types/app-error.js";
+import { logger } from "../../../../src/config/logger.js";
 
 function fakeGeminiClient(responseText: string): GoogleGenAI {
   return {
@@ -86,7 +87,10 @@ const VALID_RESPONSE = JSON.stringify({
 
 describe("EvidenceAgentService", () => {
   it("returns the validated assessments", async () => {
-    const agent = new EvidenceAgentService(fakeGeminiClient(VALID_RESPONSE));
+    const agent = new EvidenceAgentService(
+      fakeGeminiClient(VALID_RESPONSE),
+      logger,
+    );
     const result = await agent.assessEvidence(INPUT);
 
     expect(result.assessments).toHaveLength(2);
@@ -98,7 +102,7 @@ describe("EvidenceAgentService", () => {
 
   it("sends the skill vocabulary and its aliases", async () => {
     const { client, prompt } = capturingGeminiClient(VALID_RESPONSE);
-    await new EvidenceAgentService(client).assessEvidence(INPUT);
+    await new EvidenceAgentService(client, logger).assessEvidence(INPUT);
 
     expect(prompt()).toContain("nodejs");
     expect(prompt()).toContain("Node.js");
@@ -113,7 +117,7 @@ describe("EvidenceAgentService", () => {
   // inflation as fact.
   it("never tells the model how important a skill is", async () => {
     const { client, prompt } = capturingGeminiClient(VALID_RESPONSE);
-    await new EvidenceAgentService(client).assessEvidence(INPUT);
+    await new EvidenceAgentService(client, logger).assessEvidence(INPUT);
 
     const sent = prompt();
     expect(sent).not.toContain("critical");
@@ -125,14 +129,14 @@ describe("EvidenceAgentService", () => {
 
   it("instructs the model not to evaluate the candidate", async () => {
     const { client, prompt } = capturingGeminiClient(VALID_RESPONSE);
-    await new EvidenceAgentService(client).assessEvidence(INPUT);
+    await new EvidenceAgentService(client, logger).assessEvidence(INPUT);
 
     expect(prompt()).toContain("Do NOT judge whether the candidate is qualified");
   });
 
   it("does not send contact details to the model", async () => {
     const { client, prompt } = capturingGeminiClient(VALID_RESPONSE);
-    await new EvidenceAgentService(client).assessEvidence(INPUT);
+    await new EvidenceAgentService(client, logger).assessEvidence(INPUT);
 
     const sent = prompt();
     expect(sent).not.toContain("candidate@example.com");
@@ -141,7 +145,7 @@ describe("EvidenceAgentService", () => {
 
   it("sends the resume text quotes must be drawn from", async () => {
     const { client, prompt } = capturingGeminiClient(VALID_RESPONSE);
-    await new EvidenceAgentService(client).assessEvidence(INPUT);
+    await new EvidenceAgentService(client, logger).assessEvidence(INPUT);
 
     const sent = prompt();
     expect(sent).toContain("Built REST endpoints in Node.js and Express");
@@ -150,7 +154,7 @@ describe("EvidenceAgentService", () => {
 
   it("numbers each entry so the model can cite it by index", async () => {
     const { client, prompt } = capturingGeminiClient(VALID_RESPONSE);
-    await new EvidenceAgentService(client).assessEvidence(INPUT);
+    await new EvidenceAgentService(client, logger).assessEvidence(INPUT);
 
     const sent = prompt();
     expect(sent).toContain("[0] Backend Intern — Acme Corp");
@@ -160,7 +164,7 @@ describe("EvidenceAgentService", () => {
 
   it("asks for source references, never a display label", async () => {
     const { client, prompt } = capturingGeminiClient(VALID_RESPONSE);
-    await new EvidenceAgentService(client).assessEvidence(INPUT);
+    await new EvidenceAgentService(client, logger).assessEvidence(INPUT);
 
     // The backend derives sourceLabel from the snapshot; the model must not
     // author the company or job title the user sees as provenance.
@@ -177,7 +181,10 @@ describe("EvidenceAgentService", () => {
   });
 
   it("rejects malformed JSON", async () => {
-    const agent = new EvidenceAgentService(fakeGeminiClient("not json at all"));
+    const agent = new EvidenceAgentService(
+      fakeGeminiClient("not json at all"),
+      logger,
+    );
     await expect(agent.assessEvidence(INPUT)).rejects.toThrow(AppError);
   });
 
@@ -188,6 +195,7 @@ describe("EvidenceAgentService", () => {
           assessments: [{ skillSlug: "nodejs", found: "yes please" }],
         }),
       ),
+      logger,
     );
     await expect(agent.assessEvidence(INPUT)).rejects.toThrow(AppError);
   });
@@ -195,6 +203,7 @@ describe("EvidenceAgentService", () => {
   it("rejects an empty assessment list rather than scoring everything missing", async () => {
     const agent = new EvidenceAgentService(
       fakeGeminiClient(JSON.stringify({ assessments: [] })),
+      logger,
     );
     await expect(agent.assessEvidence(INPUT)).rejects.toThrow(AppError);
   });
@@ -202,6 +211,7 @@ describe("EvidenceAgentService", () => {
   it("wraps a Gemini failure in an AppError", async () => {
     const agent = new EvidenceAgentService(
       failingGeminiClient(new Error("socket hang up")),
+      logger,
     );
     await expect(agent.assessEvidence(INPUT)).rejects.toThrow(AppError);
   });

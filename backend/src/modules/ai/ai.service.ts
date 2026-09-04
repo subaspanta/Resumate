@@ -12,6 +12,7 @@ import { AppError } from "../../types/app-error.js";
 import { ERROR_CODES } from "../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../constants/http-status.js";
 import { env } from "../../config/env.js";
+import { Logger } from "../../config/logger.js";
 import { classifyGeminiError } from "./gemini-error.js";
 import { GEMINI_CALL_TIMEOUT_MS } from "./gemini-timeout.js";
 import { validateAgentOutput } from "../../utils/agent-output-validator.js";
@@ -21,6 +22,7 @@ export class AIStructuringService implements AIStructuringModule {
     private readonly ai: GoogleGenAI = new GoogleGenAI({
       apiKey: env.GEMINI_API_KEY,
     }),
+    private readonly logger: Logger,
   ) {}
 
   async structureResume(rawText: string): Promise<StructuredResume> {
@@ -41,7 +43,7 @@ export class AIStructuringService implements AIStructuringModule {
       });
       return response.text ?? "";
     } catch (err) {
-      throw classifyGeminiError(err, "structure resume");
+      throw classifyGeminiError(err, "structure resume", this.logger);
     }
   }
   private parseResponse(responseText: string): StructuredResume {

@@ -3,6 +3,7 @@ import type { GoogleGenAI } from "@google/genai";
 import { RoadmapAgentService } from "../../../../src/modules/roadmap/agents/roadmap.agent.js";
 import { RoadmapAgentInput } from "../../../../src/modules/roadmap/roadmap.types.js";
 import { AppError } from "../../../../src/types/app-error.js";
+import { logger } from "../../../../src/config/logger.js";
 
 function capturingClient(responseText: string) {
   const generateContent = vi.fn().mockResolvedValue({ text: responseText });
@@ -66,7 +67,7 @@ const VALID_RESPONSE = JSON.stringify({
 
 describe("RoadmapAgentService", () => {
   it("returns validated task content", async () => {
-    const agent = new RoadmapAgentService(fakeClient(VALID_RESPONSE));
+    const agent = new RoadmapAgentService(fakeClient(VALID_RESPONSE), logger);
     const result = await agent.generateTasks(INPUT);
 
     expect(result.tasks).toHaveLength(2);
@@ -76,7 +77,7 @@ describe("RoadmapAgentService", () => {
 
   it("sends the selected gaps and their rationale", async () => {
     const { client, prompt } = capturingClient(VALID_RESPONSE);
-    await new RoadmapAgentService(client).generateTasks(INPUT);
+    await new RoadmapAgentService(client, logger).generateTasks(INPUT);
 
     const sent = prompt();
     expect(sent).toContain("testing");
@@ -88,7 +89,7 @@ describe("RoadmapAgentService", () => {
   // their order, so the model must not be told either.
   it("never tells the model the week, order, or priority of a gap", async () => {
     const { client, prompt } = capturingClient(VALID_RESPONSE);
-    await new RoadmapAgentService(client).generateTasks(INPUT);
+    await new RoadmapAgentService(client, logger).generateTasks(INPUT);
 
     const sent = prompt();
 
@@ -113,7 +114,7 @@ describe("RoadmapAgentService", () => {
 
   it("asks the model to build on existing projects", async () => {
     const { client, prompt } = capturingClient(VALID_RESPONSE);
-    await new RoadmapAgentService(client).generateTasks(INPUT);
+    await new RoadmapAgentService(client, logger).generateTasks(INPUT);
 
     const sent = prompt();
     expect(sent).toContain("Task Tracker");
@@ -122,7 +123,7 @@ describe("RoadmapAgentService", () => {
 
   it("says so plainly when the candidate has no projects", async () => {
     const { client, prompt } = capturingClient(VALID_RESPONSE);
-    await new RoadmapAgentService(client).generateTasks({
+    await new RoadmapAgentService(client, logger).generateTasks({
       ...INPUT,
       existingProjects: [],
     });
@@ -132,7 +133,7 @@ describe("RoadmapAgentService", () => {
 
   it("applies the shared timeout and structured-output config", async () => {
     const { client, config } = capturingClient(VALID_RESPONSE);
-    await new RoadmapAgentService(client).generateTasks(INPUT);
+    await new RoadmapAgentService(client, logger).generateTasks(INPUT);
 
     expect(config().httpOptions.timeout).toBe(60_000);
     expect(config().responseMimeType).toBe("application/json");
@@ -140,13 +141,14 @@ describe("RoadmapAgentService", () => {
   });
 
   it("rejects malformed JSON", async () => {
-    const agent = new RoadmapAgentService(fakeClient("not json"));
+    const agent = new RoadmapAgentService(fakeClient("not json"), logger);
     await expect(agent.generateTasks(INPUT)).rejects.toThrow(AppError);
   });
 
   it("rejects output that does not match the schema", async () => {
     const agent = new RoadmapAgentService(
       fakeClient(JSON.stringify({ tasks: [{ skillSlug: "testing" }] })),
+      logger,
     );
     await expect(agent.generateTasks(INPUT)).rejects.toThrow(AppError);
   });
@@ -154,6 +156,7 @@ describe("RoadmapAgentService", () => {
   it("rejects an empty task list", async () => {
     const agent = new RoadmapAgentService(
       fakeClient(JSON.stringify({ tasks: [] })),
+      logger,
     );
     await expect(agent.generateTasks(INPUT)).rejects.toThrow(AppError);
   });
@@ -166,7 +169,7 @@ describe("RoadmapAgentService", () => {
     } as unknown as GoogleGenAI;
 
     await expect(
-      new RoadmapAgentService(client).generateTasks(INPUT),
+      new RoadmapAgentService(client, logger).generateTasks(INPUT),
     ).rejects.toThrow(AppError);
   });
 });
