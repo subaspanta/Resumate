@@ -42,7 +42,8 @@ function TaskCompletionNote({
   // Disabled once nothing would change: same note, already complete. Not
   // disabled just because the task isn't complete yet — that's exactly the
   // case Save is meant to handle in one click.
-  const unchanged = task.completed && note.trim() === (task.completionNote ?? "");
+  const unchanged =
+    task.completed && note.trim() === (task.completionNote ?? "");
 
   return (
     <div className="roadmap-task-note">
@@ -87,6 +88,7 @@ export default function RoadmapPage({
   const {
     roadmap,
     isLoading: roadmapLoading,
+    isError: roadmapError,
     refetch: refetchRoadmap,
   } = useRoadmap(analysisId);
   const toggleTask = useToggleRoadmapTask(analysisId);
@@ -127,7 +129,9 @@ export default function RoadmapPage({
     // so a bug here stays visible instead of quietly disagreeing with the
     // "Overall progress" count above (which sums every task regardless).
     const overflow = Array.from(byWeek.entries())
-      .filter(([weekNumber]) => weekNumber < 1 || weekNumber > roadmap.weekCount)
+      .filter(
+        ([weekNumber]) => weekNumber < 1 || weekNumber > roadmap.weekCount,
+      )
       .flatMap(([, tasks]) => tasks);
 
     if (overflow.length === 0) return scheduled;
@@ -173,6 +177,24 @@ export default function RoadmapPage({
           >
             Try again
           </Button>
+        </div>
+      </AppShell>
+    );
+  }
+
+  if (roadmapError) {
+    return (
+      <AppShell
+        step="roadmap"
+        crumbs={CRUMBS}
+        title="Learning Roadmap"
+        onNavigateStep={handleNavigateStep}
+      >
+        <div className="analysis-error">
+          <p className="analysis-error-message">
+            We couldn&apos;t load this roadmap.
+          </p>
+          <Button onClick={() => refetchRoadmap()}>Try again</Button>
         </div>
       </AppShell>
     );
@@ -226,7 +248,9 @@ export default function RoadmapPage({
     >
       <div className="card roadmap-progress">
         <div className="roadmap-progress-header">
-          <span className="entry-title roadmap-progress-label">Overall progress</span>
+          <span className="entry-title roadmap-progress-label">
+            Overall progress
+          </span>
           <span className="roadmap-progress-count">
             {progress.completed} of {progress.total} tasks
           </span>
@@ -241,7 +265,9 @@ export default function RoadmapPage({
         >
           <div
             className="roadmap-progress-fill"
-            style={{ "--roadmap-fill": progress.fraction } as React.CSSProperties}
+            style={
+              { "--roadmap-fill": progress.fraction } as React.CSSProperties
+            }
           />
         </div>
       </div>
@@ -309,9 +335,7 @@ export default function RoadmapPage({
                       </span>
                     )}
                     <p className="body-copy roadmap-task-detail">
-                      <span className="roadmap-task-detail-label">
-                        Build:{" "}
-                      </span>
+                      <span className="roadmap-task-detail-label">Build: </span>
                       {task.projectTask}
                     </p>
                     <p className="body-copy roadmap-task-detail">
@@ -326,7 +350,10 @@ export default function RoadmapPage({
                           Free Resources
                         </p>
                         {task.resources.map((resource, i) => (
-                          <p key={i} className="body-copy roadmap-task-resource">
+                          <p
+                            key={i}
+                            className="body-copy roadmap-task-resource"
+                          >
                             {resource}
                           </p>
                         ))}

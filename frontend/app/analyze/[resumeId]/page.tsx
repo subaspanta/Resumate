@@ -40,7 +40,12 @@ export default function AnalyzeRolePage({
     isError,
     isRedirecting,
   } = useResumeGuard(resumeId);
-  const { roles, isLoading: rolesLoading } = useRoles();
+  const {
+    roles,
+    isLoading: rolesLoading,
+    isError: rolesError,
+    refetch: refetchRoles,
+  } = useRoles();
   const { submitRole, isCreatingAnalysis } =
     useCreateCareerAnalysisFlow(resumeId);
 
@@ -88,6 +93,25 @@ export default function AnalyzeRolePage({
     );
   }
 
+  if (rolesError) {
+    return (
+      <AppShell
+        step="role"
+        width="narrow"
+        crumbs={CRUMBS}
+        title="Choose a Target Role"
+        onNavigateStep={handleNavigateStep}
+      >
+        <div className="analysis-error">
+          <p className="analysis-error-message">
+            We couldn&apos;t load the available roles.
+          </p>
+          <Button onClick={() => refetchRoles()}>Try again</Button>
+        </div>
+      </AppShell>
+    );
+  }
+
   return (
     <AppShell
       step="role"
@@ -122,7 +146,9 @@ export default function AnalyzeRolePage({
       )}
 
       {!rolesLoading && filteredRoles.length === 0 && (
-        <p className="body-copy body-copy--muted role-empty">No roles match &ldquo;{query}&rdquo;.</p>
+        <p className="body-copy body-copy--muted role-empty">
+          No roles match &ldquo;{query}&rdquo;.
+        </p>
       )}
 
       {!rolesLoading && filteredRoles.length > 0 && (

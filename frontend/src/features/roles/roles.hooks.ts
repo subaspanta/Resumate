@@ -15,6 +15,7 @@ export function useRoles() {
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery<RoleSummary[]>({
     queryKey: queryKeys.roles.all(),
     queryFn: async () => {
@@ -30,6 +31,7 @@ export function useRoles() {
     isLoading,
     isError,
     error: isApiError(error) ? error : null,
+    refetch,
   };
 }
 
