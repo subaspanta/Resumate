@@ -1,20 +1,11 @@
-// Seeds the role skill model from the hand-authored data in seed-data.ts.
-//
-// Idempotency is a hard requirement, not a nicety: the test suite shares one
-// real Postgres database and never truncates it, so this runs repeatedly
-// against data that analyses already reference. That rules out
-// delete-then-insert — the Restrict foreign keys on Skill and Role would
-// reject it, and if they didn't, cascading deletes would destroy user history.
-// So everything upserts on its unique key.
+// Upsert hand-authored role data; seeds may repeat while analyses reference rows.
 import "dotenv/config";
 import { pathToFileURL } from "node:url";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/client/index.js";
 import { ROLES, SKILLS } from "./seed-data.js";
 
-// Reads DATABASE_URL directly rather than through src/config/env.ts, which
-// validates the whole application environment — seeding a database shouldn't
-// require a Cloudinary key or a JWT secret to be present.
+// Seed only needs DATABASE_URL, not the full application environment.
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
   throw new Error("DATABASE_URL must be set to seed the database");
@@ -25,9 +16,7 @@ const prisma = new PrismaClient({
 });
 
 export async function seedRoleModel(client: PrismaClient = prisma) {
-  // One transaction: a partial seed would leave a role holding half its
-  // requirements, which produces plausible-looking but wrong readiness scores
-  // rather than an obvious failure.
+  // Keep role and requirement updates atomic.
   await client.$transaction(async (tx) => {
     const skillIdBySlug = new Map<string, string>();
 

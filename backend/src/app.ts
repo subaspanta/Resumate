@@ -32,8 +32,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(cookieParser());
 
-// Health check endpoint — actually checks DB connectivity, not just that the
-// process is alive
+// Health check includes a database query.
 app.get(`${API_PREFIX}/health`, async (req: Request, res: Response) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
@@ -47,9 +46,7 @@ app.get(`${API_PREFIX}/health`, async (req: Request, res: Response) => {
     });
   } catch (error) {
     logger.error({ message: "Health check failed", error });
-    // Unlike the global error handler's AppError.details (gated to dev
-    // because it can carry Prisma schema internals), this payload is
-    // operational status infra polls for — never gated behind isDevelopment.
+    // Health details are operational status, not development-only diagnostics.
     res.status(StatusCodes.SERVICE_UNAVAILABLE).json({
       success: false,
       error: {
@@ -67,7 +64,6 @@ app.get(`${API_PREFIX}/health`, async (req: Request, res: Response) => {
 
 app.use(API_PREFIX, routes);
 
-// 404 handler
 app.use((req: Request, res: Response) => {
   res.status(StatusCodes.NOT_FOUND).json({
     success: false,
@@ -78,7 +74,6 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-// Global error handler
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   logger.error(err);
 
