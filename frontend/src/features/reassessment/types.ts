@@ -1,6 +1,4 @@
-// Mirrors backend/src/modules/career-analysis/career-analysis.repository.ts
-// (RootAnalysisForReassessment / findRevisionsByRootId) and prisma/schema.prisma
-// (CareerAnalysis.parentAnalysisId / revision).
+// Mirrors the backend reassessment repository and Prisma revision fields.
 
 import type { CareerAnalysisStatus } from "@/src/features/career-analysis/types";
 

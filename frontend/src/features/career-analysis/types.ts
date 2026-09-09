@@ -1,5 +1,4 @@
-// Mirrors backend/src/modules/career-analysis/{career-analysis.repository,career-analysis.types}.ts
-// and prisma/schema.prisma enums. Do not invent values outside these unions.
+// Mirrors backend career-analysis types and Prisma enums.
 
 export type CareerAnalysisStatus = "pending" | "analyzing" | "complete" | "failed";
 export type EvidenceStrength = "experience_backed" | "project_backed" | "mentioned";
@@ -22,16 +21,13 @@ export interface CandidateSkillEvidence {
 export interface SkillGap {
   id: string;
   status: GapStatus;
-  // Deterministic, application-computed. Lower = more urgent. Arrives
-  // already sorted ascending from the backend — never re-sort client-side.
+  // Application-computed urgency; backend sends gaps in ascending order.
   priority: number;
   reasoning: string;
   skill: SkillRef;
 }
 
-// Task completion counted by the backend, not the client. Completion state is
-// application-owned; a count assembled in a component would be a second
-// definition of "progress" free to drift from the one the roadmap page uses.
+// Backend-owned completion counts keep progress consistent across views.
 export interface RoadmapProgress {
   total: number;
   completed: number;
@@ -43,37 +39,25 @@ export interface CareerAnalysisSummary {
   id: string;
   resumeId: string;
   roleId: string;
-  // Joined by the list query so the client renders a role name rather than
-  // fetching the whole role list to map a uuid.
+  // Joined by the list query to avoid a separate role lookup.
   role: { slug: string; title: string };
   status: CareerAnalysisStatus;
   readinessScore: number | null;
   createdAt: string;
   completedAt: string | null;
-  // Existence only, not the roadmap itself — lets the sidebar's Roadmap
-  // shortcut know whether this analysis has somewhere to send the user
-  // without fetching every roadmap up front.
+  // Existence only, used by the sidebar without loading every roadmap.
   hasRoadmap: boolean;
-  // null when no roadmap has been generated yet.
+  // Null before roadmap generation.
   roadmapProgress: RoadmapProgress | null;
 }
 
-// GET /career-analyses response shape — cursor-paginated, mirroring
-// ResumePage on the resume feature.
+// Cursor-paginated GET /career-analyses response.
 export interface CareerAnalysisPage {
   items: CareerAnalysisSummary[];
   nextCursor: string | null;
 }
 
-// Neither this nor the POST /career-analyses response carries either frozen
-// snapshot — both are large JSONB blobs no client consumer reads, and the
-// backend omits them from every response except the internal roadmap-
-// generation read, which never reaches the client.
-//
-// hasRoadmap/roadmapProgress are also omitted: the backend only computes
-// them in the list query (for the sidebar's "continue where you left off"
-// card), never in the single-analysis read — GET /career-analyses/:id has
-// never returned them.
+// Detail responses omit frozen snapshots and list-only roadmap progress fields.
 export interface CareerAnalysisDetail
   extends Omit<CareerAnalysisSummary, "hasRoadmap" | "roadmapProgress"> {
   role: { slug: string; title: string };

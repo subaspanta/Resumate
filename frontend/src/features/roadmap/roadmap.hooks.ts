@@ -8,8 +8,7 @@ import { isApiError } from "@/src/api/api-error";
 import { queryKeys } from "@/src/lib/query-keys";
 import { DEFAULT_STALE_TIME, defaultQueryRetry } from "@/src/lib/query-client";
 
-// `null` data is a valid success state — an analysis without a roadmap yet —
-// not an error, so isError only reflects real request failures.
+// Null is valid: an analysis may not have a roadmap yet.
 export function useRoadmap(analysisId: string) {
   const {
     data: roadmap,
@@ -37,9 +36,7 @@ export function useRoadmap(analysisId: string) {
   };
 }
 
-// 422 reuses VALIDATION_FAILED (not a distinct code) for both preconditions,
-// so branch on status rather than code — the message itself distinguishes
-// "analysis not complete" from "no gaps worth working on".
+// Both roadmap preconditions use 422/VALIDATION_FAILED; the message supplies detail.
 const PRECONDITION_FALLBACK =
   "This analysis isn't ready for a roadmap yet.";
 
@@ -56,9 +53,7 @@ export function useGenerateRoadmap(analysisId: string) {
     },
     onError: (error) => {
       if (isApiError(error) && error.status === 409) {
-        // A roadmap already exists — a double-click or a replayed request,
-        // not a real failure. Treat as success and refetch the real thing
-        // rather than surfacing an error toast for state that's actually fine.
+        // A duplicate request means the desired roadmap already exists.
         queryClient.invalidateQueries({
           queryKey: queryKeys.roadmap.byAnalysis(analysisId),
         });
@@ -79,10 +74,7 @@ interface ToggleTaskContext {
   previous?: Roadmap | null;
 }
 
-// Optimistic like useDeleteResume: cancel -> snapshot -> patch -> rollback on
-// error -> invalidate on settle. completedAt is server-derived and read back
-// on refetch, never written client-side. completionNote is optional — a
-// plain checkbox click omits it and leaves the stored note untouched.
+// Optimistic update; completionAt stays server-derived and notes are optional.
 export function useToggleRoadmapTask(analysisId: string) {
   const queryClient = useQueryClient();
   const key = queryKeys.roadmap.byAnalysis(analysisId);

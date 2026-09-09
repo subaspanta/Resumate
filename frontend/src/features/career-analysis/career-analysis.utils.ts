@@ -2,28 +2,21 @@ import type { CareerAnalysisSummary, RoadmapProgress } from "./types";
 
 export type ScoreBand = "excellent" | "good" | "needs-work";
 
-// Display-only banding for coloring the readiness score. Not a scoring
-// decision (that's computeReadiness on the backend) — just which of the
-// three score-* CSS tokens a given number reads as.
+// Display-only score banding; scoring remains backend-owned.
 export function scoreBand(score: number): ScoreBand {
   if (score >= 70) return "excellent";
   if (score >= 40) return "good";
   return "needs-work";
 }
 
-// The sidebar's Roadmap shortcut has to pick one destination out of
-// however many analyses a user has. list rows already arrive sorted
-// createdAt desc (career-analysis.repository.ts), so the first one with a
-// roadmap is the most recently generated — no separate sort needed here.
+// Rows are newest-first, so the first analysis with a roadmap is the sidebar destination.
 export function latestAnalysisWithRoadmap(
   analyses: CareerAnalysisSummary[],
 ): CareerAnalysisSummary | undefined {
   return analyses.find((analysis) => analysis.hasRoadmap);
 }
 
-// What the dashboard's continue card offers next. Derived from the analysis
-// the user most recently started, so the dashboard opens on the thing they
-// were actually doing rather than on an upload form they've already used.
+// Derives the dashboard action from the user's most recent analysis.
 export type ContinueIntent =
   | "choose-role"
   | "watch-analysis"
@@ -42,23 +35,14 @@ export interface ContinueAction {
   progress: RoadmapProgress | null;
 }
 
-/**
- * Resolves the single next step for the dashboard's continue card.
- *
- * `analyses` must arrive in the backend's `createdAt desc` order — the first
- * row is the newest. Never re-sort it here (see latestAnalysisWithRoadmap).
- *
- * Returns null when there is nothing in flight to continue; the caller falls
- * back to the plain upload-led dashboard.
- */
+/** Resolves the next dashboard step from newest-first analyses, or null. */
 export function resolveContinueAction(
   analyses: CareerAnalysisSummary[],
   latestResumeId: string | undefined,
 ): ContinueAction | null {
   const latest = analyses[0];
 
-  // A resume exists but has never been analysed — the next step is picking a
-  // target role for it.
+  // An unanalysed resume needs a target role.
   if (!latest) {
     if (!latestResumeId) return null;
     return {
@@ -106,8 +90,7 @@ export function resolveContinueAction(
   }
 
   const progress = latest.roadmapProgress;
-  // Every task done: the roadmap has nothing left to offer, so the next
-  // meaningful move is re-scoring against the work just finished.
+  // Completed roadmap: next step is reassessment.
   if (progress && progress.total > 0 && progress.completed >= progress.total) {
     return {
       ...base,

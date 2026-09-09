@@ -21,9 +21,7 @@ export function useCareerAnalyses(resumeId?: string) {
   } = useQuery<CareerAnalysisSummary[]>({
     queryKey: queryKeys.careerAnalyses.list(resumeId),
     queryFn: async () => {
-      // The backend cursor-paginates (default 20/page); nothing here reads
-      // nextCursor yet, matching useResumes' own unused-cursor precedent —
-      // this bounds the worst case rather than adding a "load more" UI.
+      // The list is intentionally bounded until the UI supports pagination.
       const response = await careerAnalysisApi.list(resumeId);
       return response?.data?.data?.items ?? [];
     },
@@ -40,13 +38,7 @@ export function useCareerAnalyses(resumeId?: string) {
   };
 }
 
-// Analysis is created with status "analyzing" and the AI call that finishes
-// it runs synchronously inside the original POST — so a GET here observing
-// "analyzing" only happens when that original request died mid-flight (tab
-// closed, network drop) and the backend's stale-analysis reaper hasn't
-// caught it yet (career-analysis.service.ts, reapStaleAnalyses, fires on
-// read after GEMINI_CALL_TIMEOUT_MS * 3). Polling is what lets this page
-// observe that reap instead of showing a frozen "analyzing" state forever.
+// Poll analyzing rows so stale in-flight requests can reach their terminal state.
 const ANALYZING_POLL_INTERVAL_MS = 3000;
 
 export function useCareerAnalysis(id: string) {
@@ -82,10 +74,7 @@ export function useCareerAnalysis(id: string) {
   };
 }
 
-// Invalidates the list rather than writing the detail cache directly: the
-// create response omits both snapshots (CreatedCareerAnalysis), a different
-// shape than the CareerAnalysisDetail a GET /:id returns, so it must never be
-// written into the detail cache as if it were a full read.
+// Invalidate the list because creation returns a smaller shape than detail reads.
 export function useCreateCareerAnalysis() {
   const queryClient = useQueryClient();
 

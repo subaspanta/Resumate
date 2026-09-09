@@ -7,8 +7,7 @@ import { isApiError } from "@/src/api/api-error";
 import { queryKeys } from "@/src/lib/query-keys";
 import { DEFAULT_STALE_TIME, defaultQueryRetry } from "@/src/lib/query-client";
 
-// Seed data — the small role list changes only on a deploy, not per user
-// session, so the shared default stale time is already generous here.
+// Roles are deploy-time seed data, so the shared stale time is sufficient.
 export function useRoles() {
   const {
     data: roles = [],

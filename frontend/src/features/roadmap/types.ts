@@ -1,5 +1,4 @@
-// Mirrors backend/src/modules/roadmap/roadmap.repository.ts (RoadmapWithTasks)
-// and prisma/schema.prisma.
+// Mirrors RoadmapWithTasks and the Prisma roadmap types.
 
 interface SkillRef {
   slug: string;
@@ -17,9 +16,7 @@ export interface RoadmapTask {
   resources: string[] | null;
   completed: boolean;
   completedAt: string | null;
-  // What the user wrote about completing this task — the only groundable
-  // evidence a reassessment can find. Optional on the toggle request; a
-  // plain checkbox click sends none and leaves the stored note untouched.
+  // Completion note is the evidence source used by reassessment; toggles may omit it.
   completionNote: string | null;
   skillGap: { id: string; status: string; skill: SkillRef } | null;
 }
@@ -27,13 +24,11 @@ export interface RoadmapTask {
 export interface Roadmap {
   id: string;
   careerAnalysisId: string;
-  // Actual scheduled week count, not always 4 — a candidate with fewer gaps
-  // gets a shorter roadmap. Never hardcode 4 weeks when rendering.
+  // Actual scheduled week count; candidates with fewer gaps may get fewer than four.
   weekCount: number;
   createdAt: string;
   tasks: RoadmapTask[];
 }
 
-// PATCH /roadmap-tasks/:taskId response — a bare task row, no skillGap join,
-// unlike a task read as part of a full roadmap.
+// PATCH response is a bare task row without the skill-gap join.
 export type RoadmapTaskRow = Omit<RoadmapTask, "skillGap">;

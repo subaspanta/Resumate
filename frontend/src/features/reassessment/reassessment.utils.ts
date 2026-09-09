@@ -1,7 +1,6 @@
 import type { GapStatus, SkillGap } from "@/src/features/career-analysis/types";
 
-// Same rank order as backend/src/modules/career-analysis/readiness.ts
-// (STATUS_RANK) — missing is worst, strong is best.
+// Matches backend STATUS_RANK: missing is worst, strong is best.
 const STATUS_RANK: Record<GapStatus, number> = {
   missing: 0,
   weak_evidence: 1,
@@ -17,9 +16,7 @@ export interface GapMovement {
   direction: "improved" | "regressed";
 }
 
-// Diffs two gap lists by skill slug, returning only skills whose status
-// actually changed. Display-only — the backend's readiness.ts already
-// decided both statuses; this just compares them.
+// Returns changed statuses for display; backend remains authoritative.
 export function diffGapStatuses(
   before: SkillGap[],
   after: SkillGap[],
