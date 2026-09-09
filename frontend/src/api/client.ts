@@ -13,7 +13,12 @@ interface RetryableRequestConfig extends AxiosRequestConfig {
 }
 
 // Auth endpoints bypass refresh; their 401 means the session is gone.
-const NO_REFRESH_URLS = ["/auth/me", "/auth/login", "/auth/register", "/auth/refresh"];
+const NO_REFRESH_URLS = [
+  "/auth/me",
+  "/auth/login",
+  "/auth/register",
+  "/auth/refresh",
+];
 
 let isRefreshing = false;
 let pendingRequests: Array<() => void> = [];

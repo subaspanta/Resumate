@@ -15,8 +15,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const isGuestRoute = GUEST_ROUTES.includes(pathname);
   // Gate rendering until a session/route redirect completes to avoid a flash.
-  const isRedirecting =
-    !isLoading && isAuthenticated === isGuestRoute;
+  const isRedirecting = !isLoading && isAuthenticated === isGuestRoute;
 
   useEffect(() => {
     if (!isRedirecting) return;

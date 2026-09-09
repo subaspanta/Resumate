@@ -5,10 +5,7 @@ import { resumeApi } from "./resume.service";
 import type { ResumeSummary, Resume } from "./types";
 import { isApiError } from "@/src/api/api-error";
 import { queryKeys } from "@/src/lib/query-keys";
-import {
-  DEFAULT_STALE_TIME,
-  defaultQueryRetry,
-} from "@/src/lib/query-client";
+import { DEFAULT_STALE_TIME, defaultQueryRetry } from "@/src/lib/query-client";
 
 function enrichResumeSummary(resume: ResumeSummary): ResumeSummary {
   return {

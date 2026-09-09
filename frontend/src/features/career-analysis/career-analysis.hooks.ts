@@ -107,8 +107,12 @@ export function useDeleteCareerAnalysis() {
       return id;
     },
     onSuccess: (id) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.careerAnalyses.all() });
-      queryClient.removeQueries({ queryKey: queryKeys.careerAnalyses.detail(id) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.careerAnalyses.all(),
+      });
+      queryClient.removeQueries({
+        queryKey: queryKeys.careerAnalyses.detail(id),
+      });
     },
   });
 }

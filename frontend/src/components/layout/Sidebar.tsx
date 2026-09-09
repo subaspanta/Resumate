@@ -198,140 +198,142 @@ export function Sidebar({
           collapsed ? "dashboard-sidebar--collapsed" : ""
         } ${isMobileOpen ? "dashboard-sidebar--mobile-open" : ""}`}
       >
-      <Link
-        href="/"
-        ref={firstNavLinkRef}
-        aria-label="Resumate home"
-        className={`dashboard-sidebar-brand ${
-          collapsed ? "dashboard-sidebar-brand--collapsed" : ""
-        }`}
-        onClick={onCloseMobile}
-      >
-        <BrandMark />
-        <div
-          className={`dashboard-sidebar-brand-text ${
-            collapsed ? "dashboard-sidebar-brand-text--collapsed" : ""
-          }`}
-        >
-          <div className="brand-wordmark">Resumate</div>
-        </div>
-      </Link>
-
-      <nav className="dashboard-nav" aria-label="Main navigation">
-        <NavItem
-          icon={Home}
-          label="Dashboard"
-          isCollapsed={collapsed}
-          isActive={activeNav === "dashboard"}
-          isFilled={activeNav === "dashboard"}
+        <Link
           href="/"
-          onClick={onCloseMobile}
-        />
-        <NavItem
-          icon={BarChart3}
-          label="Analyses"
-          isCollapsed={collapsed}
-          isActive={activeNav === "workspace"}
-          isFilled={activeNav === "workspace"}
-          disabled={layout.sidebarNavDisabled}
-          hint={layout.sidebarNavHint}
-          href={layout.sidebarNavDisabled ? undefined : "/analyses"}
-          onClick={onCloseMobile}
-        />
-        <NavItem
-          icon={Map}
-          label="Roadmap"
-          isCollapsed={collapsed}
-          isActive={activeNav === "roadmap"}
-          isFilled={activeNav === "roadmap"}
-          disabled={roadmapDisabled}
-          hint={roadmapDisabled ? "Generate a roadmap to unlock." : undefined}
-          href={roadmapHref}
-          onClick={onCloseMobile}
-        />
-        <NavItem
-          icon={Settings}
-          label="Settings"
-          isCollapsed={collapsed}
-          isActive={activeNav === "settings"}
-          isFilled={activeNav === "settings"}
-          href="/settings"
-          onClick={onCloseMobile}
-        />
-      </nav>
-
-      <div className="dashboard-sidebar-footer">
-        <div
-          className={`dashboard-sidebar-user-card ${
-            collapsed ? "dashboard-sidebar-user-card--collapsed" : ""
+          ref={firstNavLinkRef}
+          aria-label="Resumate home"
+          className={`dashboard-sidebar-brand ${
+            collapsed ? "dashboard-sidebar-brand--collapsed" : ""
           }`}
+          onClick={onCloseMobile}
         >
+          <BrandMark />
           <div
-            className={`dashboard-sidebar-avatar ${
-              layout.sidebarAvatarSize === "sm"
-                ? "dashboard-sidebar-avatar--sm"
-                : ""
+            className={`dashboard-sidebar-brand-text ${
+              collapsed ? "dashboard-sidebar-brand-text--collapsed" : ""
             }`}
           >
-            {userName ? userName.charAt(0).toUpperCase() : "U"}
+            <div className="brand-wordmark">Resumate</div>
           </div>
-          <div
-            className={`dashboard-sidebar-user-text ${
-              collapsed ? "dashboard-sidebar-user-text--collapsed" : ""
-            }`}
-          >
-            <span className="dashboard-sidebar-user-name">
-              {userName || "Guest User"}
-            </span>
-            {userEmail && (
-              <span className="dashboard-sidebar-user-email">{userEmail}</span>
-            )}
-          </div>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <button
-                type="button"
-                className="dashboard-sidebar-signout tap-target-44"
-                aria-label="Sign out"
-                disabled={isLoggingOut}
-              >
-                <LogOut className="size-5" aria-hidden="true" />
-              </button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Sign out?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  You&apos;ll need to sign back in to continue your roadmap.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleLogout}>
-                  Sign out
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
-      </div>
+        </Link>
 
-      {showCollapse && (
-        <button
-          onClick={onToggle}
-          className="dashboard-sidebar-toggle"
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          type="button"
-        >
-          <ChevronLeft
-            className="size-4"
-            style={{
-              transform: isCollapsed ? "rotate(180deg)" : "rotate(0deg)",
-            }}
-            aria-hidden="true"
+        <nav className="dashboard-nav" aria-label="Main navigation">
+          <NavItem
+            icon={Home}
+            label="Dashboard"
+            isCollapsed={collapsed}
+            isActive={activeNav === "dashboard"}
+            isFilled={activeNav === "dashboard"}
+            href="/"
+            onClick={onCloseMobile}
           />
-        </button>
-      )}
+          <NavItem
+            icon={BarChart3}
+            label="Analyses"
+            isCollapsed={collapsed}
+            isActive={activeNav === "workspace"}
+            isFilled={activeNav === "workspace"}
+            disabled={layout.sidebarNavDisabled}
+            hint={layout.sidebarNavHint}
+            href={layout.sidebarNavDisabled ? undefined : "/analyses"}
+            onClick={onCloseMobile}
+          />
+          <NavItem
+            icon={Map}
+            label="Roadmap"
+            isCollapsed={collapsed}
+            isActive={activeNav === "roadmap"}
+            isFilled={activeNav === "roadmap"}
+            disabled={roadmapDisabled}
+            hint={roadmapDisabled ? "Generate a roadmap to unlock." : undefined}
+            href={roadmapHref}
+            onClick={onCloseMobile}
+          />
+          <NavItem
+            icon={Settings}
+            label="Settings"
+            isCollapsed={collapsed}
+            isActive={activeNav === "settings"}
+            isFilled={activeNav === "settings"}
+            href="/settings"
+            onClick={onCloseMobile}
+          />
+        </nav>
+
+        <div className="dashboard-sidebar-footer">
+          <div
+            className={`dashboard-sidebar-user-card ${
+              collapsed ? "dashboard-sidebar-user-card--collapsed" : ""
+            }`}
+          >
+            <div
+              className={`dashboard-sidebar-avatar ${
+                layout.sidebarAvatarSize === "sm"
+                  ? "dashboard-sidebar-avatar--sm"
+                  : ""
+              }`}
+            >
+              {userName ? userName.charAt(0).toUpperCase() : "U"}
+            </div>
+            <div
+              className={`dashboard-sidebar-user-text ${
+                collapsed ? "dashboard-sidebar-user-text--collapsed" : ""
+              }`}
+            >
+              <span className="dashboard-sidebar-user-name">
+                {userName || "Guest User"}
+              </span>
+              {userEmail && (
+                <span className="dashboard-sidebar-user-email">
+                  {userEmail}
+                </span>
+              )}
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  type="button"
+                  className="dashboard-sidebar-signout tap-target-44"
+                  aria-label="Sign out"
+                  disabled={isLoggingOut}
+                >
+                  <LogOut className="size-5" aria-hidden="true" />
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Sign out?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    You&apos;ll need to sign back in to continue your roadmap.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleLogout}>
+                    Sign out
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </div>
+
+        {showCollapse && (
+          <button
+            onClick={onToggle}
+            className="dashboard-sidebar-toggle"
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            type="button"
+          >
+            <ChevronLeft
+              className="size-4"
+              style={{
+                transform: isCollapsed ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+              aria-hidden="true"
+            />
+          </button>
+        )}
       </aside>
     </>
   );

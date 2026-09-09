@@ -16,7 +16,11 @@ function useMounted() {
   );
 }
 
-const OPTIONS: { value: "light" | "dark" | "system"; label: string; icon: LucideIcon }[] = [
+const OPTIONS: {
+  value: "light" | "dark" | "system";
+  label: string;
+  icon: LucideIcon;
+}[] = [
   { value: "light", label: "Light", icon: Sun },
   { value: "dark", label: "Dark", icon: Moon },
   { value: "system", label: "System", icon: Monitor },

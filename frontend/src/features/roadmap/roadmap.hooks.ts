@@ -37,8 +37,7 @@ export function useRoadmap(analysisId: string) {
 }
 
 // Both roadmap preconditions use 422/VALIDATION_FAILED; the message supplies detail.
-const PRECONDITION_FALLBACK =
-  "This analysis isn't ready for a roadmap yet.";
+const PRECONDITION_FALLBACK = "This analysis isn't ready for a roadmap yet.";
 
 export function useGenerateRoadmap(analysisId: string) {
   const queryClient = useQueryClient();

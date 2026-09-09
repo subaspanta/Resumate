@@ -2,7 +2,13 @@
 
 import { use, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Briefcase, FolderGit2, GraduationCap, Award, User } from "lucide-react";
+import {
+  Briefcase,
+  FolderGit2,
+  GraduationCap,
+  Award,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useResumeGuard } from "@/src/features/resume/use-flow-guard";
@@ -76,8 +82,12 @@ export default function ResumeReviewPage({
   const contact = profile.contact;
   const hasContact =
     contact &&
-    (contact.email || contact.phone || contact.location || contact.github ||
-      contact.linkedin || contact.website);
+    (contact.email ||
+      contact.phone ||
+      contact.location ||
+      contact.github ||
+      contact.linkedin ||
+      contact.website);
 
   return (
     <AppShell
@@ -120,7 +130,10 @@ export default function ResumeReviewPage({
 
       <div className="flex flex-col gap-3">
         <h2 className="section-heading">
-          <Briefcase className="profile-review-heading-icon" aria-hidden="true" />
+          <Briefcase
+            className="profile-review-heading-icon"
+            aria-hidden="true"
+          />
           Work Experience ({profile.experience.length})
         </h2>
         {profile.experience.length === 0 ? (
@@ -143,7 +156,9 @@ export default function ResumeReviewPage({
                 </div>
                 {(entry.startDate || entry.endDate) && (
                   <p className="meta-label profile-review-entry-meta">
-                    {[entry.startDate, entry.endDate].filter(Boolean).join(" – ")}
+                    {[entry.startDate, entry.endDate]
+                      .filter(Boolean)
+                      .join(" – ")}
                   </p>
                 )}
                 {entryBullets(entry).length > 0 && (
@@ -161,7 +176,10 @@ export default function ResumeReviewPage({
 
       <div className="flex flex-col gap-3">
         <h2 className="section-heading">
-          <FolderGit2 className="profile-review-heading-icon" aria-hidden="true" />
+          <FolderGit2
+            className="profile-review-heading-icon"
+            aria-hidden="true"
+          />
           Projects ({profile.projects.length})
         </h2>
         {profile.projects.length === 0 ? (
@@ -218,7 +236,10 @@ export default function ResumeReviewPage({
 
       <div className="flex flex-col gap-3">
         <h2 className="section-heading">
-          <GraduationCap className="profile-review-heading-icon" aria-hidden="true" />
+          <GraduationCap
+            className="profile-review-heading-icon"
+            aria-hidden="true"
+          />
           Education ({profile.education.length})
         </h2>
         {profile.education.length === 0 ? (
@@ -238,7 +259,9 @@ export default function ResumeReviewPage({
                   </span>
                 </div>
                 {entry.year && (
-                  <p className="meta-label profile-review-entry-meta">{entry.year}</p>
+                  <p className="meta-label profile-review-entry-meta">
+                    {entry.year}
+                  </p>
                 )}
               </div>
             ))}

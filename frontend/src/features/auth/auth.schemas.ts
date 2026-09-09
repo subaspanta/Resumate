@@ -21,11 +21,23 @@ export const registerSchema = z
       .email("Invalid email address"),
     password: z
       .string()
-      .min(PASSWORD_MIN_LENGTH, `Password must be at least ${PASSWORD_MIN_LENGTH} characters`)
-      .max(PASSWORD_MAX_LENGTH, `Password must be at most ${PASSWORD_MAX_LENGTH} characters`)
-      .regex(PASSWORD_UPPERCASE_REGEX, "Password must contain at least one uppercase letter")
+      .min(
+        PASSWORD_MIN_LENGTH,
+        `Password must be at least ${PASSWORD_MIN_LENGTH} characters`,
+      )
+      .max(
+        PASSWORD_MAX_LENGTH,
+        `Password must be at most ${PASSWORD_MAX_LENGTH} characters`,
+      )
+      .regex(
+        PASSWORD_UPPERCASE_REGEX,
+        "Password must contain at least one uppercase letter",
+      )
       .regex(PASSWORD_NUMBER_REGEX, "Password must contain at least one number")
-      .regex(PASSWORD_SYMBOL_REGEX, "Password must contain at least one special character"),
+      .regex(
+        PASSWORD_SYMBOL_REGEX,
+        "Password must contain at least one special character",
+      ),
     confirmPassword: z.string().min(1, "Confirm password is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {

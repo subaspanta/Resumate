@@ -1,7 +1,14 @@
 // Mirrors backend career-analysis types and Prisma enums.
 
-export type CareerAnalysisStatus = "pending" | "analyzing" | "complete" | "failed";
-export type EvidenceStrength = "experience_backed" | "project_backed" | "mentioned";
+export type CareerAnalysisStatus =
+  | "pending"
+  | "analyzing"
+  | "complete"
+  | "failed";
+export type EvidenceStrength =
+  | "experience_backed"
+  | "project_backed"
+  | "mentioned";
 export type GapStatus = "strong" | "developing" | "weak_evidence" | "missing";
 
 interface SkillRef {
@@ -58,8 +65,10 @@ export interface CareerAnalysisPage {
 }
 
 // Detail responses omit frozen snapshots and list-only roadmap progress fields.
-export interface CareerAnalysisDetail
-  extends Omit<CareerAnalysisSummary, "hasRoadmap" | "roadmapProgress"> {
+export interface CareerAnalysisDetail extends Omit<
+  CareerAnalysisSummary,
+  "hasRoadmap" | "roadmapProgress"
+> {
   role: { slug: string; title: string };
   evidence: CandidateSkillEvidence[];
   gaps: SkillGap[];

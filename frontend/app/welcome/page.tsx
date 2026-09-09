@@ -21,7 +21,7 @@ export default function WelcomePage() {
     <div className="min-h-[100dvh] overflow-x-clip bg-canvas">
       <MarketingNav />
 
-        {/* Split and display type begin at lg to keep the headline readable. */}
+      {/* Split and display type begin at lg to keep the headline readable. */}
       <section className="mx-auto grid w-full max-w-max-content items-center gap-10 px-lg pb-12 pt-10 md:gap-12 md:px-xl md:pb-20 md:pt-16 lg:grid-cols-[1fr_minmax(0,29rem)] lg:pb-24 lg:pt-20">
         <div>
           <h1 className="text-balance text-display-md text-text-primary lg:text-display-lg xl:text-[60px] xl:leading-[64px]">
@@ -51,7 +51,7 @@ export default function WelcomePage() {
           </div>
 
           {/* Mechanism, not outcome — see .hero-proof in marketing.css. */}
-            {/* Preserve list semantics after removing native markers. */}
+          {/* Preserve list semantics after removing native markers. */}
           <ul role="list" className="hero-proof mt-10 list-none">
             <li className="hero-proof-item">
               <Quote className="hero-proof-icon size-4" aria-hidden="true" />

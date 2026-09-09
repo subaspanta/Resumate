@@ -32,10 +32,7 @@ export default function RoleDetailPage({
   const router = useRouter();
   const { role, isLoading, isError } = useRole(slug);
 
-  const crumbs = [
-    ...CRUMBS_BASE,
-    { label: role?.title ?? "Role" },
-  ];
+  const crumbs = [...CRUMBS_BASE, { label: role?.title ?? "Role" }];
 
   if (isLoading) {
     return (
@@ -65,9 +62,7 @@ export default function RoleDetailPage({
 
   const requirementsByImportance = IMPORTANCE_ORDER.map((importance) => ({
     importance,
-    requirements: role.requirements.filter(
-      (r) => r.importance === importance,
-    ),
+    requirements: role.requirements.filter((r) => r.importance === importance),
   })).filter((group) => group.requirements.length > 0);
 
   return (
@@ -80,8 +75,7 @@ export default function RoleDetailPage({
       {requirementsByImportance.map((group) => (
         <div key={group.importance} className="flex flex-col gap-4">
           <h2 className="section-heading">
-            {IMPORTANCE_LABEL[group.importance]} (
-            {group.requirements.length})
+            {IMPORTANCE_LABEL[group.importance]} ({group.requirements.length})
           </h2>
           <div className="gap-list">
             {group.requirements.map((req) => (
