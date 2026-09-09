@@ -2,14 +2,7 @@ import { z } from "zod";
 import { SkillImportance } from "../../generated/client/index.js";
 import { StructuredResume } from "../parsing/parsing.types.js";
 
-// --- Role snapshot ----------------------------------------------------------
-// Frozen copy of the role's requirements as they stood when an analysis ran.
-// RoleSkillRequirement rows are mutable seed data; without this snapshot a
-// re-seed would silently rewrite the meaning of every historical score.
-//
-// The grounding validator resolves its closed vocabulary against the snapshot,
-// never a fresh DB read — otherwise re-validating an old analysis would check
-// it against today's requirements.
+// Frozen role requirements used for historical scoring and grounding.
 
 export type RoleSnapshotSkill = {
   skillId: string;
@@ -30,10 +23,7 @@ export type RoleSnapshot = {
   skills: RoleSnapshotSkill[];
 };
 
-// --- Evidence agent (AI call #2) --------------------------------------------
-
-// Sections a quote may be attributed to. Mirrors the parts of StructuredResume
-// that hold user-authored prose.
+// Resume sections that may supply evidence quotes.
 export const SOURCE_SECTIONS = [
   "experience",
   "projects",
@@ -41,24 +31,14 @@ export const SOURCE_SECTIONS = [
   "summary",
   "education",
   "certifications",
-  // Reassessment only. Empty on a first-pass analysis — buildSourceItems()
-  // always returns [] for it there, and renderSourceItemsForPrompt() omits
-  // empty sections entirely, so the model is never shown a section it could
-  // cite on an original analysis.
+  // Used only during reassessment.
   "completed_work",
 ] as const;
 
 export const sourceSectionSchema = z.enum(SOURCE_SECTIONS);
 export type SourceSection = z.infer<typeof sourceSectionSchema>;
 
-// What the model returns per piece of evidence: a quote plus a *reference* to
-// where it came from — never a display label. The backend derives the label
-// from the snapshot itself, so an AI-written company or job title can never
-// reach the user as provenance.
-//
-// sourceIndex points into the corresponding section of the resume snapshot
-// (experience[2], projects[0], ...). The summary is a single string and is
-// always index 0.
+// Evidence uses a quote plus a snapshot reference; labels are backend-derived.
 export const evidenceItemSchema = z.object({
   quote: z.string().min(1),
   strength: z.enum(["experience_backed", "project_backed", "mentioned"]),
@@ -72,9 +52,7 @@ export const skillAssessmentSchema = z.object({
   evidence: z.array(evidenceItemSchema).max(3),
 });
 
-// Note what this schema cannot express: no status, priority, score,
-// importance, week, or free-text commentary. The application decides all of
-// those, so the model is given no field through which to smuggle a judgement.
+// Output has no status, priority, score, week, or free-text judgment fields.
 export const evidenceAgentOutputSchema = z.object({
   assessments: z.array(skillAssessmentSchema).min(1),
 });
@@ -82,8 +60,7 @@ export const evidenceAgentOutputSchema = z.object({
 export type EvidenceItem = z.infer<typeof evidenceItemSchema>;
 export type SkillAssessment = z.infer<typeof skillAssessmentSchema>;
 
-// An evidence item after grounding: the model's reference resolved into a
-// label the backend derived from the snapshot.
+// Evidence after resolving its snapshot reference.
 export type GroundedEvidenceItem = EvidenceItem & {
   sourceLabel: string;
 };
@@ -98,18 +75,11 @@ export type EvidenceAgentOutput = z.infer<typeof evidenceAgentOutputSchema>;
 export type EvidenceAgentInput = {
   resume: StructuredResume;
   role: { title: string; description: string };
-  // Vocabulary only — importance and rationale are deliberately withheld so
-  // the model can't inflate evidence for skills it knows the role weights
-  // heavily.
+  // Vocabulary only; importance and rationale stay application-owned.
   requiredSkills: { slug: string; name: string; aliases: string[] }[];
-  // Reassessment only. Pre-built by the caller so the indices shown in the
-  // prompt are the exact object the grounding validator resolves against —
-  // rebuilding independently inside the agent could drift from what the
-  // validator sees.
+  // Pre-built reassessment sources keep prompt and validator indices aligned.
   sourceItems?: ResumeSourceItemsShape;
-  // What each completion note was written in response to. Context ONLY — the
-  // agent is instructed never to quote these, since they are AI-authored
-  // roadmap text, not candidate evidence.
+  // Context only; completion notes are not candidate evidence.
   completedWorkContext?: {
     skillName: string;
     projectTask: string;

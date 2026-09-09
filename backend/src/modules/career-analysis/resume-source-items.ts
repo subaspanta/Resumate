@@ -1,39 +1,21 @@
-// The one place a resume snapshot is flattened into addressable entries.
-//
-// Both sides of the evidence seam read from this and nothing else:
-//
-//   resumeSnapshot
-//        ↓
-//   buildSourceItems()
-//        ↓
-//   ├── the numbered prompt the model cites by index
-//   └── the grounding validator that resolves those indices
-//
-// They must agree on ordering, or provenance points at the wrong job while
-// still looking verified. Two independent traversals cannot be kept in step by
-// discipline alone — one function, consumed twice, makes divergence impossible
-// rather than merely unlikely.
-//
-// Pure module: no Prisma, no Express, no AI.
+// Single source for prompt numbering and grounding lookup order.
 import { StructuredResume } from "../parsing/parsing.types.js";
 import { normalizeForGrounding } from "../../utils/grounding-normalize.js";
 import { SOURCE_SECTIONS, SourceSection } from "./career-analysis.types.js";
 
 export type SourceItem = {
-  // Original text, shown to the model in the prompt.
+  // Text shown to the model.
   displayText: string;
-  // Same text folded for comparison — what a quote must appear in.
+  // Normalized text used for quote matching.
   normalizedText: string;
-  // Provenance shown to the user. Derived here; never model-authored.
+  // Backend-derived provenance label.
   label: string;
 };
 
 export type ResumeSourceItems = Record<SourceSection, SourceItem[]>;
 
 function joinParts(parts: (string | null | undefined)[]): string {
-  // Joined with "\n" (which normalizes to a space) rather than "" so the end
-  // of one bullet and the start of the next can't form a phantom substring
-  // that grounds a quote spanning two unrelated bullets.
+  // Keep bullet boundaries from forming cross-bullet quote matches.
   return parts.filter((p): p is string => Boolean(p)).join("\n");
 }
 
@@ -47,13 +29,14 @@ function item(displayText: string, label: string): SourceItem {
 
 export function buildSourceItems(resume: StructuredResume): ResumeSourceItems {
   return {
-    // A single string, so it is always index 0 — the one section where the
-    // index carries no choice.
+    // Summary is a single index-0 item.
     summary: resume.summary ? [item(resume.summary, "Summary")] : [],
 
     experience: (resume.experience ?? []).map((entry) => {
       const header = [entry.title, entry.company].filter(Boolean).join(" — ");
-      const dates = [entry.startDate, entry.endDate].filter(Boolean).join(" to ");
+      const dates = [entry.startDate, entry.endDate]
+        .filter(Boolean)
+        .join(" to ");
       return item(
         joinParts([
           header + (dates ? ` (${dates})` : ""),
@@ -90,8 +73,7 @@ export function buildSourceItems(resume: StructuredResume): ResumeSourceItems {
       item(joinParts([cert.name, cert.issuer]), cert.name || "Certification"),
     ),
 
-    // Always empty on a first-pass analysis. Populated only by
-    // buildReassessmentSourceItems below.
+    // Populated only for reassessment.
     completed_work: [],
   };
 }
@@ -103,22 +85,8 @@ export type CompletedWorkItem = {
   completionNote: string;
 };
 
-// Reassessment's source items: the frozen resume PLUS what the user wrote
-// about the work they completed.
-//
-// Why this composes buildSourceItems() instead of running its own traversal:
-// the resume sections must keep byte-identical indices between the original
-// analysis and every reassessment, or a quote grounded at experience[2] could
-// resolve to a different job. Layering one extra section on top of the exact
-// same call is the only way to guarantee that.
-//
-// Why the AI-authored projectTask/expectedEvidence never appear here: a quote
-// grounded against them would be the model quoting the model. The roadmap
-// agent writes "Deploy a containerized service"; the evidence agent would
-// then be able to quote that same sentence back as proof; readiness would
-// rise on text no human ever wrote. Task text is fed to the evidence agent as
-// PROMPT CONTEXT (see evidence.agent.ts) so it knows what a note is
-// describing — but only the note itself is a quotable source.
+// Reassessment preserves original indices and adds only user-written notes.
+// AI-authored task text remains prompt context, never quoteable evidence.
 export function buildReassessmentSourceItems(
   resume: StructuredResume,
   completedWork: CompletedWorkItem[],

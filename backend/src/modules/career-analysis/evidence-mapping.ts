@@ -1,11 +1,4 @@
-// Turns grounded AI evidence into the gap rows the application owns.
-//
-// This is the application side of the seam: everything upstream is untrusted
-// model output, everything from here down is our own judgement. The AI never
-// sees a GapStatus, a priority, or a score — those are all computed here from
-// evidence that survived grounding, plus the role's own seeded importance.
-//
-// Pure module: no Prisma, no Express, no AI.
+// Convert grounded evidence into application-owned gaps and readiness.
 import {
   computeGapPriority,
   computeReadiness,
@@ -27,8 +20,7 @@ export type MappedGap = {
   name: string;
   status: GapStatus;
   priority: number;
-  // Assembled by the application from the derived status, the grounded
-  // evidence, and the hand-authored requirement rationale — never model prose.
+  // Derived from grounded evidence and hand-authored rationale.
   reasoning: string;
   evidence: GroundedEvidenceItem[];
 };
@@ -38,12 +30,7 @@ export type MappedAnalysis = {
   readiness: ReadinessBreakdown;
 };
 
-// Maps every skill the ROLE requires — not every skill the AI returned.
-//
-// Driving the loop from the role snapshot is what guarantees a skill the model
-// silently dropped still gets a row (as `missing`) instead of disappearing.
-// A vanished skill would shrink the readiness denominator and quietly inflate
-// the score, which is the exact opposite of the failure direction we want.
+// Iterate role skills so omitted AI assessments remain missing, not absent.
 export function mapAssessmentsToGaps(
   assessments: GroundedSkillAssessment[],
   roleSnapshot: RoleSnapshot,
