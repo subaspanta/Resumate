@@ -36,7 +36,6 @@ export function RegisterForm() {
     mode: "onChange",
   });
 
-  // Use useWatch instead of watch to avoid React Compiler warning
   const password = useWatch({
     control,
     name: "password",

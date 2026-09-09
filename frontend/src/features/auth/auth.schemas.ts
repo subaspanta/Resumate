@@ -1,8 +1,6 @@
 import * as z from "zod";
 
-// Single source of truth for the password policy — PasswordStrengthChecklist
-// checks the same rules against these constants so the displayed checklist
-// can never drift from what registerSchema actually enforces.
+// Shared by registerSchema and PasswordStrengthChecklist to keep password rules aligned.
 export const PASSWORD_MIN_LENGTH = 8;
 export const PASSWORD_MAX_LENGTH = 32;
 export const PASSWORD_UPPERCASE_REGEX = /[A-Z]/;

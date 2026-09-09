@@ -50,7 +50,6 @@ export function useAuth() {
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterInput) => {
       const response = await authApi.register(data);
-      // Same double-unwrap as login — see the comment there.
       return response?.data?.data ?? null;
     },
     onSuccess: (newUser: SafeUser | null) => {

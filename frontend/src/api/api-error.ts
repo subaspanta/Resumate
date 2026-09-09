@@ -1,4 +1,3 @@
-// src/api/api-error.ts
 import { AxiosError } from "axios";
 
 // Must match ERROR_CODES in backend/src/constants/error-codes.ts.

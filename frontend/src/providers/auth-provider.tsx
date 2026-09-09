@@ -14,9 +14,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const isGuestRoute = GUEST_ROUTES.includes(pathname);
-  // The session and the current route disagree, so a redirect is owed. The
-  // effect below can only fire after a paint, so this same condition also
-  // gates rendering — otherwise the wrong page shows for one frame first.
+  // Gate rendering until a session/route redirect completes to avoid a flash.
   const isRedirecting =
     !isLoading && isAuthenticated === isGuestRoute;
 

@@ -12,8 +12,7 @@ interface RetryableRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
 }
 
-// Endpoints that should never trigger the refresh flow themselves —
-// a 401 from any of these means the session is genuinely gone.
+// Auth endpoints bypass refresh; their 401 means the session is gone.
 const NO_REFRESH_URLS = ["/auth/me", "/auth/login", "/auth/register", "/auth/refresh"];
 
 let isRefreshing = false;
@@ -32,9 +31,7 @@ axiosClient.interceptors.response.use(
     const url = originalRequest?.url ?? "";
     const isAuthEndpoint = NO_REFRESH_URLS.some((path) => url.includes(path));
 
-    // 401 on /auth/me, /auth/login, /auth/register, /auth/refresh, or an
-    // already-retried request: pass through as-is. useAuth's queryFn already
-    // treats a 401 on /auth/me as "signed out", no invalidation needed here.
+    // Pass through auth-endpoint and already-retried 401s; useAuth handles /me.
     if (
       normalized.status !== 401 ||
       !originalRequest ||
