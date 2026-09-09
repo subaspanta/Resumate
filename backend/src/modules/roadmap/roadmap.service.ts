@@ -6,10 +6,7 @@ import { CareerAnalysisService } from "../career-analysis/career-analysis.servic
 import { RoleSnapshot } from "../career-analysis/career-analysis.types.js";
 import { validateRoadmapGrounding } from "../../utils/career-output-validator.js";
 import { StructuredResume } from "../parsing/parsing.types.js";
-import {
-  RoadmapRepository,
-  RoadmapWithTasks,
-} from "./roadmap.repository.js";
+import { RoadmapRepository, RoadmapWithTasks } from "./roadmap.repository.js";
 import { RoadmapAgent, RoadmapGapBrief } from "./roadmap.types.js";
 import {
   buildRoadmapSchedule,
@@ -17,37 +14,21 @@ import {
 } from "./roadmap-ordering.js";
 
 export class RoadmapService {
-  // Depends on CareerAnalysisService, not CareerAnalysisRepository. A roadmap
-  // is a sub-resource of an analysis, so this module has to ask "may this user
-  // touch that analysis" — and that question belongs to the service that owns
-  // the analysis. Reaching past it into its repository would mean any
-  // ownership rule career-analysis grows later silently would not apply here.
+  // CareerAnalysisService owns analysis authorization.
   constructor(
     private readonly roadmapRepository: RoadmapRepository,
     private readonly careerAnalysisService: CareerAnalysisService,
     private readonly roadmapAgent: RoadmapAgent,
   ) {}
 
-  // Generates the roadmap for one analysis.
-  //
-  //   1. ownership + state checks    (application)
-  //   2. select the top gaps          (application — deterministic)
-  //   3. assign weeks by position     (application — deterministic)
-  //   4. ask the model for content    (AI)
-  //   5. validate it addressed exactly what it was given
-  //   6. persist atomically
-  //
-  // The model never sees priority or week, so it cannot influence either.
+  // Application selects and schedules gaps; AI supplies only task content.
   async generateRoadmap(
     userId: string,
     analysisId: string,
   ): Promise<RoadmapWithTasks> {
     await this.careerAnalysisService.assertAnalysisOwner(userId, analysisId);
 
-    // Never silently replace. A second roadmap would either orphan the first
-    // or discard task completions the user earned, and neither is something to
-    // do as a side effect of a POST. Regeneration, if it ever ships, must be
-    // an explicit operation with explicit replacement semantics.
+    // Never replace a roadmap implicitly; completions must survive retries.
     if (await this.roadmapRepository.existsForAnalysis(analysisId)) {
       throw new AppError(
         HTTP_STATUS.CONFLICT,
@@ -56,12 +37,7 @@ export class RoadmapService {
       );
     }
 
-    // Narrow read: status, gaps, and both snapshots, nothing else — no
-    // evidence include, no getAnalysisById detour through a call whose
-    // findByIdWithResults no longer even carries the snapshots this method
-    // needs. Re-checks ownership internally against the row's own userId,
-    // which keeps this module from reaching past CareerAnalysisService into
-    // its repository.
+    // Load only roadmap inputs; the service rechecks ownership.
     const analysis =
       await this.careerAnalysisService.getAnalysisForRoadmapGeneration(
         userId,
@@ -75,8 +51,7 @@ export class RoadmapService {
       );
     }
 
-    // Deterministic: sort by the priority the application computed, drop
-    // skills already rated strong, take the top N, one per week.
+    // Select and schedule gaps deterministically from application-owned priority.
     const scheduled = buildRoadmapSchedule(
       analysis.gaps.map((gap) => ({
         id: gap.id,

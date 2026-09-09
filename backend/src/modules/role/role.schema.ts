@@ -1,8 +1,6 @@
 import { z } from "zod";
 
-// Route params. Without this an arbitrary string reaches the DB lookup and
-// surfaces as a generic 404 instead of validating the shape first — matches
-// resume.schema.ts's resumeIdParamSchema.
+// Validate route params before the database lookup.
 export const roleSlugParamSchema = z.object({
   slug: z
     .string()
