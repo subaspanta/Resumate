@@ -17,15 +17,7 @@ import {
 import { useAuth } from "@/src/features/auth/auth.hooks";
 import { useDeleteResumeFlow } from "../../features/resume/use-resume-delete";
 
-// ============================================================================
-// Constants
-// ============================================================================
-
 const CRUMBS = [{ label: "Dashboard" }];
-
-// ============================================================================
-// Types
-// ============================================================================
 
 interface DashboardContentProps {
   dashboardState: DashboardState;
@@ -36,10 +28,6 @@ interface DashboardContentProps {
   onOpenResume: (id: string) => void;
   onViewAll: () => void;
 }
-
-// ============================================================================
-// Subcomponents
-// ============================================================================
 
 const DashboardSkeleton = () => (
   <AppShell
@@ -78,10 +66,6 @@ const DashboardErrorState = () => (
   </div>
 );
 
-// ============================================================================
-// Helpers
-// ============================================================================
-
 const getDashboardHeader = (state: DashboardState, userName?: string) => {
   switch (state) {
     case "firstTime":
@@ -98,10 +82,6 @@ const getDashboardHeader = (state: DashboardState, userName?: string) => {
   }
 };
 
-// ============================================================================
-// Main Component
-// ============================================================================
-
 export function DashboardContent({
   dashboardState,
   isLoading,
@@ -114,7 +94,6 @@ export function DashboardContent({
   const { user } = useAuth();
   const { handleDelete, deletingId } = useDeleteResumeFlow();
 
-  // Early return for loading state
   if (isLoading) {
     return <DashboardSkeleton />;
   }
@@ -142,10 +121,6 @@ export function DashboardContent({
     </AppShell>
   );
 }
-
-// ============================================================================
-// Content Renderer
-// ============================================================================
 
 interface RenderContentParams {
   dashboardState: DashboardState;
@@ -196,8 +171,6 @@ function renderContent(params: RenderContentParams) {
       return <DashboardErrorState />;
 
     default:
-      // This line ensures TypeScript knows all cases are handled
-      // The variable is used as a type assertion
       return dashboardState satisfies never;
   }
 }

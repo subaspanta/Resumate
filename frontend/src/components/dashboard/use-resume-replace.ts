@@ -65,7 +65,6 @@ export function useReplaceResumeFlow() {
     if (file) {
       await handleFileSelected(id, title, file);
     }
-    // If no file selected (user cancelled), do nothing
   };
 
   return {

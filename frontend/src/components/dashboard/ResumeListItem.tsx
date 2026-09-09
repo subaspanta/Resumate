@@ -18,7 +18,7 @@ import {
 
 interface ResumeListItemProps {
   resume: ResumeSummary;
-  index: number; // For staggered entrance animation
+  index: number;
   onOpen: (id: string) => void;
   onDelete?: (id: string, title: string) => void;
   isDeleting?: boolean;
@@ -49,13 +49,13 @@ export function ResumeListItem({
       animate={{
         opacity: isDeleting ? 0.45 : 1,
         y: 0,
-        scale: isDeleting ? 0.99 : 1, // Slight shrink during delete to signal removal
+        scale: isDeleting ? 0.99 : 1,
       }}
       exit={{
         opacity: 0,
         height: 0,
         paddingTop: 0,
-        paddingBottom: 0, // Collapse padding to avoid stub during exit
+        paddingBottom: 0,
       }}
       transition={
         reduceMotion
@@ -63,7 +63,6 @@ export function ResumeListItem({
           : {
               duration: 0.3,
               ease: [0.16, 1, 0.3, 1],
-              // Stagger only initial paint; new rows appear immediately
               delay: Math.min(index * 0.04, 0.2),
             }
       }

@@ -26,8 +26,7 @@ export interface StructuredResumeExperience {
   startDate?: string;
   endDate?: string;
   bullets: string[];
-  // Pre-`bullets` rows stored one string here instead of an array. Read-only
-  // legacy tolerance so an old resumeSnapshot still renders — never write it.
+  // Legacy snapshots may store one description string; read it, but never write it.
   description?: string;
 }
 
@@ -37,9 +36,7 @@ export interface StructuredResumeEducation {
   year?: string;
 }
 
-// null category = uncategorized — either a legacy flat skills array (no
-// headings) or the backward-compat shape a resume coerces into if it never
-// had explicit skill groupings.
+// Null category means uncategorized or legacy flat skills.
 export interface SkillGroup {
   category: string | null;
   items: string[];

@@ -58,7 +58,6 @@ export function useUploadResumeFlow() {
     if (file) {
       await handleFileSelected(file);
     }
-    // If no file selected (user cancelled), do nothing
   };
 
   return {

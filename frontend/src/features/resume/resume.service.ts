@@ -8,10 +8,7 @@ export const resumeApi = {
 
   get: (id: string) => axiosClient.get<ApiResponse<Resume>>(`/resumes/${id}`),
 
-  // Storage runs concurrently with parsing on the backend, but that
-  // concurrency doesn't shorten the critical path: text extraction and the
-  // AI structuring call are sequential within parsing, so this is the
-  // slowest route in the app and the one AI_CALL_TIMEOUT_MS is sized for.
+  // Parsing remains the critical path because extraction and AI structuring are sequential.
   upload: (form: FormData) =>
     axiosClient.post<ApiResponse<Resume>>("/resumes", form, {
       headers: { "Content-Type": "multipart/form-data" },

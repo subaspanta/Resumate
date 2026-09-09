@@ -8,7 +8,6 @@ import { validateResumeFile } from "@/src/features/resume/resume.utils";
 
 interface UploadDropzoneProps {
   onFileSelected: (file: File) => void;
-  // Compact = returning-user form (no hero, just a drop target)
   variant?: "default" | "firstTime" | "compact";
   isUploading?: boolean;
 }
@@ -37,7 +36,6 @@ export function UploadDropzone({
     [onFileSelected],
   );
 
-  // Prevent default to allow drop; no state updates here (dragover fires constantly)
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   }, []);
@@ -89,7 +87,7 @@ export function UploadDropzone({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) selectFile(file);
-      e.target.value = ""; // Reset to allow re-selecting same file
+      e.target.value = "";
     },
     [selectFile],
   );
@@ -99,7 +97,6 @@ export function UploadDropzone({
     inputRef.current?.click();
   };
 
-  // Variant classes
   const variantClass = isFirstTime
     ? "dashboard-upload-zone--first-time"
     : isCompact
@@ -115,7 +112,6 @@ export function UploadDropzone({
     .filter(Boolean)
     .join(" ");
 
-  // Render content based on state
   const renderContent = () => {
     if (isUploading) {
       return (

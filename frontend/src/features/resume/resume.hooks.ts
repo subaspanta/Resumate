@@ -83,11 +83,7 @@ export function useUploadResume() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
     },
-    // A failure here does not prove nothing was written. The backend has no
-    // abort-on-disconnect, so a client timeout leaves the upload running and
-    // it may still persist the row. Refetch on the error path too, or the
-    // list keeps claiming there is no resume until the user navigates away
-    // and back.
+    // Refetch after failure because the server may finish an upload after client timeout.
     onError: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
     },
@@ -99,12 +95,7 @@ interface ReplaceResumeVariables {
   form: FormData;
 }
 
-// Replaces a resume's stored content in place; the resume keeps its id, so
-// every career analysis already pointing at it (via a frozen
-// resumeSnapshot, not a live read) is unaffected. id is a mutate-time
-// variable rather than baked into the hook (unlike a per-resume useResume(id))
-// so one hook instance can serve every row in a list, the same shape
-// useDeleteResume already uses.
+// Replaces content in place; frozen analysis snapshots remain unchanged.
 export function useReplaceResume() {
   const queryClient = useQueryClient();
 
@@ -119,9 +110,7 @@ export function useReplaceResume() {
         queryKey: queryKeys.resumes.detail(id),
       });
     },
-    // Same reasoning as useUploadResume: a client-side give-up doesn't mean
-    // the replacement didn't land, and stale cached content here is worse
-    // than a redundant refetch.
+    // Refetch because a client timeout does not prove replacement failed.
     onError: (_error, { id }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.resumes.all() });
       queryClient.invalidateQueries({
@@ -135,9 +124,7 @@ interface DeleteResumeContext {
   previous?: ResumeSummary[];
 }
 
-// Optimistic: drop the row immediately so the list doesn't sit there with a
-// spinner on a destructive action the user has already confirmed. Rolls the
-// row back if the request fails.
+// Remove optimistically after confirmation, then restore on failure.
 export function useDeleteResume() {
   const queryClient = useQueryClient();
   const key = queryKeys.resumes.all();
@@ -165,9 +152,7 @@ export function useDeleteResume() {
     },
     onSettled: (_data, _err, id) => {
       queryClient.invalidateQueries({ queryKey: key });
-      // The deleted resume's own detail entry and its career-analysis list are
-      // now dead cache — a stale read would render analyses for a resume the
-      // server no longer has.
+      // Remove dependent caches so deleted-resume data cannot render stale.
       queryClient.removeQueries({ queryKey: queryKeys.resumes.detail(id) });
       queryClient.removeQueries({
         queryKey: queryKeys.careerAnalyses.list(id),
