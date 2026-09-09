@@ -6,11 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/src/components/brand/Logo";
 import { ThemeToggle } from "@/src/components/settings/ThemeToggle";
 
-/**
- * Condenses once the page scrolls. Driven by a zero-height sentinel above the
- * header rather than a scroll listener: the browser reports the crossing
- * itself, so nothing runs per frame while the visitor scrolls.
- */
+/** Condenses after scrolling via an observer, without per-frame scroll work. */
 export function MarketingNav() {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [condensed, setCondensed] = useState(false);

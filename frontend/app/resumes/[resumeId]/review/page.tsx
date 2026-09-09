@@ -10,9 +10,7 @@ import { entryBullets } from "@/src/features/resume/resume.utils";
 import { FlowRedirect } from "@/src/components/FlowRedirect";
 import { AppShell, type Crumb } from "@/src/components/layout/AppShell";
 
-// The flow step rail supplies the whole trail (Resume -> ... -> Review
-// Profile); a separate "Dashboard" crumb would just duplicate the Resume
-// step, since that step's own destination is the dashboard.
+// The step rail already includes the dashboard destination via Resume.
 const CRUMBS: Crumb[] = [];
 
 export default function ResumeReviewPage({

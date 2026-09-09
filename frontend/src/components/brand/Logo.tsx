@@ -5,8 +5,7 @@ interface LogoProps {
   href: string;
   size?: "sm" | "lg";
   showMark?: boolean;
-  /** Drops the wordmark below the sm breakpoint, leaving just the glyph --
-   * for tight nav bars where "Resumate" competes with other controls. */
+  /** Hide the wordmark below sm for tight navigation bars. */
   hideWordmarkOnMobile?: boolean;
   className?: string;
 }

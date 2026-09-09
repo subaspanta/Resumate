@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Default copy for the analyzing state
 const DEFAULT_TITLE = "Analyzing your fit";
 const DEFAULT_PHASES = [
   "Reading your resume",
@@ -31,21 +30,18 @@ export function AnalyzingOverlay({
   const [phase, setPhase] = useState(0);
   const [stalled, setStalled] = useState(false);
 
-  // Advance through phases sequentially, stop at last (no loop)
   useEffect(() => {
     if (phase >= phases.length - 1) return;
     const timer = setTimeout(() => setPhase((p) => p + 1), PHASE_DURATION_MS);
     return () => clearTimeout(timer);
   }, [phase, phases.length]);
 
-  // Show retry button after stall timeout
   useEffect(() => {
     if (!onRetry) return;
     const timer = setTimeout(() => setStalled(true), STALL_TIMEOUT_MS);
     return () => clearTimeout(timer);
   }, [onRetry]);
 
-  // Prevent background scroll while overlay is active
   useEffect(() => {
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -54,7 +50,6 @@ export function AnalyzingOverlay({
     };
   }, []);
 
-  // Stalled state: show retry button
   if (stalled && onRetry) {
     return (
       <div className="analyzing-overlay" role="status" aria-live="polite">
@@ -71,7 +66,6 @@ export function AnalyzingOverlay({
     );
   }
 
-  // Normal analyzing state with phase progression
   return (
     <div className="analyzing-overlay" role="status" aria-live="polite">
       <div className="card analyzing-overlay-card">

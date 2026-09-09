@@ -8,17 +8,7 @@ interface RevealProps {
   className?: string;
 }
 
-/**
- * Fades + lifts content in once it enters the viewport. Uses
- * IntersectionObserver rather than a scroll listener (no per-frame React
- * state churn).
- *
- * Content starts *visible* and is hidden only after mount, once we know the
- * visitor accepts motion. Hiding in the initial render instead would send
- * `opacity: 0` markup from the server — where the motion preference is
- * unknowable — and leave reduced-motion visitors staring at an invisible
- * page until hydration caught up, or forever if the script failed.
- */
+/** Reveal below-fold content without hiding server-rendered or reduced-motion content. */
 export function Reveal({ children, delay = 0, className }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [hidden, setHidden] = useState(false);
@@ -30,9 +20,7 @@ export function Reveal({ children, delay = 0, className }: RevealProps) {
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    // Already on screen at mount (the hero, typically): there is nothing to
-    // scroll into, so animating it would mean hiding content the visitor can
-    // already see.
+    // Do not hide content already visible at mount.
     const rect = node.getBoundingClientRect();
     if (rect.top < window.innerHeight && rect.bottom > 0) return;
 
@@ -43,9 +31,7 @@ export function Reveal({ children, delay = 0, className }: RevealProps) {
       setRevealed(true);
     };
 
-    // Any part of the element entering the viewport is enough. A fractional
-    // threshold would strand anything taller than the viewport — it can never
-    // reach 20% visible, so it would stay hidden permanently.
+    // Use intersection instead of a fractional visibility threshold for tall elements.
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -58,9 +44,7 @@ export function Reveal({ children, delay = 0, className }: RevealProps) {
 
     observer.observe(node);
 
-    // Backstop: if the observer somehow never fires, content must not stay
-    // invisible. Hiding content is only ever acceptable while an animation is
-    // actually coming.
+    // Never leave content hidden if the observer fails.
     const failsafe = setTimeout(show, 2500);
 
     return () => {

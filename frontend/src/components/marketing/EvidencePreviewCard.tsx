@@ -13,21 +13,12 @@ const SKILLS = [
 
 const READINESS = 62;
 
-// The page's one authored moment, so it gets a real budget: rows resolve one
-// at a time rather than arriving together, because watching evidence be
-// judged is the product's whole proposition.
+// Stagger rows so the preview visibly evaluates evidence.
 const ROW_STAGGER_MS = 110;
 const ROW_START_MS = 260;
 const COUNT_DURATION_MS = 900;
 
-/**
- * Counts to the readiness figure once the sequence starts. A count-up is the
- * one treatment that shows a score being *arrived at* rather than asserted —
- * which is the distinction the product is selling.
- *
- * Returns the target untouched until `enabled` flips, so the resting card
- * (server render, reduced motion, failed script) shows the real number.
- */
+/** Count up only after animation is enabled; static and reduced-motion states show the target. */
 function useCountUp(target: number, enabled: boolean) {
   const [value, setValue] = useState(target);
 
@@ -39,8 +30,7 @@ function useCountUp(target: number, enabled: boolean) {
 
     const tick = (now: number) => {
       const t = Math.min((now - start) / COUNT_DURATION_MS, 1);
-      // Same expo-out the CSS uses, so the number decelerates on the curve
-      // everything else in the system moves on.
+      // Match the CSS easing curve.
       const eased = 1 - Math.pow(1 - t, 3);
       setValue(Math.round(target * eased));
       if (t < 1) frame = requestAnimationFrame(tick);
@@ -53,20 +43,10 @@ function useCountUp(target: number, enabled: boolean) {
   return value;
 }
 
-/**
- * Real small-scale reproduction of the in-product evidence/gap card, not a
- * div-based fake screenshot: same status vocabulary (proven vs gap) the
- * actual career-analysis UI uses.
- *
- * It assembles itself on load — each skill starts unresolved and settles into
- * proven or gap — because a static picture of the output can't show that the
- * product *reads* a resume rather than just listing one.
- */
+/** Small live reproduction of the product's evidence/gap card. */
 export function EvidencePreviewCard() {
   const reduceMotion = useReducedMotion();
-  // Gate on mount, not on render: the server has no way to know the visitor's
-  // motion preference, so the markup it sends must already be the resolved
-  // card. Animation is something the client opts into afterwards.
+  // Enable animation after mount so SSR remains motion-agnostic.
   const [animate, setAnimate] = useState(false);
   const hasRun = useRef(false);
 

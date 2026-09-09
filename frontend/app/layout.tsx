@@ -21,15 +21,7 @@ export const metadata: Metadata = {
     "AI-powered career gap analysis and learning roadmap for job seekers.",
 };
 
-/**
- * Without this, mobile browsers lay the page out in a ~980px virtual
- * viewport and then scale the result down to fit — every breakpoint below
- * 1024px never matches, and text renders at a fraction of its intended size.
- * The responsive CSS in this app was effectively dead on real phones.
- *
- * No maximum-scale or user-scalable: pinch-zoom is an accessibility
- * affordance, and disabling it is a WCAG 1.4.4 failure.
- */
+/** Enables device-width responsive layout while preserving pinch zoom. */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,

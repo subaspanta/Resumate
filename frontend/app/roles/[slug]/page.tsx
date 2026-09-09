@@ -16,8 +16,7 @@ const IMPORTANCE_LABEL: Record<SkillImportance, string> = {
   nice_to_have: "Nice to have",
 };
 
-// Critical first — the order a candidate should actually prioritize
-// learning in, not alphabetical or database-insertion order.
+// Keep requirements in candidate-priority order.
 const IMPORTANCE_ORDER: SkillImportance[] = [
   "critical",
   "important",

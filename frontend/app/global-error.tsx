@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import { logError } from "@/src/lib/log-error";
 
-// Only triggers when the root layout itself throws, so it renders its own
-// <html>/<body> and stays free of providers/fonts that could also fail.
+// Root-layout failures need independent html/body markup and providers.
 export default function GlobalError({
   error,
   reset,

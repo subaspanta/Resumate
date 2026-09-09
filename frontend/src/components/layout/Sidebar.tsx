@@ -40,13 +40,9 @@ interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
   layout: SidebarLayout;
-  /**
-   * Which nav entry the current surface belongs to. The workspace and analysis
-   * pages are both "inside" the resume workspace, so they keep that item lit
-   * rather than falsely highlighting Dashboard.
-   */
+  /** Nav entry owning the current surface. */
   activeNav?: "dashboard" | "workspace" | "roadmap" | "settings";
-  /** Below 1024px the sidebar is an off-canvas drawer; these control it. */
+  /** Controls the off-canvas drawer below 1024px. */
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
 }
@@ -59,11 +55,7 @@ interface NavItemProps {
   /** Lucide has no fill axis, so an active item reads as heavier stroke. */
   isFilled?: boolean;
   disabled?: boolean;
-  /**
-   * Shown as static copy under the item, never as a toast — a disabled item
-   * gets exactly one explanation, not a click-triggered second one that can
-   * disagree with the first.
-   */
+  /** Static explanation for disabled items. */
   hint?: string;
   href?: string;
   onClick?: () => void;
@@ -106,11 +98,7 @@ function NavItem({
     </>
   );
 
-  // One element shape (button) for both enabled and disabled states — a
-  // disabled item used to render as a <button> while every enabled item was
-  // an <a>, so the "same list" had two different interaction models. The
-  // collapsed rail hides the label entirely, so `title` is the one thing
-  // standing in for it on hover; aria-label already covers screen readers.
+  // Keep nav items structurally consistent; title covers collapsed labels.
   if (href && !disabled) {
     return (
       <a
@@ -159,9 +147,7 @@ export function Sidebar({
   isMobileOpen = false,
   onCloseMobile,
 }: SidebarProps) {
-  // Read the signed-in user here rather than taking it as a prop: this
-  // component already depends on useAuth for logout, and the dashboard used to
-  // drill the same name down three levels to reach it.
+  // Read user data here because Sidebar already owns logout.
   const { user, logout, isLoggingOut } = useAuth();
   const userName = user?.name;
   const userEmail = user?.email;
@@ -169,9 +155,7 @@ export function Sidebar({
   const collapsed = showCollapse && isCollapsed;
   const firstNavLinkRef = useRef<HTMLAnchorElement>(null);
 
-  // Same reasoning as the Analyses item's own gating below, one level
-  // deeper: a returning user with an active roadmap was 4 navigations away
-  // from the one screen the product exists to get them completing tasks in.
+  // Route directly to the active roadmap when one exists.
   const { href: roadmapHref, disabled: roadmapDisabled } =
     useSidebarRoadmapLink();
 
@@ -185,9 +169,7 @@ export function Sidebar({
     }
   };
 
-  // Mobile drawer only: Escape closes it, and opening moves focus into the
-  // nav so keyboard/screen-reader users land somewhere useful rather than
-  // staying on the now-hidden trigger button.
+  // Focus the mobile nav and support Escape-to-close.
   useEffect(() => {
     if (!isMobileOpen) return;
 

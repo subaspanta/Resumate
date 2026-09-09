@@ -12,10 +12,7 @@ import {
 interface SidebarContextValue {
   isCollapsed: boolean;
   toggle: () => void;
-  /** Off-canvas drawer state below the 768px breakpoint — independent of
-   * `isCollapsed`, which is the desktop icon-rail preference. Conflating the
-   * two would mean opening the mobile drawer could leave the sidebar stuck
-   * collapsed on desktop, or vice versa. */
+  /** Mobile drawer state, independent of desktop collapse state. */
   isMobileOpen: boolean;
   openMobile: () => void;
   closeMobile: () => void;
@@ -23,18 +20,7 @@ interface SidebarContextValue {
 
 const SidebarContext = createContext<SidebarContextValue | null>(null);
 
-/**
- * Sidebar collapse is a user preference, not per-page state, so it can't live
- * inside AppShell — every route mounts its own AppShell, and the dashboard
- * owns a second copy in app/page.tsx. Collapsing then navigating reset it,
- * and the two owners never agreed with each other. Hoisting it to the root
- * layout gives the whole authenticated app one source of truth.
- *
- * Deliberately in-memory: persisting to localStorage would survive a reload
- * too, but the server can't read localStorage, so the first paint would show
- * the sidebar expanded and then snap it closed. Fixing that needs a blocking
- * inline script in <head>. Not worth it until someone actually complains.
- */
+/** Root-owned sidebar state persists across route changes without hydration snap. */
 export function SidebarProvider({ children }: { children: ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);

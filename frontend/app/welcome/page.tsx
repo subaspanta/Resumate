@@ -16,26 +16,12 @@ import { EvidencePreviewCard } from "@/src/components/marketing/EvidencePreviewC
 const ROLES = ["Frontend Engineer", "Backend Engineer", "Full Stack Engineer"];
 
 export default function WelcomePage() {
-  // overflow-x-clip, not -hidden: .hero-panel bleeds to the viewport edge with
-  // a 100vw calc, and 100vw counts the scrollbar gutter while the containing
-  // block does not — on a platform with classic (non-overlay) scrollbars that
-  // surplus would push a horizontal scrollbar onto the page. `hidden` would
-  // fix it too but silently kills position:sticky on the nav; `clip` does not.
+  // Clip 100vw hero bleed without disabling the sticky nav.
   return (
     <div className="min-h-[100dvh] overflow-x-clip bg-canvas">
       <MarketingNav />
 
-      {/* Hero */}
-      {/* The two-column split waits for lg, not md: at 768px each column is
-          only 328px, and the headline's own jump to display-lg there pushed it
-          to four lines in a half-width box — worse than the same headline on a
-          phone. Both the split and the type step now land together at 1024px,
-          where the column is wide enough to carry 48px type.
-
-          The right track is capped rather than a free 1fr: the navy panel
-          bleeds to the viewport edge from xl, so letting it grow with the
-          viewport would keep stretching the band while the card inside it
-          stayed 24rem, opening a widening void on its right. */}
+        {/* Split and display type begin at lg to keep the headline readable. */}
       <section className="mx-auto grid w-full max-w-max-content items-center gap-10 px-lg pb-12 pt-10 md:gap-12 md:px-xl md:pb-20 md:pt-16 lg:grid-cols-[1fr_minmax(0,29rem)] lg:pb-24 lg:pt-20">
         <div>
           <h1 className="text-balance text-display-md text-text-primary lg:text-display-lg xl:text-[60px] xl:leading-[64px]">
@@ -65,8 +51,7 @@ export default function WelcomePage() {
           </div>
 
           {/* Mechanism, not outcome — see .hero-proof in marketing.css. */}
-          {/* role="list" because list-style:none makes Safari/VoiceOver drop
-              the list semantics, so these stop being announced as a group. */}
+            {/* Preserve list semantics after removing native markers. */}
           <ul role="list" className="hero-proof mt-10 list-none">
             <li className="hero-proof-item">
               <Quote className="hero-proof-icon size-4" aria-hidden="true" />

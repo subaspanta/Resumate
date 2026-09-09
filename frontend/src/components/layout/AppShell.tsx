@@ -11,8 +11,7 @@ import { useSidebar } from "@/src/providers/sidebar-provider";
 import { DASHBOARD_VIEW_LAYOUT } from "@/src/components/dashboard/dashboardViewConfig";
 import type { DashboardView } from "@/src/features/resume/types";
 
-// A sidebar pixel offset belongs to the layout, not to the resume feature —
-// this shell is its only consumer.
+// Layout owns the sidebar offset shared by shell children.
 function getSidebarOffset(
   isCollapsible: boolean,
   isSidebarCollapsed: boolean,
@@ -28,12 +27,9 @@ export interface Crumb {
 }
 
 interface AppShellProps {
-  /** Omit on surfaces outside the linear upload->role->analysis->roadmap
-   * journey (e.g. an analyses list) — the step rail only makes sense inside
-   * that flow. */
+  /** Omit outside the upload-to-roadmap flow. */
   step?: FlowStepKey;
-  /** Overrides the sidebar highlight derived from `step` — for surfaces
-   * outside the linear flow (settings) that still need a lit nav item. */
+  /** Overrides the nav highlight derived from `step`. */
   activeNav?: "dashboard" | "workspace" | "roadmap" | "settings";
   view?: DashboardView;
   crumbs: Crumb[];
@@ -50,13 +46,7 @@ interface AppShellProps {
   children: ReactNode;
 }
 
-/**
- * One shell for every authenticated surface. The dashboard, the job-description
- * step, and the review step previously rendered three unrelated layouts — a
- * sidebar shell, a bare centered <main>, and another bare <main> — which is why
- * the journey read as three products. They now share this chrome, and differ
- * only in the content slot.
- */
+/** Shared chrome for authenticated surfaces; pages provide only content. */
 export function AppShell({
   step,
   activeNav,
@@ -80,9 +70,7 @@ export function AppShell({
   );
 
   return (
-    // --shell-offset is the single animated source for every element that has
-    // to clear the sidebar: the main column, the footer, and the analysis
-    // action bar. See the @property declaration in layout.css.
+    // One animated offset keeps the main, footer, and action bar aligned.
     <div
       className="dashboard-shell"
       style={{ "--shell-offset": sidebarOffset } as React.CSSProperties}
@@ -148,9 +136,7 @@ export function AppShell({
               </nav>
             </div>
 
-            {/* Its own row, below the crumbs rather than appended to them: the
-                rail shows all five steps including the ones still ahead, which
-                needs the full width and would overrun a shared row. */}
+            {/* Separate row gives the full five-step rail enough width. */}
             {step && (
               <nav aria-label="Progress">
                 <FlowStepRail current={step} onNavigate={onNavigateStep} />

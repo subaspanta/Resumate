@@ -7,12 +7,7 @@ import { cn } from "@/lib/utils";
 
 const emptySubscribe = () => () => {};
 
-/**
- * True only once mounted on the client. `useSyncExternalStore` -- rather
- * than `useState` + `useEffect` -- gets us this without a setState call
- * inside an effect, which is a synchronous-render footgun the lint rule
- * `react-hooks/set-state-in-effect` now flags.
- */
+/** Client-mounted state without an effect state update or hydration mismatch. */
 function useMounted() {
   return useSyncExternalStore(
     emptySubscribe,
@@ -28,18 +23,11 @@ const OPTIONS: { value: "light" | "dark" | "system"; label: string; icon: Lucide
 ];
 
 interface ThemeToggleProps {
-  /** Icon-only rendering for tight spaces (the marketing nav) -- same three
-   * options, labels move to sr-only text instead of disappearing. */
+  /** Use icon-only controls while retaining screen-reader labels. */
   compact?: boolean;
 }
 
-/**
- * Light/dark/system control. Used labeled in Settings and compact in the
- * marketing nav. `next-themes` only knows the resolved theme after mount (it
- * reads localStorage/matchMedia client side), so the pre-mount render stays
- * inert rather than guessing -- picking a value before hydration would risk
- * it not matching the class next-themes actually applies.
- */
+/** Theme control that stays inert until next-themes resolves on the client. */
 export function ThemeToggle({ compact = false }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   const mounted = useMounted();
