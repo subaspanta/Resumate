@@ -4,14 +4,7 @@ import { ERROR_CODES } from "../../constants/error-codes.js";
 import { HTTP_STATUS } from "../../constants/http-status.js";
 import { Logger } from "../../config/logger.js";
 
-// Classifies a Gemini SDK failure into an honest, user-facing AppError.
-// `what` is a short label ("structure resume", "analyze this resume",
-// "generate your roadmap") so the fallback message stays specific to the call
-// site rather than collapsing to one generic string.
-//
-// The AppError message is deliberately generic — the raw SDK error is logged
-// here instead, since it's the only place all three call sites funnel
-// through and none of them carry a userId/resumeId/analysisId to log with.
+// Map Gemini failures to safe client errors while logging raw SDK details.
 export function classifyGeminiError(
   err: unknown,
   what: string,

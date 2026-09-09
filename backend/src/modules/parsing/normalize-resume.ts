@@ -1,27 +1,12 @@
 import { SkillGroup, StructuredResume } from "./parsing.types.js";
 import { Logger } from "../../config/logger.js";
 
-// `structuredResume` / `resumeSnapshot` are Json columns. Prisma neither
-// validates their contents nor migrates them when the TS type changes, so
-// `StructuredResume` is a promise the database does not keep — a row written
-// by an older build (or a hand-inserted fixture) deserializes into a value the
-// compiler believes is well-formed but isn't. Reading `entry.bullets` on such a
-// row throws instead of degrading, which is why every read of stored resume
-// JSON goes through here first.
-//
-// Deliberately total and coercive: unlike structuredResumeSchema in
-// modules/ai/ai.types.ts — which is strict on purpose so bad *Gemini* output is
-// rejected loudly — this handles data already persisted, where the only useful
-// behavior is to salvage what's there and default the rest.
+// Coerce persisted JSON defensively; database JSON is not schema-validated.
 
-// Pre-`bullets` rows stored one string per entry instead of an array. Read-only
-// legacy tolerance; nothing writes this shape anymore.
+// Legacy entries may store description instead of bullets.
 type LegacyEntry = { bullets?: unknown; description?: unknown };
 
-// Coercions are recorded as short tags rather than logged inline, so one bad
-// row produces a single warning instead of one per field. Tags name the defect
-// only — never the offending value, which is a real person's contact details
-// and employment history and must not reach the logs.
+// Record repair tags, never resume values, in logs.
 type Repairs = string[];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -30,8 +15,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function toArray(value: unknown, field: string, repairs: Repairs): unknown[] {
   if (Array.isArray(value)) return value;
-  // Absent is the normal shape for an optional section; only a present-but-wrong
-  // type indicates corruption worth reporting.
+  // Missing optional sections are valid; present wrong types are repairs.
   if (value !== undefined && value !== null) {
     repairs.push(`${field}:not-an-array`);
   }
@@ -44,8 +28,7 @@ function toNullableString(
   repairs: Repairs,
 ): string | null {
   if (typeof value === "string") return value;
-  // Absent is the normal shape for an optional field; only a present-but-wrong
-  // type indicates corruption worth reporting.
+  // Missing optional fields are valid; present wrong types are repairs.
   if (value !== undefined && value !== null) {
     repairs.push(`${field}:not-a-string`);
   }
@@ -65,10 +48,7 @@ function toStrings(value: unknown, field: string, repairs: Repairs): string[] {
   return strings;
 }
 
-// Resolution order: a real `bullets` array wins; otherwise a legacy
-// `description` becomes a single bullet, kept whole rather than split on
-// sentences or newlines — splitting is a guess, and a wrong guess is
-// unrecoverable once written back.
+// Prefer bullets; otherwise preserve legacy description as one bullet.
 function toBullets(
   entry: LegacyEntry,
   field: string,
@@ -80,18 +60,14 @@ function toBullets(
     repairs.push(`${field}:legacy-description`);
     return [entry.description];
   }
-  // Distinct tag from the section-level `:not-an-array` so a malformed bullets
-  // field is never confused with a malformed experience/projects array.
+  // Keep malformed bullets distinct from malformed sections in repair tags.
   if (entry.bullets !== undefined && entry.bullets !== null) {
     repairs.push(`${field}:bullets-not-an-array`);
   }
   return [];
 }
 
-// Every existing stored row has `skills` as a flat string[] — the shape the
-// prompt used to enforce. Wrap it as a single uncategorized group rather than
-// migrating stored data, matching the `description` -> `bullets` legacy
-// tolerance above.
+// Wrap legacy flat skills as one uncategorized group without rewriting data.
 function normalizeSkills(value: unknown, repairs: Repairs): SkillGroup[] {
   if (Array.isArray(value) && value.every((v) => typeof v === "string")) {
     if (value.length === 0) return [];
@@ -171,7 +147,11 @@ export function normalizeStructuredResume(
     .filter(isRecord)
     .map((entry, i) => ({
       name: typeof entry.name === "string" ? entry.name : "",
-      issuer: toNullableString(entry.issuer, `certifications[${i}].issuer`, repairs),
+      issuer: toNullableString(
+        entry.issuer,
+        `certifications[${i}].issuer`,
+        repairs,
+      ),
       issueDate: toNullableString(
         entry.issueDate,
         `certifications[${i}].issueDate`,
@@ -202,7 +182,11 @@ export function normalizeStructuredResume(
     .filter(isRecord)
     .map((entry, i) => ({
       heading: typeof entry.heading === "string" ? entry.heading : "",
-      bullets: toStrings(entry.bullets, `customSections[${i}].bullets`, repairs),
+      bullets: toStrings(
+        entry.bullets,
+        `customSections[${i}].bullets`,
+        repairs,
+      ),
     })) as StructuredResume["customSections"];
 
   // Warn once per row, after every field has had its say.

@@ -1,11 +1,7 @@
 import { Type } from "@google/genai";
 import { z } from "zod";
 
-// Zod mirror of RESUME_SCHEMA below — re-validated after Gemini responds so a
-// shape mismatch (missing required field, empty array, wrong type) is caught
-// even though responseSchema mostly enforces this already. Matches what
-// RESUME_SCHEMA actually constrains Gemini to produce, not the broader
-// StructuredResume TS type in parsing.types.ts.
+// Re-validates Gemini output against the narrower RESUME_SCHEMA contract.
 export const structuredResumeSchema = z.object({
   name: z.string().nullable().optional(),
   contact: z
@@ -67,7 +63,7 @@ export const structuredResumeSchema = z.object({
   ),
 });
 
-// Gemini's structured-output schema — a runtime description of StructuredResume,
+// Gemini's structured-output schema.
 
 export const RESUME_SCHEMA = {
   type: Type.OBJECT,
