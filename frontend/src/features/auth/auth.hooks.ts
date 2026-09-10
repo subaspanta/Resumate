@@ -22,13 +22,10 @@ export function useAuth() {
         const response = await authApi.me();
         return response?.data?.data ?? null;
       } catch (err) {
-        // 401 = legitimately signed out, not a query error.
         if (isApiError(err) && err.status === 401) return null;
         throw err;
       }
     },
-    // Deliberately longer than DEFAULT_STALE_TIME — the session identity
-    // changes far less often than resume or analysis data.
     staleTime: 1000 * 60 * 10,
     retry: defaultQueryRetry,
   });
@@ -38,8 +35,6 @@ export function useAuth() {
   const loginMutation = useMutation({
     mutationFn: async (data: LoginInput) => {
       const response = await authApi.login(data);
-      // Unwrap twice: axios `.data` is the API envelope, `.data.data` is the
-      // user. Must match the `me` queryFn above — both write the same cache key.
       return response?.data?.data ?? null;
     },
     onSuccess: (newUser: SafeUser | null) => {
@@ -61,20 +56,12 @@ export function useAuth() {
     mutationFn: async () => {
       await authApi.logout();
     },
-    // onSettled, not onSuccess: the logout route requires auth, so an
-    // already-expired session 401s. The user is logged out server-side either
-    // way — failing to clear the cache would strand stale user data behind a
-    // UI that says "logout failed".
     onSettled: () => {
       queryClient.setQueryData(queryKeys.auth.me(), null);
       queryClient.clear();
     },
   });
 
-  // Unlike logout, a failed delete must NOT clear the session — the account
-  // (and its data) still exists, so leaving the user signed in behind a
-  // "delete failed" toast is correct; only a real 200 means the account and
-  // every cascaded row are actually gone.
   const deleteAccountMutation = useMutation({
     mutationFn: async () => {
       await authApi.deleteAccount();

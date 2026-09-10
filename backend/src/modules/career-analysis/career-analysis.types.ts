@@ -31,7 +31,6 @@ export const SOURCE_SECTIONS = [
   "summary",
   "education",
   "certifications",
-  // Used only during reassessment.
   "completed_work",
 ] as const;
 
