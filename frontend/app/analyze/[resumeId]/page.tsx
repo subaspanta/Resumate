@@ -39,6 +39,7 @@ export default function AnalyzeRolePage({
     isLoading: resumeLoading,
     isError,
     isRedirecting,
+    refetch: refetchResume,
   } = useResumeGuard(resumeId);
   const {
     roles,
@@ -87,7 +88,7 @@ export default function AnalyzeRolePage({
           <p className="analysis-error-message">
             We couldn&apos;t load this resume.
           </p>
-          <Button onClick={() => window.location.reload()}>Try again</Button>
+          <Button onClick={() => refetchResume()}>Try again</Button>
         </div>
       </AppShell>
     );

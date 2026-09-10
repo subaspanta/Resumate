@@ -23,6 +23,7 @@ interface DashboardContentProps {
   dashboardState: DashboardState;
   isLoading: boolean;
   resumes: ResumeSummary[];
+  onRetry: () => void;
   isUploading: boolean;
   onFileSelected: (file: File) => void;
   onOpenResume: (id: string) => void;
@@ -48,18 +49,14 @@ const DashboardSkeleton = () => (
   </AppShell>
 );
 
-const DashboardErrorState = () => (
+const DashboardErrorState = ({ onRetry }: { onRetry: () => void }) => (
   <div className="dashboard-main-inner flex items-center justify-center">
     <div className="dashboard-side-panel items-center text-center max-w-[24rem]">
       <CircleAlert className="size-8 text-danger mb-sm" aria-hidden="true" />
       <p className="font-body-md text-body-md text-text-primary mb-lg">
         Failed to load your resumes.
       </p>
-      <button
-        type="button"
-        onClick={() => window.location.reload()}
-        className="dashboard-btn-primary"
-      >
+      <button type="button" onClick={onRetry} className="dashboard-btn-primary">
         Retry
       </button>
     </div>
@@ -86,6 +83,7 @@ export function DashboardContent({
   dashboardState,
   isLoading,
   resumes,
+  onRetry,
   isUploading,
   onFileSelected,
   onOpenResume,
@@ -111,6 +109,7 @@ export function DashboardContent({
       {renderContent({
         dashboardState,
         resumes,
+        onRetry,
         isUploading,
         onFileSelected,
         onOpenResume,
@@ -125,6 +124,7 @@ export function DashboardContent({
 interface RenderContentParams {
   dashboardState: DashboardState;
   resumes: ResumeSummary[];
+  onRetry: () => void;
   isUploading: boolean;
   onFileSelected: (file: File) => void;
   onOpenResume: (id: string) => void;
@@ -137,6 +137,7 @@ function renderContent(params: RenderContentParams) {
   const {
     dashboardState,
     resumes,
+    onRetry,
     isUploading,
     onFileSelected,
     onOpenResume,
@@ -168,7 +169,7 @@ function renderContent(params: RenderContentParams) {
       );
 
     case "error":
-      return <DashboardErrorState />;
+      return <DashboardErrorState onRetry={onRetry} />;
 
     default:
       return dashboardState satisfies never;

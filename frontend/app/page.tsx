@@ -15,6 +15,7 @@ export default function HomePage() {
     resumes,
     isLoading: resumesLoading,
     isError: resumesError,
+    refetch: refetchResumes,
   } = useResumes();
 
   const { handleFileSelected, isUploading } = useUploadResumeFlow();
@@ -39,6 +40,7 @@ export default function HomePage() {
       dashboardState={dashboardState}
       isLoading={resumesLoading}
       resumes={resumes}
+      onRetry={refetchResumes}
       isUploading={isUploading}
       onFileSelected={handleFileSelected}
       onOpenResume={handleOpenResume}

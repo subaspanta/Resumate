@@ -15,7 +15,7 @@ const CRUMBS = [{ label: "Dashboard", href: "/" }, { label: "Resumes" }];
 
 export default function ResumesListPage() {
   const router = useRouter();
-  const { resumes, isLoading, isError } = useResumes();
+  const { resumes, isLoading, isError, refetch } = useResumes();
   const { handleDelete, deletingId } = useDeleteResumeFlow();
   const { triggerReplace, replacingId } = useReplaceResumeFlow();
 
@@ -38,7 +38,7 @@ export default function ResumesListPage() {
           <p className="analysis-error-message">
             We couldn&apos;t load your resumes.
           </p>
-          <Button onClick={() => window.location.reload()}>Try again</Button>
+          <Button onClick={() => refetch()}>Try again</Button>
         </div>
       )}
 
