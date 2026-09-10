@@ -8,8 +8,10 @@ import { DashboardFooter } from "@/src/components/layout/DashboardFooter";
 import { FlowStepRail } from "@/src/components/layout/FlowStepRail";
 import type { FlowStepKey } from "@/src/components/layout/flow-steps";
 import { useSidebar } from "@/src/providers/sidebar-provider";
-import { DASHBOARD_VIEW_LAYOUT } from "@/src/components/dashboard/dashboardViewConfig";
-import type { DashboardView } from "@/src/features/resume/types";
+import {
+  DASHBOARD_VIEW_LAYOUT,
+  type DashboardView,
+} from "@/src/components/layout/dashboardViewConfig";
 
 // Layout owns the sidebar offset shared by shell children.
 function getSidebarOffset(

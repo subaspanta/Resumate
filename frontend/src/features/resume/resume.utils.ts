@@ -1,8 +1,5 @@
-import type {
-  DashboardState,
-  DashboardStateInput,
-  DashboardView,
-} from "./types";
+import type { DashboardState, DashboardStateInput } from "./types";
+import type { DashboardView } from "@/src/components/layout/dashboardViewConfig";
 
 // Mirrors the backend's normalizeStructuredResume: real array wins, legacy
 // `description` becomes one bullet, otherwise nothing.

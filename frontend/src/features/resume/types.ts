@@ -1,7 +1,5 @@
 export type DashboardState = "firstTime" | "readyToStart" | "error";
 
-export type DashboardView = "firstTime" | "default" | "active";
-
 export interface ResumeSummary {
   id: string;
   title: string;

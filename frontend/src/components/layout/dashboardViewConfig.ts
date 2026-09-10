@@ -1,4 +1,4 @@
-import type { DashboardView } from "@/src/features/resume/types";
+export type DashboardView = "firstTime" | "default" | "active";
 
 export interface DashboardViewLayout {
   sidebarCollapsible: boolean;

@@ -15,7 +15,7 @@ import { useAuth } from "@/src/features/auth/auth.hooks";
 import { useSidebarRoadmapLink } from "@/src/components/layout/use-sidebar-roadmap-link";
 import { BrandMark } from "@/src/components/layout/BrandMark";
 import { toast } from "sonner";
-import type { DashboardViewLayout } from "@/src/components/dashboard/dashboardViewConfig";
+import type { DashboardViewLayout } from "@/src/components/layout/dashboardViewConfig";
 import {
   AlertDialog,
   AlertDialogAction,
