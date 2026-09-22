@@ -9,8 +9,7 @@ export const listResumesQuerySchema = z.object({
   cursor: z.string().uuid().optional(),
 });
 
-// Route params. Without this a malformed id reaches Prisma's uuid cast and
-// surfaces as a generic 500 instead of the 400 the rest of the API returns.
+// Reject malformed UUIDs before Prisma.
 export const resumeIdParamSchema = z.object({
   id: z.string().uuid(),
 });

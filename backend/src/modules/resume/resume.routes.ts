@@ -33,6 +33,14 @@ router.get(
 );
 
 router.get(
+  // Must precede `/:id`; otherwise Express treats "download" as an id.
+  "/:id/download",
+  requireAuth,
+  validateParams(resumeIdParamSchema),
+  resumeController.download,
+);
+
+router.get(
   "/:id",
   requireAuth,
   validateParams(resumeIdParamSchema),

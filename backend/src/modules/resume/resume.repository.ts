@@ -17,7 +17,7 @@ export class ResumeRepository {
   ): Promise<ResumePage> {
     const { limit, cursor } = options;
 
-    // Fetch one extra row to detect whether a further page exists.
+    // Fetch one extra row to detect next page.
     const rows = await this.prisma.resume.findMany({
       where: { userId },
       select: {
@@ -46,6 +46,7 @@ export class ResumeRepository {
         id: true,
         title: true,
         originalFileName: true,
+        mimeType: true,
         structuredResume: true,
         rawText: true,
         fileSize: true,
@@ -56,24 +57,13 @@ export class ResumeRepository {
     });
   }
 
-  // Ownership-scoped write. deleteMany rather than delete: Prisma's delete
-  // accepts only a unique field in `where`, so a userId filter is impossible
-  // and the write would have to trust the earlier findByIdAndUserId read.
-  // Here the write carries the ownership predicate itself. Returns the row
-  // count so the caller can treat 0 (vanished or reassigned between the read
-  // and this write) as not-found rather than a silent no-op.
+  // Keep ownership predicate on delete write.
   async deleteByIdAndUserId(id: string, userId: string): Promise<number> {
     const result = await this.prisma.resume.deleteMany({ where: { id, userId } });
     return result.count;
   }
 
-  // Same ownership-scoped updateMany reasoning as deleteByIdAndUserId:
-  // update() only accepts a unique `where`, so the predicate has to live on
-  // this write rather than trusting the caller's earlier read. Replace keeps
-  // the same row id on purpose — CareerAnalysis.resumeSnapshot is a frozen
-  // JSONB copy taken at analysis time, not a live join to this row, so
-  // updating the content in place cannot retroactively change any existing
-  // analysis, while a delete+recreate would cascade-delete all of them.
+  // Keep ownership predicate on update write.
   async updateByIdAndUserId(
     id: string,
     userId: string,

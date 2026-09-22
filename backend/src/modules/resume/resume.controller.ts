@@ -41,6 +41,22 @@ export class ResumeController {
     }
   };
 
+  download = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const url = await this.resumeService.getDownloadUrl(
+        req.user!.sub,
+        req.params.id,
+      );
+      res.redirect(url);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   remove = async (
     req: Request<{ id: string }>,
     res: Response,
