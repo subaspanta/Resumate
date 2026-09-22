@@ -5,18 +5,7 @@ type ExtractionResult =
   | { ok: true; text: string }
   | { ok: false; message: string };
 
-// Runs extraction in its own thread so a timeout can actually terminate the
-// work, not just stop waiting for it — unlike with-timeout.ts (whose own
-// comment admits it "has no way to cancel...a synchronous parsing call
-// already running"), worker.terminate() genuinely kills the thread. Every
-// terminal path below clears the timer and terminates the worker exactly
-// once, guarded by `settled`: success, extraction error, timeout, worker
-// error, and unexpected exit all converge on the same cleanup.
-//
-// workerUrl defaults to the real extraction worker but can be overridden by
-// tests to point at a different script (e.g. a busy-loop fixture that proves
-// cancellation actually stops CPU-bound work) without needing a file that
-// reliably hangs pdf-parse.
+// Worker timeout can terminate CPU-bound extraction.
 export function runExtraction(
   buffer: Buffer,
   mimeType: string,
@@ -62,13 +51,7 @@ export function runExtraction(
       reject(new Error(`Extraction worker exited unexpectedly (code ${code})`));
     });
 
-    // Structured-clone COPY, not a transfer. resume.service.ts's
-    // saveAndParseFile runs storageModule.saveFile(file.buffer) and
-    // parsingModule.parseResume(file.buffer, ...) concurrently on the same
-    // buffer via Promise.allSettled — transferring the underlying
-    // ArrayBuffer would detach it out from under the concurrent Cloudinary
-    // upload. The 2MB cap makes the copy cheap; correctness here matters
-    // more than avoiding it.
+    // Copy buffer: storage upload uses it concurrently.
     worker.postMessage({ buffer, mimeType });
   });
 }

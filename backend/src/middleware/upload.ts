@@ -19,6 +19,7 @@ const fileFilter = (
   file: Express.Multer.File,
   cb: FileFilterCallback,
 ) => {
+  // Advisory only; service verifies file signature.
   const ext = path.extname(file.originalname).toLowerCase();
 
   if (!ALLOWED_MIME_TYPES.has(file.mimetype) && !allowedExtensions.has(ext)) {
