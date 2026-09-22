@@ -94,7 +94,6 @@ async function createResume(userId: string) {
       originalFileName: "resume.pdf",
       mimeType: "application/pdf",
       fileSize: 1,
-      fileUrl: "https://example.com/resume.pdf",
       rawText: "raw text",
       structuredResume: {
         summary: "Final-year student",

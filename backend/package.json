@@ -37,6 +37,7 @@
     "build": "tsc && cp -r src/generated dist/generated",
     "start": "node dist/server.js",
     "tokens:cleanup": "tsx src/scripts/cleanup-refresh-tokens.ts",
+    "storage:migrate-authenticated": "tsx src/scripts/migrate-resume-storage-to-authenticated.ts",
     "test": "vitest run",
     "db:seed": "tsx prisma/seed.ts"
   },

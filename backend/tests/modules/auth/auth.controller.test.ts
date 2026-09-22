@@ -24,7 +24,6 @@ async function createResumeWithAnalysis(userId: string) {
       originalFileName: "resume.pdf",
       mimeType: "application/pdf",
       fileSize: 1,
-      fileUrl: "https://example.com/resume.pdf",
       rawText: "raw text",
       structuredResume: { skills: [] },
     },
