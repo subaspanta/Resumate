@@ -7,6 +7,9 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("cloudinary", () => ({
   v2: {
     config: vi.fn(),
+    utils: {
+      private_download_url: vi.fn(),
+    },
     uploader: {
       upload_stream: vi.fn(),
       destroy: vi.fn(),
@@ -27,7 +30,6 @@ describe("CloudinaryStorageModule — timeout", () => {
         queueMicrotask(() =>
           callback(undefined, {
             public_id: "resumes/abc123",
-            secure_url: "https://res.cloudinary.com/demo/raw/upload/abc123",
           } as never),
         );
         return { end: vi.fn() } as never;
@@ -35,12 +37,20 @@ describe("CloudinaryStorageModule — timeout", () => {
     );
 
     const module = new CloudinaryStorageModule();
-    const result = await module.saveFile(Buffer.from("file-bytes"));
-
-    expect(result).toEqual({
-      path: "resumes/abc123",
-      url: "https://res.cloudinary.com/demo/raw/upload/abc123",
+    const result = await module.saveFile(Buffer.from("file-bytes"), {
+      extension: "pdf",
+      originalFileName: "resume.pdf",
     });
+
+    expect(result).toEqual({ path: "resumes/abc123" });
+    expect(cloudinary.uploader.upload_stream).toHaveBeenCalledWith(
+      expect.objectContaining({
+        resource_type: "raw",
+        type: "authenticated",
+        filename_override: "resume.pdf",
+      }),
+      expect.any(Function),
+    );
   });
 
   it("saveFile rejects with StorageError when the upload stalls past the timeout, instead of hanging forever", async () => {
@@ -50,10 +60,38 @@ describe("CloudinaryStorageModule — timeout", () => {
 
     const module = new CloudinaryStorageModule();
 
-    await expect(module.saveFile(Buffer.from("file-bytes"))).rejects.toThrow(
+    await expect(
+      module.saveFile(Buffer.from("file-bytes"), {
+        extension: "pdf",
+        originalFileName: "resume.pdf",
+      }),
+    ).rejects.toThrow(
       StorageError,
     );
   }, 20_000);
+
+  it("creates a short-lived URL for an authenticated raw asset", () => {
+    vi.mocked(cloudinary.utils.private_download_url).mockReturnValue(
+      "https://api.cloudinary.com/signed-download",
+    );
+    const module = new CloudinaryStorageModule();
+
+    expect(
+      module.createDownloadUrl("resumes/abc.pdf", {
+        extension: "pdf",
+        originalFileName: "resume.pdf",
+      }),
+    ).toBe("https://api.cloudinary.com/signed-download");
+    expect(cloudinary.utils.private_download_url).toHaveBeenCalledWith(
+      "resumes/abc.pdf",
+      "pdf",
+      expect.objectContaining({
+        resource_type: "raw",
+        type: "authenticated",
+        attachment: true,
+      }),
+    );
+  });
 
   it("deleteFile resolves normally when the delete finishes before the deadline", async () => {
     vi.mocked(cloudinary.uploader.destroy).mockResolvedValue({

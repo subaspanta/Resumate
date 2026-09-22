@@ -1,5 +1,12 @@
 export interface StorageModule {
-  saveFile(buffer: Buffer): Promise<{ path: string; url: string }>;
+  saveFile(
+    buffer: Buffer,
+    options: { extension: string; originalFileName: string },
+  ): Promise<{ path: string }>;
+  createDownloadUrl(
+    path: string,
+    options: { extension: string; originalFileName: string },
+  ): string;
   deleteFile(path: string): Promise<void>;
 }
 

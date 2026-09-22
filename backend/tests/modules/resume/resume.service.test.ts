@@ -27,7 +27,10 @@ function fakeStorageModule(overrides: Partial<StorageModule> = {}): StorageModul
   return {
     deletedPaths,
     async saveFile() {
-      return { path: "resumes/fake-path", url: "https://example.com/fake.pdf" };
+      return { path: "resumes/fake-path" };
+    },
+    createDownloadUrl() {
+      return "https://example.com/signed-download";
     },
     async deleteFile(path: string) {
       deletedPaths.push(path);
@@ -99,8 +102,6 @@ describe("ResumeService.uploadResume", () => {
     const resume = await service.uploadResume(user.id, fakeFile(), {});
 
     expect(resume.originalFileName).toBe("resume.pdf");
-    expect(resume.fileUrl).toBe("https://example.com/fake.pdf");
-
     const stored = await prisma.resume.findUnique({ where: { id: resume.id } });
     expect(stored).not.toBeNull();
   });
@@ -151,7 +152,7 @@ describe("ResumeService.uploadResume", () => {
     const storage = fakeStorageModule({
       async saveFile() {
         order.push("storage-start");
-        return { path: "resumes/fake-path", url: "https://example.com/fake.pdf" };
+        return { path: "resumes/fake-path" };
       },
     });
     const parsing = fakeParsingModule({

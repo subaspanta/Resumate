@@ -1,7 +1,4 @@
-export interface StorageModule {
-  saveFile(buffer: Buffer): Promise<{ path: string; url: string }>;
-  deleteFile(path: string): Promise<void>;
-}
+export type { StorageModule } from "../storage/storage.types.js";
 
 export interface ParsingModule {
   parseResume(
